@@ -3,6 +3,9 @@ package bootstrap
 import (
 	"github.com/go-kratos/kratos/v2/log"
 
+	"github.com/go-redis/redis/extra/redisotel/v8"
+	"github.com/go-redis/redis/v8"
+
 	"github.com/tx7do/kratos-bootstrap/gen/api/go/conf/v1"
 )
 

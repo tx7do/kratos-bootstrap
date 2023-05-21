@@ -2,6 +2,8 @@ package bootstrap
 
 import (
 	"github.com/go-kratos/kratos/v2/log"
+
+	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 
 	"github.com/tx7do/kratos-bootstrap/gen/api/go/conf/v1"

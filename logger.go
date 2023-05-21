@@ -4,14 +4,15 @@ import (
 	"os"
 
 	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 
 	aliyunLogger "github.com/go-kratos/kratos/contrib/log/aliyun/v2"
 	fluentLogger "github.com/go-kratos/kratos/contrib/log/fluent/v2"
 	logrusLogger "github.com/go-kratos/kratos/contrib/log/logrus/v2"
 	tencentLogger "github.com/go-kratos/kratos/contrib/log/tencent/v2"
 	zapLogger "github.com/go-kratos/kratos/contrib/log/zap/v2"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
