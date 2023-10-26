@@ -13,23 +13,23 @@ func Bootstrap(serviceInfo *ServiceInfo) (*conf.Bootstrap, log.Logger, registry.
 	Flags := NewCommandFlags()
 	Flags.Init()
 
+	var err error
+
 	// load configs
-	cfg := LoadBootstrapConfig(Flags.Conf)
-	if cfg == nil {
+	if err = LoadBootstrapConfig(Flags.Conf); err == nil {
 		panic("load config failed")
 	}
 
 	// init logger
-	ll := NewLoggerProvider(cfg.Logger, serviceInfo)
+	ll := NewLoggerProvider(commonConfig.Logger, serviceInfo)
 
 	// init registrar
-	reg := NewRegistry(cfg.Registry)
+	reg := NewRegistry(commonConfig.Registry)
 
 	// init tracer
-	err := NewTracerProvider(cfg.Trace, serviceInfo)
-	if err != nil {
+	if err = NewTracerProvider(commonConfig.Trace, serviceInfo); err != nil {
 		panic(err)
 	}
 
-	return cfg, ll, reg
+	return commonConfig, ll, reg
 }
