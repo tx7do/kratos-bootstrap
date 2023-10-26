@@ -5,7 +5,7 @@ package conf;
 option go_package = "github.com/tx7do/kratos-bootstrap/gen/api/go/conf/v1;conf";
 
 import "google/protobuf/duration.proto";
-import "conf/v1/middleware.proto";
+import "conf/v1/kratos_conf_middleware.proto";
 
 // 客户端
 message Client {
