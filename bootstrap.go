@@ -17,7 +17,7 @@ func Bootstrap(serviceInfo *ServiceInfo) (*conf.Bootstrap, log.Logger, registry.
 	var err error
 
 	// load configs
-	if err = LoadBootstrapConfig(Flags.Conf); err == nil {
+	if err = LoadBootstrapConfig(Flags.Conf); err != nil {
 		panic(fmt.Sprintf("load config failed: %v", err))
 	}
 
