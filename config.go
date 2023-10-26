@@ -41,7 +41,64 @@ import (
 	"github.com/tx7do/kratos-bootstrap/gen/api/go/conf/v1"
 )
 
+var commonConfig = &conf.Bootstrap{}
+var configList []interface{}
+
 const remoteConfigSourceConfigFile = "remote.yaml"
+
+// RegisterConfig 注册配置
+func RegisterConfig(c interface{}) {
+	initBootstrapConfig()
+	configList = append(configList, c)
+}
+
+func initBootstrapConfig() {
+	if len(configList) > 0 {
+		return
+	}
+
+	configList = append(configList, commonConfig)
+
+	if commonConfig.Server == nil {
+		commonConfig.Server = &conf.Server{}
+		configList = append(configList, commonConfig.Server)
+	}
+
+	if commonConfig.Client == nil {
+		commonConfig.Client = &conf.Client{}
+		configList = append(configList, commonConfig.Client)
+	}
+
+	if commonConfig.Data == nil {
+		commonConfig.Data = &conf.Data{}
+		configList = append(configList, commonConfig.Data)
+	}
+
+	if commonConfig.Trace == nil {
+		commonConfig.Trace = &conf.Tracer{}
+		configList = append(configList, commonConfig.Trace)
+	}
+
+	if commonConfig.Logger == nil {
+		commonConfig.Logger = &conf.Logger{}
+		configList = append(configList, commonConfig.Logger)
+	}
+
+	if commonConfig.Registry == nil {
+		commonConfig.Registry = &conf.Registry{}
+		configList = append(configList, commonConfig.Registry)
+	}
+
+	if commonConfig.Oss == nil {
+		commonConfig.Oss = &conf.OSS{}
+		configList = append(configList, commonConfig.Oss)
+	}
+
+	if commonConfig.Notify == nil {
+		commonConfig.Notify = &conf.Notification{}
+		configList = append(configList, commonConfig.Notify)
+	}
+}
 
 // NewConfigProvider 创建一个配置
 func NewConfigProvider(configPath string) config.Config {
@@ -66,53 +123,22 @@ func NewConfigProvider(configPath string) config.Config {
 }
 
 // LoadBootstrapConfig 加载程序引导配置
-func LoadBootstrapConfig(configPath string) *conf.Bootstrap {
+func LoadBootstrapConfig(configPath string) error {
 	cfg := NewConfigProvider(configPath)
+
 	if err := cfg.Load(); err != nil {
 		panic(err)
 	}
 
-	var bc conf.Bootstrap
-	if err := cfg.Scan(&bc); err != nil {
-		panic(err)
+	initBootstrapConfig()
+
+	for c := range configList {
+		if err := cfg.Scan(c); err != nil {
+			return err
+		}
 	}
 
-	if bc.Server == nil {
-		bc.Server = &conf.Server{}
-		_ = cfg.Scan(&bc.Server)
-	}
-
-	if bc.Client == nil {
-		bc.Client = &conf.Client{}
-		_ = cfg.Scan(&bc.Client)
-	}
-
-	if bc.Data == nil {
-		bc.Data = &conf.Data{}
-		_ = cfg.Scan(&bc.Data)
-	}
-
-	if bc.Trace == nil {
-		bc.Trace = &conf.Tracer{}
-		_ = cfg.Scan(&bc.Trace)
-	}
-
-	if bc.Logger == nil {
-		bc.Logger = &conf.Logger{}
-		_ = cfg.Scan(&bc.Logger)
-	}
-
-	if bc.Registry == nil {
-		bc.Registry = &conf.Registry{}
-		_ = cfg.Scan(&bc.Registry)
-	}
-
-	if bc.Oss == nil {
-		bc.Oss = &conf.OSS{}
-		_ = cfg.Scan(&bc.Oss)
-	}
-
-	return &bc
+	return nil
 }
 
 func pathExists(path string) bool {
@@ -151,12 +177,15 @@ func LoadRemoteConfigSourceConfigs(configPath string) (error, *conf.RemoteConfig
 		return err, nil
 	}
 
-	var rc conf.Bootstrap
-	if err = cfg.Scan(&rc); err != nil {
-		return err, nil
+	initBootstrapConfig()
+
+	for c := range configList {
+		if err = cfg.Scan(c); err != nil {
+			return err, nil
+		}
 	}
 
-	return nil, rc.Config
+	return nil, commonConfig.Config
 }
 
 type ConfigType string

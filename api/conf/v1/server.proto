@@ -55,10 +55,25 @@ message Server {
     repeated string addrs = 1;  // 对端网络地址
   }
 
+  // Asynq
+  message Asynq {
+    string endpoint = 1;  // 对端网络地址
+    string password = 2;  // redis登录密码
+    int32 db = 3;  // 数据库索引
+  }
+
+  // Machinery
+  message Machinery {
+    repeated string brokers = 1;  // broker的地址，可以根据实际使用的存储介质，分别指定Redis、AMQP或AWS SQS；
+    repeated string backends = 2;  // backend配置，用来指定存放结果的介质的配置。可以根据需求，分别指定为：Redis、memcached或mongodb等；
+  }
+
   REST rest = 1;  // REST服务
   GRPC grpc = 2;  // gRPC服务
   Websocket websocket = 3;  // Websocket服务
   Mqtt mqtt = 4;  // MQTT服务
   Kafka kafka = 5;  // Kafka服务
   RabbitMQ rabbitmq = 6;  // RabbitMQ服务
+  Asynq asynq = 7;  // Asynq服务
+  Machinery machinery = 8;  // Machinery服务
 }

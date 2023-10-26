@@ -12,6 +12,7 @@ import "conf/v1/logger.proto";
 import "conf/v1/registry.proto";
 import "conf/v1/oss.proto";
 import "conf/v1/config.proto";
+import "conf/v1/notify.proto";
 
 // 引导信息
 message Bootstrap {
@@ -23,4 +24,5 @@ message Bootstrap {
   Registry registry = 6;
   RemoteConfig config = 7;
   OSS oss = 8;
+  Notification notify = 9;
 }

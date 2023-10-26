@@ -230,6 +230,64 @@ func (m *Server) validate(all bool) error {
 		}
 	}
 
+	if all {
+		switch v := interface{}(m.GetAsynq()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ServerValidationError{
+					field:  "Asynq",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ServerValidationError{
+					field:  "Asynq",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetAsynq()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ServerValidationError{
+				field:  "Asynq",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetMachinery()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ServerValidationError{
+					field:  "Machinery",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ServerValidationError{
+					field:  "Machinery",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetMachinery()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ServerValidationError{
+				field:  "Machinery",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
 	if len(errors) > 0 {
 		return ServerMultiError(errors)
 	}
@@ -1092,6 +1150,211 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = Server_RabbitMQValidationError{}
+
+// Validate checks the field values on Server_Asynq with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *Server_Asynq) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on Server_Asynq with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in Server_AsynqMultiError, or
+// nil if none found.
+func (m *Server_Asynq) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *Server_Asynq) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Endpoint
+
+	// no validation rules for Password
+
+	// no validation rules for Db
+
+	if len(errors) > 0 {
+		return Server_AsynqMultiError(errors)
+	}
+
+	return nil
+}
+
+// Server_AsynqMultiError is an error wrapping multiple validation errors
+// returned by Server_Asynq.ValidateAll() if the designated constraints aren't met.
+type Server_AsynqMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m Server_AsynqMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m Server_AsynqMultiError) AllErrors() []error { return m }
+
+// Server_AsynqValidationError is the validation error returned by
+// Server_Asynq.Validate if the designated constraints aren't met.
+type Server_AsynqValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e Server_AsynqValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e Server_AsynqValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e Server_AsynqValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e Server_AsynqValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e Server_AsynqValidationError) ErrorName() string { return "Server_AsynqValidationError" }
+
+// Error satisfies the builtin error interface
+func (e Server_AsynqValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sServer_Asynq.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = Server_AsynqValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = Server_AsynqValidationError{}
+
+// Validate checks the field values on Server_Machinery with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *Server_Machinery) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on Server_Machinery with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// Server_MachineryMultiError, or nil if none found.
+func (m *Server_Machinery) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *Server_Machinery) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if len(errors) > 0 {
+		return Server_MachineryMultiError(errors)
+	}
+
+	return nil
+}
+
+// Server_MachineryMultiError is an error wrapping multiple validation errors
+// returned by Server_Machinery.ValidateAll() if the designated constraints
+// aren't met.
+type Server_MachineryMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m Server_MachineryMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m Server_MachineryMultiError) AllErrors() []error { return m }
+
+// Server_MachineryValidationError is the validation error returned by
+// Server_Machinery.Validate if the designated constraints aren't met.
+type Server_MachineryValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e Server_MachineryValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e Server_MachineryValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e Server_MachineryValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e Server_MachineryValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e Server_MachineryValidationError) ErrorName() string { return "Server_MachineryValidationError" }
+
+// Error satisfies the builtin error interface
+func (e Server_MachineryValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sServer_Machinery.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = Server_MachineryValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = Server_MachineryValidationError{}
 
 // Validate checks the field values on Server_REST_CORS with the rules defined
 // in the proto definition for this message. If any rules are violated, the

@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package conf;
+
+option go_package = "github.com/tx7do/kratos-bootstrap/gen/api/go/conf/v1;conf";
+
+// 通知消息
+message Notification {
+  // 短信
+  message SMS {
+    string endpoint = 1; // 公网接入地址
+    string region_id = 2; // 地域ID
+    string access_key_id = 3; // 访问密钥ID
+    string access_key_secret = 4; // 访问密钥
+  }
+
+  SMS sms = 1;
+}
