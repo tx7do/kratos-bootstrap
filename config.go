@@ -128,7 +128,7 @@ func LoadBootstrapConfig(configPath string) error {
 
 	initBootstrapConfig()
 
-	for c := range configList {
+	for _, c := range configList {
 		if err := cfg.Scan(c); err != nil {
 			return err
 		}
@@ -175,7 +175,7 @@ func LoadRemoteConfigSourceConfigs(configPath string) (error, *conf.RemoteConfig
 
 	initBootstrapConfig()
 
-	for c := range configList {
+	for _, c := range configList {
 		if err = cfg.Scan(c); err != nil {
 			return err, nil
 		}
