@@ -34,9 +34,7 @@ import (
 	k8sUtil "k8s.io/client-go/util/homedir"
 
 	// polaris
-	polarisKratos "github.com/go-kratos/kratos/contrib/registry/polaris/v2"
-	polarisApi "github.com/polarismesh/polaris-go/api"
-	polarisModel "github.com/polarismesh/polaris-go/pkg/model"
+	//polarisKratos "github.com/go-kratos/kratos/contrib/registry/polaris/v2"
 
 	// servicecomb
 	servicecombClient "github.com/go-chassis/sc-client"
@@ -78,7 +76,7 @@ func NewRegistry(cfg *conf.Registry) registry.Registrar {
 	case LoggerTypeEureka:
 		return NewEurekaRegistry(cfg)
 	case LoggerTypePolaris:
-		return NewPolarisRegistry(cfg)
+		return nil
 	case LoggerTypeServicecomb:
 		return NewServicecombRegistry(cfg)
 	}
@@ -106,7 +104,7 @@ func NewDiscovery(cfg *conf.Registry) registry.Discovery {
 	case LoggerTypeEureka:
 		return NewEurekaRegistry(cfg)
 	case LoggerTypePolaris:
-		return NewPolarisRegistry(cfg)
+		return nil
 	case LoggerTypeServicecomb:
 		return NewServicecombRegistry(cfg)
 	}
@@ -237,39 +235,39 @@ func NewEurekaRegistry(c *conf.Registry) *eurekaKratos.Registry {
 }
 
 // NewPolarisRegistry 创建一个注册发现客户端 - Polaris
-func NewPolarisRegistry(c *conf.Registry) *polarisKratos.Registry {
-	var err error
-
-	var consumer polarisApi.ConsumerAPI
-	if consumer, err = polarisApi.NewConsumerAPI(); err != nil {
-		log.Fatalf("fail to create consumerAPI, err is %v", err)
-	}
-
-	var provider polarisApi.ProviderAPI
-	provider = polarisApi.NewProviderAPIByContext(consumer.SDKContext())
-
-	log.Infof("start to register instances, count %d", c.Polaris.InstanceCount)
-
-	var resp *polarisModel.InstanceRegisterResponse
-	for i := 0; i < (int)(c.Polaris.InstanceCount); i++ {
-		registerRequest := &polarisApi.InstanceRegisterRequest{}
-		registerRequest.Service = c.Polaris.Service
-		registerRequest.Namespace = c.Polaris.Namespace
-		registerRequest.Host = c.Polaris.Address
-		registerRequest.Port = (int)(c.Polaris.Port) + i
-		registerRequest.ServiceToken = c.Polaris.Token
-		registerRequest.SetHealthy(true)
-		if resp, err = provider.RegisterInstance(registerRequest); err != nil {
-			log.Fatalf("fail to register instance %d, err is %v", i, err)
-		} else {
-			log.Infof("register instance %d response: instanceId %s", i, resp.InstanceID)
-		}
-	}
-
-	reg := polarisKratos.NewRegistry(provider, consumer)
-
-	return reg
-}
+//func NewPolarisRegistry(c *conf.Registry) *polarisKratos.Registry {
+//var err error
+//
+//var consumer polarisApi.ConsumerAPI
+//if consumer, err = polarisApi.NewConsumerAPI(); err != nil {
+//	log.Fatalf("fail to create consumerAPI, err is %v", err)
+//}
+//
+//var provider polarisApi.ProviderAPI
+//provider = polarisApi.NewProviderAPIByContext(consumer.SDKContext())
+//
+//log.Infof("start to register instances, count %d", c.Polaris.InstanceCount)
+//
+//var resp *polarisModel.InstanceRegisterResponse
+//for i := 0; i < (int)(c.Polaris.InstanceCount); i++ {
+//	registerRequest := &polarisApi.InstanceRegisterRequest{}
+//	registerRequest.Service = c.Polaris.Service
+//	registerRequest.Namespace = c.Polaris.Namespace
+//	registerRequest.Host = c.Polaris.Address
+//	registerRequest.Port = (int)(c.Polaris.Port) + i
+//	registerRequest.ServiceToken = c.Polaris.Token
+//	registerRequest.SetHealthy(true)
+//	if resp, err = provider.RegisterInstance(registerRequest); err != nil {
+//		log.Fatalf("fail to register instance %d, err is %v", i, err)
+//	} else {
+//		log.Infof("register instance %d response: instanceId %s", i, resp.InstanceID)
+//	}
+//}
+//
+//reg := polarisKratos.NewRegistry(provider, consumer)
+//
+//return reg
+//}
 
 // NewServicecombRegistry 创建一个注册发现客户端 - Servicecomb
 func NewServicecombRegistry(c *conf.Registry) *servicecombKratos.Registry {

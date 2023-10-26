@@ -1,3 +1,3 @@
-git tag v0.2.1
+git tag v0.2.3
 
 git push origin --tags
