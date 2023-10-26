@@ -122,10 +122,22 @@ func NewConfigProvider(configPath string) config.Config {
 func LoadBootstrapConfig(configPath string) error {
 	cfg := NewConfigProvider(configPath)
 
-	if err := cfg.Load(); err != nil {
-		panic(err)
+	var err error
+
+	if err = cfg.Load(); err != nil {
+		return err
 	}
 
+	initBootstrapConfig()
+
+	if err = scanConfigs(cfg); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func scanConfigs(cfg config.Config) error {
 	initBootstrapConfig()
 
 	for _, c := range configList {
@@ -133,7 +145,6 @@ func LoadBootstrapConfig(configPath string) error {
 			return err
 		}
 	}
-
 	return nil
 }
 
@@ -161,8 +172,7 @@ func LoadRemoteConfigSourceConfigs(configPath string) (error, *conf.RemoteConfig
 		),
 	)
 	defer func(cfg config.Config) {
-		err := cfg.Close()
-		if err != nil {
+		if err := cfg.Close(); err != nil {
 			panic(err)
 		}
 	}(cfg)
@@ -173,12 +183,8 @@ func LoadRemoteConfigSourceConfigs(configPath string) (error, *conf.RemoteConfig
 		return err, nil
 	}
 
-	initBootstrapConfig()
-
-	for _, c := range configList {
-		if err = cfg.Scan(c); err != nil {
-			return err, nil
-		}
+	if err = scanConfigs(cfg); err != nil {
+		return err, nil
 	}
 
 	return nil, commonConfig.Config
