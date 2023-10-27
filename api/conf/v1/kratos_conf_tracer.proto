@@ -10,4 +10,5 @@ message Tracer {
   string endpoint = 2;  // 端口
   double sampler = 3; // 采样率，默认：1.0
   string env = 4; // 运行环境：dev、debug、product
+  bool insecure = 5;
 }

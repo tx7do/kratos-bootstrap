@@ -3,10 +3,10 @@ package bootstrap
 import (
 	"context"
 	"errors"
-	"strings"
-
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
+	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
 	"go.opentelemetry.io/otel/exporters/zipkin"
 
 	"go.opentelemetry.io/otel"
@@ -19,7 +19,7 @@ import (
 )
 
 // NewTracerExporter 创建一个导出器，支持：jaeger和zipkin
-func NewTracerExporter(exporterName, endpoint string) (traceSdk.SpanExporter, error) {
+func NewTracerExporter(exporterName, endpoint string, insecure bool) (traceSdk.SpanExporter, error) {
 	if exporterName == "" {
 		exporterName = "jaeger"
 	}
@@ -31,10 +31,12 @@ func NewTracerExporter(exporterName, endpoint string) (traceSdk.SpanExporter, er
 		return NewZipkinExporter(ctx, endpoint)
 	case "jaeger":
 		fallthrough
-	case "otlptracehttp":
-		return NewOtlpHttpExporter(ctx, endpoint)
-	case "otlptracegrpc":
-		return NewOtlpGrpcExporter(ctx, endpoint)
+	case "otlp-http":
+		return NewOtlpHttpExporter(ctx, endpoint, insecure)
+	case "otlp-grpc":
+		return NewOtlpGrpcExporter(ctx, endpoint, insecure)
+	case "stdout":
+		return stdouttrace.New()
 	default:
 		return nil, errors.New("exporter type not support")
 	}
@@ -94,29 +96,35 @@ func NewZipkinExporter(_ context.Context, endpoint string) (traceSdk.SpanExporte
 //}
 
 // NewOtlpHttpExporter 创建一个OTLP HTTP导出器
-func NewOtlpHttpExporter(ctx context.Context, endpoint string, options ...otlptracehttp.Option) (traceSdk.SpanExporter, error) {
+func NewOtlpHttpExporter(ctx context.Context, endpoint string, insecure bool, options ...otlptracehttp.Option) (traceSdk.SpanExporter, error) {
 	var opts []otlptracehttp.Option
 	opts = append(opts, otlptracehttp.WithEndpoint(endpoint))
 
-	if strings.HasPrefix(endpoint, "http://") {
+	if insecure {
 		opts = append(opts, otlptracehttp.WithInsecure())
 	}
 
 	opts = append(opts, options...)
 
-	return otlptracehttp.New(ctx, opts...)
+	return otlptrace.New(
+		ctx,
+		otlptracehttp.NewClient(opts...),
+	)
 }
 
 // NewOtlpGrpcExporter 创建一个OTLP GRPC导出器
-func NewOtlpGrpcExporter(ctx context.Context, endpoint string, options ...otlptracegrpc.Option) (traceSdk.SpanExporter, error) {
+func NewOtlpGrpcExporter(ctx context.Context, endpoint string, insecure bool, options ...otlptracegrpc.Option) (traceSdk.SpanExporter, error) {
 	var opts []otlptracegrpc.Option
 	opts = append(opts, otlptracegrpc.WithEndpoint(endpoint))
 
-	if strings.HasPrefix(endpoint, "http://") {
+	if insecure {
 		opts = append(opts, otlptracegrpc.WithInsecure())
 	}
 
 	opts = append(opts, options...)
 
-	return otlptracegrpc.New(ctx, opts...)
+	return otlptrace.New(
+		ctx,
+		otlptracegrpc.NewClient(opts...),
+	)
 }
