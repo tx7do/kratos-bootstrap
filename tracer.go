@@ -57,17 +57,17 @@ func NewTracerProvider(cfg *conf.Tracer, serviceInfo *ServiceInfo) error {
 	}
 
 	opts := []traceSdk.TracerProviderOption{
-		traceSdk.WithSampler(traceSdk.ParentBased(traceSdk.TraceIDRatioBased(cfg.Sampler))),
+		traceSdk.WithSampler(traceSdk.ParentBased(traceSdk.TraceIDRatioBased(cfg.GetSampler()))),
 		traceSdk.WithResource(resource.NewSchemaless(
 			semConv.ServiceNameKey.String(serviceInfo.Name),
 			semConv.ServiceVersionKey.String(serviceInfo.Version),
 			semConv.ServiceInstanceIDKey.String(serviceInfo.Id),
-			attribute.String("env", cfg.Env),
+			attribute.String("env", cfg.GetEnv()),
 		)),
 	}
 
-	if len(cfg.Endpoint) > 0 {
-		exp, err := NewTracerExporter(cfg.Batcher, cfg.Endpoint)
+	if len(cfg.GetEndpoint()) > 0 {
+		exp, err := NewTracerExporter(cfg.GetBatcher(), cfg.GetEndpoint(), cfg.GetInsecure())
 		if err != nil {
 			panic(err)
 		}
