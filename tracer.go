@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"context"
 	"errors"
+
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
@@ -18,12 +19,8 @@ import (
 	"github.com/tx7do/kratos-bootstrap/gen/api/go/conf/v1"
 )
 
-// NewTracerExporter 创建一个导出器，支持：jaeger和zipkin
+// NewTracerExporter 创建一个导出器，支持：zipkin、otlp-http、otlp-grpc
 func NewTracerExporter(exporterName, endpoint string, insecure bool) (traceSdk.SpanExporter, error) {
-	if exporterName == "" {
-		exporterName = "jaeger"
-	}
-
 	ctx := context.Background()
 
 	switch exporterName {
@@ -35,10 +32,10 @@ func NewTracerExporter(exporterName, endpoint string, insecure bool) (traceSdk.S
 		return NewOtlpHttpExporter(ctx, endpoint, insecure)
 	case "otlp-grpc":
 		return NewOtlpGrpcExporter(ctx, endpoint, insecure)
+	default:
+		fallthrough
 	case "stdout":
 		return stdouttrace.New()
-	default:
-		return nil, errors.New("exporter type not support")
 	}
 }
 
@@ -85,17 +82,17 @@ func NewTracerProvider(cfg *conf.Tracer, serviceInfo *ServiceInfo) error {
 	return nil
 }
 
-// NewZipkinExporter 创建一个zipkin导出器
+// NewZipkinExporter 创建一个zipkin导出器，默认对端地址：http://localhost:9411/api/v2/spans
 func NewZipkinExporter(_ context.Context, endpoint string) (traceSdk.SpanExporter, error) {
 	return zipkin.New(endpoint)
 }
 
-//// NewJaegerExporter 创建一个jaeger导出器
+//// NewJaegerExporter 创建一个jaeger导出器，默认对端地址：http://localhost:14268/api/traces
 //func NewJaegerExporter(_ context.Context, endpoint string) (traceSdk.SpanExporter, error) {
 //	return jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(endpoint)))
 //}
 
-// NewOtlpHttpExporter 创建一个OTLP HTTP导出器
+// NewOtlpHttpExporter 创建OTLP/HTTP导出器，默认端口：4318
 func NewOtlpHttpExporter(ctx context.Context, endpoint string, insecure bool, options ...otlptracehttp.Option) (traceSdk.SpanExporter, error) {
 	var opts []otlptracehttp.Option
 	opts = append(opts, otlptracehttp.WithEndpoint(endpoint))
@@ -112,7 +109,7 @@ func NewOtlpHttpExporter(ctx context.Context, endpoint string, insecure bool, op
 	)
 }
 
-// NewOtlpGrpcExporter 创建一个OTLP GRPC导出器
+// NewOtlpGrpcExporter 创建OTLP/gRPC导出器，默认端口：4317
 func NewOtlpGrpcExporter(ctx context.Context, endpoint string, insecure bool, options ...otlptracegrpc.Option) (traceSdk.SpanExporter, error) {
 	var opts []otlptracegrpc.Option
 	opts = append(opts, otlptracegrpc.WithEndpoint(endpoint))
