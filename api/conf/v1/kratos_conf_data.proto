@@ -36,7 +36,22 @@ message Data {
     string codec = 2;  // 编解码器
   }
 
+  // MongoDB
+  message MongoDB {
+  }
+
+  // ClickHouse
+  message ClickHouse {
+  }
+
+  // InfluxDB
+  message InfluxDB {
+  }
+
   Database database = 1;  // 数据库
   Redis redis = 2;  // Redis
   Kafka kafka = 3;  // Kafka服务
+  MongoDB mongodb = 4;  // MongoDB服务
+  ClickHouse clickhouse = 5;  // ClickHouse服务
+  InfluxDB influxdb = 6;  // InfluxDB服务
 }

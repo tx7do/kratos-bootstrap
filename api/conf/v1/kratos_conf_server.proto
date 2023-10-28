@@ -69,6 +69,35 @@ message Server {
     repeated string backends = 2;  // backend配置，用来指定存放结果的介质的配置。可以根据需求，分别指定为：Redis、memcached或mongodb等；
   }
 
+  // SSE
+  message SSE {
+    string network = 1; // 网络
+    string addr = 2;  // 服务监听地址
+    google.protobuf.Duration timeout = 3; // 超时时间
+    string path = 4;  // 路径
+    string codec = 5;  // 编解码器
+  }
+
+  // SocketIO
+  message SocketIO {
+
+  }
+
+  // SignalR
+  message SignalR {
+
+  }
+
+  // GraphQL
+  message GraphQL {
+
+  }
+
+  // Thrift
+  message Thrift {
+
+  }
+
   REST rest = 1;  // REST服务
   GRPC grpc = 2;  // gRPC服务
   Websocket websocket = 3;  // Websocket服务
@@ -77,4 +106,9 @@ message Server {
   RabbitMQ rabbitmq = 6;  // RabbitMQ服务
   Asynq asynq = 7;  // Asynq服务
   Machinery machinery = 8;  // Machinery服务
+  SSE sse = 9;  // SSE服务
+  SocketIO socketio = 10;  // SocketIO服务
+  SignalR signalr = 11;  // SignalR服务
+  GraphQL graphql = 12;  // GraphQL服务
+  Thrift thrift = 13;  // Thrift服务
 }
