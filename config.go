@@ -34,7 +34,7 @@ import (
 	k8sKratos "github.com/go-kratos/kratos/contrib/config/kubernetes/v2"
 	k8sUtil "k8s.io/client-go/util/homedir"
 
-	"github.com/tx7do/kratos-bootstrap/gen/api/go/conf/v1"
+	conf "github.com/tx7do/kratos-bootstrap/gen/api/go/conf/v1"
 )
 
 var commonConfig = &conf.Bootstrap{}
