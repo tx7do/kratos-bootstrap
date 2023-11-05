@@ -6,8 +6,8 @@ require (
 	github.com/go-chassis/sc-client v0.7.0
 	github.com/go-kratos/aegis v0.2.0
 	github.com/go-kratos/kratos/contrib/config/apollo/v2 v2.0.0-20231023125239-6cdd81811e10
-	github.com/go-kratos/kratos/contrib/config/consul/v2 v2.0.0-20231023125239-6cdd81811e10
-	github.com/go-kratos/kratos/contrib/config/etcd/v2 v2.0.0-20231023125239-6cdd81811e10
+	github.com/go-kratos/kratos/contrib/config/consul/v2 v2.0.0-20231102162905-3fc8fb7a0a0b
+	github.com/go-kratos/kratos/contrib/config/etcd/v2 v2.0.0-20231102162905-3fc8fb7a0a0b
 	github.com/go-kratos/kratos/contrib/config/kubernetes/v2 v2.0.0-20231023125239-6cdd81811e10
 	github.com/go-kratos/kratos/contrib/config/nacos/v2 v2.0.0-20231023125239-6cdd81811e10
 	github.com/go-kratos/kratos/contrib/log/aliyun/v2 v2.0.0-20231023125239-6cdd81811e10
@@ -15,7 +15,7 @@ require (
 	github.com/go-kratos/kratos/contrib/log/logrus/v2 v2.0.0-20231023125239-6cdd81811e10
 	github.com/go-kratos/kratos/contrib/log/tencent/v2 v2.0.0-20231023125239-6cdd81811e10
 	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20231023125239-6cdd81811e10
-	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20231023125239-6cdd81811e10
+	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20231102162905-3fc8fb7a0a0b
 	github.com/go-kratos/kratos/contrib/registry/etcd/v2 v2.0.0-20231023125239-6cdd81811e10
 	github.com/go-kratos/kratos/contrib/registry/eureka/v2 v2.0.0-20231023125239-6cdd81811e10
 	github.com/go-kratos/kratos/contrib/registry/kubernetes/v2 v2.0.0-20231023125239-6cdd81811e10
@@ -26,17 +26,19 @@ require (
 	github.com/go-redis/redis/extra/redisotel/v8 v8.11.5
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-zookeeper/zk v1.0.3
+	github.com/google/gnostic v0.5.7-v3refs
 	github.com/google/subcommands v1.2.0
 	github.com/gorilla/handlers v1.5.1
-	github.com/hashicorp/consul/api v1.25.1
+	github.com/hashicorp/consul/api v1.26.1
 	github.com/minio/minio-go/v7 v7.0.63
 	github.com/nacos-group/nacos-sdk-go v1.1.4
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
-	go.etcd.io/etcd/client/v3 v3.5.9
+	go.etcd.io/etcd/client/v3 v3.5.10
 	go.opentelemetry.io/otel v1.19.0
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.19.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.19.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.19.0
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.19.0
@@ -77,7 +79,7 @@ require (
 	github.com/go-kit/kit v0.13.0 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
-	github.com/go-logr/logr v1.2.4 // indirect
+	github.com/go-logr/logr v1.3.0 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-openapi/jsonpointer v0.20.0 // indirect
@@ -94,11 +96,13 @@ require (
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/uuid v1.3.1 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
-	github.com/gorilla/websocket v1.5.0 // indirect
+	github.com/gorilla/websocket v1.5.1 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.0 // indirect
+	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-hclog v1.5.0 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
+	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-rootcerts v1.0.2 // indirect
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
@@ -151,9 +155,8 @@ require (
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
-	go.etcd.io/etcd/api/v3 v3.5.9 // indirect
-	go.etcd.io/etcd/client/pkg/v3 v3.5.9 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.19.0 // indirect
+	go.etcd.io/etcd/api/v3 v3.5.10 // indirect
+	go.etcd.io/etcd/client/pkg/v3 v3.5.10 // indirect
 	go.opentelemetry.io/otel/metric v1.19.0 // indirect
 	go.opentelemetry.io/otel/trace v1.19.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.0.0 // indirect
@@ -165,14 +168,14 @@ require (
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/oauth2 v0.13.0 // indirect
 	golang.org/x/sync v0.4.0 // indirect
-	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/sys v0.14.0 // indirect
 	golang.org/x/term v0.13.0 // indirect
-	golang.org/x/text v0.13.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
-	google.golang.org/genproto v0.0.0-20231016165738-49dd2c1f3d0b // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20231016165738-49dd2c1f3d0b // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20231016165738-49dd2c1f3d0b // indirect
+	google.golang.org/genproto v0.0.0-20231030173426-d783a09b4405 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20231030173426-d783a09b4405 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20231030173426-d783a09b4405 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
