@@ -1,13 +1,17 @@
 package bootstrap
 
 import (
+	"net/http/pprof"
+
 	"github.com/go-kratos/aegis/ratelimit"
 	"github.com/go-kratos/aegis/ratelimit/bbr"
+
 	"github.com/go-kratos/kratos/v2/middleware"
 	midRateLimit "github.com/go-kratos/kratos/v2/middleware/ratelimit"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/middleware/validate"
+
 	kratosRest "github.com/go-kratos/kratos/v2/transport/http"
 
 	"github.com/gorilla/handlers"
@@ -60,5 +64,26 @@ func CreateRestServer(cfg *conf.Bootstrap, m ...middleware.Middleware) *kratosRe
 		opts = append(opts, kratosRest.Timeout(cfg.Server.Rest.Timeout.AsDuration()))
 	}
 
-	return kratosRest.NewServer(opts...)
+	srv := kratosRest.NewServer(opts...)
+
+	if cfg.Server.Rest.GetEnablePprof() {
+		registerHttpPprof(srv)
+	}
+
+	return srv
+}
+
+func registerHttpPprof(s *kratosRest.Server) {
+	s.HandleFunc("/debug/pprof", pprof.Index)
+	s.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	s.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	s.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+	s.HandleFunc("/debug/pprof/trace", pprof.Trace)
+
+	s.HandleFunc("/debug/allocs", pprof.Handler("allocs").ServeHTTP)
+	s.HandleFunc("/debug/block", pprof.Handler("block").ServeHTTP)
+	s.HandleFunc("/debug/goroutine", pprof.Handler("goroutine").ServeHTTP)
+	s.HandleFunc("/debug/heap", pprof.Handler("heap").ServeHTTP)
+	s.HandleFunc("/debug/mutex", pprof.Handler("mutex").ServeHTTP)
+	s.HandleFunc("/debug/threadcreate", pprof.Handler("threadcreate").ServeHTTP)
 }

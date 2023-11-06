@@ -103,5 +103,7 @@ func CreateGrpcServer(cfg *conf.Bootstrap, m ...middleware.Middleware) *kratosGr
 		opts = append(opts, kratosGrpc.Timeout(cfg.Server.Grpc.Timeout.AsDuration()))
 	}
 
-	return kratosGrpc.NewServer(opts...)
+	srv := kratosGrpc.NewServer(opts...)
+
+	return srv
 }

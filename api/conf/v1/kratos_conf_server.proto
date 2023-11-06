@@ -23,6 +23,7 @@ message Server {
     CORS cors = 4;  // 服务监听地址
     Middleware middleware = 5;  // 中间件
     bool enable_swagger = 6;  // 启用SwaggerUI
+    bool enable_pprof = 7;  // 启用pprof
   }
 
   // gPRC
