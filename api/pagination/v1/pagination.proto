@@ -64,7 +64,10 @@ message PagingRequest {
   // 字段掩码
   google.protobuf.FieldMask field_mask = 7 [
     json_name = "fieldMask",
-    (gnostic.openapi.v3.property) = {description: "字段掩码"}
+    (gnostic.openapi.v3.property) = {
+      description: "字段掩码，如果为空则选中所有字段。",
+      example: {yaml : "id,realName,userName"}
+    }
   ];
 }
 
