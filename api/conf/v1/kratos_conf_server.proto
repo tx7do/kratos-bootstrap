@@ -105,6 +105,7 @@ message Server {
     string endpoint = 1;  // 对端网络地址
     string password = 2;  // redis登录密码
     int32 db = 3;  // 数据库索引
+    string location = 4; // 时区
   }
 
   // Machinery

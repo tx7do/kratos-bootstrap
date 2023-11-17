@@ -240,8 +240,8 @@ github.com/go-kratos/kratos/contrib/config/apollo/v2 v2.0.0-20231023125239-6cdd8
 github.com/go-kratos/kratos/contrib/config/apollo/v2 v2.0.0-20231023125239-6cdd81811e10/go.mod h1:7YuJiAmkg4hn8H1uYIIg5mvplFDTWpEddppujGBzxPE=
 github.com/go-kratos/kratos/contrib/config/consul/v2 v2.0.0-20231102162905-3fc8fb7a0a0b h1:2ZsitxwIlD5K02VlPgcGWYSu8xGnjuNH9+2+CeR4NHs=
 github.com/go-kratos/kratos/contrib/config/consul/v2 v2.0.0-20231102162905-3fc8fb7a0a0b/go.mod h1:qc7vO2HCh/vFxxHmSXOEeuo465UBFFRov2z8i+qQTZE=
-github.com/go-kratos/kratos/contrib/config/etcd/v2 v2.0.0-20231102162905-3fc8fb7a0a0b h1:9tOrIOmYnYkgPsoZtnHlcQA8t3tePwuK7wElQA2kXWo=
-github.com/go-kratos/kratos/contrib/config/etcd/v2 v2.0.0-20231102162905-3fc8fb7a0a0b/go.mod h1:DaHx58CLYT7hNe8PPFwwt3pmDux2w0RZvOOzia6rNPA=
+github.com/go-kratos/kratos/contrib/config/etcd/v2 v2.0.0-20231113102135-421dbc7dae0f h1:h7kuNqx7dMLydu9a292sJYxpyhXdnbusZXUfFWb89Uc=
+github.com/go-kratos/kratos/contrib/config/etcd/v2 v2.0.0-20231113102135-421dbc7dae0f/go.mod h1:hsHsHQlRG7TZOL2TQSTbtQyAXjO9vomXhWKbh0JxhBI=
 github.com/go-kratos/kratos/contrib/config/kubernetes/v2 v2.0.0-20231023125239-6cdd81811e10 h1:Lg5wIxJ8ekWrpXuqo3u9MFbQWvygXzobtC8ecEApt7Q=
 github.com/go-kratos/kratos/contrib/config/kubernetes/v2 v2.0.0-20231023125239-6cdd81811e10/go.mod h1:HeEWjnGSZmS4DivulNRgWNSUplsP4qdQXI6AD7c4AxA=
 github.com/go-kratos/kratos/contrib/config/nacos/v2 v2.0.0-20231023125239-6cdd81811e10 h1:rUjRU/E6VDOEwBFWQYuEVA2ZeRB0xOQJ68Ua6oDZ600=

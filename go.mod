@@ -7,7 +7,7 @@ require (
 	github.com/go-kratos/aegis v0.2.0
 	github.com/go-kratos/kratos/contrib/config/apollo/v2 v2.0.0-20231023125239-6cdd81811e10
 	github.com/go-kratos/kratos/contrib/config/consul/v2 v2.0.0-20231102162905-3fc8fb7a0a0b
-	github.com/go-kratos/kratos/contrib/config/etcd/v2 v2.0.0-20231102162905-3fc8fb7a0a0b
+	github.com/go-kratos/kratos/contrib/config/etcd/v2 v2.0.0-20231113102135-421dbc7dae0f
 	github.com/go-kratos/kratos/contrib/config/kubernetes/v2 v2.0.0-20231023125239-6cdd81811e10
 	github.com/go-kratos/kratos/contrib/config/nacos/v2 v2.0.0-20231023125239-6cdd81811e10
 	github.com/go-kratos/kratos/contrib/log/aliyun/v2 v2.0.0-20231023125239-6cdd81811e10
