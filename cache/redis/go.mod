@@ -8,7 +8,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.7.3
 	github.com/redis/go-redis/extra/redisotel/v9 v9.0.5
 	github.com/redis/go-redis/v9 v9.5.1
-	github.com/tx7do/kratos-bootstrap/api v0.0.1
+	github.com/tx7do/kratos-bootstrap/api v0.0.2
 )
 
 require (

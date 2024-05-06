@@ -7,7 +7,7 @@ toolchain go1.22.1
 require (
 	github.com/go-kratos/kratos/v2 v2.7.3
 	github.com/minio/minio-go/v7 v7.0.70
-	github.com/tx7do/kratos-bootstrap/api v0.0.1
+	github.com/tx7do/kratos-bootstrap/api v0.0.2
 )
 
 require (
