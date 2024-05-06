@@ -12,11 +12,15 @@ message Data {
   message Database {
     string driver = 1;  // 驱动名：mysql、postgresql、mongodb、sqlite……
     string source = 2;  // 数据源（DSN字符串）
-    bool migrate = 3; // 数据迁移开关
-    bool debug = 4; // 调试开关
-    int32 max_idle_connections = 5; // 连接池最大空闲连接数
-    int32 max_open_connections = 6; // 连接池最大打开连接数
-    google.protobuf.Duration connection_max_lifetime = 7; // 连接可重用的最大时间长度
+
+    bool migrate = 10; // 数据迁移开关
+    bool debug = 11; // 调试开关
+    bool enable_trace = 12; // 链路追踪开关
+    bool enable_metrics = 13; // 性能分析开关
+
+    int32 max_idle_connections = 20; // 连接池最大空闲连接数
+    int32 max_open_connections = 21; // 连接池最大打开连接数
+    google.protobuf.Duration connection_max_lifetime = 22; // 连接可重用的最大时间长度
   }
 
   // redis

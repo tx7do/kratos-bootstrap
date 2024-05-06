@@ -1,6 +1,6 @@
-git tag v0.3.1
+git tag v0.3.2
 
-git tag api/v0.0.1 --force
+git tag api/v0.0.2 --force
 
 git tag config/apollo/v0.0.1 --force
 git tag config/consul/v0.0.1 --force
