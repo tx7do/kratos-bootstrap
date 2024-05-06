@@ -1,4 +1,4 @@
-package bootstrap
+package config
 
 import "os"
 

@@ -6,16 +6,18 @@ toolchain go1.22.1
 
 replace (
 	github.com/tx7do/kratos-bootstrap/api => ./api
+
+	github.com/tx7do/kratos-bootstrap/config/apollo => ./config/apollo
 	github.com/tx7do/kratos-bootstrap/config/consul => ./config/consul
+	github.com/tx7do/kratos-bootstrap/config/etcd => ./config/etcd
+	github.com/tx7do/kratos-bootstrap/config/kubernetes => ./config/kubernetes
+	github.com/tx7do/kratos-bootstrap/config/nacos => ./config/nacos
+	github.com/tx7do/kratos-bootstrap/config/polaris => ./config/polaris
 )
 
 require (
 	github.com/go-chassis/sc-client v0.7.0
 	github.com/go-kratos/aegis v0.2.0
-	github.com/go-kratos/kratos/contrib/config/apollo/v2 v2.0.0-20240504101732-d0d5761f9ca8
-	github.com/go-kratos/kratos/contrib/config/etcd/v2 v2.0.0-20240504101732-d0d5761f9ca8
-	github.com/go-kratos/kratos/contrib/config/kubernetes/v2 v2.0.0-20240504101732-d0d5761f9ca8
-	github.com/go-kratos/kratos/contrib/config/nacos/v2 v2.0.0-20240504101732-d0d5761f9ca8
 	github.com/go-kratos/kratos/contrib/log/aliyun/v2 v2.0.0-20240504101732-d0d5761f9ca8
 	github.com/go-kratos/kratos/contrib/log/fluent/v2 v2.0.0-20240504101732-d0d5761f9ca8
 	github.com/go-kratos/kratos/contrib/log/logrus/v2 v2.0.0-20240504101732-d0d5761f9ca8
@@ -39,7 +41,12 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.9.0
 	github.com/tx7do/kratos-bootstrap/api v0.0.1
+	github.com/tx7do/kratos-bootstrap/config/apollo v0.0.1
 	github.com/tx7do/kratos-bootstrap/config/consul v0.0.1
+	github.com/tx7do/kratos-bootstrap/config/etcd v0.0.1
+	github.com/tx7do/kratos-bootstrap/config/kubernetes v0.0.1
+	github.com/tx7do/kratos-bootstrap/config/nacos v0.0.1
+	github.com/tx7do/kratos-bootstrap/config/polaris v0.0.1
 	go.etcd.io/etcd/client/v3 v3.5.13
 	go.opentelemetry.io/otel v1.26.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.26.0
@@ -77,6 +84,10 @@ require (
 	github.com/go-chassis/openlog v1.1.3 // indirect
 	github.com/go-errors/errors v1.0.1 // indirect
 	github.com/go-kit/kit v0.10.0 // indirect
+	github.com/go-kratos/kratos/contrib/config/apollo/v2 v2.0.0-20240504101732-d0d5761f9ca8 // indirect
+	github.com/go-kratos/kratos/contrib/config/etcd/v2 v2.0.0-20240504101732-d0d5761f9ca8 // indirect
+	github.com/go-kratos/kratos/contrib/config/kubernetes/v2 v2.0.0-20240504101732-d0d5761f9ca8 // indirect
+	github.com/go-kratos/kratos/contrib/config/nacos/v2 v2.0.0-20240504101732-d0d5761f9ca8 // indirect
 	github.com/go-logfmt/logfmt v0.5.0 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
