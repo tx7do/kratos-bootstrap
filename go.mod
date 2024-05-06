@@ -9,8 +9,6 @@ replace (
 
 	github.com/tx7do/kratos-bootstrap/cache/redis => ./cache/redis
 
-	github.com/tx7do/kratos-bootstrap/oss/minio => ./oss/minio
-
 	github.com/tx7do/kratos-bootstrap/config/apollo => ./config/apollo
 	github.com/tx7do/kratos-bootstrap/config/consul => ./config/consul
 	github.com/tx7do/kratos-bootstrap/config/etcd => ./config/etcd
@@ -23,6 +21,8 @@ replace (
 	github.com/tx7do/kratos-bootstrap/logger/logrus => ./logger/logrus
 	github.com/tx7do/kratos-bootstrap/logger/tencent => ./logger/tencent
 	github.com/tx7do/kratos-bootstrap/logger/zap => ./logger/zap
+
+	github.com/tx7do/kratos-bootstrap/oss/minio => ./oss/minio
 
 	github.com/tx7do/kratos-bootstrap/registry/consul => ./registry/consul
 	github.com/tx7do/kratos-bootstrap/registry/etcd => ./registry/etcd
@@ -48,18 +48,18 @@ require (
 	github.com/tx7do/kratos-bootstrap/config/kubernetes v0.0.1
 	github.com/tx7do/kratos-bootstrap/config/nacos v0.0.1
 	github.com/tx7do/kratos-bootstrap/config/polaris v0.0.1
-	github.com/tx7do/kratos-bootstrap/logger/aliyun v0.0.0-00010101000000-000000000000
-	github.com/tx7do/kratos-bootstrap/logger/fluent v0.0.0-00010101000000-000000000000
-	github.com/tx7do/kratos-bootstrap/logger/logrus v0.0.0-00010101000000-000000000000
-	github.com/tx7do/kratos-bootstrap/logger/tencent v0.0.0-00010101000000-000000000000
-	github.com/tx7do/kratos-bootstrap/logger/zap v0.0.0-00010101000000-000000000000
-	github.com/tx7do/kratos-bootstrap/registry/consul v0.0.0-00010101000000-000000000000
-	github.com/tx7do/kratos-bootstrap/registry/etcd v0.0.0-00010101000000-000000000000
-	github.com/tx7do/kratos-bootstrap/registry/eureka v0.0.0-00010101000000-000000000000
-	github.com/tx7do/kratos-bootstrap/registry/kubernetes v0.0.0-00010101000000-000000000000
-	github.com/tx7do/kratos-bootstrap/registry/nacos v0.0.0-00010101000000-000000000000
-	github.com/tx7do/kratos-bootstrap/registry/servicecomb v0.0.0-00010101000000-000000000000
-	github.com/tx7do/kratos-bootstrap/registry/zookeeper v0.0.0-00010101000000-000000000000
+	github.com/tx7do/kratos-bootstrap/logger/aliyun v0.0.1
+	github.com/tx7do/kratos-bootstrap/logger/fluent v0.0.1
+	github.com/tx7do/kratos-bootstrap/logger/logrus v0.0.1
+	github.com/tx7do/kratos-bootstrap/logger/tencent v0.0.1
+	github.com/tx7do/kratos-bootstrap/logger/zap v0.0.1
+	github.com/tx7do/kratos-bootstrap/registry/consul v0.0.1
+	github.com/tx7do/kratos-bootstrap/registry/etcd v0.0.1
+	github.com/tx7do/kratos-bootstrap/registry/eureka v0.0.1
+	github.com/tx7do/kratos-bootstrap/registry/kubernetes v0.0.1
+	github.com/tx7do/kratos-bootstrap/registry/nacos v0.0.1
+	github.com/tx7do/kratos-bootstrap/registry/servicecomb v0.0.1
+	github.com/tx7do/kratos-bootstrap/registry/zookeeper v0.0.1
 	go.opentelemetry.io/otel v1.26.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.26.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.26.0
