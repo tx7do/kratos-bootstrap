@@ -17,10 +17,6 @@ import (
 	etcdKratos "github.com/go-kratos/kratos/contrib/config/etcd/v2"
 	etcdClient "go.etcd.io/etcd/client/v3"
 
-	// consul
-	consulKratos "github.com/go-kratos/kratos/contrib/config/consul/v2"
-	consulApi "github.com/hashicorp/consul/api"
-
 	// nacos
 	nacosKratos "github.com/go-kratos/kratos/contrib/config/nacos/v2"
 	nacosClients "github.com/nacos-group/nacos-sdk-go/clients"
@@ -33,6 +29,8 @@ import (
 	// kubernetes
 	k8sKratos "github.com/go-kratos/kratos/contrib/config/kubernetes/v2"
 	k8sUtil "k8s.io/client-go/util/homedir"
+
+	"github.com/tx7do/kratos-bootstrap/config/consul"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
@@ -212,7 +210,7 @@ func NewRemoteConfigSource(c *conf.RemoteConfig) config.Source {
 	case ConfigTypeNacos:
 		return NewNacosConfigSource(c)
 	case ConfigTypeConsul:
-		return NewConsulConfigSource(c)
+		return consul.NewConfigSource(c)
 	case ConfigTypeEtcd:
 		return NewEtcdConfigSource(c)
 	case ConfigTypeApollo:
@@ -285,27 +283,6 @@ func NewEtcdConfigSource(c *conf.RemoteConfig) config.Source {
 	}
 
 	source, err := etcdKratos.New(cli, etcdKratos.WithPath(getConfigKey(c.Etcd.Key, true)))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return source
-}
-
-// NewConsulConfigSource 创建一个远程配置源 - Consul
-func NewConsulConfigSource(c *conf.RemoteConfig) config.Source {
-	cfg := consulApi.DefaultConfig()
-	cfg.Address = c.Consul.Address
-	cfg.Scheme = c.Consul.Scheme
-
-	cli, err := consulApi.NewClient(cfg)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	source, err := consulKratos.New(cli,
-		consulKratos.WithPath(getConfigKey(c.Consul.Key, true)),
-	)
 	if err != nil {
 		log.Fatal(err)
 	}

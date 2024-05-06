@@ -4,11 +4,15 @@ go 1.22.0
 
 toolchain go1.22.1
 
+replace (
+	github.com/tx7do/kratos-bootstrap/api => ./api
+	github.com/tx7do/kratos-bootstrap/config/consul => ./config/consul
+)
+
 require (
 	github.com/go-chassis/sc-client v0.7.0
 	github.com/go-kratos/aegis v0.2.0
 	github.com/go-kratos/kratos/contrib/config/apollo/v2 v2.0.0-20240504101732-d0d5761f9ca8
-	github.com/go-kratos/kratos/contrib/config/consul/v2 v2.0.0-20240504101732-d0d5761f9ca8
 	github.com/go-kratos/kratos/contrib/config/etcd/v2 v2.0.0-20240504101732-d0d5761f9ca8
 	github.com/go-kratos/kratos/contrib/config/kubernetes/v2 v2.0.0-20240504101732-d0d5761f9ca8
 	github.com/go-kratos/kratos/contrib/config/nacos/v2 v2.0.0-20240504101732-d0d5761f9ca8
@@ -26,7 +30,6 @@ require (
 	github.com/go-kratos/kratos/contrib/registry/zookeeper/v2 v2.0.0-20240504101732-d0d5761f9ca8
 	github.com/go-kratos/kratos/v2 v2.7.3
 	github.com/go-zookeeper/zk v1.0.3
-	github.com/google/gnostic v0.7.0
 	github.com/google/subcommands v1.2.0
 	github.com/gorilla/handlers v1.5.2
 	github.com/hashicorp/consul/api v1.28.2
@@ -38,6 +41,8 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.9.0
+	github.com/tx7do/kratos-bootstrap/api v0.0.1
+	github.com/tx7do/kratos-bootstrap/config/consul v0.0.0-00010101000000-000000000000
 	go.etcd.io/etcd/client/v3 v3.5.13
 	go.opentelemetry.io/otel v1.26.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.26.0
@@ -49,7 +54,6 @@ require (
 	go.uber.org/zap v1.27.0
 	golang.org/x/tools v0.20.0
 	google.golang.org/grpc v1.63.2
-	google.golang.org/protobuf v1.34.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	k8s.io/client-go v0.30.0
 )
@@ -90,6 +94,7 @@ require (
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/gofrs/uuid v4.2.0+incompatible // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/gnostic-models v0.6.9-0.20230804172637-c7be7c783f49 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
@@ -172,6 +177,7 @@ require (
 	google.golang.org/genproto v0.0.0-20240227224415-6ceb2ff114de // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240227224415-6ceb2ff114de // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240401170217-c3f982113cda // indirect
+	google.golang.org/protobuf v1.34.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

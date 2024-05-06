@@ -1,12 +1,14 @@
 package consul
 
 import (
-	consulKratos "github.com/go-kratos/kratos/contrib/config/consul/v2"
+	"strings"
+
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/log"
+
 	consulApi "github.com/hashicorp/consul/api"
+
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"strings"
 )
 
 // getConfigKey 获取合法的配置名
@@ -29,12 +31,12 @@ func NewConfigSource(c *conf.RemoteConfig) config.Source {
 		log.Fatal(err)
 	}
 
-	source, err := consulKratos.New(cli,
-		consulKratos.WithPath(getConfigKey(c.Consul.Key, true)),
+	src, err := New(cli,
+		WithPath(getConfigKey(c.Consul.Key, true)),
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return source
+	return src
 }
