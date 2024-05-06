@@ -1,4 +1,4 @@
-git tag v0.3.3
+git tag v0.3.4
 
 git tag api/v0.0.2 --force
 
@@ -13,11 +13,11 @@ git tag config/kubernetes/v0.0.1 --force
 git tag config/nacos/v0.0.1 --force
 git tag config/polaris/v0.0.1 --force
 
-git tag logger/aliyun/v0.0.1 --force
-git tag logger/fluent/v0.0.1 --force
-git tag logger/logrus/v0.0.1 --force
-git tag logger/tencent/v0.0.1 --force
-git tag logger/zap/v0.0.1 --force
+git tag logger/aliyun/v0.0.2 --force
+git tag logger/fluent/v0.0.2 --force
+git tag logger/logrus/v0.0.2 --force
+git tag logger/tencent/v0.0.2 --force
+git tag logger/zap/v0.0.2 --force
 
 git tag registry/consul/v0.0.1 --force
 git tag registry/etcd/v0.0.1 --force

@@ -9,7 +9,7 @@ replace github.com/tx7do/kratos-bootstrap/api => ../../api
 require (
 	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20240504101732-d0d5761f9ca8
 	github.com/go-kratos/kratos/v2 v2.7.3
-	github.com/tx7do/kratos-bootstrap/api v0.0.0-00010101000000-000000000000
+	github.com/tx7do/kratos-bootstrap/api v0.0.2
 	go.uber.org/zap v1.27.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
