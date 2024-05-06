@@ -1,4 +1,4 @@
-package bootstrap
+package minio
 
 import (
 	"github.com/go-kratos/kratos/v2/log"
@@ -9,7 +9,7 @@ import (
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
 
-func NewMinIoClient(conf *conf.OSS) *minio.Client {
+func NewClient(conf *conf.OSS) *minio.Client {
 	impl, err := minio.New(conf.Minio.Endpoint,
 		&minio.Options{
 			Creds:  credentials.NewStaticV4(conf.Minio.AccessKey, conf.Minio.SecretKey, conf.Minio.Token),

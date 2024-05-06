@@ -1,4 +1,4 @@
-package bootstrap
+package redis
 
 import (
 	"github.com/go-kratos/kratos/v2/log"
@@ -9,8 +9,8 @@ import (
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
 
-// NewRedisClient create go-redis client
-func NewRedisClient(conf *conf.Data) (rdb *redis.Client) {
+// NewClient create go-redis client
+func NewClient(conf *conf.Data) (rdb *redis.Client) {
 	if rdb = redis.NewClient(&redis.Options{
 		Addr:         conf.GetRedis().GetAddr(),
 		Password:     conf.GetRedis().GetPassword(),
