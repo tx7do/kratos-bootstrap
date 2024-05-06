@@ -50,7 +50,6 @@ require (
 	github.com/tx7do/kratos-bootstrap/config/kubernetes v0.0.1
 	github.com/tx7do/kratos-bootstrap/config/nacos v0.0.1
 	github.com/tx7do/kratos-bootstrap/config/polaris v0.0.1
-	github.com/tx7do/kratos-bootstrap/logger/aliyun v0.0.2
 	github.com/tx7do/kratos-bootstrap/logger/fluent v0.0.2
 	github.com/tx7do/kratos-bootstrap/logger/logrus v0.0.2
 	github.com/tx7do/kratos-bootstrap/logger/tencent v0.0.2
@@ -75,11 +74,9 @@ require (
 
 require (
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.18 // indirect
-	github.com/aliyun/aliyun-log-go-sdk v0.1.72 // indirect
 	github.com/apolloconfig/agollo/v4 v4.3.1 // indirect
 	github.com/armon/go-metrics v0.5.3 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
-	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
@@ -95,13 +92,10 @@ require (
 	github.com/go-chassis/openlog v1.1.3 // indirect
 	github.com/go-chassis/sc-client v0.7.0 // indirect
 	github.com/go-errors/errors v1.0.1 // indirect
-	github.com/go-kit/kit v0.13.0 // indirect
-	github.com/go-kit/log v0.2.1 // indirect
 	github.com/go-kratos/kratos/contrib/config/apollo/v2 v2.0.0-20240504101732-d0d5761f9ca8 // indirect
 	github.com/go-kratos/kratos/contrib/config/etcd/v2 v2.0.0-20240504101732-d0d5761f9ca8 // indirect
 	github.com/go-kratos/kratos/contrib/config/kubernetes/v2 v2.0.0-20240504101732-d0d5761f9ca8 // indirect
 	github.com/go-kratos/kratos/contrib/config/nacos/v2 v2.0.0-20240504101732-d0d5761f9ca8 // indirect
-	github.com/go-kratos/kratos/contrib/log/aliyun/v2 v2.0.0-20240504101732-d0d5761f9ca8 // indirect
 	github.com/go-kratos/kratos/contrib/log/fluent/v2 v2.0.0-20240504101732-d0d5761f9ca8 // indirect
 	github.com/go-kratos/kratos/contrib/log/logrus/v2 v2.0.0-20240504101732-d0d5761f9ca8 // indirect
 	github.com/go-kratos/kratos/contrib/log/tencent/v2 v2.0.0-20240504101732-d0d5761f9ca8 // indirect
@@ -113,7 +107,6 @@ require (
 	github.com/go-kratos/kratos/contrib/registry/nacos/v2 v2.0.0-20240504101732-d0d5761f9ca8 // indirect
 	github.com/go-kratos/kratos/contrib/registry/servicecomb/v2 v2.0.0-20240504101732-d0d5761f9ca8 // indirect
 	github.com/go-kratos/kratos/contrib/registry/zookeeper/v2 v2.0.0-20240504101732-d0d5761f9ca8 // indirect
-	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
@@ -156,6 +149,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
+	github.com/miekg/dns v1.1.43 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect

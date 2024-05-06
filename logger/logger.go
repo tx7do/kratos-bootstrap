@@ -6,7 +6,6 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 
-	"github.com/tx7do/kratos-bootstrap/logger/aliyun"
 	"github.com/tx7do/kratos-bootstrap/logger/fluent"
 	"github.com/tx7do/kratos-bootstrap/logger/logrus"
 	"github.com/tx7do/kratos-bootstrap/logger/tencent"
@@ -35,7 +34,7 @@ func NewLogger(cfg *conf.Logger) log.Logger {
 	case Logrus:
 		return logrus.NewLogger(cfg)
 	case Aliyun:
-		return aliyun.NewLogger(cfg)
+		return nil
 	case Tencent:
 		return tencent.NewLogger(cfg)
 	}
