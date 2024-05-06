@@ -5,6 +5,8 @@ go 1.22.0
 toolchain go1.22.1
 
 replace (
+	github.com/armon/go-metrics => github.com/hashicorp/go-metrics v0.4.1
+	github.com/imdario/mergo => dario.cat/mergo v0.3.16
 	github.com/tx7do/kratos-bootstrap/api => ./api
 
 	github.com/tx7do/kratos-bootstrap/cache/redis => ./cache/redis
@@ -43,7 +45,7 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/tx7do/kratos-bootstrap/api v0.0.2
 	github.com/tx7do/kratos-bootstrap/config/apollo v0.0.1
-	github.com/tx7do/kratos-bootstrap/config/consul v0.0.1
+	github.com/tx7do/kratos-bootstrap/config/consul v0.0.2
 	github.com/tx7do/kratos-bootstrap/config/etcd v0.0.1
 	github.com/tx7do/kratos-bootstrap/config/kubernetes v0.0.1
 	github.com/tx7do/kratos-bootstrap/config/nacos v0.0.1
@@ -75,7 +77,7 @@ require (
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.18 // indirect
 	github.com/aliyun/aliyun-log-go-sdk v0.1.72 // indirect
 	github.com/apolloconfig/agollo/v4 v4.3.1 // indirect
-	github.com/armon/go-metrics v0.4.1 // indirect
+	github.com/armon/go-metrics v0.5.3 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
@@ -141,7 +143,7 @@ require (
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/serf v0.10.1 // indirect
-	github.com/imdario/mergo v0.3.16 // indirect
+	github.com/imdario/mergo v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
