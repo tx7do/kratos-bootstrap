@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	conf "github.com/tx7do/kratos-bootstrap/gen/api/go/conf/v1"
+	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
 
 func TestNewConsulRegistry(t *testing.T) {

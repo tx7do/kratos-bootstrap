@@ -13,6 +13,7 @@ SRCS_MK := $(foreach dir, app, $(wildcard $(dir)/*/*/Makefile))
 
 # generate protobuf api go code
 api:
+	cd api
 	buf generate
 
 # show help
