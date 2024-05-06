@@ -1,36 +1,18 @@
 package bootstrap
 
 import (
-	"os"
-	"path/filepath"
-	"strings"
-
-	"google.golang.org/grpc"
-
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/log"
 
+	"github.com/tx7do/kratos-bootstrap/config/apollo"
+	"github.com/tx7do/kratos-bootstrap/config/consul"
+	"github.com/tx7do/kratos-bootstrap/config/etcd"
+	"github.com/tx7do/kratos-bootstrap/config/kubernetes"
+	"github.com/tx7do/kratos-bootstrap/config/nacos"
+	"github.com/tx7do/kratos-bootstrap/config/polaris"
+
 	// file
 	fileKratos "github.com/go-kratos/kratos/v2/config/file"
-
-	// etcd
-	etcdKratos "github.com/go-kratos/kratos/contrib/config/etcd/v2"
-	etcdClient "go.etcd.io/etcd/client/v3"
-
-	// nacos
-	nacosKratos "github.com/go-kratos/kratos/contrib/config/nacos/v2"
-	nacosClients "github.com/nacos-group/nacos-sdk-go/clients"
-	nacosConstant "github.com/nacos-group/nacos-sdk-go/common/constant"
-	nacosVo "github.com/nacos-group/nacos-sdk-go/vo"
-
-	// apollo
-	apolloKratos "github.com/go-kratos/kratos/contrib/config/apollo/v2"
-
-	// kubernetes
-	k8sKratos "github.com/go-kratos/kratos/contrib/config/kubernetes/v2"
-	k8sUtil "k8s.io/client-go/util/homedir"
-
-	"github.com/tx7do/kratos-bootstrap/config/consul"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
@@ -146,17 +128,6 @@ func scanConfigs(cfg config.Config) error {
 	return nil
 }
 
-func pathExists(path string) bool {
-	_, err := os.Stat(path)
-	if err == nil {
-		return true
-	}
-	if os.IsNotExist(err) {
-		return false
-	}
-	return false
-}
-
 // LoadRemoteConfigSourceConfigs 加载远程配置源的本地配置
 func LoadRemoteConfigSourceConfigs(configPath string) (error, *conf.RemoteConfig) {
 	configPath = configPath + "/" + remoteConfigSourceConfigFile
@@ -208,128 +179,21 @@ func NewRemoteConfigSource(c *conf.RemoteConfig) config.Source {
 	case ConfigTypeLocalFile:
 		return nil
 	case ConfigTypeNacos:
-		return NewNacosConfigSource(c)
+		return nacos.NewConfigSource(c)
 	case ConfigTypeConsul:
 		return consul.NewConfigSource(c)
 	case ConfigTypeEtcd:
-		return NewEtcdConfigSource(c)
+		return etcd.NewConfigSource(c)
 	case ConfigTypeApollo:
-		return NewApolloConfigSource(c)
+		return apollo.NewConfigSource(c)
 	case ConfigTypeKubernetes:
-		return NewKubernetesConfigSource(c)
+		return kubernetes.NewConfigSource(c)
 	case ConfigTypePolaris:
-		return NewPolarisConfigSource(c)
-	}
-}
-
-// getConfigKey 获取合法的配置名
-func getConfigKey(configKey string, useBackslash bool) string {
-	if useBackslash {
-		return strings.Replace(configKey, `.`, `/`, -1)
-	} else {
-		return configKey
+		return polaris.NewConfigSource(c)
 	}
 }
 
 // NewFileConfigSource 创建一个本地文件配置源
 func NewFileConfigSource(filePath string) config.Source {
 	return fileKratos.NewSource(filePath)
-}
-
-// NewNacosConfigSource 创建一个远程配置源 - Nacos
-func NewNacosConfigSource(c *conf.RemoteConfig) config.Source {
-	srvConf := []nacosConstant.ServerConfig{
-		*nacosConstant.NewServerConfig(c.Nacos.Address, c.Nacos.Port),
-	}
-
-	cliConf := nacosConstant.ClientConfig{
-		TimeoutMs:            10 * 1000, // http请求超时时间，单位毫秒
-		BeatInterval:         5 * 1000,  // 心跳间隔时间，单位毫秒
-		UpdateThreadNum:      20,        // 更新服务的线程数
-		LogLevel:             "debug",
-		CacheDir:             "../../configs/cache", // 缓存目录
-		LogDir:               "../../configs/log",   // 日志目录
-		NotLoadCacheAtStart:  true,                  // 在启动时不读取本地缓存数据，true--不读取，false--读取
-		UpdateCacheWhenEmpty: true,                  // 当服务列表为空时是否更新本地缓存，true--更新,false--不更新
-	}
-
-	nacosClient, err := nacosClients.NewConfigClient(
-		nacosVo.NacosClientParam{
-			ClientConfig:  &cliConf,
-			ServerConfigs: srvConf,
-		},
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return nacosKratos.NewConfigSource(nacosClient,
-		nacosKratos.WithGroup(getConfigKey(c.Nacos.Key, false)),
-		nacosKratos.WithDataID("bootstrap.yaml"),
-	)
-}
-
-// NewEtcdConfigSource 创建一个远程配置源 - Etcd
-func NewEtcdConfigSource(c *conf.RemoteConfig) config.Source {
-	cfg := etcdClient.Config{
-		Endpoints:   c.Etcd.Endpoints,
-		DialTimeout: c.Etcd.Timeout.AsDuration(),
-		DialOptions: []grpc.DialOption{grpc.WithBlock()},
-	}
-
-	cli, err := etcdClient.New(cfg)
-	if err != nil {
-		panic(err)
-	}
-
-	source, err := etcdKratos.New(cli, etcdKratos.WithPath(getConfigKey(c.Etcd.Key, true)))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return source
-}
-
-// NewApolloConfigSource 创建一个远程配置源 - Apollo
-func NewApolloConfigSource(c *conf.RemoteConfig) config.Source {
-	source := apolloKratos.NewSource(
-		apolloKratos.WithAppID(c.Apollo.AppId),
-		apolloKratos.WithCluster(c.Apollo.Cluster),
-		apolloKratos.WithEndpoint(c.Apollo.Endpoint),
-		apolloKratos.WithNamespace(c.Apollo.Namespace),
-		apolloKratos.WithSecret(c.Apollo.Secret),
-		apolloKratos.WithEnableBackup(),
-	)
-	return source
-}
-
-// NewKubernetesConfigSource 创建一个远程配置源 - Kubernetes
-func NewKubernetesConfigSource(c *conf.RemoteConfig) config.Source {
-	source := k8sKratos.NewSource(
-		k8sKratos.Namespace(c.Kubernetes.Namespace),
-		k8sKratos.LabelSelector(""),
-		k8sKratos.KubeConfig(filepath.Join(k8sUtil.HomeDir(), ".kube", "config")),
-	)
-	return source
-}
-
-// NewPolarisConfigSource 创建一个远程配置源 - Polaris
-func NewPolarisConfigSource(_ *conf.RemoteConfig) config.Source {
-	//configApi, err := polarisApi.NewConfigAPI()
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	//var opts []polarisKratos.Option
-	//opts = append(opts, polarisKratos.WithNamespace("default"))
-	//opts = append(opts, polarisKratos.WithFileGroup("default"))
-	//opts = append(opts, polarisKratos.WithFileName("default.yaml"))
-	//
-	//source, err := polarisKratos.New(configApi, opts...)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	//return source
-	return nil
 }

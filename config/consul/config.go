@@ -1,42 +1,89 @@
 package consul
 
 import (
+	"context"
+	"errors"
+	"path/filepath"
 	"strings"
 
 	"github.com/go-kratos/kratos/v2/config"
-	"github.com/go-kratos/kratos/v2/log"
-
-	consulApi "github.com/hashicorp/consul/api"
-
-	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
+	"github.com/hashicorp/consul/api"
 )
 
-// getConfigKey 获取合法的配置名
-func getConfigKey(configKey string, useBackslash bool) string {
-	if useBackslash {
-		return strings.Replace(configKey, `.`, `/`, -1)
-	} else {
-		return configKey
+// Option is consul config option.
+type Option func(o *options)
+
+type options struct {
+	ctx  context.Context
+	path string
+}
+
+// WithContext with registry context.
+func WithContext(ctx context.Context) Option {
+	return func(o *options) {
+		o.ctx = ctx
 	}
 }
 
-// NewConfigSource 创建一个远程配置源 - Consul
-func NewConfigSource(c *conf.RemoteConfig) config.Source {
-	cfg := consulApi.DefaultConfig()
-	cfg.Address = c.Consul.Address
-	cfg.Scheme = c.Consul.Scheme
+// WithPath is config path
+func WithPath(p string) Option {
+	return func(o *options) {
+		o.path = p
+	}
+}
 
-	cli, err := consulApi.NewClient(cfg)
-	if err != nil {
-		log.Fatal(err)
+type source struct {
+	client  *api.Client
+	options *options
+}
+
+func New(client *api.Client, opts ...Option) (config.Source, error) {
+	o := &options{
+		ctx:  context.Background(),
+		path: "",
 	}
 
-	src, err := New(cli,
-		WithPath(getConfigKey(c.Consul.Key, true)),
-	)
-	if err != nil {
-		log.Fatal(err)
+	for _, opt := range opts {
+		opt(o)
 	}
 
-	return src
+	if o.path == "" {
+		return nil, errors.New("path invalid")
+	}
+
+	return &source{
+		client:  client,
+		options: o,
+	}, nil
+}
+
+// Load return the config values
+func (s *source) Load() ([]*config.KeyValue, error) {
+	kv, _, err := s.client.KV().List(s.options.path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	pathPrefix := s.options.path
+	if !strings.HasSuffix(s.options.path, "/") {
+		pathPrefix = pathPrefix + "/"
+	}
+	kvs := make([]*config.KeyValue, 0)
+	for _, item := range kv {
+		k := strings.TrimPrefix(item.Key, pathPrefix)
+		if k == "" {
+			continue
+		}
+		kvs = append(kvs, &config.KeyValue{
+			Key:    k,
+			Value:  item.Value,
+			Format: strings.TrimPrefix(filepath.Ext(k), "."),
+		})
+	}
+	return kvs, nil
+}
+
+// Watch return the watcher
+func (s *source) Watch() (config.Watcher, error) {
+	return newWatcher(s)
 }
