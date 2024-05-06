@@ -1,4 +1,4 @@
-package bootstrap
+package logger
 
 import (
 	"os"
@@ -8,31 +8,45 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 
+	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/middleware/tracing"
+
 	aliyunLogger "github.com/go-kratos/kratos/contrib/log/aliyun/v2"
 	fluentLogger "github.com/go-kratos/kratos/contrib/log/fluent/v2"
 	logrusLogger "github.com/go-kratos/kratos/contrib/log/logrus/v2"
 	tencentLogger "github.com/go-kratos/kratos/contrib/log/tencent/v2"
 	zapLogger "github.com/go-kratos/kratos/contrib/log/zap/v2"
-
-	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/middleware/tracing"
+	"github.com/tx7do/kratos-bootstrap/config"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
 
-type LoggerType string
+// NewLogger 创建一个新的日志记录器
+func NewLogger(cfg *conf.Logger) log.Logger {
+	if cfg == nil {
+		return NewStdLogger()
+	}
 
-const (
-	LoggerTypeStd     LoggerType = "std"
-	LoggerTypeFluent  LoggerType = "fluent"
-	LoggerTypeLogrus  LoggerType = "logrus"
-	LoggerTypeZap     LoggerType = "zap"
-	LoggerTypeAliyun  LoggerType = "aliyun"
-	LoggerTypeTencent LoggerType = "tencent"
-)
+	switch Type(cfg.Type) {
+	default:
+		fallthrough
+	case Std:
+		return NewStdLogger()
+	case Fluent:
+		return NewFluentLogger(cfg)
+	case Zap:
+		return NewZapLogger(cfg)
+	case Logrus:
+		return NewLogrusLogger(cfg)
+	case Aliyun:
+		return NewAliyunLogger(cfg)
+	case Tencent:
+		return NewTencentLogger(cfg)
+	}
+}
 
 // NewLoggerProvider 创建一个新的日志记录器提供者
-func NewLoggerProvider(cfg *conf.Logger, serviceInfo *ServiceInfo) log.Logger {
+func NewLoggerProvider(cfg *conf.Logger, serviceInfo *config.ServiceInfo) log.Logger {
 	l := NewLogger(cfg)
 
 	return log.With(
@@ -45,30 +59,6 @@ func NewLoggerProvider(cfg *conf.Logger, serviceInfo *ServiceInfo) log.Logger {
 		"trace_id", tracing.TraceID(),
 		"span_id", tracing.SpanID(),
 	)
-}
-
-// NewLogger 创建一个新的日志记录器
-func NewLogger(cfg *conf.Logger) log.Logger {
-	if cfg == nil {
-		return NewStdLogger()
-	}
-
-	switch LoggerType(cfg.Type) {
-	default:
-		fallthrough
-	case LoggerTypeStd:
-		return NewStdLogger()
-	case LoggerTypeFluent:
-		return NewFluentLogger(cfg)
-	case LoggerTypeZap:
-		return NewZapLogger(cfg)
-	case LoggerTypeLogrus:
-		return NewLogrusLogger(cfg)
-	case LoggerTypeAliyun:
-		return NewAliyunLogger(cfg)
-	case LoggerTypeTencent:
-		return NewTencentLogger(cfg)
-	}
 }
 
 // NewStdLogger 创建一个新的日志记录器 - Kratos内置，控制台输出

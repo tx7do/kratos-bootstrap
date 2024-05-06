@@ -1,4 +1,4 @@
-package bootstrap
+package rpc
 
 import (
 	"net/http/pprof"

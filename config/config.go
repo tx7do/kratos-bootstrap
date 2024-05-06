@@ -16,38 +16,24 @@ import (
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
 
-const remoteConfigSourceConfigFile = "remote.yaml"
-
-type Type string
-
-const (
-	LocalFileType  Type = "file"
-	NacosType      Type = "nacos"
-	ConsulType     Type = "consul"
-	EtcdType       Type = "etcd"
-	ApolloType     Type = "apollo"
-	KubernetesType Type = "kubernetes"
-	PolarisType    Type = "polaris"
-)
-
 // NewRemoteConfigSource 创建一个远程配置源
 func NewRemoteConfigSource(c *conf.RemoteConfig) config.Source {
 	switch Type(c.Type) {
 	default:
 		fallthrough
-	case LocalFileType:
+	case LocalFile:
 		return nil
-	case NacosType:
+	case Nacos:
 		return nacos.NewConfigSource(c)
-	case ConsulType:
+	case Consul:
 		return consul.NewConfigSource(c)
-	case EtcdType:
+	case Etcd:
 		return etcd.NewConfigSource(c)
-	case ApolloType:
+	case Apollo:
 		return apollo.NewConfigSource(c)
-	case KubernetesType:
+	case Kubernetes:
 		return kubernetes.NewConfigSource(c)
-	case PolarisType:
+	case Polaris:
 		return polaris.NewConfigSource(c)
 	}
 }

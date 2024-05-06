@@ -1,4 +1,4 @@
-package bootstrap
+package registry
 
 import (
 	"path/filepath"

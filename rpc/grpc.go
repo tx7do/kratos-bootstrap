@@ -1,4 +1,4 @@
-package bootstrap
+package rpc
 
 import (
 	"context"
