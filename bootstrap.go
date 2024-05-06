@@ -24,6 +24,7 @@ var (
 	)
 )
 
+// NewApp 创建应用程序
 func NewApp(ll log.Logger, rr kratosRegistry.Registrar, srv ...transport.Server) *kratos.App {
 	return kratos.New(
 		kratos.ID(Service.GetInstanceId()),
@@ -38,7 +39,7 @@ func NewApp(ll log.Logger, rr kratosRegistry.Registrar, srv ...transport.Server)
 	)
 }
 
-// doBootstrap 应用引导启动
+// doBootstrap 执行引导
 func doBootstrap(serviceInfo *config.ServiceInfo) (*conf.Bootstrap, log.Logger, kratosRegistry.Registrar) {
 	// inject command flags
 	Flags := config.NewCommandFlags()
@@ -67,16 +68,26 @@ func doBootstrap(serviceInfo *config.ServiceInfo) (*conf.Bootstrap, log.Logger, 
 
 type InitApp func(logger log.Logger, registrar kratosRegistry.Registrar, bootstrap *conf.Bootstrap) (*kratos.App, func(), error)
 
-func Bootstrap(initApp InitApp) {
+// Bootstrap 应用引导启动
+func Bootstrap(initApp InitApp, serviceName, version *string) {
+	if serviceName != nil && len(*serviceName) != 0 {
+		Service.Name = *serviceName
+	}
+	if version != nil && len(*version) != 0 {
+		Service.Version = *version
+	}
+
 	// bootstrap
 	cfg, ll, reg := doBootstrap(Service)
 
+	// init app
 	app, cleanup, err := initApp(ll, reg, cfg)
 	if err != nil {
 		panic(err)
 	}
 	defer cleanup()
 
+	// run the app.
 	if err = app.Run(); err != nil {
 		panic(err)
 	}
