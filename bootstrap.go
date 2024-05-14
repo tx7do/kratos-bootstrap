@@ -39,8 +39,8 @@ func NewApp(ll log.Logger, rr kratosRegistry.Registrar, srv ...transport.Server)
 	)
 }
 
-// doBootstrap 执行引导
-func doBootstrap(serviceInfo *config.ServiceInfo) (*conf.Bootstrap, log.Logger, kratosRegistry.Registrar) {
+// DoBootstrap 执行引导
+func DoBootstrap(serviceInfo *config.ServiceInfo) (*conf.Bootstrap, log.Logger, kratosRegistry.Registrar) {
 	// inject command flags
 	Flags := config.NewCommandFlags()
 	Flags.Init()
@@ -78,7 +78,7 @@ func Bootstrap(initApp InitApp, serviceName, version *string) {
 	}
 
 	// bootstrap
-	cfg, ll, reg := doBootstrap(Service)
+	cfg, ll, reg := DoBootstrap(Service)
 
 	// init app
 	app, cleanup, err := initApp(ll, reg, cfg)
