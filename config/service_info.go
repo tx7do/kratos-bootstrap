@@ -21,6 +21,14 @@ func NewServiceInfo(name, version, id string) *ServiceInfo {
 	}
 }
 
+func (s *ServiceInfo) SetName(name string) {
+	s.Name = name
+}
+
+func (s *ServiceInfo) SetVersion(version string) {
+	s.Version = version
+}
+
 func (s *ServiceInfo) GetInstanceId() string {
 	return s.Id + "." + s.Name
 }

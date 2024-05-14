@@ -1,4 +1,4 @@
-git tag v0.3.8
+git tag v0.3.9
 
 git tag api/v0.0.2 --force
 
