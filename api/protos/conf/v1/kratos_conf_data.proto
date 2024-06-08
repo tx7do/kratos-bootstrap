@@ -75,19 +75,6 @@ message Data {
     string bucket = 4;
   }
 
-  // Kafka
-  message Kafka {
-    repeated string addrs = 1;  // 对端网络地址
-    string codec = 2;  // 编解码器
-    bool async = 3; // 异步发送
-    bool allow_auto_topic_creation = 4; // 允许发送的时候自动创建主题
-    int32 batch_size = 5; // 批量发送量
-    google.protobuf.Duration batch_timeout = 6; // 批量发送超时时间
-    google.protobuf.Duration read_timeout = 7; // 读取超时时间
-    google.protobuf.Duration write_timeout = 8; // 发送超时时间
-    int64 batch_bytes = 9;// 批量发送字节数
-  }
-
   message Doris {
     string address = 1;
   }
@@ -113,6 +100,74 @@ message Data {
     bool ignore_peer_addr = 10;
   }
 
+  message Snowflake {
+
+  }
+
+  // Kafka
+  message Kafka {
+    repeated string addrs = 1;  // 对端网络地址
+
+    string codec = 2;  // 编解码器
+
+    bool async = 3; // 异步发送
+    bool allow_auto_topic_creation = 4; // 允许发送的时候自动创建主题
+
+    int32 batch_size = 5; // 批量发送量
+    int64 batch_bytes = 6;// 批量发送字节数
+
+    google.protobuf.Duration batch_timeout = 7; // 批量发送超时时间
+    google.protobuf.Duration read_timeout = 8; // 读取超时时间
+    google.protobuf.Duration write_timeout = 9; // 发送超时时间
+  }
+
+  // RabbitMQ
+  message RabbitMQ {
+    repeated string addrs = 1;  // 对端网络地址
+  }
+
+  // MQTT
+  message Mqtt {
+    string addr = 1;  // 对端网络地址
+  }
+
+  message ActiveMQ {
+    string endpoint = 1;  // 对端网络地址
+    string codec = 2;  // 编解码器: json,xml,yaml...
+  }
+
+  message NATS {
+    string endpoint = 1;  // 对端网络地址
+    string codec = 2;  // 编解码器: json,xml,yaml...
+  }
+
+  message NSQ {
+    string endpoint = 1;  // 对端网络地址
+    string codec = 2;  // 编解码器: json,xml,yaml...
+  }
+
+  message Pulsar {
+    string endpoint = 1;  // 对端网络地址
+    string codec = 2;  // 编解码器: json,xml,yaml...
+  }
+
+  message RocketMQ {
+    string version = 1; // 驱动版本：aliyun、v2、v5
+    string codec = 2;  // 编解码器: json,xml,yaml...
+    bool enable_trace = 3;
+
+    repeated string name_servers = 4;
+    string name_server_domain = 5;
+
+    string access_key = 6;
+    string secret_key = 7;
+    string security_token = 8;
+
+    string namespace = 9;
+    string instance_name = 10;
+    string group_name = 11;
+  }
+
   Database database = 1;  // 数据库DSN
 
   Redis redis = 10;  // Redis
@@ -124,5 +179,14 @@ message Data {
   InfluxDB influxdb = 21;  // InfluxDB数据库
   Doris doris = 22;  // Doris数据库
 
+  // Message Queue
+
   Kafka kafka = 30;  // Kafka服务
+  RabbitMQ rabbitmq = 31;  // RabbitMQ服务
+  Mqtt mqtt = 32;  // MQTT服务
+  ActiveMQ activemq = 33; // ActiveMQ
+  NATS nats = 34; // NATS
+  NSQ nsq = 35; // NATS
+  Pulsar pulsar = 36; // Pulsar
+  RocketMQ rocketmq = 38; // RocketMQ
 }
