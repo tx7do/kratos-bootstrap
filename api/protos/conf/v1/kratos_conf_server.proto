@@ -45,17 +45,20 @@ message Server {
 
   // MQTT
   message Mqtt {
-    string addr = 1;  // 对端网络地址
+    string endpoint = 1;  // 对端网络地址
+    string codec = 2;  // 编解码器: json,xml,yaml...
   }
 
   // Kafka
   message Kafka {
-    repeated string addrs = 1;  // 对端网络地址
+    repeated string endpoints = 1;  // 对端网络地址
+    string codec = 2;  // 编解码器: json,xml,yaml...
   }
 
   // RabbitMQ
   message RabbitMQ {
-    repeated string addrs = 1;  // 对端网络地址
+    repeated string endpoints = 1;  // 对端网络地址
+    string codec = 2;  // 编解码器: json,xml,yaml...
   }
 
   message ActiveMQ {

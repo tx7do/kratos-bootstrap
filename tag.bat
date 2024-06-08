@@ -1,6 +1,6 @@
-git tag v0.3.1=
+git tag v0.3.2
 
-git tag api/v0.0.3 --force
+git tag api/v0.0.4 --force
 
 git tag cache/redis/v0.0.1 --force
 
