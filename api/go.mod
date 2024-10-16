@@ -6,7 +6,7 @@ toolchain go1.22.1
 
 require (
 	github.com/google/gnostic v0.7.0
-	google.golang.org/protobuf v1.34.0
+	google.golang.org/protobuf v1.35.1
 )
 
 require (
