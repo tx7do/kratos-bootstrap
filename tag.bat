@@ -26,6 +26,6 @@ git tag registry/polaris/v0.0.5 --force
 git tag registry/servicecomb/v0.0.5 --force
 git tag registry/zookeeper/v0.0.5 --force
 
-git tag v0.3.13
+git tag v0.3.14
 
 git push origin --tags

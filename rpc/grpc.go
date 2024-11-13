@@ -29,13 +29,9 @@ import (
 const defaultTimeout = 5 * time.Second
 
 // CreateGrpcClient 创建GRPC客户端
-func CreateGrpcClient(ctx context.Context, r registry.Discovery, serviceName string, cfg *conf.Bootstrap, opts ...kratosGrpc.ClientOption) grpc.ClientConnInterface {
+func CreateGrpcClient(ctx context.Context, r registry.Discovery, serviceName string, cfg *conf.Bootstrap, mds ...middleware.Middleware) grpc.ClientConnInterface {
 
 	var options []kratosGrpc.ClientOption
-
-	if opts != nil {
-		options = append(options, opts...)
-	}
 
 	options = append(options, kratosGrpc.WithDiscovery(r))
 
@@ -47,7 +43,7 @@ func CreateGrpcClient(ctx context.Context, r registry.Discovery, serviceName str
 	}
 	options = append(options, kratosGrpc.WithEndpoint(endpoint))
 
-	options = append(options, initGrpcClientConfig(cfg)...)
+	options = append(options, initGrpcClientConfig(cfg, mds...)...)
 
 	conn, err := kratosGrpc.DialInsecure(ctx, options...)
 	if err != nil {
@@ -57,7 +53,7 @@ func CreateGrpcClient(ctx context.Context, r registry.Discovery, serviceName str
 	return conn
 }
 
-func initGrpcClientConfig(cfg *conf.Bootstrap) []kratosGrpc.ClientOption {
+func initGrpcClientConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []kratosGrpc.ClientOption {
 	if cfg.Client == nil || cfg.Client.Grpc == nil {
 		return nil
 	}
@@ -70,9 +66,9 @@ func initGrpcClientConfig(cfg *conf.Bootstrap) []kratosGrpc.ClientOption {
 	}
 	options = append(options, kratosGrpc.WithTimeout(timeout))
 
+	var ms []middleware.Middleware
+	ms = append(ms, mds...)
 	if cfg.Client.Grpc.Middleware != nil {
-		var ms []middleware.Middleware
-
 		if cfg.Client.Grpc.Middleware.GetEnableRecovery() {
 			ms = append(ms, recovery.Recovery())
 		}
@@ -83,6 +79,7 @@ func initGrpcClientConfig(cfg *conf.Bootstrap) []kratosGrpc.ClientOption {
 			ms = append(ms, validate.Validator())
 		}
 	}
+	options = append(options, kratosGrpc.WithMiddleware(ms...))
 
 	if cfg.Client.Grpc.Tls != nil {
 		var tlsCfg *tls.Config
@@ -116,30 +113,26 @@ func initGrpcClientConfig(cfg *conf.Bootstrap) []kratosGrpc.ClientOption {
 }
 
 // CreateGrpcServer 创建GRPC服务端
-func CreateGrpcServer(cfg *conf.Bootstrap, opts ...kratosGrpc.ServerOption) *kratosGrpc.Server {
+func CreateGrpcServer(cfg *conf.Bootstrap, mds ...middleware.Middleware) *kratosGrpc.Server {
 	var options []kratosGrpc.ServerOption
 
-	if opts != nil {
-		options = append(options, opts...)
-	}
-
-	options = append(options, initGrpcServerConfig(cfg)...)
+	options = append(options, initGrpcServerConfig(cfg, mds...)...)
 
 	srv := kratosGrpc.NewServer(options...)
 
 	return srv
 }
 
-func initGrpcServerConfig(cfg *conf.Bootstrap) []kratosGrpc.ServerOption {
+func initGrpcServerConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []kratosGrpc.ServerOption {
 	if cfg.Server == nil || cfg.Server.Grpc == nil {
 		return nil
 	}
 
 	var options []kratosGrpc.ServerOption
 
+	var ms []middleware.Middleware
+	ms = append(ms, mds...)
 	if cfg.Server.Grpc.Middleware != nil {
-		var ms []middleware.Middleware
-
 		if cfg.Server.Grpc.Middleware.GetEnableRecovery() {
 			ms = append(ms, recovery.Recovery())
 		}
@@ -159,9 +152,8 @@ func initGrpcServerConfig(cfg *conf.Bootstrap) []kratosGrpc.ServerOption {
 			}
 			ms = append(ms, midRateLimit.Server(midRateLimit.WithLimiter(limiter)))
 		}
-
-		options = append(options, kratosGrpc.Middleware(ms...))
 	}
+	options = append(options, kratosGrpc.Middleware(ms...))
 
 	if cfg.Server.Grpc.Tls != nil {
 		var tlsCfg *tls.Config

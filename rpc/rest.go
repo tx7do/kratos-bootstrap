@@ -22,14 +22,10 @@ import (
 )
 
 // CreateRestServer 创建REST服务端
-func CreateRestServer(cfg *conf.Bootstrap, opts ...kratosRest.ServerOption) *kratosRest.Server {
+func CreateRestServer(cfg *conf.Bootstrap, mds ...middleware.Middleware) *kratosRest.Server {
 	var options []kratosRest.ServerOption
 
-	if opts != nil {
-		options = append(options, opts...)
-	}
-
-	options = append(options, initRestConfig(cfg)...)
+	options = append(options, initRestConfig(cfg, mds...)...)
 
 	srv := kratosRest.NewServer(options...)
 
@@ -40,7 +36,7 @@ func CreateRestServer(cfg *conf.Bootstrap, opts ...kratosRest.ServerOption) *kra
 	return srv
 }
 
-func initRestConfig(cfg *conf.Bootstrap) []kratosRest.ServerOption {
+func initRestConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []kratosRest.ServerOption {
 	if cfg.Server == nil || cfg.Server.Rest == nil {
 		return nil
 	}
@@ -55,9 +51,9 @@ func initRestConfig(cfg *conf.Bootstrap) []kratosRest.ServerOption {
 		)))
 	}
 
+	var ms []middleware.Middleware
+	ms = append(ms, mds...)
 	if cfg.Server.Rest.Middleware != nil {
-		var ms []middleware.Middleware
-
 		if cfg.Server.Rest.Middleware.GetEnableRecovery() {
 			ms = append(ms, recovery.Recovery())
 		}
@@ -77,9 +73,8 @@ func initRestConfig(cfg *conf.Bootstrap) []kratosRest.ServerOption {
 			}
 			ms = append(ms, midRateLimit.Server(midRateLimit.WithLimiter(limiter)))
 		}
-
-		options = append(options, kratosRest.Middleware(ms...))
 	}
+	options = append(options, kratosRest.Middleware(ms...))
 
 	if cfg.Server.Rest.Network != "" {
 		options = append(options, kratosRest.Network(cfg.Server.Rest.Network))
