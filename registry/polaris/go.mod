@@ -1,14 +1,14 @@
 module github.com/tx7do/kratos-bootstrap/registry/polaris
 
-go 1.22.0
+go 1.22.7
 
-toolchain go1.22.1
+toolchain go1.23.3
 
 replace github.com/tx7do/kratos-bootstrap/api => ../../api
 
 require (
-	github.com/go-kratos/kratos/contrib/registry/polaris/v2 v2.0.0-20241014124617-8b8dc4b0f8be
-	github.com/go-kratos/kratos/v2 v2.8.1
+	github.com/go-kratos/kratos/contrib/registry/polaris/v2 v2.0.0-20241105072421-f8b97f675b32
+	github.com/go-kratos/kratos/v2 v2.8.2
 	github.com/polarismesh/polaris-go v1.5.8
 	github.com/stretchr/testify v1.9.0
 	github.com/tx7do/kratos-bootstrap/api v0.0.4
@@ -33,16 +33,16 @@ require (
 	github.com/polarismesh/specification v1.5.3 // indirect
 	github.com/prometheus/client_golang v1.20.5 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
-	github.com/prometheus/common v0.60.0 // indirect
+	github.com/prometheus/common v0.60.1 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/net v0.30.0 // indirect
-	golang.org/x/sys v0.26.0 // indirect
-	golang.org/x/text v0.19.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20241015192408-796eee8c2d53 // indirect
-	google.golang.org/grpc v1.67.1 // indirect
+	golang.org/x/net v0.31.0 // indirect
+	golang.org/x/sys v0.27.0 // indirect
+	golang.org/x/text v0.20.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241104194629-dd2ea8efbc28 // indirect
+	google.golang.org/grpc v1.68.0 // indirect
 	google.golang.org/protobuf v1.35.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

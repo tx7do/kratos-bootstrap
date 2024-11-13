@@ -4,10 +4,10 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/frankban/quicktest v1.14.0 h1:+cqqvzZV87b4adx/5ayVOaYZ2CrvM4ejQvUdBzPPUss=
 github.com/frankban/quicktest v1.14.0/go.mod h1:NeW+ay9A/U67EYXNFA1nPE8e/tnQv/09mUdL/ijj8og=
-github.com/go-kratos/kratos/contrib/log/tencent/v2 v2.0.0-20241014124617-8b8dc4b0f8be h1:9IOO7MC8PNgJTId8Zck0c6XEg9fbHaWKzvlND4fmrT4=
-github.com/go-kratos/kratos/contrib/log/tencent/v2 v2.0.0-20241014124617-8b8dc4b0f8be/go.mod h1:QGf5RNUtCI2PaV9V28rtdAcK3WzLEMaqaEz6UXOwKLg=
-github.com/go-kratos/kratos/v2 v2.8.1 h1:nK+NRp8C+wQk7tr55K9Er7nBjmBLYGbnyNz7UIy37qw=
-github.com/go-kratos/kratos/v2 v2.8.1/go.mod h1:+Vfe3FzF0d+BfMdajA11jT0rAyJWublRE/seZQNZVxE=
+github.com/go-kratos/kratos/contrib/log/tencent/v2 v2.0.0-20241105072421-f8b97f675b32 h1:yTNrTJe+R7+CENNOGltterymGPiIFcZt3b3xxMhsGEk=
+github.com/go-kratos/kratos/contrib/log/tencent/v2 v2.0.0-20241105072421-f8b97f675b32/go.mod h1:91Iwi+G+72M256UKXXHT4rsRJo686ADlCHZFPyK4Q80=
+github.com/go-kratos/kratos/v2 v2.8.2 h1:EsEA7AmPQ2YQQ0FZrDWO2HgBNqeWM8z/mWKzS5UkQaQ=
+github.com/go-kratos/kratos/v2 v2.8.2/go.mod h1:+Vfe3FzF0d+BfMdajA11jT0rAyJWublRE/seZQNZVxE=
 github.com/golang/protobuf v1.5.0/go.mod h1:FsONVRAS9T7sI+LIUmWTfcYkHO4aIWwzhcaSAoJOfIk=
 github.com/golang/protobuf v1.5.4 h1:i7eJL8qZTpSEXOPTxNKhASYpMn+8e5Q6AdndVa1dWek=
 github.com/golang/protobuf v1.5.4/go.mod h1:lnTiLA8Wa4RWRcIUkrtSVa5nRhsEGBg48fD6rSs7xps=
