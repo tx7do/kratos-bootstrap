@@ -5,22 +5,26 @@ package conf;
 option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
 
 import "google/protobuf/duration.proto";
+
 import "conf/v1/kratos_conf_middleware.proto";
+import "conf/v1/kratos_conf_tls.proto";
 
 // 客户端
 message Client {
   // REST
   message REST {
     google.protobuf.Duration timeout = 1; // 超时时间
-    Middleware middleware = 2;
+    Middleware middleware = 2; // 中间件
+    TLS tls = 3;  // TLS配置
   }
 
   // gPRC
   message GRPC {
     google.protobuf.Duration timeout = 1; // 超时时间
-    Middleware middleware = 2;
+    Middleware middleware = 2; // 中间件
+    TLS tls = 3;  // TLS配置
   }
 
-  REST rest = 1;  // REST服务
-  GRPC grpc = 2;  // gRPC服务
+  optional REST rest = 1;  // REST服务
+  optional GRPC grpc = 2;  // gRPC服务
 }

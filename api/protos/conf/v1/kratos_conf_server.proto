@@ -5,7 +5,9 @@ package conf;
 option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
 
 import "google/protobuf/duration.proto";
+
 import "conf/v1/kratos_conf_middleware.proto";
+import "conf/v1/kratos_conf_tls.proto";
 
 // 服务器
 message Server {
@@ -20,18 +22,25 @@ message Server {
     string network = 1; // 网络
     string addr = 2;  // 服务监听地址
     google.protobuf.Duration timeout = 3; // 超时时间
-    CORS cors = 4;  // 服务监听地址
-    Middleware middleware = 5;  // 中间件
-    bool enable_swagger = 6;  // 启用SwaggerUI
-    bool enable_pprof = 7;  // 启用pprof
+
+    CORS cors = 10;  // 服务监听地址
+    Middleware middleware = 11;  // 中间件
+    TLS tls = 12;  // TLS配置
+
+    bool enable_swagger = 20;  // 启用SwaggerUI
+    bool enable_pprof = 21;  // 启用pprof
   }
 
   // gPRC
   message GRPC {
     string network = 1; // 网络
     string addr = 2;  // 服务监听地址
+
     google.protobuf.Duration timeout = 3; // 超时时间
+
     Middleware middleware = 4;
+
+    TLS tls = 5;  // TLS配置
   }
 
   // Websocket
@@ -41,54 +50,64 @@ message Server {
     string path = 3;  // 路径
     string codec = 4;  // 编解码器: json,xml,yaml...
     google.protobuf.Duration timeout = 5; // 超时时间
+    TLS tls = 6;  // TLS配置
   }
 
   // MQTT
   message Mqtt {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
+    TLS tls = 3;  // TLS配置
   }
 
   // Kafka
   message Kafka {
     repeated string endpoints = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
+    TLS tls = 3;  // TLS配置
   }
 
   // RabbitMQ
   message RabbitMQ {
     repeated string endpoints = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
+    TLS tls = 3;  // TLS配置
   }
 
   message ActiveMQ {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
+    TLS tls = 3;  // TLS配置
   }
 
   message NATS {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
+    TLS tls = 3;  // TLS配置
   }
 
   message NSQ {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
+    TLS tls = 3;  // TLS配置
   }
 
   message Pulsar {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
+    TLS tls = 3;  // TLS配置
   }
 
   message Redis {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
+    TLS tls = 3;  // TLS配置
   }
 
   message RocketMQ {
     string version = 1; // 驱动版本：aliyun、v2、v5
     string codec = 2;  // 编解码器: json,xml,yaml...
+
     bool enable_trace = 3;
 
     repeated string name_servers = 4;
@@ -101,6 +120,8 @@ message Server {
     string namespace = 9;
     string instance_name = 10;
     string group_name = 11;
+
+    TLS tls = 12;  // TLS配置
   }
 
   // Asynq
@@ -109,12 +130,14 @@ message Server {
     string password = 2;  // redis登录密码
     int32 db = 3;  // 数据库索引
     string location = 4; // 时区
+    TLS tls = 5;  // TLS配置
   }
 
   // Machinery
   message Machinery {
     repeated string brokers = 1;  // broker的地址，可以根据实际使用的存储介质，分别指定Redis、AMQP或AWS SQS；
     repeated string backends = 2;  // backend配置，用来指定存放结果的介质的配置。可以根据需求，分别指定为：Redis、memcached或mongodb等；
+    TLS tls = 3;  // TLS配置
   }
 
   // SSE
@@ -123,14 +146,15 @@ message Server {
     string addr = 2;  // 服务监听地址
     string path = 3;  // 路径
     string codec = 4;  // 编解码器
+    TLS tls = 5;  // TLS配置
 
-    google.protobuf.Duration timeout = 5; // 超时时间
-    google.protobuf.Duration event_ttl = 6; // 超时时间
+    google.protobuf.Duration timeout = 10; // 超时时间
+    google.protobuf.Duration event_ttl = 11; //
 
-    bool auto_stream = 7; //
-    bool auto_reply = 8; //
-    bool split_data = 9; //
-    bool encode_base64 = 10; // 进行BASE64编码
+    bool auto_stream = 20; //
+    bool auto_reply = 21; //
+    bool split_data = 22; //
+    bool encode_base64 = 23; // 进行BASE64编码
   }
 
   // SocketIO
@@ -139,6 +163,7 @@ message Server {
     string addr = 2;  // 服务监听地址
     string path = 3;  // 路径
     string codec = 4;  // 编解码器
+    TLS tls = 5;  // TLS配置
   }
 
   // SignalR
@@ -146,9 +171,11 @@ message Server {
     string network = 1; // 网络
     string addr = 2;  // 服务监听地址
     string codec = 3;  // 编解码器
+    TLS tls = 4;  // TLS配置
 
-    google.protobuf.Duration keep_alive_interval = 4; // 超时时间
-    google.protobuf.Duration chan_receive_timeout = 5; // 超时时间
+    google.protobuf.Duration keep_alive_interval = 10; // 超时时间
+    google.protobuf.Duration chan_receive_timeout = 11; // 超时时间
+
     bool debug = 6; // 调试开关
     uint32 stream_buffer_capacity = 7; //
   }
@@ -161,6 +188,7 @@ message Server {
     string codec = 4;  // 编解码器
     google.protobuf.Duration timeout = 5; // 超时时间
     bool strict_slash = 6;
+    TLS tls = 7;  // TLS配置
   }
 
   // Thrift
@@ -171,36 +199,37 @@ message Server {
     bool buffered = 4;
     bool framed = 5;
     bool buffer_size = 6;
+    TLS tls = 7;  // TLS配置
   }
 
   // RPC
 
-  REST rest = 1;  // REST服务
-  GRPC grpc = 2;  // gRPC服务
-  GraphQL graphql = 3;  // GraphQL服务
-  Thrift thrift = 4;  // Thrift服务
+  optional REST rest = 1;  // REST服务
+  optional GRPC grpc = 2;  // gRPC服务
+  optional GraphQL graphql = 3;  // GraphQL服务
+  optional Thrift thrift = 4;  // Thrift服务
 
   // Message Queue
 
-  Mqtt mqtt = 10;  // MQTT服务
-  Kafka kafka = 11;  // Kafka服务
-  RabbitMQ rabbitmq = 12;  // RabbitMQ服务
-  ActiveMQ activemq = 13; // ActiveMQ
-  NATS nats = 14; // NATS
-  NSQ nsq = 15; // NATS
-  Pulsar pulsar = 16; // Pulsar
-  Redis redis = 17; // Redis
-  RocketMQ rocketmq = 18; // RocketMQ
+  optional Mqtt mqtt = 10;  // MQTT服务
+  optional Kafka kafka = 11;  // Kafka服务
+  optional RabbitMQ rabbitmq = 12;  // RabbitMQ服务
+  optional ActiveMQ activemq = 13; // ActiveMQ
+  optional NATS nats = 14; // NATS
+  optional NSQ nsq = 15; // NATS
+  optional Pulsar pulsar = 16; // Pulsar
+  optional Redis redis = 17; // Redis
+  optional RocketMQ rocketmq = 18; // RocketMQ
 
- // RealTime
+  // RealTime
 
-  Websocket websocket = 20;  // Websocket服务
-  SSE sse = 21;  // SSE服务
-  SocketIO socketio = 22;  // SocketIO服务
-  SignalR signalr = 23;  // SignalR服务
+  optional Websocket websocket = 20;  // Websocket服务
+  optional SSE sse = 21;  // SSE服务
+  optional SocketIO socketio = 22;  // SocketIO服务
+  optional SignalR signalr = 23;  // SignalR服务
 
   // Task Queue
 
-  Asynq asynq = 30;  // Asynq服务
-  Machinery machinery = 31;  // Machinery服务
+  optional Asynq asynq = 30;  // Asynq服务
+  optional Machinery machinery = 31;  // Machinery服务
 }

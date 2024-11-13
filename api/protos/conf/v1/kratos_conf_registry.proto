@@ -30,13 +30,18 @@ message Registry {
   message Nacos {
     string address = 1; // 服务端地址
     uint64 port = 2; // 服务端端口
+
     string namespace_id = 3; //
+
     string log_level = 4; // 日志等级
     string cache_dir = 5; // 缓存目录
     string log_dir = 6; // 日志目录
+
     int32 update_thread_num = 7; // 更新服务的线程数
+
     google.protobuf.Duration timeout = 8; // http请求超时时间，单位: 毫秒
     google.protobuf.Duration beat_interval = 9; // 心跳间隔时间，单位: 毫秒
+
     bool not_load_cache_at_start = 10; // 在启动时不读取本地缓存数据，true: 不读取，false: 读取
     bool update_cache_when_empty = 11; // 当服务列表为空时是否更新本地缓存，true: 更新,false: 不更新
   }

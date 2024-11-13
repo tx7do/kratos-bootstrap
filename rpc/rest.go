@@ -1,7 +1,10 @@
 package rpc
 
 import (
+	"crypto/tls"
 	"net/http/pprof"
+
+	"github.com/gorilla/handlers"
 
 	"github.com/go-kratos/aegis/ratelimit"
 	"github.com/go-kratos/aegis/ratelimit/bbr"
@@ -14,23 +17,47 @@ import (
 
 	kratosRest "github.com/go-kratos/kratos/v2/transport/http"
 
-	"github.com/gorilla/handlers"
-
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
+	"github.com/tx7do/kratos-bootstrap/utils"
 )
 
 // CreateRestServer 创建REST服务端
-func CreateRestServer(cfg *conf.Bootstrap, m ...middleware.Middleware) *kratosRest.Server {
-	var opts = []kratosRest.ServerOption{
-		kratosRest.Filter(handlers.CORS(
+func CreateRestServer(cfg *conf.Bootstrap, opts ...kratosRest.ServerOption) *kratosRest.Server {
+	var options []kratosRest.ServerOption
+
+	if opts != nil {
+		options = append(options, opts...)
+	}
+
+	options = append(options, initRestConfig(cfg)...)
+
+	srv := kratosRest.NewServer(options...)
+
+	if cfg.Server != nil && cfg.Server.Rest != nil && cfg.Server.Rest.GetEnablePprof() {
+		registerHttpPprof(srv)
+	}
+
+	return srv
+}
+
+func initRestConfig(cfg *conf.Bootstrap) []kratosRest.ServerOption {
+	if cfg.Server == nil || cfg.Server.Rest == nil {
+		return nil
+	}
+
+	var options []kratosRest.ServerOption
+
+	if cfg.Server.Rest.Cors != nil {
+		options = append(options, kratosRest.Filter(handlers.CORS(
 			handlers.AllowedHeaders(cfg.Server.Rest.Cors.Headers),
 			handlers.AllowedMethods(cfg.Server.Rest.Cors.Methods),
 			handlers.AllowedOrigins(cfg.Server.Rest.Cors.Origins),
-		)),
+		)))
 	}
 
-	var ms []middleware.Middleware
-	if cfg.Server != nil && cfg.Server.Rest != nil && cfg.Server.Rest.Middleware != nil {
+	if cfg.Server.Rest.Middleware != nil {
+		var ms []middleware.Middleware
+
 		if cfg.Server.Rest.Middleware.GetEnableRecovery() {
 			ms = append(ms, recovery.Recovery())
 		}
@@ -50,27 +77,51 @@ func CreateRestServer(cfg *conf.Bootstrap, m ...middleware.Middleware) *kratosRe
 			}
 			ms = append(ms, midRateLimit.Server(midRateLimit.WithLimiter(limiter)))
 		}
+
+		options = append(options, kratosRest.Middleware(ms...))
 	}
-	ms = append(ms, m...)
-	opts = append(opts, kratosRest.Middleware(ms...))
 
 	if cfg.Server.Rest.Network != "" {
-		opts = append(opts, kratosRest.Network(cfg.Server.Rest.Network))
+		options = append(options, kratosRest.Network(cfg.Server.Rest.Network))
 	}
 	if cfg.Server.Rest.Addr != "" {
-		opts = append(opts, kratosRest.Address(cfg.Server.Rest.Addr))
+		options = append(options, kratosRest.Address(cfg.Server.Rest.Addr))
 	}
 	if cfg.Server.Rest.Timeout != nil {
-		opts = append(opts, kratosRest.Timeout(cfg.Server.Rest.Timeout.AsDuration()))
+		options = append(options, kratosRest.Timeout(cfg.Server.Rest.Timeout.AsDuration()))
 	}
 
-	srv := kratosRest.NewServer(opts...)
+	if cfg.Server.Rest.Tls != nil {
+		var tlsCfg *tls.Config
+		var err error
 
-	if cfg.Server.Rest.GetEnablePprof() {
-		registerHttpPprof(srv)
+		if cfg.Server.Rest.Tls.File != nil {
+			if tlsCfg, err = utils.LoadServerTlsConfigFile(
+				cfg.Server.Rest.Tls.File.GetKeyPath(),
+				cfg.Server.Rest.Tls.File.GetCertPath(),
+				cfg.Server.Rest.Tls.File.GetCaPath(),
+				cfg.Server.Rest.Tls.InsecureSkipVerify,
+			); err != nil {
+				panic(err)
+			}
+		}
+		if tlsCfg == nil && cfg.Server.Rest.Tls.Config != nil {
+			if tlsCfg, err = utils.LoadServerTlsConfig(
+				cfg.Server.Rest.Tls.Config.GetKeyPem(),
+				cfg.Server.Rest.Tls.Config.GetCertPem(),
+				cfg.Server.Rest.Tls.Config.GetCaPem(),
+				cfg.Server.Rest.Tls.InsecureSkipVerify,
+			); err != nil {
+				panic(err)
+			}
+		}
+
+		if tlsCfg != nil {
+			options = append(options, kratosRest.TLSConfig(tlsCfg))
+		}
 	}
 
-	return srv
+	return options
 }
 
 func registerHttpPprof(s *kratosRest.Server) {

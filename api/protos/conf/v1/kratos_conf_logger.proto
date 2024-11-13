@@ -47,9 +47,9 @@ message Logger {
 
   string type = 1;
 
-  Zap zap = 2;
-  Logrus logrus = 3;
-  Fluent fluent = 4;
-  Aliyun aliyun = 5;
-  Tencent tencent = 6;
+  optional Zap zap = 2;
+  optional Logrus logrus = 3;
+  optional Fluent fluent = 4;
+  optional Aliyun aliyun = 5;
+  optional Tencent tencent = 6;
 }

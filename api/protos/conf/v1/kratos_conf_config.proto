@@ -11,43 +11,43 @@ message RemoteConfig {
   message Nacos {
     string address = 1; // 服务端地址
     uint64 port = 2; // 服务端端口
-    string key = 3; //
+    string key = 3; // 配置键
   }
 
   message Etcd {
-    repeated string endpoints = 1;
-    google.protobuf.Duration timeout = 2;
-    string key = 3; //
+    repeated string endpoints = 1; // 服务端地址
+    google.protobuf.Duration timeout = 2; // 超时时间
+    string key = 3; // 配置键
   }
 
   message Consul {
     string scheme = 1;  // 网络样式
     string address = 2; // 服务端地址
-    string key = 3; //
+    string key = 3; // 配置键
   }
 
   message Apollo {
-    string endpoint = 1;
-    string app_id = 2;
-    string cluster = 3;
-    string namespace = 4;
-    string secret = 5;
+    string endpoint = 1; // 服务端地址
+    string app_id = 2; // 应用ID
+    string cluster = 3; // 集群
+    string namespace = 4; // 命名空间
+    string secret = 5; // 密钥
   }
 
   message Kubernetes {
-    string namespace = 1;
+    string namespace = 1; // 命名空间
   }
 
   message Polaris {
 
   }
 
-  string type = 1;
+  string type = 1; // 配置类型
 
-  Etcd etcd = 2;
-  Consul consul = 3;
-  Nacos nacos = 4;
-  Apollo apollo = 6;
-  Kubernetes kubernetes = 7;
-  Polaris polaris = 8;
+  optional Etcd etcd = 2;
+  optional Consul consul = 3;
+  optional Nacos nacos = 4;
+  optional Apollo apollo = 6;
+  optional Kubernetes kubernetes = 7;
+  optional Polaris polaris = 8;
 }

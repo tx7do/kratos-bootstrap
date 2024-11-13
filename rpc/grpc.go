@@ -2,12 +2,14 @@ package rpc
 
 import (
 	"context"
+	"crypto/tls"
+	"strings"
 	"time"
-
-	"google.golang.org/grpc"
 
 	"github.com/go-kratos/aegis/ratelimit"
 	"github.com/go-kratos/aegis/ratelimit/bbr"
+
+	"google.golang.org/grpc"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/registry"
@@ -21,42 +23,33 @@ import (
 	kratosGrpc "github.com/go-kratos/kratos/v2/transport/grpc"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
+	"github.com/tx7do/kratos-bootstrap/utils"
 )
 
 const defaultTimeout = 5 * time.Second
 
 // CreateGrpcClient 创建GRPC客户端
-func CreateGrpcClient(ctx context.Context, r registry.Discovery, serviceName string, cfg *conf.Bootstrap, m ...middleware.Middleware) grpc.ClientConnInterface {
-	endpoint := "discovery:///" + serviceName
+func CreateGrpcClient(ctx context.Context, r registry.Discovery, serviceName string, cfg *conf.Bootstrap, opts ...kratosGrpc.ClientOption) grpc.ClientConnInterface {
 
-	var ms []middleware.Middleware
-	timeout := defaultTimeout
-	if cfg.Client != nil && cfg.Client.Grpc != nil {
-		if cfg.Client.Grpc.Timeout != nil {
-			timeout = cfg.Client.Grpc.Timeout.AsDuration()
-		}
+	var options []kratosGrpc.ClientOption
 
-		if cfg.Client.Grpc.Middleware != nil {
-			if cfg.Client.Grpc.Middleware.GetEnableRecovery() {
-				ms = append(ms, recovery.Recovery())
-			}
-			if cfg.Client.Grpc.Middleware.GetEnableTracing() {
-				ms = append(ms, tracing.Client())
-			}
-			if cfg.Client.Grpc.Middleware.GetEnableValidate() {
-				ms = append(ms, validate.Validator())
-			}
-		}
+	if opts != nil {
+		options = append(options, opts...)
 	}
-	ms = append(ms, m...)
 
-	conn, err := kratosGrpc.DialInsecure(
-		ctx,
-		kratosGrpc.WithEndpoint(endpoint),
-		kratosGrpc.WithDiscovery(r),
-		kratosGrpc.WithTimeout(timeout),
-		kratosGrpc.WithMiddleware(ms...),
-	)
+	options = append(options, kratosGrpc.WithDiscovery(r))
+
+	var endpoint string
+	if strings.HasPrefix(serviceName, "discovery:///") {
+		endpoint = serviceName
+	} else {
+		endpoint = "discovery:///" + serviceName
+	}
+	options = append(options, kratosGrpc.WithEndpoint(endpoint))
+
+	options = append(options, initGrpcClientConfig(cfg)...)
+
+	conn, err := kratosGrpc.DialInsecure(ctx, options...)
 	if err != nil {
 		log.Fatalf("dial grpc client [%s] failed: %s", serviceName, err.Error())
 	}
@@ -64,12 +57,89 @@ func CreateGrpcClient(ctx context.Context, r registry.Discovery, serviceName str
 	return conn
 }
 
-// CreateGrpcServer 创建GRPC服务端
-func CreateGrpcServer(cfg *conf.Bootstrap, m ...middleware.Middleware) *kratosGrpc.Server {
-	var opts []kratosGrpc.ServerOption
+func initGrpcClientConfig(cfg *conf.Bootstrap) []kratosGrpc.ClientOption {
+	if cfg.Client == nil || cfg.Client.Grpc == nil {
+		return nil
+	}
 
-	var ms []middleware.Middleware
-	if cfg.Server != nil && cfg.Server.Grpc != nil && cfg.Server.Grpc.Middleware != nil {
+	var options []kratosGrpc.ClientOption
+
+	timeout := defaultTimeout
+	if cfg.Client.Grpc.Timeout != nil {
+		timeout = cfg.Client.Grpc.Timeout.AsDuration()
+	}
+	options = append(options, kratosGrpc.WithTimeout(timeout))
+
+	if cfg.Client.Grpc.Middleware != nil {
+		var ms []middleware.Middleware
+
+		if cfg.Client.Grpc.Middleware.GetEnableRecovery() {
+			ms = append(ms, recovery.Recovery())
+		}
+		if cfg.Client.Grpc.Middleware.GetEnableTracing() {
+			ms = append(ms, tracing.Client())
+		}
+		if cfg.Client.Grpc.Middleware.GetEnableValidate() {
+			ms = append(ms, validate.Validator())
+		}
+	}
+
+	if cfg.Client.Grpc.Tls != nil {
+		var tlsCfg *tls.Config
+		var err error
+
+		if cfg.Client.Grpc.Tls.File != nil {
+			if tlsCfg, err = utils.LoadClientTlsConfigFile(
+				cfg.Client.Grpc.Tls.File.GetKeyPath(),
+				cfg.Client.Grpc.Tls.File.GetCertPath(),
+				cfg.Client.Grpc.Tls.File.GetCaPath(),
+			); err != nil {
+				panic(err)
+			}
+		}
+		if tlsCfg == nil && cfg.Client.Grpc.Tls.Config != nil {
+			if tlsCfg, err = utils.LoadClientTlsConfig(
+				cfg.Client.Grpc.Tls.Config.GetKeyPem(),
+				cfg.Client.Grpc.Tls.Config.GetCertPem(),
+				cfg.Client.Grpc.Tls.Config.GetCaPem(),
+			); err != nil {
+				panic(err)
+			}
+		}
+
+		if tlsCfg != nil {
+			options = append(options, kratosGrpc.WithTLSConfig(tlsCfg))
+		}
+	}
+
+	return options
+}
+
+// CreateGrpcServer 创建GRPC服务端
+func CreateGrpcServer(cfg *conf.Bootstrap, opts ...kratosGrpc.ServerOption) *kratosGrpc.Server {
+	var options []kratosGrpc.ServerOption
+
+	if opts != nil {
+		options = append(options, opts...)
+	}
+
+	options = append(options, initGrpcServerConfig(cfg)...)
+
+	srv := kratosGrpc.NewServer(options...)
+
+	return srv
+}
+
+func initGrpcServerConfig(cfg *conf.Bootstrap) []kratosGrpc.ServerOption {
+	if cfg.Server == nil || cfg.Server.Grpc == nil {
+		return nil
+	}
+
+	var options []kratosGrpc.ServerOption
+
+	if cfg.Server.Grpc.Middleware != nil {
+		var ms []middleware.Middleware
+
 		if cfg.Server.Grpc.Middleware.GetEnableRecovery() {
 			ms = append(ms, recovery.Recovery())
 		}
@@ -89,21 +159,49 @@ func CreateGrpcServer(cfg *conf.Bootstrap, m ...middleware.Middleware) *kratosGr
 			}
 			ms = append(ms, midRateLimit.Server(midRateLimit.WithLimiter(limiter)))
 		}
+
+		options = append(options, kratosGrpc.Middleware(ms...))
 	}
-	ms = append(ms, m...)
-	opts = append(opts, kratosGrpc.Middleware(ms...))
+
+	if cfg.Server.Grpc.Tls != nil {
+		var tlsCfg *tls.Config
+		var err error
+
+		if cfg.Server.Grpc.Tls.File != nil {
+			if tlsCfg, err = utils.LoadServerTlsConfigFile(
+				cfg.Server.Grpc.Tls.File.GetKeyPath(),
+				cfg.Server.Grpc.Tls.File.GetCertPath(),
+				cfg.Server.Grpc.Tls.File.GetCaPath(),
+				cfg.Server.Grpc.Tls.InsecureSkipVerify,
+			); err != nil {
+				panic(err)
+			}
+		}
+		if tlsCfg == nil && cfg.Server.Grpc.Tls.Config != nil {
+			if tlsCfg, err = utils.LoadServerTlsConfig(
+				cfg.Server.Grpc.Tls.Config.GetKeyPem(),
+				cfg.Server.Grpc.Tls.Config.GetCertPem(),
+				cfg.Server.Grpc.Tls.Config.GetCaPem(),
+				cfg.Server.Grpc.Tls.InsecureSkipVerify,
+			); err != nil {
+				panic(err)
+			}
+		}
+
+		if tlsCfg != nil {
+			options = append(options, kratosGrpc.TLSConfig(tlsCfg))
+		}
+	}
 
 	if cfg.Server.Grpc.Network != "" {
-		opts = append(opts, kratosGrpc.Network(cfg.Server.Grpc.Network))
+		options = append(options, kratosGrpc.Network(cfg.Server.Grpc.Network))
 	}
 	if cfg.Server.Grpc.Addr != "" {
-		opts = append(opts, kratosGrpc.Address(cfg.Server.Grpc.Addr))
+		options = append(options, kratosGrpc.Address(cfg.Server.Grpc.Addr))
 	}
 	if cfg.Server.Grpc.Timeout != nil {
-		opts = append(opts, kratosGrpc.Timeout(cfg.Server.Grpc.Timeout.AsDuration()))
+		options = append(options, kratosGrpc.Timeout(cfg.Server.Grpc.Timeout.AsDuration()))
 	}
 
-	srv := kratosGrpc.NewServer(opts...)
-
-	return srv
+	return options
 }

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package conf;
+
+option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
+
+message TLS {
+  message File {
+    optional string cert_path = 1;
+    optional string key_path = 2;
+    optional string ca_path = 3;
+  }
+  message Config {
+    optional bytes cert_pem = 1;
+    optional bytes key_pem = 2;
+    optional bytes ca_pem = 3;
+  }
+
+  optional File file = 1;
+  optional Config config = 2;
+
+  bool insecure_skip_verify = 3;
+}

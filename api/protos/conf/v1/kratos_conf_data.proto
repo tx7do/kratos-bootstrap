@@ -169,25 +169,25 @@ message Data {
     string group_name = 11;
   }
 
-  Database database = 1;  // 数据库DSN
+  optional Database database = 1;  // 数据库DSN
 
-  Redis redis = 10;  // Redis
-  MongoDB mongodb = 11;  // MongoDB数据库
-  ElasticSearch elastic_search = 12;  // ElasticSearch数据库
-  Cassandra cassandra = 13;  // Cassandra数据库
+  optional Redis redis = 10;  // Redis
+  optional MongoDB mongodb = 11;  // MongoDB数据库
+  optional ElasticSearch elastic_search = 12;  // ElasticSearch数据库
+  optional Cassandra cassandra = 13;  // Cassandra数据库
 
-  ClickHouse clickhouse = 20;  // ClickHouse数据库
-  InfluxDB influxdb = 21;  // InfluxDB数据库
-  Doris doris = 22;  // Doris数据库
+  optional ClickHouse clickhouse = 20;  // ClickHouse数据库
+  optional InfluxDB influxdb = 21;  // InfluxDB数据库
+  optional Doris doris = 22;  // Doris数据库
 
   // Message Queue
 
-  Kafka kafka = 30;  // Kafka服务
-  RabbitMQ rabbitmq = 31;  // RabbitMQ服务
-  Mqtt mqtt = 32;  // MQTT服务
-  ActiveMQ activemq = 33; // ActiveMQ
-  NATS nats = 34; // NATS
-  NSQ nsq = 35; // NATS
-  Pulsar pulsar = 36; // Pulsar
-  RocketMQ rocketmq = 38; // RocketMQ
+  optional Kafka kafka = 30;  // Kafka服务
+  optional RabbitMQ rabbitmq = 31;  // RabbitMQ服务
+  optional Mqtt mqtt = 32;  // MQTT服务
+  optional ActiveMQ activemq = 33; // ActiveMQ
+  optional  NATS nats = 34; // NATS
+  optional NSQ nsq = 35; // NATS
+  optional Pulsar pulsar = 36; // Pulsar
+  optional RocketMQ rocketmq = 38; // RocketMQ
 }
