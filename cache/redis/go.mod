@@ -4,11 +4,13 @@ go 1.22.0
 
 toolchain go1.22.1
 
+replace github.com/tx7do/kratos-bootstrap/api => ../../api
+
 require (
 	github.com/go-kratos/kratos/v2 v2.8.2
 	github.com/redis/go-redis/extra/redisotel/v9 v9.7.0
 	github.com/redis/go-redis/v9 v9.7.0
-	github.com/tx7do/kratos-bootstrap/api v0.0.4
+	github.com/tx7do/kratos-bootstrap/api v0.0.5
 )
 
 require (

@@ -8,7 +8,7 @@ replace github.com/tx7do/kratos-bootstrap/api => ../../api
 
 require (
 	github.com/go-kratos/kratos/v2 v2.8.2
-	github.com/tx7do/kratos-bootstrap/api v0.0.4
+	github.com/tx7do/kratos-bootstrap/api v0.0.5
 )
 
 require (

@@ -14,7 +14,7 @@ replace (
 require (
 	github.com/go-kratos/kratos/v2 v2.8.2
 	github.com/hashicorp/consul/api v1.30.0
-	github.com/tx7do/kratos-bootstrap/api v0.0.4
+	github.com/tx7do/kratos-bootstrap/api v0.0.5
 )
 
 require (

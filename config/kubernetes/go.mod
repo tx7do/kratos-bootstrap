@@ -14,7 +14,7 @@ replace (
 require (
 	github.com/go-kratos/kratos/contrib/config/kubernetes/v2 v2.0.0-20241105072421-f8b97f675b32
 	github.com/go-kratos/kratos/v2 v2.8.2
-	github.com/tx7do/kratos-bootstrap/api v0.0.4
+	github.com/tx7do/kratos-bootstrap/api v0.0.5
 	k8s.io/client-go v0.31.2
 )
 

@@ -1,6 +1,3 @@
-go get all
-go mod tidy
-
 cd api
 go get all
 go mod tidy
@@ -86,5 +83,8 @@ go get all
 go mod tidy
 
 cd ../zookeeper
+go get all
+go mod tidy
+
 go get all
 go mod tidy

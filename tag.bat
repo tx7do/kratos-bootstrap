@@ -1,5 +1,3 @@
-git tag v0.3.10
-
 git tag api/v0.0.5 --force
 
 git tag cache/redis/v0.0.5 --force
@@ -27,5 +25,7 @@ git tag registry/nacos/v0.0.5 --force
 git tag registry/polaris/v0.0.5 --force
 git tag registry/servicecomb/v0.0.5 --force
 git tag registry/zookeeper/v0.0.5 --force
+
+git tag v0.3.12
 
 git push origin --tags

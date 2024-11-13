@@ -44,7 +44,7 @@ require (
 	github.com/gorilla/handlers v1.5.2
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.8.1
-	github.com/tx7do/kratos-bootstrap/api v0.0.4
+	github.com/tx7do/kratos-bootstrap/api v0.0.5
 	github.com/tx7do/kratos-bootstrap/config/apollo v0.0.4
 	github.com/tx7do/kratos-bootstrap/config/consul v0.0.4
 	github.com/tx7do/kratos-bootstrap/config/etcd v0.0.4

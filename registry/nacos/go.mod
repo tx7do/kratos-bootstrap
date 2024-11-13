@@ -11,7 +11,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.8.2
 	github.com/nacos-group/nacos-sdk-go v1.1.5
 	github.com/stretchr/testify v1.9.0
-	github.com/tx7do/kratos-bootstrap/api v0.0.4
+	github.com/tx7do/kratos-bootstrap/api v0.0.5
 )
 
 require (
