@@ -86,5 +86,6 @@ cd ../zookeeper
 go get all
 go mod tidy
 
+cd ../../
 go get all
 go mod tidy

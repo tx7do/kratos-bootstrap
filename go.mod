@@ -45,23 +45,23 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.8.1
 	github.com/tx7do/kratos-bootstrap/api v0.0.5
-	github.com/tx7do/kratos-bootstrap/config/apollo v0.0.4
-	github.com/tx7do/kratos-bootstrap/config/consul v0.0.4
-	github.com/tx7do/kratos-bootstrap/config/etcd v0.0.4
-	github.com/tx7do/kratos-bootstrap/config/kubernetes v0.0.4
-	github.com/tx7do/kratos-bootstrap/config/nacos v0.0.4
+	github.com/tx7do/kratos-bootstrap/config/apollo v0.0.5
+	github.com/tx7do/kratos-bootstrap/config/consul v0.0.5
+	github.com/tx7do/kratos-bootstrap/config/etcd v0.0.5
+	github.com/tx7do/kratos-bootstrap/config/kubernetes v0.0.5
+	github.com/tx7do/kratos-bootstrap/config/nacos v0.0.5
 	github.com/tx7do/kratos-bootstrap/config/polaris v0.0.1
-	github.com/tx7do/kratos-bootstrap/logger/fluent v0.0.4
-	github.com/tx7do/kratos-bootstrap/logger/logrus v0.0.4
-	github.com/tx7do/kratos-bootstrap/logger/tencent v0.0.4
-	github.com/tx7do/kratos-bootstrap/logger/zap v0.0.4
-	github.com/tx7do/kratos-bootstrap/registry/consul v0.0.4
-	github.com/tx7do/kratos-bootstrap/registry/etcd v0.0.4
-	github.com/tx7do/kratos-bootstrap/registry/eureka v0.0.4
-	github.com/tx7do/kratos-bootstrap/registry/kubernetes v0.0.4
-	github.com/tx7do/kratos-bootstrap/registry/nacos v0.0.4
-	github.com/tx7do/kratos-bootstrap/registry/servicecomb v0.0.4
-	github.com/tx7do/kratos-bootstrap/registry/zookeeper v0.0.4
+	github.com/tx7do/kratos-bootstrap/logger/fluent v0.0.5
+	github.com/tx7do/kratos-bootstrap/logger/logrus v0.0.5
+	github.com/tx7do/kratos-bootstrap/logger/tencent v0.0.5
+	github.com/tx7do/kratos-bootstrap/logger/zap v0.0.5
+	github.com/tx7do/kratos-bootstrap/registry/consul v0.0.5
+	github.com/tx7do/kratos-bootstrap/registry/etcd v0.0.5
+	github.com/tx7do/kratos-bootstrap/registry/eureka v0.0.5
+	github.com/tx7do/kratos-bootstrap/registry/kubernetes v0.0.5
+	github.com/tx7do/kratos-bootstrap/registry/nacos v0.0.5
+	github.com/tx7do/kratos-bootstrap/registry/servicecomb v0.0.5
+	github.com/tx7do/kratos-bootstrap/registry/zookeeper v0.0.5
 	go.opentelemetry.io/otel v1.32.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.32.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.32.0
