@@ -11,8 +11,6 @@ import (
 	"github.com/tx7do/kratos-bootstrap/logger/tencent"
 	"github.com/tx7do/kratos-bootstrap/logger/zap"
 
-	"github.com/tx7do/kratos-bootstrap/config"
-
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
 
@@ -41,7 +39,7 @@ func NewLogger(cfg *conf.Logger) log.Logger {
 }
 
 // NewLoggerProvider 创建一个新的日志记录器提供者
-func NewLoggerProvider(cfg *conf.Logger, serviceInfo *config.ServiceInfo) log.Logger {
+func NewLoggerProvider(cfg *conf.Logger, serviceInfo *utils.ServiceInfo) log.Logger {
 	l := NewLogger(cfg)
 
 	return log.With(

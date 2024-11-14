@@ -3,6 +3,7 @@ package tracer
 import (
 	"context"
 	"errors"
+	"github.com/tx7do/kratos-bootstrap/utils"
 
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
@@ -17,7 +18,6 @@ import (
 	semConv "go.opentelemetry.io/otel/semconv/v1.4.0"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"github.com/tx7do/kratos-bootstrap/config"
 )
 
 // NewTracerExporter 创建一个导出器，支持：zipkin、otlp-http、otlp-grpc
@@ -41,7 +41,7 @@ func NewTracerExporter(exporterName, endpoint string, insecure bool) (traceSdk.S
 }
 
 // NewTracerProvider 创建一个链路追踪器
-func NewTracerProvider(cfg *conf.Tracer, serviceInfo *config.ServiceInfo) error {
+func NewTracerProvider(cfg *conf.Tracer, serviceInfo *utils.ServiceInfo) error {
 	if cfg == nil {
 		return errors.New("tracer config is nil")
 	}

@@ -2,9 +2,8 @@ package config
 
 import (
 	"github.com/go-kratos/kratos/v2/config"
-	"github.com/go-kratos/kratos/v2/log"
-
 	fileKratos "github.com/go-kratos/kratos/v2/config/file"
+	"github.com/go-kratos/kratos/v2/log"
 
 	"github.com/tx7do/kratos-bootstrap/config/apollo"
 	"github.com/tx7do/kratos-bootstrap/config/consul"
@@ -14,6 +13,7 @@ import (
 	"github.com/tx7do/kratos-bootstrap/config/polaris"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
+	"github.com/tx7do/kratos-bootstrap/utils"
 )
 
 // NewRemoteConfigSource 创建一个远程配置源
@@ -98,7 +98,7 @@ func scanConfigs(cfg config.Config) error {
 // LoadRemoteConfigSourceConfigs 加载远程配置源的本地配置
 func LoadRemoteConfigSourceConfigs(configPath string) (error, *conf.RemoteConfig) {
 	configPath = configPath + "/" + remoteConfigSourceConfigFile
-	if !pathExists(configPath) {
+	if !utils.PathExists(configPath) {
 		return nil, nil
 	}
 

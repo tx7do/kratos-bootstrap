@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"fmt"
+	"github.com/tx7do/kratos-bootstrap/utils"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
@@ -40,7 +41,7 @@ func NewApp(ll log.Logger, rr kratosRegistry.Registrar, srv ...transport.Server)
 }
 
 // DoBootstrap 执行引导
-func DoBootstrap(serviceInfo *config.ServiceInfo) (*conf.Bootstrap, log.Logger, kratosRegistry.Registrar) {
+func DoBootstrap(serviceInfo *utils.ServiceInfo) (*conf.Bootstrap, log.Logger, kratosRegistry.Registrar) {
 	// inject command flags
 	Flags := config.NewCommandFlags()
 	Flags.Init()

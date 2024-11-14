@@ -10,15 +10,13 @@ replace (
 
 	github.com/tx7do/kratos-bootstrap/api => ../api
 
-	github.com/tx7do/kratos-bootstrap/cache/redis => ../cache/redis
-
 	github.com/tx7do/kratos-bootstrap/config => ../config
-
 	github.com/tx7do/kratos-bootstrap/logger => ../logger
-
-	github.com/tx7do/kratos-bootstrap/oss/minio => ../oss/minio
-
 	github.com/tx7do/kratos-bootstrap/registry => ../registry
+	github.com/tx7do/kratos-bootstrap/tracer => ../tracer
+	github.com/tx7do/kratos-bootstrap/rpc => ../rpc
+	github.com/tx7do/kratos-bootstrap/cache/redis => ../cache/redis
+	github.com/tx7do/kratos-bootstrap/oss/minio => ../oss/minio
 )
 
 require (
