@@ -2,7 +2,6 @@ package bootstrap
 
 import (
 	"fmt"
-	"github.com/tx7do/kratos-bootstrap/utils"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
@@ -15,6 +14,7 @@ import (
 	"github.com/tx7do/kratos-bootstrap/tracer"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
+	"github.com/tx7do/kratos-bootstrap/utils"
 )
 
 var (

@@ -1,5 +1,7 @@
 git tag api/v0.0.5 --force
 
+git tag utils/v0.1.0 --force
+
 git tag cache/redis/v0.0.5 --force
 git tag oss/minio/v0.0.5 --force
 git tag registry/v0.0.5 --force

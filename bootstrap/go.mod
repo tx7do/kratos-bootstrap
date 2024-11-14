@@ -9,6 +9,7 @@ replace (
 	github.com/imdario/mergo => dario.cat/mergo v0.3.16
 
 	github.com/tx7do/kratos-bootstrap/api => ../api
+	github.com/tx7do/kratos-bootstrap/utils => ../utils
 
 	github.com/tx7do/kratos-bootstrap/config => ../config
 	github.com/tx7do/kratos-bootstrap/logger => ../logger
@@ -24,7 +25,6 @@ require (
 	github.com/google/subcommands v1.2.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.8.1
-	github.com/tx7do/kratos-bootstrap v0.3.14
 	github.com/tx7do/kratos-bootstrap/api v0.0.5
 	golang.org/x/tools v0.27.0
 )

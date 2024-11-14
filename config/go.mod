@@ -9,6 +9,7 @@ replace (
 	github.com/imdario/mergo => dario.cat/mergo v0.3.16
 
 	github.com/tx7do/kratos-bootstrap/api => ../api
+	github.com/tx7do/kratos-bootstrap/utils => ../utils
 )
 
 require (
@@ -19,8 +20,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.8.2
 	github.com/hashicorp/consul/api v1.30.0
 	github.com/nacos-group/nacos-sdk-go v1.1.5
-	github.com/tx7do/kratos-bootstrap v0.4.0
-	github.com/tx7do/kratos-bootstrap/api v0.0.0-00010101000000-000000000000
+	github.com/tx7do/kratos-bootstrap/api v0.0.5
 	go.etcd.io/etcd/client/v3 v3.5.17
 	google.golang.org/grpc v1.68.0
 	k8s.io/client-go v0.31.2
@@ -81,6 +81,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.11.0 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
+	github.com/tx7do/kratos-bootstrap/utils v0.1.0
 	github.com/x448/float16 v0.8.4 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.17 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.17 // indirect

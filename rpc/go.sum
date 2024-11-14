@@ -65,8 +65,8 @@ github.com/tklauser/go-sysconf v0.3.14 h1:g5vzr9iPFFz24v2KZXs/pvpvh8/V9Fw6vQK5ZZ
 github.com/tklauser/go-sysconf v0.3.14/go.mod h1:1ym4lWMLUOhuBOPGtRcJm7tEGX4SCYNEEEtghGG/8uY=
 github.com/tklauser/numcpus v0.9.0 h1:lmyCHtANi8aRUgkckBgoDk1nHCux3n2cgkJLXdQGPDo=
 github.com/tklauser/numcpus v0.9.0/go.mod h1:SN6Nq1O3VychhC1npsWostA+oW+VOQTxZrS604NSRyI=
-github.com/tx7do/kratos-bootstrap v0.4.0 h1:BOs6ia6zYDzc2gaR5ozIAzDsu8oEAxF5AjMVnuFG2wY=
-github.com/tx7do/kratos-bootstrap v0.4.0/go.mod h1:x8IzH9WzFOnc4PQhkISuqVTAQRyM4SL1fQ8Ond2axwU=
+github.com/tx7do/kratos-bootstrap/utils v0.1.0 h1:nY1VtIVnnGsOSj4HVhjFBk3qTxjIKDPV7lVR8ZT+gFk=
+github.com/tx7do/kratos-bootstrap/utils v0.1.0/go.mod h1:AuXQsL0dtIoOKmAaxiJnBg/9inx7kXX/z7YQeLJ1qmw=
 github.com/yusufpapurcu/wmi v1.2.4 h1:zFUKzehAFReQwLys1b/iSMl+JQGSCSjtVqQn9bBrPo0=
 github.com/yusufpapurcu/wmi v1.2.4/go.mod h1:SBZ9tNy3G9/m5Oi98Zks0QjeHVDvuK0qfxQmPyzfmi0=
 go.opentelemetry.io/otel v1.32.0 h1:WnBN+Xjcteh0zdk01SVqV55d/m62NJLJdIyb4y/WO5U=
