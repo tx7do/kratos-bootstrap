@@ -12,6 +12,7 @@ import (
 	"github.com/tx7do/kratos-bootstrap/logger/zap"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
+	"github.com/tx7do/kratos-bootstrap/utils"
 )
 
 // NewLogger 创建一个新的日志记录器

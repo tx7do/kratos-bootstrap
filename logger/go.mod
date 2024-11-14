@@ -9,6 +9,7 @@ replace (
 	github.com/imdario/mergo => dario.cat/mergo v0.3.16
 
 	github.com/tx7do/kratos-bootstrap/api => ../api
+	github.com/tx7do/kratos-bootstrap/utils => ../utils
 )
 
 require (
@@ -19,7 +20,8 @@ require (
 	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20241105072421-f8b97f675b32
 	github.com/go-kratos/kratos/v2 v2.8.2
 	github.com/sirupsen/logrus v1.9.3
-	github.com/tx7do/kratos-bootstrap/api v0.0.5
+	github.com/tx7do/kratos-bootstrap/api v0.0.7
+	github.com/tx7do/kratos-bootstrap/utils v0.1.0
 	go.uber.org/zap v1.27.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
