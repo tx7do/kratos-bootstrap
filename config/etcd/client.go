@@ -25,6 +25,10 @@ func getConfigKey(configKey string, useBackslash bool) string {
 
 // NewConfigSource 创建一个远程配置源 - Etcd
 func NewConfigSource(c *conf.RemoteConfig) config.Source {
+	if c == nil || c.Etcd == nil {
+		return nil
+	}
+
 	cfg := etcdClient.Config{
 		Endpoints:   c.Etcd.Endpoints,
 		DialTimeout: c.Etcd.Timeout.AsDuration(),

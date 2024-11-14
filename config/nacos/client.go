@@ -25,6 +25,10 @@ func getConfigKey(configKey string, useBackslash bool) string {
 
 // NewConfigSource 创建一个远程配置源 - Nacos
 func NewConfigSource(c *conf.RemoteConfig) config.Source {
+	if c == nil || c.Nacos == nil {
+		return nil
+	}
+
 	srvConf := []nacosConstant.ServerConfig{
 		*nacosConstant.NewServerConfig(c.Nacos.Address, c.Nacos.Port),
 	}

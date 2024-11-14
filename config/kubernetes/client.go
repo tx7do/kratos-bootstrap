@@ -13,6 +13,10 @@ import (
 
 // NewConfigSource 创建一个远程配置源 - Kubernetes
 func NewConfigSource(c *conf.RemoteConfig) config.Source {
+	if c == nil || c.Kubernetes == nil {
+		return nil
+	}
+
 	source := k8sKratos.NewSource(
 		k8sKratos.Namespace(c.Kubernetes.Namespace),
 		k8sKratos.LabelSelector(""),

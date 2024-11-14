@@ -2,18 +2,22 @@ package zap
 
 import (
 	zapLogger "github.com/go-kratos/kratos/contrib/log/zap/v2"
-
 	"github.com/go-kratos/kratos/v2/log"
-
-	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
 	"gopkg.in/natefinch/lumberjack.v2"
+
+	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
 
 // NewLogger 创建一个新的日志记录器 - Zap
 func NewLogger(cfg *conf.Logger) log.Logger {
+	if cfg == nil || cfg.Zap == nil {
+		return nil
+	}
+
 	encoderConfig := zap.NewProductionEncoderConfig()
 	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	encoderConfig.TimeKey = "time"

@@ -22,6 +22,10 @@ func getConfigKey(configKey string, useBackslash bool) string {
 
 // NewConfigSource 创建一个远程配置源 - Consul
 func NewConfigSource(c *conf.RemoteConfig) config.Source {
+	if c == nil || c.Consul == nil {
+		return nil
+	}
+
 	cfg := consulApi.DefaultConfig()
 	cfg.Address = c.Consul.Address
 	cfg.Scheme = c.Consul.Scheme
