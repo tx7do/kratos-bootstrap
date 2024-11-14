@@ -16,6 +16,10 @@ import (
 
 // NewGormClient 创建GORM数据库客户端
 func NewGormClient(cfg *conf.Bootstrap, l *log.Helper, migrates []interface{}) *gorm.DB {
+	if cfg.Data == nil || cfg.Data.Database == nil {
+		l.Warn("database config is nil")
+		return nil
+	}
 
 	var driver gorm.Dialector
 	switch cfg.Data.Database.Driver {

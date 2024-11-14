@@ -13,6 +13,10 @@ import (
 
 // NewEntClient 创建Ent ORM数据库客户端
 func NewEntClient[T ClientInterface](cfg *conf.Bootstrap, l *log.Helper, db T) *ClientWrapper[T] {
+	if cfg.Data == nil || cfg.Data.Database == nil {
+		l.Warn("database config is nil")
+		return nil
+	}
 
 	drv, err := CreateDriver(
 		cfg.Data.Database.GetDriver(),
