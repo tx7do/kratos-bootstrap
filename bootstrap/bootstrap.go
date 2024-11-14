@@ -18,7 +18,7 @@ import (
 )
 
 var (
-	Service = config.NewServiceInfo(
+	Service = utils.NewServiceInfo(
 		"",
 		"1.0.0",
 		"",
