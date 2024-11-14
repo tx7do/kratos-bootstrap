@@ -9,15 +9,12 @@ replace (
 	github.com/imdario/mergo => dario.cat/mergo v0.3.16
 
 	github.com/tx7do/kratos-bootstrap/api => ../api
-	github.com/tx7do/kratos-bootstrap/utils => ../utils
 
 	github.com/tx7do/kratos-bootstrap/config => ../config
 	github.com/tx7do/kratos-bootstrap/logger => ../logger
 	github.com/tx7do/kratos-bootstrap/registry => ../registry
 	github.com/tx7do/kratos-bootstrap/tracer => ../tracer
-	github.com/tx7do/kratos-bootstrap/rpc => ../rpc
-	github.com/tx7do/kratos-bootstrap/cache/redis => ../cache/redis
-	github.com/tx7do/kratos-bootstrap/oss/minio => ../oss/minio
+	github.com/tx7do/kratos-bootstrap/utils => ../utils
 )
 
 require (
@@ -26,6 +23,11 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.8.1
 	github.com/tx7do/kratos-bootstrap/api v0.0.5
+	github.com/tx7do/kratos-bootstrap/config v0.0.5
+	github.com/tx7do/kratos-bootstrap/logger v0.0.5
+	github.com/tx7do/kratos-bootstrap/registry v0.0.5
+	github.com/tx7do/kratos-bootstrap/tracer v0.0.5
+	github.com/tx7do/kratos-bootstrap/utils v0.1.0
 	golang.org/x/tools v0.27.0
 )
 
@@ -130,23 +132,6 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tencentcloud/tencentcloud-cls-sdk-go v1.0.11 // indirect
 	github.com/tinylib/msgp v1.2.4 // indirect
-	github.com/tx7do/kratos-bootstrap/config/apollo v0.0.5 // indirect
-	github.com/tx7do/kratos-bootstrap/config/consul v0.0.5 // indirect
-	github.com/tx7do/kratos-bootstrap/config/etcd v0.0.5 // indirect
-	github.com/tx7do/kratos-bootstrap/config/kubernetes v0.0.5 // indirect
-	github.com/tx7do/kratos-bootstrap/config/nacos v0.0.5 // indirect
-	github.com/tx7do/kratos-bootstrap/config/polaris v0.0.1 // indirect
-	github.com/tx7do/kratos-bootstrap/logger/fluent v0.0.5 // indirect
-	github.com/tx7do/kratos-bootstrap/logger/logrus v0.0.5 // indirect
-	github.com/tx7do/kratos-bootstrap/logger/tencent v0.0.5 // indirect
-	github.com/tx7do/kratos-bootstrap/logger/zap v0.0.5 // indirect
-	github.com/tx7do/kratos-bootstrap/registry/consul v0.0.5 // indirect
-	github.com/tx7do/kratos-bootstrap/registry/etcd v0.0.5 // indirect
-	github.com/tx7do/kratos-bootstrap/registry/eureka v0.0.5 // indirect
-	github.com/tx7do/kratos-bootstrap/registry/kubernetes v0.0.5 // indirect
-	github.com/tx7do/kratos-bootstrap/registry/nacos v0.0.5 // indirect
-	github.com/tx7do/kratos-bootstrap/registry/servicecomb v0.0.5 // indirect
-	github.com/tx7do/kratos-bootstrap/registry/zookeeper v0.0.5 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.17 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.17 // indirect
@@ -173,8 +158,8 @@ require (
 	golang.org/x/term v0.26.0 // indirect
 	golang.org/x/text v0.20.0 // indirect
 	golang.org/x/time v0.8.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20241104194629-dd2ea8efbc28 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20241104194629-dd2ea8efbc28 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20241113202542-65e8d215514f // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241113202542-65e8d215514f // indirect
 	google.golang.org/grpc v1.68.0 // indirect
 	google.golang.org/protobuf v1.35.1 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
