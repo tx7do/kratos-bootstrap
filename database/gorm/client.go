@@ -73,20 +73,16 @@ func NewGormClient(cfg *conf.Bootstrap, l *log.Helper, migrates []interface{}) *
 	}
 
 	if cfg.Data.Database.GetEnableMetrics() {
-		db.Use(prometheus.New(prometheus.Config{
-			DBName:          "db1",                       // `DBName` as metrics label
-			RefreshInterval: 15,                          // refresh metrics interval (default 15 seconds)
-			PushAddr:        "prometheus pusher address", // push metrics if `PushAddr` configured
-			StartServer:     true,                        // start http server to expose metrics
-			HTTPServerPort:  8080,                        // configure http server port, default port 8080 (if you have configured multiple instances, only the first `HTTPServerPort` will be used to start server)
-			MetricsCollector: []prometheus.MetricsCollector{
-				&prometheus.MySQL{VariableNames: []string{"Threads_running"}},
-			},
-			Labels: map[string]string{
-				"instance": "127.0.0.1", // config custom labels if necessary
-			},
-		}))
-
+		if err = db.Use(prometheus.New(prometheus.Config{
+			RefreshInterval: 15,                                        // refresh metrics interval (default 15 seconds)
+			StartServer:     true,                                      // start http server to expose metrics
+			DBName:          cfg.Data.Database.GetPrometheusDbName(),   // `DBName` as metrics label
+			PushAddr:        cfg.Data.Database.GetPrometheusPushAddr(), // push metrics if `PushAddr` configured
+			HTTPServerPort:  cfg.Data.Database.GetPrometheusHttpPort(), // configure http server port, default port 8080 (if you have configured multiple instances, only the first `HTTPServerPort` will be used to start server)
+		})); err != nil {
+			l.Fatalf("failed enable metrics: %v", err)
+			return nil
+		}
 	}
 
 	sqlDB, err := db.DB()
