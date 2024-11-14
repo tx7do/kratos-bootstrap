@@ -31,11 +31,15 @@ func NewEntClient[T ClientInterface](cfg *conf.Bootstrap, l *log.Helper, db T) *
 
 	wrapperClient := NewEntClientWrapper(db, drv)
 
-	wrapperClient.SetConnectionOption(
-		int(cfg.Data.Database.GetMaxIdleConnections()),
-		int(cfg.Data.Database.GetMaxOpenConnections()),
-		cfg.Data.Database.GetConnectionMaxLifetime().AsDuration(),
-	)
+	if cfg.Data.Database.MaxIdleConnections != nil &&
+		cfg.Data.Database.MaxOpenConnections != nil &&
+		cfg.Data.Database.ConnectionMaxLifetime != nil {
+		wrapperClient.SetConnectionOption(
+			int(cfg.Data.Database.GetMaxIdleConnections()),
+			int(cfg.Data.Database.GetMaxOpenConnections()),
+			cfg.Data.Database.GetConnectionMaxLifetime().AsDuration(),
+		)
+	}
 
 	return wrapperClient
 }

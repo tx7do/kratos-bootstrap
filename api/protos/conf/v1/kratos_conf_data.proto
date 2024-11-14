@@ -20,9 +20,13 @@ message Data {
     bool enable_trace = 12; // 链路追踪开关
     bool enable_metrics = 13; // 性能分析开关
 
-    int32 max_idle_connections = 20; // 连接池最大空闲连接数
-    int32 max_open_connections = 21; // 连接池最大打开连接数
-    google.protobuf.Duration connection_max_lifetime = 22; // 连接可重用的最大时间长度
+    optional int32 max_idle_connections = 20; // 连接池最大空闲连接数
+    optional int32 max_open_connections = 21; // 连接池最大打开连接数
+    optional google.protobuf.Duration connection_max_lifetime = 22; // 连接可重用的最大时间长度
+
+    optional string prometheus_push_addr = 30;
+    optional string prometheus_db_name = 31;
+    optional uint32 prometheus_http_port = 32;
   }
 
   // redis
