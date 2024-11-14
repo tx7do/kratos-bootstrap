@@ -22,9 +22,9 @@ require (
 	github.com/google/subcommands v1.2.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.8.1
-	github.com/tx7do/kratos-bootstrap/api v0.0.5
+	github.com/tx7do/kratos-bootstrap/api v0.0.7
 	github.com/tx7do/kratos-bootstrap/config v0.0.5
-	github.com/tx7do/kratos-bootstrap/logger v0.0.5
+	github.com/tx7do/kratos-bootstrap/logger v0.0.6
 	github.com/tx7do/kratos-bootstrap/registry v0.0.5
 	github.com/tx7do/kratos-bootstrap/tracer v0.0.5
 	github.com/tx7do/kratos-bootstrap/utils v0.1.0
@@ -173,6 +173,6 @@ require (
 	k8s.io/kube-openapi v0.0.0-20241105132330-32ad38e42d3f // indirect
 	k8s.io/utils v0.0.0-20241104163129-6fe5fd82f078 // indirect
 	sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8 // indirect
-	sigs.k8s.io/structured-merge-diff/v4 v4.4.2 // indirect
+	sigs.k8s.io/structured-merge-diff/v4 v4.4.3 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
