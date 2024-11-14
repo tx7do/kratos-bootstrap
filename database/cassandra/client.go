@@ -8,6 +8,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
+	"github.com/tx7do/kratos-bootstrap/utils"
 )
 
 func NewCassandraClient(cfg *conf.Bootstrap, l *log.Helper) *gocql.Session {
@@ -27,7 +28,35 @@ func NewCassandraClient(cfg *conf.Bootstrap, l *log.Helper) *gocql.Session {
 	clusterConfig.Keyspace = cfg.Data.Cassandra.Keyspace
 
 	// 设置ssl
-	clusterConfig.SslOpts = &gocql.SslOptions{Config: &tls.Config{MinVersion: tls.VersionTLS12}}
+	if cfg.Data.Cassandra.Tls != nil {
+		var tlsCfg *tls.Config
+		var err error
+
+		if cfg.Data.Cassandra.Tls.File != nil {
+			if tlsCfg, err = utils.LoadServerTlsConfigFile(
+				cfg.Data.Cassandra.Tls.File.GetKeyPath(),
+				cfg.Data.Cassandra.Tls.File.GetCertPath(),
+				cfg.Data.Cassandra.Tls.File.GetCaPath(),
+				cfg.Data.Cassandra.Tls.InsecureSkipVerify,
+			); err != nil {
+				panic(err)
+			}
+		}
+		if tlsCfg == nil && cfg.Data.Cassandra.Tls.Config != nil {
+			if tlsCfg, err = utils.LoadServerTlsConfig(
+				cfg.Data.Cassandra.Tls.Config.GetKeyPem(),
+				cfg.Data.Cassandra.Tls.Config.GetCertPem(),
+				cfg.Data.Cassandra.Tls.Config.GetCaPem(),
+				cfg.Data.Cassandra.Tls.InsecureSkipVerify,
+			); err != nil {
+				panic(err)
+			}
+		}
+
+		if tlsCfg != nil {
+			clusterConfig.SslOpts = &gocql.SslOptions{Config: tlsCfg}
+		}
+	}
 
 	// 设置超时时间
 	clusterConfig.ConnectTimeout = cfg.Data.Cassandra.ConnectTimeout.AsDuration()

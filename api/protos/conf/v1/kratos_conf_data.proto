@@ -67,6 +67,7 @@ message Data {
     int32 max_open_connections = 16; // 连接池最大打开连接数
     google.protobuf.Duration connection_max_lifetime = 17; // 连接可重用的最大时间长度
     string protocol = 18;
+    TLS tls = 19;  // TLS配置
   }
 
   // InfluxDB

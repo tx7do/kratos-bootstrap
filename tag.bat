@@ -1,4 +1,4 @@
-git tag api/v0.0.6 --force
+git tag api/v0.0.7 --force
 
 git tag utils/v0.1.0 --force
 
@@ -15,6 +15,7 @@ git tag database/gorm/v0.0.1 --force
 git tag database/mongodb/v0.0.1 --force
 git tag database/influxdb/v0.0.1 --force
 git tag database/cassandra/v0.0.1 --force
+git tag database/clickhouse/v0.0.1 --force
 
 git tag bootstrap/v0.0.5 --force
 
