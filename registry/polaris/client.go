@@ -1,11 +1,10 @@
 package polaris
 
 import (
+	polarisKratos "github.com/go-kratos/kratos/contrib/registry/polaris/v2"
 	"github.com/go-kratos/kratos/v2/log"
 
-	polarisKratos "github.com/go-kratos/kratos/contrib/registry/polaris/v2"
-
-	polarisApi "github.com/polarismesh/polaris-go"
+	polarisApi "github.com/polarismesh/polaris-go/api"
 	polarisModel "github.com/polarismesh/polaris-go/pkg/model"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
@@ -13,6 +12,10 @@ import (
 
 // NewPolarisRegistry 创建一个注册发现客户端 - Polaris
 func NewPolarisRegistry(c *conf.Registry) *polarisKratos.Registry {
+	if c == nil || c.Polaris == nil {
+		return nil
+	}
+
 	var err error
 
 	var consumer polarisApi.ConsumerAPI

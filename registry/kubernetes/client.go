@@ -3,9 +3,9 @@ package kubernetes
 import (
 	"path/filepath"
 
+	k8sRegistry "github.com/go-kratos/kratos/contrib/registry/kubernetes/v2"
 	"github.com/go-kratos/kratos/v2/log"
 
-	k8sRegistry "github.com/go-kratos/kratos/contrib/registry/kubernetes/v2"
 	k8s "k8s.io/client-go/kubernetes"
 	k8sRest "k8s.io/client-go/rest"
 	k8sTools "k8s.io/client-go/tools/clientcmd"
@@ -15,7 +15,11 @@ import (
 )
 
 // NewRegistry 创建一个注册发现客户端 - Kubernetes
-func NewRegistry(_ *conf.Registry) *k8sRegistry.Registry {
+func NewRegistry(cfg *conf.Registry) *k8sRegistry.Registry {
+	if cfg == nil || cfg.Kubernetes == nil {
+		return nil
+	}
+
 	restConfig, err := k8sRest.InClusterConfig()
 	if err != nil {
 		home := k8sUtil.HomeDir()
@@ -33,7 +37,8 @@ func NewRegistry(_ *conf.Registry) *k8sRegistry.Registry {
 		return nil
 	}
 
-	reg := k8sRegistry.NewRegistry(clientSet)
+	var namespace string
+	reg := k8sRegistry.NewRegistry(clientSet, namespace)
 
 	return reg
 }

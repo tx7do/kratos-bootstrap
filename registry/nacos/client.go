@@ -1,9 +1,9 @@
 package nacos
 
 import (
+	nacosKratos "github.com/go-kratos/kratos/contrib/registry/nacos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 
-	nacosKratos "github.com/go-kratos/kratos/contrib/registry/nacos/v2"
 	nacosClients "github.com/nacos-group/nacos-sdk-go/clients"
 	nacosConstant "github.com/nacos-group/nacos-sdk-go/common/constant"
 	nacosVo "github.com/nacos-group/nacos-sdk-go/vo"
@@ -13,6 +13,10 @@ import (
 
 // NewRegistry 创建一个注册发现客户端 - Nacos
 func NewRegistry(c *conf.Registry) *nacosKratos.Registry {
+	if c == nil || c.Nacos == nil {
+		return nil
+	}
+
 	srvConf := []nacosConstant.ServerConfig{
 		*nacosConstant.NewServerConfig(c.Nacos.Address, c.Nacos.Port),
 	}
