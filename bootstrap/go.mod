@@ -22,7 +22,7 @@ require (
 	github.com/google/subcommands v1.2.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.8.1
-	github.com/tx7do/kratos-bootstrap/api v0.0.8
+	github.com/tx7do/kratos-bootstrap/api v0.0.9
 	github.com/tx7do/kratos-bootstrap/config v0.0.8
 	github.com/tx7do/kratos-bootstrap/logger v0.0.8
 	github.com/tx7do/kratos-bootstrap/registry v0.0.8
