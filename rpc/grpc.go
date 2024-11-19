@@ -85,23 +85,8 @@ func initGrpcClientConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []k
 		var tlsCfg *tls.Config
 		var err error
 
-		if cfg.Client.Grpc.Tls.File != nil {
-			if tlsCfg, err = utils.LoadClientTlsConfigFile(
-				cfg.Client.Grpc.Tls.File.GetKeyPath(),
-				cfg.Client.Grpc.Tls.File.GetCertPath(),
-				cfg.Client.Grpc.Tls.File.GetCaPath(),
-			); err != nil {
-				panic(err)
-			}
-		}
-		if tlsCfg == nil && cfg.Client.Grpc.Tls.Config != nil {
-			if tlsCfg, err = utils.LoadClientTlsConfig(
-				cfg.Client.Grpc.Tls.Config.GetKeyPem(),
-				cfg.Client.Grpc.Tls.Config.GetCertPem(),
-				cfg.Client.Grpc.Tls.Config.GetCaPem(),
-			); err != nil {
-				panic(err)
-			}
+		if tlsCfg, err = utils.LoadClientTlsConfig(cfg.Client.Grpc.Tls); err != nil {
+			panic(err)
 		}
 
 		if tlsCfg != nil {
@@ -159,25 +144,8 @@ func initGrpcServerConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []k
 		var tlsCfg *tls.Config
 		var err error
 
-		if cfg.Server.Grpc.Tls.File != nil {
-			if tlsCfg, err = utils.LoadServerTlsConfigFile(
-				cfg.Server.Grpc.Tls.File.GetKeyPath(),
-				cfg.Server.Grpc.Tls.File.GetCertPath(),
-				cfg.Server.Grpc.Tls.File.GetCaPath(),
-				cfg.Server.Grpc.Tls.InsecureSkipVerify,
-			); err != nil {
-				panic(err)
-			}
-		}
-		if tlsCfg == nil && cfg.Server.Grpc.Tls.Config != nil {
-			if tlsCfg, err = utils.LoadServerTlsConfig(
-				cfg.Server.Grpc.Tls.Config.GetKeyPem(),
-				cfg.Server.Grpc.Tls.Config.GetCertPem(),
-				cfg.Server.Grpc.Tls.Config.GetCaPem(),
-				cfg.Server.Grpc.Tls.InsecureSkipVerify,
-			); err != nil {
-				panic(err)
-			}
+		if tlsCfg, err = utils.LoadServerTlsConfig(cfg.Server.Grpc.Tls); err != nil {
+			panic(err)
 		}
 
 		if tlsCfg != nil {

@@ -2,90 +2,66 @@ cd api
 go get all
 go mod tidy
 
+cd ../utils
+go get all
+go mod tidy
+
 cd ../cache/redis
 go get all
 go mod tidy
 
-cd ../../config/apollo
+cd ../../logger
 go get all
 go mod tidy
 
-cd ../consul
+cd ../registry
 go get all
 go mod tidy
 
-cd ../etcd
+cd ../tracer
 go get all
 go mod tidy
 
-cd ../kubernetes
+cd ../config
 go get all
 go mod tidy
 
-cd ../nacos
+cd ../oss/minio
 go get all
 go mod tidy
 
-cd ../polaris
+cd ../../database/cassandra
 go get all
 go mod tidy
 
-cd ../../logger/aliyun
+cd ../clickhouse
 go get all
 go mod tidy
 
-cd ../fluent
+cd ../ent
 go get all
 go mod tidy
 
-cd ../logrus
+cd ../gorm
 go get all
 go mod tidy
 
-cd ../tencent
+cd ../influxdb
 go get all
 go mod tidy
 
-cd ../zap
+cd ../mongodb
 go get all
 go mod tidy
 
-cd ../../oss/minio
+cd ../../rpc
 go get all
 go mod tidy
 
-cd ../../registry/consul
+cd ../bootstrap
 go get all
 go mod tidy
 
-cd ../etcd
-go get all
-go mod tidy
-
-cd ../eureka
-go get all
-go mod tidy
-
-cd ../kubernetes
-go get all
-go mod tidy
-
-cd ../nacos
-go get all
-go mod tidy
-
-cd ../polaris
-go get all
-go mod tidy
-
-cd ../servicecomb
-go get all
-go mod tidy
-
-cd ../zookeeper
-go get all
-go mod tidy
-
-cd ../../
+cd ../
 go get all
 go mod tidy

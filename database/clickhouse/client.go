@@ -36,25 +36,8 @@ func NewClickHouseClient(cfg *conf.Bootstrap, l *log.Helper) clickhouse.Conn {
 		var tlsCfg *tls.Config
 		var err error
 
-		if cfg.Data.Clickhouse.Tls.File != nil {
-			if tlsCfg, err = utils.LoadServerTlsConfigFile(
-				cfg.Data.Clickhouse.Tls.File.GetKeyPath(),
-				cfg.Data.Clickhouse.Tls.File.GetCertPath(),
-				cfg.Data.Clickhouse.Tls.File.GetCaPath(),
-				cfg.Data.Clickhouse.Tls.InsecureSkipVerify,
-			); err != nil {
-				panic(err)
-			}
-		}
-		if tlsCfg == nil && cfg.Data.Clickhouse.Tls.Config != nil {
-			if tlsCfg, err = utils.LoadServerTlsConfig(
-				cfg.Data.Clickhouse.Tls.Config.GetKeyPem(),
-				cfg.Data.Clickhouse.Tls.Config.GetCertPem(),
-				cfg.Data.Clickhouse.Tls.Config.GetCaPem(),
-				cfg.Data.Clickhouse.Tls.InsecureSkipVerify,
-			); err != nil {
-				panic(err)
-			}
+		if tlsCfg, err = utils.LoadServerTlsConfig(cfg.Data.Clickhouse.Tls); err != nil {
+			panic(err)
 		}
 
 		if tlsCfg != nil {

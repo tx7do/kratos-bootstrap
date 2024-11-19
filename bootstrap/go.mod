@@ -22,18 +22,18 @@ require (
 	github.com/google/subcommands v1.2.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.8.1
-	github.com/tx7do/kratos-bootstrap/api v0.0.7
+	github.com/tx7do/kratos-bootstrap/api v0.0.8
 	github.com/tx7do/kratos-bootstrap/config v0.0.7
 	github.com/tx7do/kratos-bootstrap/logger v0.0.7
 	github.com/tx7do/kratos-bootstrap/registry v0.0.7
 	github.com/tx7do/kratos-bootstrap/tracer v0.0.5
-	github.com/tx7do/kratos-bootstrap/utils v0.1.0
+	github.com/tx7do/kratos-bootstrap/utils v0.1.2
 	golang.org/x/tools v0.27.0
 )
 
 require (
 	dario.cat/mergo v1.0.1 // indirect
-	github.com/aliyun/alibaba-cloud-sdk-go v1.63.51 // indirect
+	github.com/aliyun/alibaba-cloud-sdk-go v1.63.52 // indirect
 	github.com/apolloconfig/agollo/v4 v4.4.0 // indirect
 	github.com/armon/go-metrics v0.5.3 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
@@ -77,7 +77,6 @@ require (
 	github.com/go-zookeeper/zk v1.0.4 // indirect
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/gnostic-models v0.6.9-0.20230804172637-c7be7c783f49 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
@@ -159,10 +158,10 @@ require (
 	golang.org/x/term v0.26.0 // indirect
 	golang.org/x/text v0.20.0 // indirect
 	golang.org/x/time v0.8.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20241113202542-65e8d215514f // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20241113202542-65e8d215514f // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20241118233622-e639e219e697 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241118233622-e639e219e697 // indirect
 	google.golang.org/grpc v1.68.0 // indirect
-	google.golang.org/protobuf v1.35.1 // indirect
+	google.golang.org/protobuf v1.35.2 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect

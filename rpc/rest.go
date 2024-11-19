@@ -90,25 +90,8 @@ func initRestConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []kratosR
 		var tlsCfg *tls.Config
 		var err error
 
-		if cfg.Server.Rest.Tls.File != nil {
-			if tlsCfg, err = utils.LoadServerTlsConfigFile(
-				cfg.Server.Rest.Tls.File.GetKeyPath(),
-				cfg.Server.Rest.Tls.File.GetCertPath(),
-				cfg.Server.Rest.Tls.File.GetCaPath(),
-				cfg.Server.Rest.Tls.InsecureSkipVerify,
-			); err != nil {
-				panic(err)
-			}
-		}
-		if tlsCfg == nil && cfg.Server.Rest.Tls.Config != nil {
-			if tlsCfg, err = utils.LoadServerTlsConfig(
-				cfg.Server.Rest.Tls.Config.GetKeyPem(),
-				cfg.Server.Rest.Tls.Config.GetCertPem(),
-				cfg.Server.Rest.Tls.Config.GetCaPem(),
-				cfg.Server.Rest.Tls.InsecureSkipVerify,
-			); err != nil {
-				panic(err)
-			}
+		if tlsCfg, err = utils.LoadServerTlsConfig(cfg.Server.Rest.Tls); err != nil {
+			panic(err)
 		}
 
 		if tlsCfg != nil {

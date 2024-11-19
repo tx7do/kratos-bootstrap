@@ -32,25 +32,8 @@ func NewCassandraClient(cfg *conf.Bootstrap, l *log.Helper) *gocql.Session {
 		var tlsCfg *tls.Config
 		var err error
 
-		if cfg.Data.Cassandra.Tls.File != nil {
-			if tlsCfg, err = utils.LoadServerTlsConfigFile(
-				cfg.Data.Cassandra.Tls.File.GetKeyPath(),
-				cfg.Data.Cassandra.Tls.File.GetCertPath(),
-				cfg.Data.Cassandra.Tls.File.GetCaPath(),
-				cfg.Data.Cassandra.Tls.InsecureSkipVerify,
-			); err != nil {
-				panic(err)
-			}
-		}
-		if tlsCfg == nil && cfg.Data.Cassandra.Tls.Config != nil {
-			if tlsCfg, err = utils.LoadServerTlsConfig(
-				cfg.Data.Cassandra.Tls.Config.GetKeyPem(),
-				cfg.Data.Cassandra.Tls.Config.GetCertPem(),
-				cfg.Data.Cassandra.Tls.Config.GetCaPem(),
-				cfg.Data.Cassandra.Tls.InsecureSkipVerify,
-			); err != nil {
-				panic(err)
-			}
+		if tlsCfg, err = utils.LoadServerTlsConfig(cfg.Data.Cassandra.Tls); err != nil {
+			panic(err)
 		}
 
 		if tlsCfg != nil {

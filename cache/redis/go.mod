@@ -10,7 +10,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.8.2
 	github.com/redis/go-redis/extra/redisotel/v9 v9.7.0
 	github.com/redis/go-redis/v9 v9.7.0
-	github.com/tx7do/kratos-bootstrap/api v0.0.5
+	github.com/tx7do/kratos-bootstrap/api v0.0.8
 )
 
 require (
@@ -22,5 +22,5 @@ require (
 	go.opentelemetry.io/otel v1.32.0 // indirect
 	go.opentelemetry.io/otel/metric v1.32.0 // indirect
 	go.opentelemetry.io/otel/trace v1.32.0 // indirect
-	google.golang.org/protobuf v1.35.1 // indirect
+	google.golang.org/protobuf v1.35.2 // indirect
 )

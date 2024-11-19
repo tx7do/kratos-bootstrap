@@ -17,38 +17,26 @@ require (
 	github.com/go-kratos/kratos/contrib/config/etcd/v2 v2.0.0-20241105072421-f8b97f675b32
 	github.com/go-kratos/kratos/contrib/config/kubernetes/v2 v2.0.0-20241105072421-f8b97f675b32
 	github.com/go-kratos/kratos/contrib/config/nacos/v2 v2.0.0-20241105072421-f8b97f675b32
-	github.com/go-kratos/kratos/contrib/config/polaris/v2 v2.0.0-20241105072421-f8b97f675b32
 	github.com/go-kratos/kratos/v2 v2.8.2
 	github.com/hashicorp/consul/api v1.30.0
 	github.com/nacos-group/nacos-sdk-go v1.1.5
-	github.com/polarismesh/polaris-go v1.5.8
-	github.com/tx7do/kratos-bootstrap/api v0.0.7
+	github.com/tx7do/kratos-bootstrap/api v0.0.8
 	go.etcd.io/etcd/client/v3 v3.5.17
 	google.golang.org/grpc v1.68.0
 	k8s.io/client-go v0.31.2
 )
 
 require (
-	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/dlclark/regexp2 v1.11.4 // indirect
-	github.com/klauspost/compress v1.17.11 // indirect
-	github.com/natefinch/lumberjack v2.0.0+incompatible // indirect
+	github.com/golang/mock v1.6.0 // indirect
 	github.com/opentracing/opentracing-go v1.2.1-0.20220228012449-10b1cf09e00b // indirect
-	github.com/polarismesh/specification v1.5.3 // indirect
-	github.com/prometheus/client_golang v1.20.5 // indirect
-	github.com/prometheus/client_model v0.6.1 // indirect
-	github.com/prometheus/common v0.60.1 // indirect
-	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/sagikazarmark/locafero v0.6.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
-	github.com/spaolacci/murmur3 v1.1.0 // indirect
 )
 
 require (
 	dario.cat/mergo v1.0.1 // indirect
-	github.com/aliyun/alibaba-cloud-sdk-go v1.63.51 // indirect
+	github.com/aliyun/alibaba-cloud-sdk-go v1.63.52 // indirect
 	github.com/apolloconfig/agollo/v4 v4.4.0 // indirect
 	github.com/armon/go-metrics v0.5.3 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
@@ -99,7 +87,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.19.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
-	github.com/tx7do/kratos-bootstrap/utils v0.1.0
+	github.com/tx7do/kratos-bootstrap/utils v0.1.2
 	github.com/x448/float16 v0.8.4 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.17 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.17 // indirect
@@ -114,13 +102,12 @@ require (
 	golang.org/x/term v0.26.0 // indirect
 	golang.org/x/text v0.20.0 // indirect
 	golang.org/x/time v0.8.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20241113202542-65e8d215514f // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20241113202542-65e8d215514f // indirect
-	google.golang.org/protobuf v1.35.1 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20241118233622-e639e219e697 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241118233622-e639e219e697 // indirect
+	google.golang.org/protobuf v1.35.2 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/api v0.31.2 // indirect
 	k8s.io/apimachinery v0.31.2 // indirect
