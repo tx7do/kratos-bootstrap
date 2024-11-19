@@ -76,12 +76,12 @@ message Registry {
 
   string type = 1;
 
-  Consul consul = 2;  // Consul
-  Etcd etcd = 3;  // Etcd
-  ZooKeeper zookeeper = 4;  // ZooKeeper
-  Nacos nacos = 5;  // Nacos
-  Kubernetes kubernetes = 6;  // Kubernetes
-  Eureka eureka = 7;  // Eureka
-  Polaris polaris = 8;  // Polaris
-  Servicecomb servicecomb = 9;  // Servicecomb
+  optional Consul consul = 2;  // Consul
+  optional Etcd etcd = 3;  // Etcd
+  optional ZooKeeper zookeeper = 4;  // ZooKeeper
+  optional Nacos nacos = 5;  // Nacos
+  optional Kubernetes kubernetes = 6;  // Kubernetes
+  optional Eureka eureka = 7;  // Eureka
+  optional Polaris polaris = 8;  // Polaris
+  optional Servicecomb servicecomb = 9;  // Servicecomb
 }

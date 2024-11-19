@@ -20,6 +20,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// TLS配置
 type TLS struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

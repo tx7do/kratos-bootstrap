@@ -4,6 +4,7 @@ package conf;
 
 option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
 
+// TLS配置
 message TLS {
   message File {
     optional string cert_path = 1;

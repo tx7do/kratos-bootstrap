@@ -14,5 +14,5 @@ message Notification {
     string access_key_secret = 4; // 访问密钥
   }
 
-  SMS sms = 1;
+  optional SMS sms = 1;
 }

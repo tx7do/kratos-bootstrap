@@ -33,7 +33,7 @@ require (
 
 require (
 	dario.cat/mergo v1.0.1 // indirect
-	github.com/aliyun/alibaba-cloud-sdk-go v1.63.52 // indirect
+	github.com/aliyun/alibaba-cloud-sdk-go v1.63.53 // indirect
 	github.com/apolloconfig/agollo/v4 v4.4.0 // indirect
 	github.com/armon/go-metrics v0.5.3 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect

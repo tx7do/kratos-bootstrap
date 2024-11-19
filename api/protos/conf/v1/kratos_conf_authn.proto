@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package conf;
+
+option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
+
+import "google/protobuf/duration.proto";
+
+// 认证
+message Authentication {
+  // JWT
+  message Jwt {
+    string method = 1; // JWT签名的算法，支持算法：HS256
+    string key = 2; // JWT 秘钥
+  }
+
+
+  optional Jwt jwt = 1;
+}

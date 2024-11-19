@@ -6,6 +6,7 @@ option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
 
 import "google/protobuf/duration.proto";
 
+// 中间件
 message Middleware {
   // JWT校验
   message Auth {

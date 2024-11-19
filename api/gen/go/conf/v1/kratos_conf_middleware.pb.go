@@ -21,6 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// 中间件
 type Middleware struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
