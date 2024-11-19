@@ -90,6 +90,10 @@ func LoadServerTlsConfigString(keyPEMBlock, certPEMBlock, caPEMBlock []byte, ins
 }
 
 func LoadServerTlsConfig(cfg *conf.TLS) (*tls.Config, error) {
+	if cfg == nil {
+		return nil, nil
+	}
+
 	var tlsCfg *tls.Config
 	var err error
 
@@ -183,6 +187,10 @@ func LoadClientTlsConfigString(keyPEMBlock, certPEMBlock, caPEMBlock []byte) (*t
 }
 
 func LoadClientTlsConfig(cfg *conf.TLS) (*tls.Config, error) {
+	if cfg == nil {
+		return nil, nil
+	}
+
 	var tlsCfg *tls.Config
 	var err error
 
