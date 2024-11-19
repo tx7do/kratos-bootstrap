@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+
+	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
 
 // 双向验证：server端提供证书(cert和key)，还必须配置cerfiles即CA根证书，因为需要验证client端提供的证书。另外client也端必须提供一样的内容，即client端的证书(cert/key)以供server端验证，并且提供CA根证书验证server端提供的证书。
@@ -52,7 +54,7 @@ func LoadServerTlsConfigFile(keyFile, certFile, caFile string, insecureSkipVerif
 	return &cfg, nil
 }
 
-func LoadServerTlsConfig(keyPEMBlock, certPEMBlock, caPEMBlock []byte, insecureSkipVerify bool) (*tls.Config, error) {
+func LoadServerTlsConfigString(keyPEMBlock, certPEMBlock, caPEMBlock []byte, insecureSkipVerify bool) (*tls.Config, error) {
 	if len(keyPEMBlock) == 0 || len(certPEMBlock) == 0 {
 		return nil, fmt.Errorf("KeyPEMBlock and CertPEMBlock must both be present[key: %v, cert: %v]", keyPEMBlock, certPEMBlock)
 	}
@@ -85,6 +87,33 @@ func LoadServerTlsConfig(keyPEMBlock, certPEMBlock, caPEMBlock []byte, insecureS
 	}
 
 	return &cfg, nil
+}
+
+func LoadServerTlsConfig(cfg *conf.TLS) (*tls.Config, error) {
+	var tlsCfg *tls.Config
+	var err error
+
+	if cfg.File != nil {
+		if tlsCfg, err = LoadServerTlsConfigFile(
+			cfg.File.GetKeyPath(),
+			cfg.File.GetCertPath(),
+			cfg.File.GetCaPath(),
+			cfg.InsecureSkipVerify,
+		); err != nil {
+			return nil, err
+		}
+	} else if cfg.Config != nil {
+		if tlsCfg, err = LoadServerTlsConfigString(
+			cfg.Config.GetKeyPem(),
+			cfg.Config.GetCertPem(),
+			cfg.Config.GetCaPem(),
+			cfg.InsecureSkipVerify,
+		); err != nil {
+			return nil, err
+		}
+	}
+
+	return tlsCfg, err
 }
 
 // LoadClientTlsConfigFile 创建客户端端TLS证书认证配置
@@ -122,7 +151,7 @@ func LoadClientTlsConfigFile(keyFile, certFile, caFile string) (*tls.Config, err
 	return &cfg, nil
 }
 
-func LoadClientTlsConfig(keyPEMBlock, certPEMBlock, caPEMBlock []byte) (*tls.Config, error) {
+func LoadClientTlsConfigString(keyPEMBlock, certPEMBlock, caPEMBlock []byte) (*tls.Config, error) {
 	if len(keyPEMBlock) == 0 || len(certPEMBlock) == 0 {
 		return nil, fmt.Errorf("KeyPEMBlock and CertPEMBlock must both be present[key: %v, cert: %v]", keyPEMBlock, certPEMBlock)
 	}
@@ -151,6 +180,31 @@ func LoadClientTlsConfig(keyPEMBlock, certPEMBlock, caPEMBlock []byte) (*tls.Con
 	}
 
 	return &cfg, nil
+}
+
+func LoadClientTlsConfig(cfg *conf.TLS) (*tls.Config, error) {
+	var tlsCfg *tls.Config
+	var err error
+
+	if cfg.File != nil {
+		if tlsCfg, err = LoadClientTlsConfigFile(
+			cfg.File.GetKeyPath(),
+			cfg.File.GetCertPath(),
+			cfg.File.GetCaPath(),
+		); err != nil {
+			return nil, err
+		}
+	} else if cfg.Config != nil {
+		if tlsCfg, err = LoadClientTlsConfigString(
+			cfg.Config.GetKeyPem(),
+			cfg.Config.GetCertPem(),
+			cfg.Config.GetCaPem(),
+		); err != nil {
+			return nil, err
+		}
+	}
+
+	return tlsCfg, err
 }
 
 // newCertPool creates x509 certPool with provided CA file
