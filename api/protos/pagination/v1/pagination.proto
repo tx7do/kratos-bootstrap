@@ -4,7 +4,6 @@ package pagination;
 
 option go_package = "github.com/tx7do/kratos-bootstrap/gen/api/go/pagination/v1;pagination";
 
-import "google/protobuf/any.proto";
 import "google/protobuf/field_mask.proto";
 import "gnostic/openapi/v3/annotations.proto";
 
@@ -19,7 +18,7 @@ message PagingRequest {
     }
   ];
 
-  // 每页的行数
+  // 每一页的行数
   optional int32 page_size = 2 [
     json_name = "pageSize",
     (gnostic.openapi.v3.property) = {
@@ -28,44 +27,46 @@ message PagingRequest {
     }
   ];
 
-  // 与过滤参数
+  // AND过滤参数，其语法为json格式的字符串，如：{"key1":"val1","key2":"val2"}，具体请参见：https://github.com/tx7do/go-utils/tree/main/entgo/query/README.md
   optional string query = 3 [
     json_name = "query",
     (gnostic.openapi.v3.property) = {
-      description: "与过滤参数",
+      description: "AND过滤参数，其语法为json格式的字符串，如：{\"key1\":\"val1\",\"key2\":\"val2\"}，具体请参见：https://github.com/tx7do/go-utils/tree/main/entgo/query/README.md",
       example: {yaml: "{\"key1\":\"val1\",\"key2\":\"val2\"}"}
     }
   ];
 
-  // 或过滤参数
+  // OR过滤参数，语法同AND过滤参数。
   optional string or_query = 4 [
     json_name = "or",
     (gnostic.openapi.v3.property) = {
-      description: "或过滤参数",
+      description: "OR过滤参数",
       example: {yaml: "{\"key1\":\"val1\",\"key2\":\"val2\"}"}
     }
   ];
 
-  // 排序条件
+  // 排序条件，其语法为JSON字符串，例如：{"val1", "-val2"}。字段名前加'-'为降序，否则为升序。
   repeated string order_by = 5 [
     json_name = "orderBy",
     (gnostic.openapi.v3.property) = {
-      description: "排序条件，字段名前加'-'为降序，否则为升序。"
+      description: "排序条件，其语法为JSON字符串，例如：{\"val1\", \"-val2\"}。字段名前加'-'为降序，否则为升序。"
       example: {yaml: "{\"val1\", \"-val2\"}"}
     }
   ];
 
-  // 是否不分页
+  // 是否不分页，如果为true，则page和pageSize参数无效。
   optional bool no_paging = 6 [
-    json_name = "nopaging",
-    (gnostic.openapi.v3.property) = {description: "是否不分页"}
+    json_name = "noPaging",
+    (gnostic.openapi.v3.property) = {
+      description: "是否不分页，如果为true，则page和pageSize参数无效。"
+    }
   ];
 
-  // 字段掩码
-  google.protobuf.FieldMask field_mask = 7 [
+  // 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+  optional google.protobuf.FieldMask field_mask = 7 [
     json_name = "fieldMask",
     (gnostic.openapi.v3.property) = {
-      description: "字段掩码，如果为空则选中所有字段。",
+      description: "字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。",
       example: {yaml : "id,realName,userName"}
     }
   ];
@@ -77,5 +78,5 @@ message PagingResponse {
   int32 total = 1;
 
   // 分页数据
-  repeated google.protobuf.Any items = 2;
+  repeated bytes items = 2;
 }
