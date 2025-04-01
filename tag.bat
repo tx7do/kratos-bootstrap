@@ -17,7 +17,7 @@ git tag database/influxdb/v0.0.8 --force
 git tag database/cassandra/v0.0.8 --force
 git tag database/clickhouse/v0.0.8 --force
 
-git tag bootstrap/v0.0.13 --force
+git tag bootstrap/v0.0.14 --force
 
 git tag v0.5.0
 

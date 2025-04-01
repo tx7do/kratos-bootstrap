@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"fmt"
+	"runtime"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
@@ -90,6 +91,8 @@ func Bootstrap(initApp InitApp, serviceName, version *string) {
 
 	// run the app.
 	if err = app.Run(); err != nil {
-		panic(err)
+		buf := make([]byte, 1024)
+		n := runtime.Stack(buf, false)
+		panic(fmt.Sprintf("Panic: %v\nStack trace:\n%s", err, string(buf[:n])))
 	}
 }
