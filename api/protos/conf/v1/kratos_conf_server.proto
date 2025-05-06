@@ -58,6 +58,11 @@ message Server {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
+    string username = 4;  // 用户名
+    string password = 5;  // 密码
+    string client_id = 6;  // 客户端ID
+    bool clean_session = 7;  // 清除会话
+    bool enable_keep_alive = 8; // 启用心跳
   }
 
   // Kafka
@@ -65,6 +70,7 @@ message Server {
     repeated string endpoints = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
+    bool enable_keep_alive = 4; // 启用心跳
   }
 
   // RabbitMQ
@@ -72,56 +78,63 @@ message Server {
     repeated string endpoints = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
+    bool enable_keep_alive = 4; // 启用心跳
   }
 
   message ActiveMQ {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
+    bool enable_keep_alive = 4; // 启用心跳
   }
 
   message NATS {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
+    bool enable_keep_alive = 4; // 启用心跳
   }
 
   message NSQ {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
+    bool enable_keep_alive = 4; // 启用心跳
   }
 
   message Pulsar {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
+    bool enable_keep_alive = 4; // 启用心跳
   }
 
   message Redis {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
+    bool enable_keep_alive = 4; // 启用心跳
   }
 
   message RocketMQ {
     string version = 1; // 驱动版本：aliyun、v2、v5
     string codec = 2;  // 编解码器: json,xml,yaml...
 
-    bool enable_trace = 3;
+    repeated string name_servers = 3;
+    string name_server_domain = 4;
 
-    repeated string name_servers = 4;
-    string name_server_domain = 5;
+    string access_key = 5;
+    string secret_key = 6;
+    string security_token = 7;
 
-    string access_key = 6;
-    string secret_key = 7;
-    string security_token = 8;
+    string namespace = 8;
+    string instance_name = 9;
+    string group_name = 10;
 
-    string namespace = 9;
-    string instance_name = 10;
-    string group_name = 11;
+    TLS tls = 11;  // TLS配置
 
-    TLS tls = 12;  // TLS配置
+    bool enable_trace = 100;
+    bool enable_keep_alive = 101; // 启用心跳
   }
 
   // Asynq
@@ -131,6 +144,7 @@ message Server {
     int32 db = 3;  // 数据库索引
     string location = 4; // 时区
     TLS tls = 5;  // TLS配置
+    bool enable_keep_alive = 6; // 启用心跳
   }
 
   // Machinery
@@ -138,6 +152,7 @@ message Server {
     repeated string brokers = 1;  // broker的地址，可以根据实际使用的存储介质，分别指定Redis、AMQP或AWS SQS；
     repeated string backends = 2;  // backend配置，用来指定存放结果的介质的配置。可以根据需求，分别指定为：Redis、memcached或mongodb等；
     TLS tls = 3;  // TLS配置
+    bool enable_keep_alive = 4; // 启用心跳
   }
 
   // SSE
