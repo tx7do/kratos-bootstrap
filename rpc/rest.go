@@ -10,6 +10,7 @@ import (
 	"github.com/go-kratos/aegis/ratelimit/bbr"
 
 	"github.com/go-kratos/kratos/v2/middleware"
+	"github.com/go-kratos/kratos/v2/middleware/metadata"
 	midRateLimit "github.com/go-kratos/kratos/v2/middleware/ratelimit"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
@@ -72,6 +73,9 @@ func initRestConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []kratosR
 				limiter = bbr.NewLimiter()
 			}
 			ms = append(ms, midRateLimit.Server(midRateLimit.WithLimiter(limiter)))
+		}
+		if cfg.Server.Grpc.Middleware.GetEnableMetadata() {
+			ms = append(ms, metadata.Server())
 		}
 	}
 	options = append(options, kratosRest.Middleware(ms...))
