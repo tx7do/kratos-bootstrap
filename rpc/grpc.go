@@ -14,12 +14,12 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/registry"
 
+	"github.com/go-kratos/kratos/contrib/middleware/validate/v2"
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/metadata"
 	midRateLimit "github.com/go-kratos/kratos/v2/middleware/ratelimit"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
-	"github.com/go-kratos/kratos/v2/middleware/validate"
 
 	kratosGrpc "github.com/go-kratos/kratos/v2/transport/grpc"
 
@@ -31,7 +31,6 @@ const defaultTimeout = 5 * time.Second
 
 // CreateGrpcClient 创建GRPC客户端
 func CreateGrpcClient(ctx context.Context, r registry.Discovery, serviceName string, cfg *conf.Bootstrap, mds ...middleware.Middleware) grpc.ClientConnInterface {
-
 	var options []kratosGrpc.ClientOption
 
 	options = append(options, kratosGrpc.WithDiscovery(r))
@@ -77,7 +76,7 @@ func initGrpcClientConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []k
 			ms = append(ms, tracing.Client())
 		}
 		if cfg.Client.Grpc.Middleware.GetEnableValidate() {
-			ms = append(ms, validate.Validator())
+			ms = append(ms, validate.ProtoValidate())
 		}
 		if cfg.Client.Grpc.Middleware.GetEnableMetadata() {
 			ms = append(ms, metadata.Client())
@@ -129,7 +128,7 @@ func initGrpcServerConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []k
 			ms = append(ms, tracing.Server())
 		}
 		if cfg.Server.Grpc.Middleware.GetEnableValidate() {
-			ms = append(ms, validate.Validator())
+			ms = append(ms, validate.ProtoValidate())
 		}
 		if cfg.Server.Grpc.Middleware.GetEnableCircuitBreaker() {
 		}
