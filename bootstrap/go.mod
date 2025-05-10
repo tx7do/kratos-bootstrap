@@ -26,7 +26,7 @@ require (
 	github.com/tx7do/kratos-bootstrap/logger v0.0.8
 	github.com/tx7do/kratos-bootstrap/registry v0.0.8
 	github.com/tx7do/kratos-bootstrap/tracer v0.0.8
-	github.com/tx7do/kratos-bootstrap/utils v0.1.2
+	github.com/tx7do/kratos-bootstrap/utils v0.1.3
 	golang.org/x/tools v0.33.0
 )
 

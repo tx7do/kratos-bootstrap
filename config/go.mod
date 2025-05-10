@@ -20,7 +20,7 @@ require (
 	github.com/hashicorp/consul/api v1.32.1
 	github.com/nacos-group/nacos-sdk-go v1.1.5
 	github.com/tx7do/kratos-bootstrap/api v0.0.13
-	github.com/tx7do/kratos-bootstrap/utils v0.1.2
+	github.com/tx7do/kratos-bootstrap/utils v0.1.3
 	go.etcd.io/etcd/client/v3 v3.5.21
 	google.golang.org/grpc v1.72.0
 	k8s.io/client-go v0.33.0
