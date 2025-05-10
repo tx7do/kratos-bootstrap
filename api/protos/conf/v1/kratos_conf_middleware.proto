@@ -27,13 +27,14 @@ message Middleware {
     bool summary = 4; // 摘要
   }
 
-  bool enable_logging = 1; // 日志开关
-  bool enable_recovery = 2; // 异常恢复
-  bool enable_tracing = 3; // 链路追踪开关
-  bool enable_validate = 4; // 参数校验开关
-  bool enable_circuit_breaker = 5; // 熔断器
+  RateLimiter limiter = 1;
+  Metrics metrics = 2;
+  Auth auth = 3;
 
-  RateLimiter limiter = 6;
-  Metrics metrics = 7;
-  Auth auth = 8;
+  bool enable_logging = 10; // 日志开关
+  bool enable_recovery = 11; // 异常恢复
+  bool enable_tracing = 12; // 链路追踪开关
+  bool enable_validate = 13; // 参数校验开关
+  bool enable_circuit_breaker = 14; // 熔断器
+  bool enable_metadata = 15; // 元数据
 }

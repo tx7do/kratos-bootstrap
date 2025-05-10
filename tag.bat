@@ -1,4 +1,4 @@
-git tag api/v0.0.12 --force
+git tag api/v0.0.13 --force
 
 git tag utils/v0.1.2 --force
 
@@ -7,7 +7,7 @@ git tag oss/minio/v0.0.8 --force
 git tag registry/v0.0.8 --force
 git tag config/v0.0.8 --force
 git tag logger/v0.0.8 --force
-git tag rpc/v0.0.9 --force
+git tag rpc/v0.0.10 --force
 git tag tracer/v0.0.8 --force
 
 git tag database/ent/v0.0.8 --force

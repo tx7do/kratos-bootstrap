@@ -15,6 +15,7 @@ import (
 	"github.com/go-kratos/kratos/v2/registry"
 
 	"github.com/go-kratos/kratos/v2/middleware"
+	"github.com/go-kratos/kratos/v2/middleware/metadata"
 	midRateLimit "github.com/go-kratos/kratos/v2/middleware/ratelimit"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
@@ -78,6 +79,9 @@ func initGrpcClientConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []k
 		if cfg.Client.Grpc.Middleware.GetEnableValidate() {
 			ms = append(ms, validate.Validator())
 		}
+		if cfg.Client.Grpc.Middleware.GetEnableMetadata() {
+			ms = append(ms, metadata.Client())
+		}
 	}
 	options = append(options, kratosGrpc.WithMiddleware(ms...))
 
@@ -136,6 +140,9 @@ func initGrpcServerConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []k
 				limiter = bbr.NewLimiter()
 			}
 			ms = append(ms, midRateLimit.Server(midRateLimit.WithLimiter(limiter)))
+		}
+		if cfg.Server.Grpc.Middleware.GetEnableMetadata() {
+			ms = append(ms, metadata.Server())
 		}
 	}
 	options = append(options, kratosGrpc.Middleware(ms...))
