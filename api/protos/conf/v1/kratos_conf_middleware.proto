@@ -12,6 +12,8 @@ message Middleware {
   message Auth {
     string method = 1; // JWT签名的算法，支持算法：HS256
     string key = 2; // JWT 秘钥
+    optional google.protobuf.Duration access_token_expires = 3; // 访问令牌过期时间
+    optional google.protobuf.Duration refresh_token_expires = 4; // 刷新令牌过期时间
   }
 
   // 限流器
