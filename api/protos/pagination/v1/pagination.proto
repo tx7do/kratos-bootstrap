@@ -70,6 +70,11 @@ message PagingRequest {
       example: {yaml : "id,realName,userName"}
     }
   ];
+
+  optional uint32 tenant_id = 8 [
+    (gnostic.openapi.v3.property) = {description: "租户ID"},
+    json_name = "tenantId"
+  ]; // 租户ID
 }
 
 // 分页通用结果
