@@ -7,7 +7,7 @@ git tag oss/minio/v0.0.9 --force
 git tag registry/v0.0.9 --force
 git tag config/v0.0.9 --force
 git tag logger/v0.0.9 --force
-git tag rpc/v0.0.11 --force
+git tag rpc/v0.0.12 --force
 git tag tracer/v0.0.9 --force
 
 git tag database/ent/v0.0.9 --force

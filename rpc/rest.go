@@ -74,7 +74,7 @@ func initRestConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []kratosR
 			}
 			ms = append(ms, midRateLimit.Server(midRateLimit.WithLimiter(limiter)))
 		}
-		if cfg.Server.Grpc.Middleware.GetEnableMetadata() {
+		if cfg.Server.Rest.Middleware.GetEnableMetadata() {
 			ms = append(ms, metadata.Server())
 		}
 	}
