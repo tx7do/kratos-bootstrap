@@ -67,7 +67,6 @@ func initGrpcClientConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []k
 	options = append(options, kratosGrpc.WithTimeout(timeout))
 
 	var ms []middleware.Middleware
-	ms = append(ms, mds...)
 	if cfg.Client.Grpc.Middleware != nil {
 		if cfg.Client.Grpc.Middleware.GetEnableRecovery() {
 			ms = append(ms, recovery.Recovery())
@@ -82,6 +81,8 @@ func initGrpcClientConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []k
 			ms = append(ms, metadata.Client())
 		}
 	}
+	ms = append(ms, mds...)
+
 	options = append(options, kratosGrpc.WithMiddleware(ms...))
 
 	if cfg.Client.Grpc.Tls != nil {
@@ -119,7 +120,6 @@ func initGrpcServerConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []k
 	var options []kratosGrpc.ServerOption
 
 	var ms []middleware.Middleware
-	ms = append(ms, mds...)
 	if cfg.Server.Grpc.Middleware != nil {
 		if cfg.Server.Grpc.Middleware.GetEnableRecovery() {
 			ms = append(ms, recovery.Recovery())
@@ -144,6 +144,8 @@ func initGrpcServerConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []k
 			ms = append(ms, metadata.Server())
 		}
 	}
+	ms = append(ms, mds...)
+
 	options = append(options, kratosGrpc.Middleware(ms...))
 
 	if cfg.Server.Grpc.Tls != nil {

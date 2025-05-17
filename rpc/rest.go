@@ -53,7 +53,6 @@ func initRestConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []kratosR
 	}
 
 	var ms []middleware.Middleware
-	ms = append(ms, mds...)
 	if cfg.Server.Rest.Middleware != nil {
 		if cfg.Server.Rest.Middleware.GetEnableRecovery() {
 			ms = append(ms, recovery.Recovery())
@@ -78,6 +77,8 @@ func initRestConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []kratosR
 			ms = append(ms, metadata.Server())
 		}
 	}
+	ms = append(ms, mds...)
+
 	options = append(options, kratosRest.Middleware(ms...))
 
 	if cfg.Server.Rest.Network != "" {
