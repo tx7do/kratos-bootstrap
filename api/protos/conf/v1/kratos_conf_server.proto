@@ -139,20 +139,107 @@ message Server {
 
   // Asynq
   message Asynq {
-    string endpoint = 1;  // 对端网络地址
-    string password = 2;  // redis登录密码
-    int32 db = 3;  // 数据库索引
-    string location = 4; // 时区
-    TLS tls = 5;  // TLS配置
-    bool enable_keep_alive = 6; // 启用心跳
+    string network = 1;  // Redis对端网络地址
+    string endpoint = 2;  // Redis对端网络地址
+    string password = 3;  // Redis登录密码
+    int32 db = 4;  // Redis数据库索引
+    int32 pool_size = 5; // Redis连接池大小
+
+    TLS tls = 6;  // TLS配置
+    string codec = 7;  // 编解码器: json,xml,yaml...
+
+    string location = 10; // 时区
+    int32 concurrency = 11; // 并发数
+    int32 group_max_size = 12; // 组最大大小
+    map<string, int32> queues = 13; // 队列
+
+    bool enable_keep_alive = 20; // 启用心跳
+    bool enable_gracefully_shutdown = 21; // 优雅关闭
+    bool enable_strict_priority = 22; // 严格优先级
+
+    google.protobuf.Duration shutdown_timeout = 30; // 关闭超时时间
+    google.protobuf.Duration dial_timeout = 31; // 拨号超时时间
+    google.protobuf.Duration read_timeout = 32; // 读取超时时间
+    google.protobuf.Duration write_timeout = 33; // 写入超时时间
+
+    google.protobuf.Duration health_check_interval = 34; // 健康检查时间间隔
+    google.protobuf.Duration delayed_task_check_interval = 35; // 延迟任务检查时间间隔
+    google.protobuf.Duration group_grace_period = 36; // 组宽限期
+    google.protobuf.Duration group_max_delay = 37; // 组最大延迟
   }
 
   // Machinery
   message Machinery {
-    repeated string brokers = 1;  // broker的地址，可以根据实际使用的存储介质，分别指定Redis、AMQP或AWS SQS；
-    repeated string backends = 2;  // backend配置，用来指定存放结果的介质的配置。可以根据需求，分别指定为：Redis、memcached或mongodb等；
-    TLS tls = 3;  // TLS配置
-    bool enable_keep_alive = 4; // 启用心跳
+    string broker_type = 1; // broker类型，可以根据实际使用的存储介质，分别指定Redis、AMQP或AWS SQS；
+    string broker_addr = 2;  // broker的地址
+    int32 broker_db = 3;  // broker的数据库索引
+
+    string backend_type = 10; // backend类型，可以分别指定为：redis、memcached或mongodb等；
+    string backend_addr = 11;  // backend的地址
+    int32 backend_db = 12;  // backend的数据库索引
+
+    string lock_type = 20; // lock类型，可以分别指定为：redis、memcached或mongodb等；
+    string lock_addr = 21;  // lock的地址
+    int32 lock_db = 22;  // lock的数据库索引
+
+    string consumer_tag = 30; // 消费者标签
+    int32 consumer_concurrency = 31; // 消费者并发数
+    string consumer_queue = 32; // 消费者队列
+
+    TLS tls = 50;  // TLS配置
+    bool enable_keep_alive = 51; // 启用心跳
+    string default_queue = 52; // 默认队列
+    int32 results_expire_in = 53; // 结果过期时间
+    bool no_unix_signals = 54; // 禁用Unix信号
+
+    message Redis {
+      int32 max_idle = 1;
+      int32 max_active = 2;
+      int32 max_idle_timeout = 3;
+      bool wait = 4;
+      int32 read_timeout = 5;
+      int32 write_timeout = 6;
+      int32 connect_timeout = 7;
+      int32 normal_tasks_poll_period = 8;
+      int32 delayed_tasks_poll_period = 9;
+      string delayed_tasks_key = 10;
+      string master_name = 11;
+    }
+    Redis redis = 100; // Redis配置
+
+    message AMQP {
+      string exchange = 1;
+      string exchange_type = 2;
+      map<string, string> queue_declare_args = 3;
+      map<string, string> queue_binding_args = 4;
+      string binding_key = 5;
+      int32 prefetch_count = 6;
+      bool auto_delete = 7;
+      string delayed_queue = 8;
+    }
+    AMQP amqp = 101; // AMQP配置
+
+    message SQS {
+      int32 receive_wait_time_seconds = 1;
+      optional int32 receive_visibility_timeout = 2;
+    }
+    SQS sqs = 102; // SQS配置
+
+    message GCP {
+      google.protobuf.Duration max_extension = 1;
+    }
+    GCP gcp = 103; // GCP配置
+
+    message MongoDB {
+      string database = 1;
+    }
+    MongoDB mongodb = 104; // MongoDB配置
+
+    message DynamoDB {
+      string task_states_table = 1;
+      string group_metas_table = 2;
+    }
+    DynamoDB dynamodb = 105; // DynamoDB配置
   }
 
   // SSE
