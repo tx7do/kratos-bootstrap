@@ -143,10 +143,11 @@ message Server {
     string endpoint = 2;  // Redis对端网络地址
     string password = 3;  // Redis登录密码
     int32 db = 4;  // Redis数据库索引
-    int32 pool_size = 5; // Redis连接池大小
+    string uri = 5;  // Redis URI
+    int32 pool_size = 6; // Redis连接池大小
 
-    TLS tls = 6;  // TLS配置
-    string codec = 7;  // 编解码器: json,xml,yaml...
+    TLS tls = 7;  // TLS配置
+    string codec = 8;  // 编解码器: json,xml,yaml...
 
     string location = 10; // 时区
     int32 concurrency = 11; // 并发数
