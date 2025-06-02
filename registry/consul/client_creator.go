@@ -2,14 +2,21 @@ package consul
 
 import (
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/registry"
+
 	consulClient "github.com/hashicorp/consul/api"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
+	r "github.com/tx7do/kratos-bootstrap/registry"
 )
 
 func init() {
-	// 注册 Consul 注册发现客户端
-	//registry.RegisterDiscoveryCreator(registry.Consul, NewRegistry)
+	r.RegisterRegistrarCreator(string(r.Consul), func(c *conf.Registry) registry.Registrar {
+		return NewRegistry(c)
+	})
+	r.RegisterDiscoveryCreator(string(r.Consul), func(c *conf.Registry) registry.Discovery {
+		return NewRegistry(c)
+	})
 }
 
 // NewRegistry 创建一个注册发现客户端 - Consul

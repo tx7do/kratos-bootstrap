@@ -1,8 +1,6 @@
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/go-kratos/kratos/contrib/registry/zookeeper/v2 v2.0.0-20250527152916-d6f5f00cf562 h1:SBDGsiqkqT6BOidznJKweIcru7eVigX8fkNWp1mZjWk=
-github.com/go-kratos/kratos/contrib/registry/zookeeper/v2 v2.0.0-20250527152916-d6f5f00cf562/go.mod h1:/XjgaYgSaaoIe4YcUishDuqLpQvOSujQTk8D0cJx/Zo=
 github.com/go-kratos/kratos/v2 v2.8.4 h1:eIJLE9Qq9WSoKx+Buy2uPyrahtF/lPh+Xf4MTpxhmjs=
 github.com/go-kratos/kratos/v2 v2.8.4/go.mod h1:mq62W2101a5uYyRxe+7IdWubu7gZCGYqSNKwGFiiRcw=
 github.com/go-zookeeper/zk v1.0.4 h1:DPzxraQx7OrPyXq2phlGlNSIyWEsAox0RJmjTseMV6I=

@@ -8,7 +8,7 @@ replace github.com/tx7do/kratos-bootstrap/api => ../../api
 
 require (
 	github.com/go-kratos/kratos/v2 v2.8.4
-	github.com/tx7do/kratos-bootstrap/api v0.0.20
+	github.com/tx7do/kratos-bootstrap/api v0.0.21
 	go.mongodb.org/mongo-driver v1.17.3
 )
 

@@ -8,15 +8,15 @@ replace (
 	github.com/armon/go-metrics => github.com/hashicorp/go-metrics v0.4.1
 
 	github.com/tx7do/kratos-bootstrap/api => ../../api
-	github.com/tx7do/kratos-bootstrap/registry => ../registry
+	github.com/tx7do/kratos-bootstrap/registry => ../
 )
 
 require (
-	github.com/go-kratos/kratos/contrib/registry/zookeeper/v2 v2.0.0-20250527152916-d6f5f00cf562
 	github.com/go-kratos/kratos/v2 v2.8.4
 	github.com/go-zookeeper/zk v1.0.4
 	github.com/stretchr/testify v1.10.0
-	github.com/tx7do/kratos-bootstrap/api v0.0.20
+	github.com/tx7do/kratos-bootstrap/api v0.0.21
+	github.com/tx7do/kratos-bootstrap/registry v0.1.0
 	golang.org/x/sync v0.14.0
 )
 

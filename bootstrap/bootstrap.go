@@ -11,7 +11,6 @@ import (
 
 	"github.com/tx7do/kratos-bootstrap/config"
 	"github.com/tx7do/kratos-bootstrap/logger"
-	"github.com/tx7do/kratos-bootstrap/registry"
 	"github.com/tx7do/kratos-bootstrap/tracer"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
@@ -58,7 +57,7 @@ func DoBootstrap(serviceInfo *utils.ServiceInfo) (*conf.Bootstrap, log.Logger, k
 	ll := logger.NewLoggerProvider(config.GetBootstrapConfig().Logger, serviceInfo)
 
 	// init registrar
-	reg := registry.NewRegistry(config.GetBootstrapConfig().Registry)
+	reg := NewRegistry(config.GetBootstrapConfig().Registry)
 
 	// init tracer
 	if err = tracer.NewTracerProvider(config.GetBootstrapConfig().Trace, serviceInfo); err != nil {

@@ -1,16 +1,26 @@
 package zookeeper
 
 import (
-	zookeeperKratos "github.com/go-kratos/kratos/contrib/registry/zookeeper/v2"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/registry"
 
 	"github.com/go-zookeeper/zk"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
+	r "github.com/tx7do/kratos-bootstrap/registry"
 )
 
+func init() {
+	r.RegisterRegistrarCreator(string(r.ZooKeeper), func(c *conf.Registry) registry.Registrar {
+		return NewRegistry(c)
+	})
+	r.RegisterDiscoveryCreator(string(r.ZooKeeper), func(c *conf.Registry) registry.Discovery {
+		return NewRegistry(c)
+	})
+}
+
 // NewRegistry 创建一个注册发现客户端 - ZooKeeper
-func NewRegistry(c *conf.Registry) *zookeeperKratos.Registry {
+func NewRegistry(c *conf.Registry) *Registry {
 	if c == nil || c.Zookeeper == nil {
 		return nil
 	}
@@ -20,7 +30,7 @@ func NewRegistry(c *conf.Registry) *zookeeperKratos.Registry {
 		log.Fatal(err)
 	}
 
-	reg := zookeeperKratos.New(conn)
+	reg := New(conn)
 	if err != nil {
 		log.Fatal(err)
 	}

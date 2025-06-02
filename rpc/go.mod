@@ -15,7 +15,7 @@ require (
 	github.com/go-kratos/kratos/contrib/middleware/validate/v2 v2.0.0-20250527152916-d6f5f00cf562
 	github.com/go-kratos/kratos/v2 v2.8.4
 	github.com/gorilla/handlers v1.5.2
-	github.com/tx7do/kratos-bootstrap/api v0.0.20
+	github.com/tx7do/kratos-bootstrap/api v0.0.21
 	github.com/tx7do/kratos-bootstrap/utils v0.1.3
 	google.golang.org/grpc v1.72.2
 )

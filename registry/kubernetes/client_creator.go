@@ -4,6 +4,7 @@ import (
 	"path/filepath"
 
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/registry"
 
 	k8s "k8s.io/client-go/kubernetes"
 	k8sRest "k8s.io/client-go/rest"
@@ -11,7 +12,17 @@ import (
 	k8sUtil "k8s.io/client-go/util/homedir"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
+	r "github.com/tx7do/kratos-bootstrap/registry"
 )
+
+func init() {
+	r.RegisterRegistrarCreator(string(r.Kubernetes), func(c *conf.Registry) registry.Registrar {
+		return NewRegistry(c)
+	})
+	r.RegisterDiscoveryCreator(string(r.Kubernetes), func(c *conf.Registry) registry.Discovery {
+		return NewRegistry(c)
+	})
+}
 
 // NewRegistry 创建一个注册发现客户端 - Kubernetes
 func NewRegistry(cfg *conf.Registry) *Registry {

@@ -8,14 +8,15 @@ replace (
 	github.com/armon/go-metrics => github.com/hashicorp/go-metrics v0.4.1
 
 	github.com/tx7do/kratos-bootstrap/api => ../../api
-	github.com/tx7do/kratos-bootstrap/registry => ../registry
+	github.com/tx7do/kratos-bootstrap/registry => ../
 )
 
 require (
 	github.com/go-kratos/kratos/v2 v2.8.4
 	github.com/json-iterator/go v1.1.12
 	github.com/stretchr/testify v1.10.0
-	github.com/tx7do/kratos-bootstrap/api v0.0.20
+	github.com/tx7do/kratos-bootstrap/api v0.0.21
+	github.com/tx7do/kratos-bootstrap/registry v0.1.0
 	k8s.io/api v0.33.1
 	k8s.io/apimachinery v0.33.1
 	k8s.io/client-go v0.33.1

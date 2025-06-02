@@ -2,7 +2,7 @@ github.com/go-kratos/kratos/v2 v2.8.4 h1:eIJLE9Qq9WSoKx+Buy2uPyrahtF/lPh+Xf4MTpx
 github.com/go-kratos/kratos/v2 v2.8.4/go.mod h1:mq62W2101a5uYyRxe+7IdWubu7gZCGYqSNKwGFiiRcw=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/tx7do/kratos-bootstrap/api v0.0.20 h1:z86Mku4v6rZrX2C63cY/0XUMkkEmgdqq19PxJcIt2AY=
-github.com/tx7do/kratos-bootstrap/api v0.0.20/go.mod h1:JCchEsHgURjExO++DiupEbEcCBjlrQYONMMKDdkuC9U=
+github.com/tx7do/kratos-bootstrap/api v0.0.21 h1:4WBT7Hlv6DJNQ9Fw9oyrkBUX7dm2kr/foamgozJNhRc=
+github.com/tx7do/kratos-bootstrap/api v0.0.21/go.mod h1:JCchEsHgURjExO++DiupEbEcCBjlrQYONMMKDdkuC9U=
 google.golang.org/protobuf v1.36.6 h1:z1NpPI8ku2WgiWnf+t9wTPsn6eP1L7ksHUlkfLvd9xY=
 google.golang.org/protobuf v1.36.6/go.mod h1:jduwjTPXsFjZGTmRluh+L6NjiWu7pchiJ2/5YcXBHnY=
