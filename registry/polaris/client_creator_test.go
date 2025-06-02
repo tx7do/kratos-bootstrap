@@ -18,6 +18,6 @@ func TestNewPolarisRegistry(t *testing.T) {
 		},
 	}
 
-	reg := NewPolarisRegistry(&cfg)
+	reg := NewRegistry(&cfg)
 	assert.NotNil(t, reg)
 }

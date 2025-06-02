@@ -14,9 +14,6 @@ cd ../../logger
 go get all
 go mod tidy
 
-cd ../registry
-go get all
-go mod tidy
 
 cd ../tracer
 go get all
@@ -26,7 +23,45 @@ cd ../config
 go get all
 go mod tidy
 
-cd ../oss/minio
+
+cd ../registry
+go get all
+go mod tidy
+
+cd consul
+go get all
+go mod tidy
+
+cd ../etcd
+go get all
+go mod tidy
+
+cd ../eureka
+go get all
+go mod tidy
+
+cd ../kubernetes
+go get all
+go mod tidy
+
+cd ../nacos
+go get all
+go mod tidy
+
+cd ../polaris
+go get all
+go mod tidy
+
+cd ../servicecomb
+go get all
+go mod tidy
+
+cd ../zookeeper
+go get all
+go mod tidy
+
+
+cd ../../../oss/minio
 go get all
 go mod tidy
 
@@ -53,6 +88,7 @@ go mod tidy
 cd ../mongodb
 go get all
 go mod tidy
+
 
 cd ../../rpc
 go get all

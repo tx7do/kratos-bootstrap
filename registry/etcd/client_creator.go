@@ -1,7 +1,6 @@
 package etcd
 
 import (
-	etcdKratos "github.com/go-kratos/kratos/contrib/registry/etcd/v2"
 	"github.com/go-kratos/kratos/v2/log"
 
 	etcdClient "go.etcd.io/etcd/client/v3"
@@ -10,7 +9,7 @@ import (
 )
 
 // NewRegistry 创建一个注册发现客户端 - Etcd
-func NewRegistry(c *conf.Registry) *etcdKratos.Registry {
+func NewRegistry(c *conf.Registry) *Registry {
 	if c == nil || c.Etcd == nil {
 		return nil
 	}
@@ -25,7 +24,7 @@ func NewRegistry(c *conf.Registry) *etcdKratos.Registry {
 		log.Fatal(err)
 	}
 
-	reg := etcdKratos.New(cli)
+	reg := New(cli)
 
 	return reg
 }

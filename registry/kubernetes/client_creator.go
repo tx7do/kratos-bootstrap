@@ -3,7 +3,6 @@ package kubernetes
 import (
 	"path/filepath"
 
-	k8sRegistry "github.com/go-kratos/kratos/contrib/registry/kubernetes/v2"
 	"github.com/go-kratos/kratos/v2/log"
 
 	k8s "k8s.io/client-go/kubernetes"
@@ -15,7 +14,7 @@ import (
 )
 
 // NewRegistry 创建一个注册发现客户端 - Kubernetes
-func NewRegistry(cfg *conf.Registry) *k8sRegistry.Registry {
+func NewRegistry(cfg *conf.Registry) *Registry {
 	if cfg == nil || cfg.Kubernetes == nil {
 		return nil
 	}
@@ -38,7 +37,7 @@ func NewRegistry(cfg *conf.Registry) *k8sRegistry.Registry {
 	}
 
 	var namespace string
-	reg := k8sRegistry.NewRegistry(clientSet, namespace)
+	reg := New(clientSet, namespace)
 
 	return reg
 }

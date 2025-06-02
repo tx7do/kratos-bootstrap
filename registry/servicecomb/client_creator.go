@@ -1,7 +1,6 @@
 package servicecomb
 
 import (
-	servicecombKratos "github.com/go-kratos/kratos/contrib/registry/servicecomb/v2"
 	"github.com/go-kratos/kratos/v2/log"
 
 	servicecombClient "github.com/go-chassis/sc-client"
@@ -10,7 +9,7 @@ import (
 )
 
 // NewRegistry 创建一个注册发现客户端 - Servicecomb
-func NewRegistry(c *conf.Registry) *servicecombKratos.Registry {
+func NewRegistry(c *conf.Registry) *Registry {
 	if c == nil || c.Servicecomb == nil {
 		return nil
 	}
@@ -25,7 +24,7 @@ func NewRegistry(c *conf.Registry) *servicecombKratos.Registry {
 		log.Fatal(err)
 	}
 
-	reg := servicecombKratos.NewRegistry(cli)
+	reg := New(cli)
 
 	return reg
 }
