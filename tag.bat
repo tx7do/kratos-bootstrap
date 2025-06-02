@@ -4,7 +4,7 @@ git tag utils/v0.1.3 --force
 
 git tag cache/redis/v0.0.9 --force
 git tag oss/minio/v0.0.9 --force
-git tag registry/v0.0.9 --force
+git tag registry/v0.0.10 --force
 git tag config/v0.0.9 --force
 git tag logger/v0.0.9 --force
 git tag rpc/v0.0.13 --force

@@ -7,14 +7,17 @@ import (
 )
 
 func TestNewPolarisRegistry(t *testing.T) {
-	var cfg conf.Registry
-	cfg.Polaris.Address = "127.0.0.1"
-	cfg.Polaris.Port = 8091
-	cfg.Polaris.InstanceCount = 5
-	cfg.Polaris.Namespace = "default"
-	cfg.Polaris.Service = "DiscoverEchoServer"
-	cfg.Polaris.Token = ""
+	cfg := conf.Registry{
+		Polaris: &conf.Registry_Polaris{
+			Address:       "127.0.0.1",
+			Port:          8091,
+			InstanceCount: 5,
+			Namespace:     "default",
+			Service:       "DiscoverEchoServer",
+			Token:         "",
+		},
+	}
 
 	reg := NewPolarisRegistry(&cfg)
-	assert.Nil(t, reg)
+	assert.NotNil(t, reg)
 }

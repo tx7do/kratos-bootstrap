@@ -9,5 +9,5 @@ import (
 func TestNewKubernetesRegistry(t *testing.T) {
 	var cfg conf.Registry
 	reg := NewRegistry(&cfg)
-	assert.Nil(t, reg)
+	assert.NotNil(t, reg)
 }

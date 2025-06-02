@@ -7,9 +7,12 @@ import (
 )
 
 func TestNewServicecombRegistry(t *testing.T) {
-	var cfg conf.Registry
-	cfg.Servicecomb.Endpoints = []string{"127.0.0.1:30100"}
+	cfg := conf.Registry{
+		Servicecomb: &conf.Registry_Servicecomb{
+			Endpoints: []string{"127.0.0.1:30100"},
+		},
+	}
 
 	reg := NewRegistry(&cfg)
-	assert.Nil(t, reg)
+	assert.NotNil(t, reg)
 }
