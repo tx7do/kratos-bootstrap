@@ -31,7 +31,7 @@ git tag remoteconfig/apollo/v0.1.0 --force
 git tag remoteconfig/consul/v0.1.0 --force
 git tag remoteconfig/etcd/v0.1.0 --force
 git tag remoteconfig/kubernetes/v0.1.0 --force
-git tag remoteconfig/nacos/v0.1.0 --force
+git tag remoteconfig/nacos/v0.1.1 --force
 git tag remoteconfig/polaris/v0.1.0 --force
 
 git tag bootstrap/v0.0.16 --force

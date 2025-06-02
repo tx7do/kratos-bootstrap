@@ -1,103 +1,131 @@
-cd api
+::指定起始文件夹
+set DIR=%cd%
+
+cd %DIR%\api
 go get all
 go mod tidy
 
-cd ../utils
+cd %DIR%\utils
 go get all
 go mod tidy
 
-cd ../cache/redis
+cd %DIR%\cache/redis
 go get all
 go mod tidy
 
-cd ../../logger
-go get all
-go mod tidy
-
-
-cd ../tracer
-go get all
-go mod tidy
-
-cd ../config
+cd %DIR%\logger
 go get all
 go mod tidy
 
 
-cd ../registry
-go get all
-go mod tidy
-
-cd consul
-go get all
-go mod tidy
-
-cd ../etcd
-go get all
-go mod tidy
-
-cd ../eureka
-go get all
-go mod tidy
-
-cd ../kubernetes
-go get all
-go mod tidy
-
-cd ../nacos
-go get all
-go mod tidy
-
-cd ../polaris
-go get all
-go mod tidy
-
-cd ../servicecomb
-go get all
-go mod tidy
-
-cd ../zookeeper
+cd %DIR%\tracer
 go get all
 go mod tidy
 
 
-cd ../../../oss/minio
+cd %DIR%\remoteconfig\apollo
 go get all
 go mod tidy
 
-cd ../../database/cassandra
+cd %DIR%\remoteconfig\consul
 go get all
 go mod tidy
 
-cd ../clickhouse
+cd %DIR%\remoteconfig\etcd
 go get all
 go mod tidy
 
-cd ../ent
+cd %DIR%\remoteconfig\kubernetes
 go get all
 go mod tidy
 
-cd ../gorm
+cd %DIR%\remoteconfig\nacos
 go get all
 go mod tidy
 
-cd ../influxdb
+cd %DIR%\remoteconfig\polaris
 go get all
 go mod tidy
 
-cd ../mongodb
+cd %DIR%\config
 go get all
 go mod tidy
 
 
-cd ../../rpc
+cd %DIR%\registry
 go get all
 go mod tidy
 
-cd ../bootstrap
+cd %DIR%\registry\consul
 go get all
 go mod tidy
 
-cd ../
+cd %DIR%\registry\etcd
+go get all
+go mod tidy
+
+cd %DIR%\registry\eureka
+go get all
+go mod tidy
+
+cd %DIR%\registry\kubernetes
+go get all
+go mod tidy
+
+cd %DIR%\registry\nacos
+go get all
+go mod tidy
+
+cd %DIR%\registry\polaris
+go get all
+go mod tidy
+
+cd %DIR%\registry\servicecomb
+go get all
+go mod tidy
+
+cd %DIR%\registry\zookeeper
+go get all
+go mod tidy
+
+
+cd %DIR%\registry\oss\minio
+go get all
+go mod tidy
+
+cd %DIR%\database\cassandra
+go get all
+go mod tidy
+
+cd %DIR%\database\clickhouse
+go get all
+go mod tidy
+
+cd %DIR%\database\ent
+go get all
+go mod tidy
+
+cd %DIR%\database\gorm
+go get all
+go mod tidy
+
+cd %DIR%\database\influxdb
+go get all
+go mod tidy
+
+cd %DIR%\database\mongodb
+go get all
+go mod tidy
+
+
+cd %DIR%\rpc
+go get all
+go mod tidy
+
+cd %DIR%\bootstrap
+go get all
+go mod tidy
+
+cd %DIR%
 go get all
 go mod tidy
