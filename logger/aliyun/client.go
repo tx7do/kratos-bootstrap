@@ -13,7 +13,7 @@ func NewLogger(cfg *conf.Logger) log.Logger {
 		return nil
 	}
 
-	wrapped := aliyunLogger.NewAliyunLog(
+	wrapped, _ := aliyunLogger.NewAliyunLog(
 		aliyunLogger.WithProject(cfg.Aliyun.Project),
 		aliyunLogger.WithEndpoint(cfg.Aliyun.Endpoint),
 		aliyunLogger.WithAccessKey(cfg.Aliyun.AccessKey),

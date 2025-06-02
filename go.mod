@@ -1,5 +1,5 @@
 module github.com/tx7do/kratos-bootstrap
 
-go 1.23
+go 1.23.0
 
-toolchain go1.23.2
+toolchain go1.24.3

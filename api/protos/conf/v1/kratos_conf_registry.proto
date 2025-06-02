@@ -31,19 +31,30 @@ message Registry {
     string address = 1; // 服务端地址
     uint64 port = 2; // 服务端端口
 
-    string namespace_id = 3; //
+    string namespace_id = 3; // 命名空间ID
+    string region_id = 4; // 区域ID
+    string app_name = 5; // 应用名称
 
-    string log_level = 4; // 日志等级
-    string cache_dir = 5; // 缓存目录
-    string log_dir = 6; // 日志目录
+    string access_key = 6; // 访问密钥
+    string secret_key = 7; // 密钥
 
-    int32 update_thread_num = 7; // 更新服务的线程数
+    string username = 8; // 用户名
+    string password = 9; // 密码
 
-    google.protobuf.Duration timeout = 8; // http请求超时时间，单位: 毫秒
-    google.protobuf.Duration beat_interval = 9; // 心跳间隔时间，单位: 毫秒
+    string log_level = 10; // 日志等级
+    string log_dir = 11; // 日志目录
 
-    bool not_load_cache_at_start = 10; // 在启动时不读取本地缓存数据，true: 不读取，false: 读取
-    bool update_cache_when_empty = 11; // 当服务列表为空时是否更新本地缓存，true: 更新,false: 不更新
+    string cache_dir = 12; // 缓存目录
+
+    google.protobuf.Duration timeout = 20; // http请求超时时间，单位: 毫秒
+    google.protobuf.Duration beat_interval = 21; // 心跳间隔时间，单位: 毫秒
+    google.protobuf.Duration listen_interval = 22; // 心跳间隔时间，单位: 毫秒
+
+    int32 update_thread_num = 30; // 更新服务的线程数
+
+    bool not_load_cache_at_start = 40; // 在启动时不读取本地缓存数据，true: 不读取，false: 读取
+    bool update_cache_when_empty = 41; // 当服务列表为空时是否更新本地缓存，true: 更新,false: 不更新
+    bool open_kms = 42; // 是否开启kms加密，true: 开启，false: 关闭
   }
 
   // Kubernetes
