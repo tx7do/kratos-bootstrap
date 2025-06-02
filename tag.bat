@@ -34,6 +34,6 @@ git tag remoteconfig/polaris/v0.1.0 --force
 
 git tag bootstrap/v0.0.17 --force
 
-git tag v0.6.0
+git tag v0.7.0
 
 git push origin --tags
