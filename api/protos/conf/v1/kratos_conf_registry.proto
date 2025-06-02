@@ -33,19 +33,15 @@ message Registry {
 
     string namespace_id = 3; // 命名空间ID
     string region_id = 4; // 区域ID
+
     string app_name = 5; // 应用名称
+    string app_key = 6; // 应用密钥
 
-    string access_key = 6; // 访问密钥
-    string secret_key = 7; // 密钥
+    string access_key = 7; // 访问密钥
+    string secret_key = 8; // 密钥
 
-    string username = 8; // 用户名
-    string password = 9; // 密码
-
-    string log_level = 10; // 日志等级
-    string log_dir = 11; // 日志目录
-
-    string cache_dir = 12; // 缓存目录
-    string context_path = 13; // 上下文路径
+    string username = 9; // 用户名
+    string password = 10; // 密码
 
     google.protobuf.Duration timeout = 20; // http请求超时时间，单位: 毫秒
     google.protobuf.Duration beat_interval = 21; // 心跳间隔时间，单位: 毫秒
@@ -56,6 +52,12 @@ message Registry {
     bool not_load_cache_at_start = 40; // 在启动时不读取本地缓存数据，true: 不读取，false: 读取
     bool update_cache_when_empty = 41; // 当服务列表为空时是否更新本地缓存，true: 更新,false: 不更新
     bool open_kms = 42; // 是否开启kms加密，true: 开启，false: 关闭
+
+    string log_level = 50; // 日志等级
+    string log_dir = 51; // 日志目录
+
+    string cache_dir = 52; // 缓存目录
+    string context_path = 53; // 上下文路径
   }
 
   // Kubernetes
