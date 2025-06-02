@@ -13,7 +13,7 @@ require (
 	github.com/go-sql-driver/mysql v1.9.2
 	github.com/jackc/pgx/v4 v4.18.3
 	github.com/lib/pq v1.10.9
-	github.com/tx7do/kratos-bootstrap/api v0.0.18
+	github.com/tx7do/kratos-bootstrap/api v0.0.19
 	go.opentelemetry.io/otel v1.36.0
 )
 

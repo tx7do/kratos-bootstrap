@@ -9,7 +9,7 @@ replace github.com/tx7do/kratos-bootstrap/api => ../../api
 require (
 	github.com/InfluxCommunity/influxdb3-go v0.14.0
 	github.com/go-kratos/kratos/v2 v2.8.4
-	github.com/tx7do/kratos-bootstrap/api v0.0.18
+	github.com/tx7do/kratos-bootstrap/api v0.0.19
 )
 
 require (

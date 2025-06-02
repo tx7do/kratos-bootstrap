@@ -45,6 +45,7 @@ message Registry {
     string log_dir = 11; // 日志目录
 
     string cache_dir = 12; // 缓存目录
+    string context_path = 13; // 上下文路径
 
     google.protobuf.Duration timeout = 20; // http请求超时时间，单位: 毫秒
     google.protobuf.Duration beat_interval = 21; // 心跳间隔时间，单位: 毫秒
