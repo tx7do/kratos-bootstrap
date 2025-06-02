@@ -47,10 +47,6 @@ cd %DIR%\remoteconfig\polaris
 go get all
 go mod tidy
 
-cd %DIR%\config
-go get all
-go mod tidy
-
 
 cd %DIR%\registry
 go get all
