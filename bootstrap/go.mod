@@ -8,10 +8,24 @@ replace (
 	github.com/armon/go-metrics => github.com/hashicorp/go-metrics v0.4.1
 
 	github.com/tx7do/kratos-bootstrap/api => ../api
-
-	github.com/tx7do/kratos-bootstrap/config => ../config
 	github.com/tx7do/kratos-bootstrap/logger => ../logger
+
 	github.com/tx7do/kratos-bootstrap/registry => ../registry
+	github.com/tx7do/kratos-bootstrap/registry/consul => ../registry/consul
+	github.com/tx7do/kratos-bootstrap/registry/etcd => ../registry/etcd
+	github.com/tx7do/kratos-bootstrap/registry/eureka => ../registry/eureka
+	github.com/tx7do/kratos-bootstrap/registry/kubernetes => ../registry/kubernetes
+	github.com/tx7do/kratos-bootstrap/registry/nacos => ../registry/nacos
+	github.com/tx7do/kratos-bootstrap/registry/polaris => ../registry/polaris
+	github.com/tx7do/kratos-bootstrap/registry/servicecomb => ../registry/servicecomb
+	github.com/tx7do/kratos-bootstrap/registry/zookeeper => ../registry/zookeeper
+
+	github.com/tx7do/kratos-bootstrap/remoteconfig/apollo => ../remoteconfig/apollo
+	github.com/tx7do/kratos-bootstrap/remoteconfig/consul => ../remoteconfig/consul
+	github.com/tx7do/kratos-bootstrap/remoteconfig/etcd => ../remoteconfig/etcd
+	github.com/tx7do/kratos-bootstrap/remoteconfig/kubernetes => ../remoteconfig/kubernetes
+	github.com/tx7do/kratos-bootstrap/remoteconfig/nacos => ../remoteconfig/nacos
+	github.com/tx7do/kratos-bootstrap/remoteconfig/polaris => ../remoteconfig/polaris
 	github.com/tx7do/kratos-bootstrap/tracer => ../tracer
 	github.com/tx7do/kratos-bootstrap/utils => ../utils
 )
@@ -22,7 +36,6 @@ require (
 	github.com/olekukonko/tablewriter v1.0.7
 	github.com/spf13/cobra v1.9.1
 	github.com/tx7do/kratos-bootstrap/api v0.0.21
-	github.com/tx7do/kratos-bootstrap/config v0.0.10
 	github.com/tx7do/kratos-bootstrap/logger v0.0.10
 	github.com/tx7do/kratos-bootstrap/registry v0.1.0
 	github.com/tx7do/kratos-bootstrap/registry/consul v0.1.0
@@ -32,6 +45,12 @@ require (
 	github.com/tx7do/kratos-bootstrap/registry/nacos v0.1.0
 	github.com/tx7do/kratos-bootstrap/registry/servicecomb v0.1.0
 	github.com/tx7do/kratos-bootstrap/registry/zookeeper v0.1.0
+	github.com/tx7do/kratos-bootstrap/remoteconfig/apollo v0.1.0
+	github.com/tx7do/kratos-bootstrap/remoteconfig/consul v0.1.0
+	github.com/tx7do/kratos-bootstrap/remoteconfig/etcd v0.1.0
+	github.com/tx7do/kratos-bootstrap/remoteconfig/kubernetes v0.1.0
+	github.com/tx7do/kratos-bootstrap/remoteconfig/nacos v0.1.1
+	github.com/tx7do/kratos-bootstrap/remoteconfig/polaris v0.1.0
 	github.com/tx7do/kratos-bootstrap/tracer v0.0.10
 	github.com/tx7do/kratos-bootstrap/utils v0.1.3
 	golang.org/x/tools v0.33.0
@@ -154,12 +173,6 @@ require (
 	github.com/tencentcloud/tencentcloud-cls-sdk-go v1.0.11 // indirect
 	github.com/tinylib/msgp v1.3.0 // indirect
 	github.com/tjfoc/gmsm v1.4.1 // indirect
-	github.com/tx7do/kratos-bootstrap/remoteconfig/apollo v0.1.0 // indirect
-	github.com/tx7do/kratos-bootstrap/remoteconfig/consul v0.1.0 // indirect
-	github.com/tx7do/kratos-bootstrap/remoteconfig/etcd v0.1.0 // indirect
-	github.com/tx7do/kratos-bootstrap/remoteconfig/kubernetes v0.1.0 // indirect
-	github.com/tx7do/kratos-bootstrap/remoteconfig/nacos v0.1.0 // indirect
-	github.com/tx7do/kratos-bootstrap/remoteconfig/polaris v0.1.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	go.etcd.io/etcd/api/v3 v3.6.0 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.6.0 // indirect

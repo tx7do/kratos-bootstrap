@@ -8,7 +8,6 @@ import (
 	"github.com/go-kratos/kratos/v2/registry"
 
 	v1 "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"github.com/tx7do/kratos-bootstrap/config"
 )
 
 func initApp(logger log.Logger, registrar registry.Registrar, _ *v1.Bootstrap) (*kratos.App, func(), error) {
@@ -35,7 +34,7 @@ func initAppEx(logger log.Logger, registrar registry.Registrar, _ *v1.Bootstrap,
 
 func TestCustomBootstrap(t *testing.T) {
 	customCfg := &CustomConfig{}
-	config.RegisterConfig(customCfg)
+	RegisterConfig(customCfg)
 
 	Service.SetName("test")
 	Service.SetVersion("v0.0.1")

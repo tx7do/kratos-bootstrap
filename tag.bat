@@ -25,8 +25,6 @@ git tag registry/polaris/v0.1.0 --force
 git tag registry/servicecomb/v0.1.0 --force
 git tag registry/zookeeper/v0.1.0 --force
 
-git tag config/v0.0.10 --force
-
 git tag remoteconfig/apollo/v0.1.0 --force
 git tag remoteconfig/consul/v0.1.0 --force
 git tag remoteconfig/etcd/v0.1.0 --force

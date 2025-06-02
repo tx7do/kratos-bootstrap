@@ -1,6 +1,8 @@
-package config
+package bootstrap
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestRegisterConfig(t *testing.T) {
 	var cfg struct {
