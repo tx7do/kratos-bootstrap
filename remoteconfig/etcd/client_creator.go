@@ -8,7 +8,6 @@ import (
 
 	"google.golang.org/grpc"
 
-	etcdKratos "github.com/go-kratos/kratos/contrib/config/etcd/v2"
 	etcdClient "go.etcd.io/etcd/client/v3"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
@@ -40,7 +39,7 @@ func NewConfigSource(c *conf.RemoteConfig) config.Source {
 		panic(err)
 	}
 
-	source, err := etcdKratos.New(cli, etcdKratos.WithPath(getConfigKey(c.Etcd.Key, true)))
+	source, err := New(cli, WithPath(getConfigKey(c.Etcd.Key, true)))
 	if err != nil {
 		log.Fatal(err)
 	}

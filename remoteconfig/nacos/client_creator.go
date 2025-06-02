@@ -6,10 +6,9 @@ import (
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/log"
 
-	nacosKratos "github.com/go-kratos/kratos/contrib/config/nacos/v2"
-	nacosClients "github.com/nacos-group/nacos-sdk-go/clients"
-	nacosConstant "github.com/nacos-group/nacos-sdk-go/common/constant"
-	nacosVo "github.com/nacos-group/nacos-sdk-go/vo"
+	nacosClients "github.com/nacos-group/nacos-sdk-go/v2/clients"
+	nacosConstant "github.com/nacos-group/nacos-sdk-go/v2/common/constant"
+	nacosVo "github.com/nacos-group/nacos-sdk-go/v2/vo"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
@@ -54,8 +53,8 @@ func NewConfigSource(c *conf.RemoteConfig) config.Source {
 		log.Fatal(err)
 	}
 
-	return nacosKratos.NewConfigSource(nacosClient,
-		nacosKratos.WithGroup(getConfigKey(c.Nacos.Key, false)),
-		nacosKratos.WithDataID("bootstrap.yaml"),
+	return New(nacosClient,
+		WithGroup(getConfigKey(c.Nacos.Key, false)),
+		WithDataID("bootstrap.yaml"),
 	)
 }

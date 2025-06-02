@@ -5,38 +5,9 @@ import (
 	fileKratos "github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
 
-	"github.com/tx7do/kratos-bootstrap/config/apollo"
-	"github.com/tx7do/kratos-bootstrap/config/consul"
-	"github.com/tx7do/kratos-bootstrap/config/etcd"
-	"github.com/tx7do/kratos-bootstrap/config/kubernetes"
-	"github.com/tx7do/kratos-bootstrap/config/nacos"
-	"github.com/tx7do/kratos-bootstrap/config/polaris"
-
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 	"github.com/tx7do/kratos-bootstrap/utils"
 )
-
-// NewRemoteConfigSource 创建一个远程配置源
-func NewRemoteConfigSource(c *conf.RemoteConfig) config.Source {
-	switch Type(c.Type) {
-	default:
-		fallthrough
-	case LocalFile:
-		return nil
-	case Nacos:
-		return nacos.NewConfigSource(c)
-	case Consul:
-		return consul.NewConfigSource(c)
-	case Etcd:
-		return etcd.NewConfigSource(c)
-	case Apollo:
-		return apollo.NewConfigSource(c)
-	case Kubernetes:
-		return kubernetes.NewConfigSource(c)
-	case Polaris:
-		return polaris.NewConfigSource(c)
-	}
-}
 
 // NewFileConfigSource 创建一个本地文件配置源
 func NewFileConfigSource(filePath string) config.Source {

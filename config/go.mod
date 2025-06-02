@@ -12,10 +12,7 @@ replace (
 )
 
 require (
-	github.com/go-kratos/kratos/contrib/config/apollo/v2 v2.0.0-20250527152916-d6f5f00cf562
-	github.com/go-kratos/kratos/contrib/config/etcd/v2 v2.0.0-20250527152916-d6f5f00cf562
-	github.com/go-kratos/kratos/contrib/config/kubernetes/v2 v2.0.0-20250527152916-d6f5f00cf562
-	github.com/go-kratos/kratos/contrib/config/nacos/v2 v2.0.0-20250527152916-d6f5f00cf562
+	github.com/apolloconfig/agollo/v4 v4.4.0
 	github.com/go-kratos/kratos/v2 v2.8.4
 	github.com/hashicorp/consul/api v1.32.1
 	github.com/nacos-group/nacos-sdk-go v1.1.5
@@ -23,13 +20,14 @@ require (
 	github.com/tx7do/kratos-bootstrap/utils v0.1.3
 	go.etcd.io/etcd/client/v3 v3.6.0
 	google.golang.org/grpc v1.72.2
+	k8s.io/api v0.33.1
+	k8s.io/apimachinery v0.33.1
 	k8s.io/client-go v0.33.1
 )
 
 require (
 	dario.cat/mergo v1.0.2 // indirect
 	github.com/aliyun/alibaba-cloud-sdk-go v1.63.107 // indirect
-	github.com/apolloconfig/agollo/v4 v4.4.0 // indirect
 	github.com/armon/go-metrics v0.5.4 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/coreos/go-semver v0.3.1 // indirect
@@ -103,8 +101,6 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/api v0.33.1 // indirect
-	k8s.io/apimachinery v0.33.1 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20250318190949-c8a335a9a2ff // indirect
 	k8s.io/utils v0.0.0-20250502105355-0f33e8f1c979 // indirect
