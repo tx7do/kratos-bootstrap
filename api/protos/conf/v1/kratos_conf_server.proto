@@ -62,7 +62,6 @@ message Server {
     string password = 5;  // 密码
     string client_id = 6;  // 客户端ID
     bool clean_session = 7;  // 清除会话
-    bool enable_keep_alive = 8; // 启用心跳
   }
 
   // Kafka
@@ -70,7 +69,6 @@ message Server {
     repeated string endpoints = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
-    bool enable_keep_alive = 4; // 启用心跳
   }
 
   // RabbitMQ
@@ -78,42 +76,36 @@ message Server {
     repeated string endpoints = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
-    bool enable_keep_alive = 4; // 启用心跳
   }
 
   message ActiveMQ {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
-    bool enable_keep_alive = 4; // 启用心跳
   }
 
   message NATS {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
-    bool enable_keep_alive = 4; // 启用心跳
   }
 
   message NSQ {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
-    bool enable_keep_alive = 4; // 启用心跳
   }
 
   message Pulsar {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
-    bool enable_keep_alive = 4; // 启用心跳
   }
 
   message Redis {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
-    bool enable_keep_alive = 4; // 启用心跳
   }
 
   message RocketMQ {
@@ -134,7 +126,6 @@ message Server {
     TLS tls = 11;  // TLS配置
 
     bool enable_trace = 100;
-    bool enable_keep_alive = 101; // 启用心跳
   }
 
   // Asynq
@@ -154,9 +145,8 @@ message Server {
     int32 group_max_size = 12; // 组最大大小
     map<string, int32> queues = 13; // 队列
 
-    bool enable_keep_alive = 20; // 启用心跳
-    bool enable_gracefully_shutdown = 21; // 优雅关闭
-    bool enable_strict_priority = 22; // 严格优先级
+    bool enable_gracefully_shutdown = 20; // 优雅关闭
+    bool enable_strict_priority = 21; // 严格优先级
 
     google.protobuf.Duration shutdown_timeout = 30; // 关闭超时时间
     google.protobuf.Duration dial_timeout = 31; // 拨号超时时间
@@ -188,10 +178,9 @@ message Server {
     string consumer_queue = 32; // 消费者队列
 
     TLS tls = 50;  // TLS配置
-    bool enable_keep_alive = 51; // 启用心跳
-    string default_queue = 52; // 默认队列
-    int32 results_expire_in = 53; // 结果过期时间
-    bool no_unix_signals = 54; // 禁用Unix信号
+    string default_queue = 51; // 默认队列
+    int32 results_expire_in = 52; // 结果过期时间
+    bool no_unix_signals = 53; // 禁用Unix信号
 
     message Redis {
       int32 max_idle = 1;
@@ -305,12 +294,19 @@ message Server {
     TLS tls = 7;  // TLS配置
   }
 
+  message KeepAlive {
+    string network = 1; // 网络
+    string addr = 2;  // 服务监听地址
+    TLS tls = 3;  // TLS配置
+  }
+
   // RPC
 
   optional REST rest = 1;  // REST服务
   optional GRPC grpc = 2;  // gRPC服务
   optional GraphQL graphql = 3;  // GraphQL服务
   optional Thrift thrift = 4;  // Thrift服务
+  optional KeepAlive keepalive = 5;  // 保活服务
 
   // Message Queue
 
