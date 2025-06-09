@@ -2,7 +2,7 @@ git tag api/v0.0.23 --force
 
 git tag utils/v0.1.4 --force
 
-git tag cache/redis/v0.0.10 --force
+git tag cache/redis/v0.0.11 --force
 git tag oss/minio/v0.0.10 --force
 git tag logger/v0.0.10 --force
 git tag rpc/v0.0.14 --force
