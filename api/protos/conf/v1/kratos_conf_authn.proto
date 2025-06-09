@@ -14,6 +14,19 @@ message Authentication {
     string key = 2; // JWT 秘钥
   }
 
+  message OIDC {
+    string issuer_url = 1;
+    string audience = 2;
+    string method = 3; // JWT签名的算法，支持算法：HS256
+  }
 
-  optional Jwt jwt = 1;
+  message PresharedKey {
+    repeated string valid_keys = 1;
+  }
+
+  string type = 1;
+
+  optional Jwt jwt = 2; // JWT 认证
+  optional OIDC oidc = 3; // OIDC
+  optional PresharedKey preshared_key = 4; // 预共享密钥
 }

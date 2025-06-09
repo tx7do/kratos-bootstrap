@@ -8,4 +8,46 @@ import "google/protobuf/duration.proto";
 
 // 授权
 message Authorization {
+  message Casbin {
+    optional string model_path = 1; // casbin 模型文件路径
+    optional string policy_path = 2; // casbin 策略文件路径
+
+    repeated string policies = 10; // 策略列表
+    optional string model = 11; // 模型内容
+  }
+
+  message OPA {
+    message RoleActions {
+      repeated string actions = 1; // 角色对应的操作列表 {
+    }
+
+    map<string, string> policies = 1; // OPA 策略列表
+    map<string, RoleActions> roles = 2; //
+  }
+
+  message Zanzibar {
+    message Keto {
+      string write_url = 1; // 写入 URL
+      string read_url = 2; // 读取 URL
+      bool use_grpc = 3; // 是否使用 gRPC
+    }
+
+    message OpenFga {
+      string api_url = 1; // OpenFGA API URL
+      string store_id = 2; // OpenFGA 存储 ID
+      string token = 3; // OpenFGA 访问令牌
+      string client_id = 4; // OpenFGA 客户端 ID
+    }
+
+    string type = 1; // zanzibar 类型
+
+    optional Keto keto = 2; // Keto 配置
+    optional OpenFga open_fga = 3; // OpenFGA 配置
+  }
+
+  string type = 1;
+
+  Casbin casbin = 2; // casbin
+  OPA opa = 3; // OPA
+  Zanzibar zanzibar = 4; // zanzibar
 }
