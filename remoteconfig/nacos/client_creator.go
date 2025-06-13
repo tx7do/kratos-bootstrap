@@ -41,6 +41,9 @@ func NewConfigSource(c *conf.RemoteConfig) config.Source {
 		LogDir:               "../../configs/log",   // 日志目录
 		NotLoadCacheAtStart:  true,                  // 在启动时不读取本地缓存数据，true--不读取，false--读取
 		UpdateCacheWhenEmpty: true,                  // 当服务列表为空时是否更新本地缓存，true--更新,false--不更新
+		Username:             c.Nacos.Username,      //用户名
+		Password:             c.Nacos.Password,      //密码
+		NamespaceId:          c.Nacos.NamespaceId,   //命名空间ID
 	}
 
 	nacosClient, err := nacosClients.NewConfigClient(
