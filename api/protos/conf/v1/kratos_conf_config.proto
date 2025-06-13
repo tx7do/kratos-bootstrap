@@ -12,6 +12,9 @@ message RemoteConfig {
     string address = 1; // 服务端地址
     uint64 port = 2; // 服务端端口
     string key = 3; // 配置键
+    string username = 4; // 用户名
+    string password = 5; // 密码
+    string namespace_id = 6; // 命名空间ID
   }
 
   message Etcd {
