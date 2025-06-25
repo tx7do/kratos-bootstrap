@@ -1,29 +1,124 @@
 package influxdb
 
 import (
-	"github.com/InfluxCommunity/influxdb3-go/influxdb3"
+	"context"
 
+	"github.com/go-kratos/kratos/v2/encoding"
+	_ "github.com/go-kratos/kratos/v2/encoding/json"
 	"github.com/go-kratos/kratos/v2/log"
+
+	"github.com/InfluxCommunity/influxdb3-go/v2/influxdb3"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
 
-func NewInfluxClient(cfg *conf.Bootstrap, l *log.Helper) *influxdb3.Client {
+type Client struct {
+	cli *influxdb3.Client
+
+	log   *log.Helper
+	codec encoding.Codec
+}
+
+func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*Client, error) {
+	c := &Client{
+		log:   log.NewHelper(log.With(logger, "module", "influxdb-client")),
+		codec: encoding.GetCodec("json"),
+	}
+
+	if err := c.createInfluxdbClient(cfg); err != nil {
+		return nil, err
+	}
+
+	return c, nil
+}
+
+// createInfluxdbClient 创建InfluxDB客户端
+func (c *Client) createInfluxdbClient(cfg *conf.Bootstrap) error {
 	if cfg.Data == nil || cfg.Data.Influxdb == nil {
-		l.Warn("influxdb config is nil")
 		return nil
 	}
 
 	client, err := influxdb3.New(influxdb3.ClientConfig{
-		Host:         cfg.Data.Influxdb.Address,
-		Token:        cfg.Data.Influxdb.Token,
-		Database:     cfg.Data.Influxdb.Bucket,
-		Organization: cfg.Data.Influxdb.Organization,
+		Host:         cfg.Data.Influxdb.GetHost(),
+		Token:        cfg.Data.Influxdb.GetToken(),
+		Database:     cfg.Data.Influxdb.GetDatabase(),
+		Organization: cfg.Data.Influxdb.GetOrganization(),
 	})
 	if err != nil {
-		l.Fatalf("failed opening connection to influxdb: %v", err)
-		return nil
+		c.log.Errorf("failed to create influxdb client: %v", err)
+		return err
 	}
 
-	return client
+	c.cli = client
+
+	return nil
+}
+
+// Close 关闭InfluxDB客户端
+func (c *Client) Close() {
+	if c.cli == nil {
+		c.log.Warn("influxdb client is nil, nothing to close")
+		return
+	}
+
+	if err := c.cli.Close(); err != nil {
+		c.log.Errorf("failed to close influxdb client: %v", err)
+	} else {
+		c.log.Info("influxdb client closed successfully")
+	}
+}
+
+// Query 查询数据
+func (c *Client) Query(ctx context.Context, query string) (*influxdb3.QueryIterator, error) {
+	if c.cli == nil {
+		return nil, ErrInfluxDBClientNotInitialized
+	}
+
+	result, err := c.cli.Query(
+		ctx,
+		query,
+		influxdb3.WithQueryType(influxdb3.InfluxQL),
+	)
+	if err != nil {
+		c.log.Errorf("failed to query data: %v", err)
+		return nil, ErrInfluxDBQueryFailed
+	}
+
+	return result, nil
+}
+
+// Insert 插入数据
+func (c *Client) Insert(ctx context.Context, point *influxdb3.Point) error {
+	if c.cli == nil {
+		return ErrInfluxDBClientNotInitialized
+	}
+	if point == nil {
+		return ErrInvalidPoint
+	}
+
+	points := []*influxdb3.Point{point}
+	if err := c.cli.WritePoints(ctx, points); err != nil {
+		c.log.Errorf("failed to insert data: %v", err)
+		return ErrInsertFailed
+	}
+
+	return nil
+}
+
+// BatchInsert 批量插入数据
+func (c *Client) BatchInsert(ctx context.Context, points []*influxdb3.Point) error {
+	if c.cli == nil {
+		return ErrInfluxDBClientNotInitialized
+	}
+
+	if len(points) == 0 {
+		return ErrNoPointsToInsert
+	}
+
+	if err := c.cli.WritePoints(ctx, points); err != nil {
+		c.log.Errorf("failed to batch insert data: %v", err)
+		return ErrBatchInsertFailed
+	}
+
+	return nil
 }

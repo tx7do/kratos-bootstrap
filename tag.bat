@@ -11,9 +11,10 @@ git tag tracer/v0.0.10 --force
 git tag database/ent/v0.0.10 --force
 git tag database/gorm/v0.0.10 --force
 git tag database/mongodb/v0.0.10 --force
-git tag database/influxdb/v0.0.10 --force
+git tag database/influxdb/v0.0.11 --force
 git tag database/cassandra/v0.0.10 --force
 git tag database/clickhouse/v0.0.10 --force
+git tag database/elasticsearch/v0.0.1 --force
 
 git tag registry/v0.1.0 --force
 git tag registry/consul/v0.1.0 --force
