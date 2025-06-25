@@ -36,50 +36,84 @@ message Data {
     string password = 3;  // 密码
     int32 db = 4; // 数据库索引
 
-    google.protobuf.Duration dial_timeout = 5;  // 连接超时时间
-    google.protobuf.Duration read_timeout = 6;  // 读取超时时间
-    google.protobuf.Duration write_timeout = 7; // 写入超时时间
+    google.protobuf.Duration dial_timeout = 50;  // 连接超时时间
+    google.protobuf.Duration read_timeout = 51;  // 读取超时时间
+    google.protobuf.Duration write_timeout = 52; // 写入超时时间
 
-    bool enable_tracing = 8; // 打开链路追踪
-    bool enable_metrics = 9; // 打开性能度量
+    bool enable_tracing = 100; // 打开链路追踪
+    bool enable_metrics = 1001; // 打开性能度量
   }
 
   // MongoDB
   message MongoDB {
-    string address = 1;
-    string username = 2;
-    string password = 3;
+    string uri = 1;
+
+    optional string username = 2;
+    optional string password = 3;
+
+    optional string auth_mechanism = 4; // 认证机制：SCRAM-SHA-1、SCRAM-SHA-256、MONGODB-X509、GSSAPI、PLAIN
+    map<string, string> auth_mechanism_properties = 5; // 认证机制属性
+    optional string auth_source = 6; // 认证源：admin、$external等
+
+    google.protobuf.Duration connect_timeout = 50; // 连接超时时间
+    google.protobuf.Duration heartbeat_interval = 51; // 心跳间隔
+    google.protobuf.Duration local_threshold = 52; // 本地延迟阈值
+    google.protobuf.Duration max_conn_idle_time = 53; // 最大连接空闲时间
+    google.protobuf.Duration max_staleness = 54; // 最大陈旧时间
+    google.protobuf.Duration server_selection_timeout = 55; // 服务器选择超时时间
+    google.protobuf.Duration socket_timeout = 56; // 套接字超时时间
+    google.protobuf.Duration timeout = 57; // 总超时时间
+
+    bool enable_tracing = 100; // 打开链路追踪
+    bool enable_metrics = 101; // 打开性能度量
   }
 
   // ClickHouse
   message ClickHouse {
-    string address = 1;
-    string database = 2;
-    string username = 3;
-    string password = 4;
-    bool debug = 5;
-    string compression_method = 6;
-    google.protobuf.Duration dial_timeout = 7;
-    int32 max_execution_time = 8;
-    int32 max_open_conns = 9;
-    int32 max_idle_conns = 10;
-    google.protobuf.Duration conn_max_life_time = 11;
-    int32 block_buffer_size = 12;
-    int32 max_compression_buffer = 13;
-    string conn_open_strategy = 14;
-    int32 max_idle_connections = 15; // 连接池最大空闲连接数
-    int32 max_open_connections = 16; // 连接池最大打开连接数
-    google.protobuf.Duration connection_max_lifetime = 17; // 连接可重用的最大时间长度
-    string protocol = 18;
-    TLS tls = 19;  // TLS配置
+    repeated string addresses = 1; // 对端网络地址
+
+    string database = 2; // 数据库名
+    string username = 3; // 用户名
+    string password = 4; // 密码
+
+    bool debug = 5; // 调试开关
+    string protocol = 6; // 协议：http、https、tcp、native
+
+    TLS tls = 7;  // TLS配置
+
+    string compression_method = 10; // 压缩方法：lz4、zstd、none
+    string conn_open_strategy = 11; // 连接打开策略：default、lazy、always
+
+    google.protobuf.Duration dial_timeout = 20;
+    google.protobuf.Duration conn_max_life_time = 21;
+    google.protobuf.Duration connection_max_lifetime = 22; // 连接可重用的最大时间长度
+    int32 max_execution_time = 23; // 最大执行时间（秒）
+
+    int32 max_open_conns = 30; // 连接池最大打开连接数
+    int32 max_idle_conns = 31; // 连接池最大空闲连接数
+    int32 max_idle_connections = 32; // 连接池最大空闲连接数
+    int32 max_open_connections = 33; // 连接池最大打开连接数
+
+    int32 block_buffer_size = 40; // 数据块缓冲区大小
+    int32 max_compression_buffer = 41; // 最大压缩缓冲区大小
+
+    bool enable_tracing = 100; // 打开链路追踪
+    bool enable_metrics = 101; // 打开性能度量
   }
 
   // InfluxDB
   message InfluxDB {
-    string address = 1;
-    string token = 2;
-    string organization = 3;
-    string bucket = 4;
+    string host = 1; // 主机地址
+    string token = 2; // 认证令牌
+    string auth_scheme = 3; // 认证方案：default、basic
+    string proxy = 4; // 代理地址
+
+    string organization = 10; // 组织名
+    string database = 11; // 数据库名
+
+    google.protobuf.Duration timeout = 20; // 连接超时时间
+    google.protobuf.Duration idle_connection_timeout = 21; // 空闲连接超时时间
+    int32 max_idle_connections = 22; // 连接池最大空闲连接数
   }
 
   message Doris {
@@ -88,11 +122,31 @@ message Data {
 
   message ElasticSearch {
     repeated string addresses = 1;
-    string username = 2;
-    string password = 3;
-    bool enable_sniffer = 4;
-    bool enable_gzip = 5;
-    google.protobuf.Duration health_check_interval = 6;
+
+    string username = 10;
+    string password = 11;
+
+    string cloud_id = 20;
+    string api_key = 21;
+    string service_token = 22;
+    string certificate_fingerprint = 23;
+
+    bool disable_retry = 30;
+    int32 max_retries = 31;
+
+    bool compress_request_body = 40;
+    int32 compress_request_body_level = 41;
+    bool pool_compressor = 42;
+
+    bool discover_nodes_on_start = 50;
+    google.protobuf.Duration discover_nodes_interval = 51;
+
+    bool enable_metrics = 60;
+    bool enable_debug_logger = 61;
+    bool enable_compatibility_mode = 62;
+    bool disable_meta_header = 63;
+
+    TLS tls = 70;  // TLS配置
   }
 
   message Cassandra {
@@ -100,11 +154,14 @@ message Data {
     string username = 2;
     string password = 3;
     string keyspace = 5;
+
     google.protobuf.Duration connect_timeout = 6;
     google.protobuf.Duration timeout = 7;
     uint32 consistency = 8;
+
     bool disable_initial_host_lookup = 9;
     bool ignore_peer_addr = 10;
+
     TLS tls = 11;  // TLS配置
   }
 
