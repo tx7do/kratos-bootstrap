@@ -48,12 +48,14 @@ message Data {
   message MongoDB {
     string uri = 1;
 
-    optional string username = 2;
-    optional string password = 3;
+    optional string database = 2;
 
-    optional string auth_mechanism = 4; // 认证机制：SCRAM-SHA-1、SCRAM-SHA-256、MONGODB-X509、GSSAPI、PLAIN
-    map<string, string> auth_mechanism_properties = 5; // 认证机制属性
-    optional string auth_source = 6; // 认证源：admin、$external等
+    optional string username = 10;
+    optional string password = 11;
+
+    optional string auth_mechanism = 20; // 认证机制：SCRAM-SHA-1、SCRAM-SHA-256、MONGODB-X509、GSSAPI、PLAIN
+    map<string, string> auth_mechanism_properties = 21; // 认证机制属性
+    optional string auth_source = 22; // 认证源：admin、$external等
 
     google.protobuf.Duration connect_timeout = 50; // 连接超时时间
     google.protobuf.Duration heartbeat_interval = 51; // 心跳间隔
