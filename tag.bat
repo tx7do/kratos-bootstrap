@@ -12,7 +12,7 @@ git tag database/ent/v0.0.10 --force
 git tag database/gorm/v0.0.10 --force
 git tag database/mongodb/v0.0.12 --force
 git tag database/influxdb/v0.0.12 --force
-git tag database/clickhouse/v0.0.12 --force
+git tag database/clickhouse/v0.0.13 --force
 git tag database/elasticsearch/v0.0.12 --force
 git tag database/cassandra/v0.0.10 --force
 

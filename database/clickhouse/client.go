@@ -4,7 +4,11 @@ import (
 	"context"
 	"crypto/tls"
 	"database/sql"
+	"fmt"
 	"net/url"
+	"reflect"
+	"strings"
+	"time"
 
 	clickhouseV2 "github.com/ClickHouse/clickhouse-go/v2"
 	driverV2 "github.com/ClickHouse/clickhouse-go/v2/lib/driver"
@@ -229,7 +233,7 @@ func (c *Client) CheckConnection(ctx context.Context) error {
 }
 
 // Query 执行查询并返回结果
-func (c *Client) Query(ctx context.Context, creator Creator, results *[]any, query string, args ...interface{}) error {
+func (c *Client) Query(ctx context.Context, creator Creator, results *[]any, query string, args ...any) error {
 	if c.conn == nil {
 		c.log.Error("clickhouse client is not initialized")
 		return ErrClientNotInitialized
@@ -269,7 +273,7 @@ func (c *Client) Query(ctx context.Context, creator Creator, results *[]any, que
 }
 
 // QueryRow 执行查询并返回单行结果
-func (c *Client) QueryRow(ctx context.Context, dest any, query string, args ...interface{}) error {
+func (c *Client) QueryRow(ctx context.Context, dest any, query string, args ...any) error {
 	row := c.conn.QueryRow(ctx, query, args...)
 	if row == nil {
 		c.log.Error("query row returned nil")
@@ -285,7 +289,7 @@ func (c *Client) QueryRow(ctx context.Context, dest any, query string, args ...i
 }
 
 // Select 封装 SELECT 子句
-func (c *Client) Select(ctx context.Context, dest any, query string, args ...interface{}) error {
+func (c *Client) Select(ctx context.Context, dest any, query string, args ...any) error {
 	if c.conn == nil {
 		c.log.Error("clickhouse client is not initialized")
 		return ErrClientNotInitialized
@@ -301,7 +305,7 @@ func (c *Client) Select(ctx context.Context, dest any, query string, args ...int
 }
 
 // Exec 执行非查询语句
-func (c *Client) Exec(ctx context.Context, query string, args ...interface{}) error {
+func (c *Client) Exec(ctx context.Context, query string, args ...any) error {
 	if c.conn == nil {
 		c.log.Error("clickhouse client is not initialized")
 		return ErrClientNotInitialized
@@ -315,15 +319,178 @@ func (c *Client) Exec(ctx context.Context, query string, args ...interface{}) er
 	return nil
 }
 
+func (c *Client) prepareInsertData(data any) (string, string, []any, error) {
+	val := reflect.ValueOf(data)
+	if val.Kind() != reflect.Ptr || val.IsNil() {
+		return "", "", nil, fmt.Errorf("data must be a non-nil pointer")
+	}
+
+	val = val.Elem()
+	typ := val.Type()
+
+	var columns []string
+	var placeholders []string
+	var values []any
+
+	for i := 0; i < typ.NumField(); i++ {
+		field := typ.Field(i)
+		value := val.Field(i).Interface()
+
+		// 优先获取 `cn` 标签，其次获取 `json` 标签，最后使用字段名
+		columnName := field.Tag.Get("cn")
+		if columnName == "" {
+			columnName = field.Tag.Get("json")
+		}
+		if columnName == "" {
+			columnName = field.Name
+		}
+
+		columns = append(columns, columnName)
+		placeholders = append(placeholders, "?")
+
+		switch v := value.(type) {
+		case *sql.NullString:
+			if v.Valid {
+				values = append(values, v.String)
+			} else {
+				values = append(values, nil)
+			}
+		case *sql.NullInt64:
+			if v.Valid {
+				values = append(values, v.Int64)
+			} else {
+				values = append(values, nil)
+			}
+		case *sql.NullFloat64:
+			if v.Valid {
+				values = append(values, v.Float64)
+			} else {
+				values = append(values, nil)
+			}
+		case *sql.NullBool:
+			if v.Valid {
+				values = append(values, v.Bool)
+			} else {
+				values = append(values, nil)
+			}
+
+		case *sql.NullTime:
+			if v != nil && v.Valid {
+				values = append(values, v.Time.Format("2006-01-02 15:04:05.000000000"))
+			} else {
+				values = append(values, nil)
+			}
+
+		case *time.Time:
+			if v != nil {
+				values = append(values, v.Format("2006-01-02 15:04:05.000000000"))
+			} else {
+				values = append(values, nil)
+			}
+
+		case time.Time:
+			// 处理 time.Time 类型
+			if !v.IsZero() {
+				values = append(values, v.Format("2006-01-02 15:04:05.000000000"))
+			} else {
+				values = append(values, nil) // 如果时间为零值，插入 NULL
+			}
+
+		default:
+			values = append(values, v)
+		}
+	}
+
+	return strings.Join(columns, ", "), strings.Join(placeholders, ", "), values, nil
+}
+
+// Insert 插入数据到指定表
+func (c *Client) Insert(ctx context.Context, tableName string, data any) error {
+	if c.conn == nil {
+		c.log.Error("clickhouse client is not initialized")
+		return ErrClientNotInitialized
+	}
+
+	columns, placeholders, values, err := c.prepareInsertData(data)
+	if err != nil {
+		c.log.Errorf("prepare insert data failed: %v", err)
+		return ErrPrepareInsertDataFailed
+	}
+
+	// 构造 SQL 语句
+	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)",
+		tableName,
+		columns,
+		placeholders,
+	)
+
+	// 执行插入操作
+	if err := c.conn.Exec(ctx, query, values...); err != nil {
+		c.log.Errorf("insert failed: %v", err)
+		return ErrInsertFailed
+	}
+
+	return nil
+}
+
+func (c *Client) InsertMany(ctx context.Context, tableName string, data []any) error {
+	if c.conn == nil {
+		c.log.Error("clickhouse client is not initialized")
+		return ErrClientNotInitialized
+	}
+
+	if len(data) == 0 {
+		c.log.Error("data slice is empty")
+		return ErrInvalidColumnData
+	}
+
+	var columns string
+	var placeholders []string
+	var values []any
+
+	for _, item := range data {
+		itemColumns, itemPlaceholders, itemValues, err := c.prepareInsertData(item)
+		if err != nil {
+			c.log.Errorf("prepare insert data failed: %v", err)
+			return ErrPrepareInsertDataFailed
+		}
+
+		if columns == "" {
+			columns = itemColumns
+		} else if columns != itemColumns {
+			c.log.Error("data items have inconsistent columns")
+			return ErrInvalidColumnData
+		}
+
+		placeholders = append(placeholders, fmt.Sprintf("(%s)", itemPlaceholders))
+		values = append(values, itemValues...)
+	}
+
+	// 构造 SQL 语句
+	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES %s",
+		tableName,
+		columns,
+		strings.Join(placeholders, ", "),
+	)
+
+	// 执行插入操作
+	if err := c.conn.Exec(ctx, query, values...); err != nil {
+		c.log.Errorf("insert many failed: %v", err)
+		return ErrInsertFailed
+	}
+
+	return nil
+}
+
 // AsyncInsert 异步插入数据
-func (c *Client) AsyncInsert(ctx context.Context, query string, wait bool, args ...interface{}) error {
+func (c *Client) AsyncInsert(ctx context.Context, query string, wait bool, args ...any) error {
 	if c.conn == nil {
 		c.log.Error("clickhouse client is not initialized")
 		return ErrClientNotInitialized
 	}
 
 	if err := c.conn.AsyncInsert(ctx, query, wait, args...); err != nil {
-		c.log.Errorf("exec failed: %v", err)
+		c.log.Errorf("async insert failed: %v", err)
 		return ErrAsyncInsertFailed
 	}
 
@@ -331,7 +498,7 @@ func (c *Client) AsyncInsert(ctx context.Context, query string, wait bool, args 
 }
 
 // BatchInsert 批量插入数据
-func (c *Client) BatchInsert(ctx context.Context, query string, data [][]interface{}) error {
+func (c *Client) BatchInsert(ctx context.Context, query string, data [][]any) error {
 	batch, err := c.conn.PrepareBatch(ctx, query)
 	if err != nil {
 		c.log.Errorf("failed to prepare batch: %v", err)
@@ -339,12 +506,43 @@ func (c *Client) BatchInsert(ctx context.Context, query string, data [][]interfa
 	}
 
 	for _, row := range data {
-		if err := batch.Append(row...); err != nil {
-			c.log.Errorf("failed to append data: %v", err)
+		if err = batch.Append(row...); err != nil {
+			c.log.Errorf("failed to append batch data: %v", err)
 			return ErrBatchAppendFailed
 		}
 	}
 
+	if err = batch.Send(); err != nil {
+		c.log.Errorf("failed to send batch: %v", err)
+		return ErrBatchSendFailed
+	}
+
+	return nil
+}
+
+// BatchInsertStructs 批量插入结构体数据
+func (c *Client) BatchInsertStructs(ctx context.Context, query string, data []any) error {
+	if c.conn == nil {
+		c.log.Error("clickhouse client is not initialized")
+		return ErrClientNotInitialized
+	}
+
+	// 准备批量插入
+	batch, err := c.conn.PrepareBatch(ctx, query)
+	if err != nil {
+		c.log.Errorf("failed to prepare batch: %v", err)
+		return ErrBatchPrepareFailed
+	}
+
+	// 遍历数据并添加到批量插入
+	for _, row := range data {
+		if err := batch.AppendStruct(row); err != nil {
+			c.log.Errorf("failed to append batch struct data: %v", err)
+			return ErrBatchAppendFailed
+		}
+	}
+
+	// 发送批量插入
 	if err = batch.Send(); err != nil {
 		c.log.Errorf("failed to send batch: %v", err)
 		return ErrBatchSendFailed

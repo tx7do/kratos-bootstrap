@@ -77,4 +77,10 @@ var (
 
 	// ErrInvalidProxyURL is returned when the proxy URL is invalid.
 	ErrInvalidProxyURL = errors.InternalServer("INVALID_PROXY_URL", "invalid proxy URL")
+
+	// ErrPrepareInsertDataFailed is returned when preparing insert data fails.
+	ErrPrepareInsertDataFailed = errors.InternalServer("PREPARE_INSERT_DATA_FAILED", "failed to prepare insert data")
+
+	// ErrInvalidColumnData is returned when the column data type is invalid.
+	ErrInvalidColumnData = errors.InternalServer("INVALID_COLUMN_DATA", "invalid column data type")
 )
