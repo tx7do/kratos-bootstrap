@@ -72,6 +72,9 @@ var (
 	// ErrBatchAppendFailed is returned when appending to a batch fails.
 	ErrBatchAppendFailed = errors.InternalServer("BATCH_APPEND_FAILED", "batch append operation failed")
 
+	// ErrBatchInsertFailed is returned when a batch insert operation fails.
+	ErrBatchInsertFailed = errors.InternalServer("BATCH_INSERT_FAILED", "batch insert operation failed")
+
 	// ErrInvalidDSN is returned when the data source name (DSN) is invalid.
 	ErrInvalidDSN = errors.InternalServer("INVALID_DSN", "invalid data source name")
 

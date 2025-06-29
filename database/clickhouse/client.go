@@ -8,13 +8,11 @@ import (
 	"net/url"
 	"reflect"
 	"strings"
-	"time"
 
 	clickhouseV2 "github.com/ClickHouse/clickhouse-go/v2"
 	driverV2 "github.com/ClickHouse/clickhouse-go/v2/lib/driver"
 
 	"github.com/go-kratos/kratos/v2/log"
-
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 	"github.com/tx7do/kratos-bootstrap/utils"
 )
@@ -328,13 +326,14 @@ func (c *Client) prepareInsertData(data any) (string, string, []any, error) {
 	val = val.Elem()
 	typ := val.Type()
 
-	var columns []string
-	var placeholders []string
-	var values []any
+	columns := make([]string, 0, typ.NumField())
+	placeholders := make([]string, 0, typ.NumField())
+	values := make([]any, 0, typ.NumField())
+
+	values = structToValueArray(data)
 
 	for i := 0; i < typ.NumField(); i++ {
 		field := typ.Field(i)
-		value := val.Field(i).Interface()
 
 		// 优先获取 `cn` 标签，其次获取 `json` 标签，最后使用字段名
 		columnName := field.Tag.Get("cn")
@@ -347,58 +346,6 @@ func (c *Client) prepareInsertData(data any) (string, string, []any, error) {
 
 		columns = append(columns, columnName)
 		placeholders = append(placeholders, "?")
-
-		switch v := value.(type) {
-		case *sql.NullString:
-			if v.Valid {
-				values = append(values, v.String)
-			} else {
-				values = append(values, nil)
-			}
-		case *sql.NullInt64:
-			if v.Valid {
-				values = append(values, v.Int64)
-			} else {
-				values = append(values, nil)
-			}
-		case *sql.NullFloat64:
-			if v.Valid {
-				values = append(values, v.Float64)
-			} else {
-				values = append(values, nil)
-			}
-		case *sql.NullBool:
-			if v.Valid {
-				values = append(values, v.Bool)
-			} else {
-				values = append(values, nil)
-			}
-
-		case *sql.NullTime:
-			if v != nil && v.Valid {
-				values = append(values, v.Time.Format("2006-01-02 15:04:05.000000000"))
-			} else {
-				values = append(values, nil)
-			}
-
-		case *time.Time:
-			if v != nil {
-				values = append(values, v.Format("2006-01-02 15:04:05.000000000"))
-			} else {
-				values = append(values, nil)
-			}
-
-		case time.Time:
-			// 处理 time.Time 类型
-			if !v.IsZero() {
-				values = append(values, v.Format("2006-01-02 15:04:05.000000000"))
-			} else {
-				values = append(values, nil) // 如果时间为零值，插入 NULL
-			}
-
-		default:
-			values = append(values, v)
-		}
 	}
 
 	return strings.Join(columns, ", "), strings.Join(placeholders, ", "), values, nil
@@ -483,7 +430,33 @@ func (c *Client) InsertMany(ctx context.Context, tableName string, data []any) e
 }
 
 // AsyncInsert 异步插入数据
-func (c *Client) AsyncInsert(ctx context.Context, query string, wait bool, args ...any) error {
+func (c *Client) AsyncInsert(ctx context.Context, tableName string, data any, wait bool) error {
+	if c.conn == nil {
+		c.log.Error("clickhouse client is not initialized")
+		return ErrClientNotInitialized
+	}
+
+	// 准备插入数据
+	columns, placeholders, values, err := c.prepareInsertData(data)
+	if err != nil {
+		c.log.Errorf("prepare insert data failed: %v", err)
+		return ErrPrepareInsertDataFailed
+	}
+
+	// 构造 SQL 语句
+	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)", tableName, columns, placeholders)
+
+	// 执行异步插入
+	if err := c.asyncInsert(ctx, query, wait, values...); err != nil {
+		c.log.Errorf("async insert failed: %v", err)
+		return ErrAsyncInsertFailed
+	}
+
+	return nil
+}
+
+// asyncInsert 异步插入数据
+func (c *Client) asyncInsert(ctx context.Context, query string, wait bool, args ...any) error {
 	if c.conn == nil {
 		c.log.Error("clickhouse client is not initialized")
 		return ErrClientNotInitialized
@@ -497,8 +470,104 @@ func (c *Client) AsyncInsert(ctx context.Context, query string, wait bool, args 
 	return nil
 }
 
+// AsyncInsertMany 批量异步插入数据
+func (c *Client) AsyncInsertMany(ctx context.Context, tableName string, data []any, wait bool) error {
+	if c.conn == nil {
+		c.log.Error("clickhouse client is not initialized")
+		return ErrClientNotInitialized
+	}
+
+	if len(data) == 0 {
+		c.log.Error("data slice is empty")
+		return ErrInvalidColumnData
+	}
+
+	// 准备插入数据的列名和占位符
+	var columns string
+	var placeholders []string
+	var values []any
+
+	for _, item := range data {
+		itemColumns, itemPlaceholders, itemValues, err := c.prepareInsertData(item)
+		if err != nil {
+			c.log.Errorf("prepare insert data failed: %v", err)
+			return ErrPrepareInsertDataFailed
+		}
+
+		if columns == "" {
+			columns = itemColumns
+		} else if columns != itemColumns {
+			c.log.Error("data items have inconsistent columns")
+			return ErrInvalidColumnData
+		}
+
+		placeholders = append(placeholders, fmt.Sprintf("(%s)", itemPlaceholders))
+		values = append(values, itemValues...)
+	}
+
+	// 构造 SQL 语句
+	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES %s",
+		tableName,
+		columns,
+		strings.Join(placeholders, ", "),
+	)
+
+	// 执行异步插入操作
+	if err := c.asyncInsert(ctx, query, wait, values...); err != nil {
+		c.log.Errorf("batch insert failed: %v", err)
+		return err
+	}
+
+	return nil
+}
+
 // BatchInsert 批量插入数据
-func (c *Client) BatchInsert(ctx context.Context, query string, data [][]any) error {
+func (c *Client) BatchInsert(ctx context.Context, tableName string, data []any) error {
+	if c.conn == nil {
+		c.log.Error("clickhouse client is not initialized")
+		return ErrClientNotInitialized
+	}
+
+	if len(data) == 0 {
+		c.log.Error("data slice is empty")
+		return ErrInvalidColumnData
+	}
+
+	// 准备插入数据的列名和占位符
+	var columns string
+	var values [][]any
+
+	for _, item := range data {
+		itemColumns, _, itemValues, err := c.prepareInsertData(item)
+		if err != nil {
+			c.log.Errorf("prepare insert data failed: %v", err)
+			return ErrPrepareInsertDataFailed
+		}
+
+		if columns == "" {
+			columns = itemColumns
+		} else if columns != itemColumns {
+			c.log.Error("data items have inconsistent columns")
+			return ErrInvalidColumnData
+		}
+
+		values = append(values, itemValues)
+	}
+
+	// 构造 SQL 语句
+	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES", tableName, columns)
+
+	// 调用 batchExec 方法执行批量插入
+	if err := c.batchExec(ctx, query, values); err != nil {
+		c.log.Errorf("batch insert failed: %v", err)
+		return ErrBatchInsertFailed
+	}
+
+	return nil
+}
+
+// batchExec 执行批量操作
+func (c *Client) batchExec(ctx context.Context, query string, data [][]any) error {
 	batch, err := c.conn.PrepareBatch(ctx, query)
 	if err != nil {
 		c.log.Errorf("failed to prepare batch: %v", err)
@@ -520,8 +589,8 @@ func (c *Client) BatchInsert(ctx context.Context, query string, data [][]any) er
 	return nil
 }
 
-// BatchInsertStructs 批量插入结构体数据
-func (c *Client) BatchInsertStructs(ctx context.Context, query string, data []any) error {
+// BatchStructs 批量插入结构体数据
+func (c *Client) BatchStructs(ctx context.Context, query string, data []any) error {
 	if c.conn == nil {
 		c.log.Error("clickhouse client is not initialized")
 		return ErrClientNotInitialized

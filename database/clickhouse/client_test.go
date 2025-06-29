@@ -10,10 +10,6 @@ import (
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
 
-func Ptr[T any](v T) *T {
-	return &v
-}
-
 type Candle struct {
 	Timestamp *time.Time `json:"timestamp" ch:"timestamp"`
 	Symbol    *string    `json:"symbol" ch:"symbol"`
@@ -84,9 +80,8 @@ func TestInsertCandlesTable(t *testing.T) {
 	createCandlesTable(client)
 
 	// 测试数据
-	now := time.Now()
 	candle := &Candle{
-		Timestamp: &now,
+		Timestamp: Ptr(time.Now()),
 		Symbol:    Ptr("AAPL"),
 		Open:      Ptr(100.5),
 		High:      Ptr(105.0),
@@ -107,10 +102,9 @@ func TestInsertManyCandlesTable(t *testing.T) {
 	createCandlesTable(client)
 
 	// 测试数据
-	now := time.Now()
 	data := []any{
 		&Candle{
-			Timestamp: &now,
+			Timestamp: Ptr(time.Now()),
 			Symbol:    Ptr("AAPL"),
 			Open:      Ptr(100.5),
 			High:      Ptr(105.0),
@@ -119,7 +113,7 @@ func TestInsertManyCandlesTable(t *testing.T) {
 			Volume:    Ptr(1500.0),
 		},
 		&Candle{
-			Timestamp: &now,
+			Timestamp: Ptr(time.Now()),
 			Symbol:    Ptr("GOOG"),
 			Open:      Ptr(200.5),
 			High:      Ptr(205.0),
@@ -134,7 +128,93 @@ func TestInsertManyCandlesTable(t *testing.T) {
 	assert.NoError(t, err, "InsertManyCandlesTable 应该成功执行")
 }
 
-func TestBatchInsertCandlesTable(t *testing.T) {
+func TestAsyncInsertCandlesTable(t *testing.T) {
+	client := createTestClient()
+	assert.NotNil(t, client)
+
+	createCandlesTable(client)
+
+	// 测试数据
+	candle := &Candle{
+		Timestamp: Ptr(time.Now()),
+		Symbol:    Ptr("BTC/USD"),
+		Open:      Ptr(30000.0),
+		High:      Ptr(31000.0),
+		Low:       Ptr(29000.0),
+		Close:     Ptr(30500.0),
+		Volume:    Ptr(500.0),
+	}
+
+	// 异步插入数据
+	err := client.AsyncInsert(context.Background(), "candles", candle, true)
+	assert.NoError(t, err, "AsyncInsert 方法应该成功执行")
+
+	// 验证插入结果
+	query := `
+		SELECT timestamp, symbol, open, high, low, close, volume
+		FROM candles
+		WHERE symbol = ?
+	`
+	var result Candle
+	err = client.QueryRow(context.Background(), &result, query, "BTC/USD")
+	assert.NoError(t, err, "QueryRow 应该成功执行")
+	assert.Equal(t, "BTC/USD", *result.Symbol, "symbol 列值应该为 BTC/USD")
+	assert.Equal(t, 30500.0, *result.Close, "close 列值应该为 30500.0")
+	assert.Equal(t, 500.0, *result.Volume, "volume 列值应该为 500.0")
+}
+
+func TestAsyncInsertManyCandlesTable(t *testing.T) {
+	client := createTestClient()
+	assert.NotNil(t, client)
+
+	createCandlesTable(client)
+
+	// 测试数据
+	data := []any{
+		&Candle{
+			Timestamp: Ptr(time.Now()),
+			Symbol:    Ptr("AAPL"),
+			Open:      Ptr(100.5),
+			High:      Ptr(105.0),
+			Low:       Ptr(99.5),
+			Close:     Ptr(102.0),
+			Volume:    Ptr(1500.0),
+		},
+		&Candle{
+			Timestamp: Ptr(time.Now()),
+			Symbol:    Ptr("GOOG"),
+			Open:      Ptr(200.5),
+			High:      Ptr(205.0),
+			Low:       Ptr(199.5),
+			Close:     Ptr(202.0),
+			Volume:    Ptr(2500.0),
+		},
+		&Candle{
+			Timestamp: Ptr(time.Now()),
+			Symbol:    Ptr("MSFT"),
+			Open:      Ptr(300.5),
+			High:      Ptr(305.0),
+			Low:       Ptr(299.5),
+			Close:     Ptr(302.0),
+			Volume:    Ptr(3500.0),
+		},
+	}
+
+	// 批量插入数据
+	err := client.AsyncInsertMany(context.Background(), "candles", data, true)
+	assert.NoError(t, err, "AsyncInsertMany 方法应该成功执行")
+
+	// 验证插入结果
+	query := `
+		SELECT timestamp, symbol, open, high, low, close, volume
+		FROM candles
+	`
+	var results []Candle
+	err = client.Select(context.Background(), &results, query)
+	assert.NoError(t, err, "查询数据应该成功执行")
+}
+
+func TestInternalBatchExecCandlesTable(t *testing.T) {
 	client := createTestClient()
 	assert.NotNil(t, client)
 
@@ -154,11 +234,62 @@ func TestBatchInsertCandlesTable(t *testing.T) {
 	}
 
 	// 批量插入数据
-	err := client.BatchInsert(context.Background(), insertQuery, data)
-	assert.NoError(t, err, "BatchInsertCandlesTable 应该成功执行")
+	err := client.batchExec(context.Background(), insertQuery, data)
+	assert.NoError(t, err, "batchExec 应该成功执行")
 }
 
-func TestBatchInsertStructsCandlesTable(t *testing.T) {
+func TestBatchInsertCandlesTable(t *testing.T) {
+	client := createTestClient()
+	assert.NotNil(t, client)
+
+	createCandlesTable(client)
+
+	// 测试数据
+	data := []any{
+		&Candle{
+			Timestamp: Ptr(time.Now()),
+			Symbol:    Ptr("AAPL"),
+			Open:      Ptr(100.5),
+			High:      Ptr(105.0),
+			Low:       Ptr(99.5),
+			Close:     Ptr(102.0),
+			Volume:    Ptr(1500.0),
+		},
+		&Candle{
+			Timestamp: Ptr(time.Now()),
+			Symbol:    Ptr("GOOG"),
+			Open:      Ptr(200.5),
+			High:      Ptr(205.0),
+			Low:       Ptr(199.5),
+			Close:     Ptr(202.0),
+			Volume:    Ptr(2500.0),
+		},
+		&Candle{
+			Timestamp: Ptr(time.Now()),
+			Symbol:    Ptr("MSFT"),
+			Open:      Ptr(300.5),
+			High:      Ptr(305.0),
+			Low:       Ptr(299.5),
+			Close:     Ptr(302.0),
+			Volume:    Ptr(3500.0),
+		},
+	}
+
+	// 批量插入数据
+	err := client.BatchInsert(context.Background(), "candles", data)
+	assert.NoError(t, err, "BatchInsert 方法应该成功执行")
+
+	// 验证插入结果
+	query := `
+		SELECT timestamp, symbol, open, high, low, close, volume
+		FROM candles
+	`
+	var results []Candle
+	err = client.Select(context.Background(), &results, query)
+	assert.NoError(t, err, "查询数据应该成功执行")
+}
+
+func TestBatchStructsCandlesTable(t *testing.T) {
 	client := createTestClient()
 	assert.NotNil(t, client)
 
@@ -171,10 +302,9 @@ func TestBatchInsertStructsCandlesTable(t *testing.T) {
 	`
 
 	// 测试数据
-	now := time.Now()
 	data := []any{
 		&Candle{
-			Timestamp: &now,
+			Timestamp: Ptr(time.Now()),
 			Symbol:    Ptr("AAPL"),
 			Open:      Ptr(100.5),
 			High:      Ptr(105.0),
@@ -183,7 +313,7 @@ func TestBatchInsertStructsCandlesTable(t *testing.T) {
 			Volume:    Ptr(1500.0),
 		},
 		&Candle{
-			Timestamp: &now,
+			Timestamp: Ptr(time.Now()),
 			Symbol:    Ptr("GOOG"),
 			Open:      Ptr(200.5),
 			High:      Ptr(205.0),
@@ -194,11 +324,11 @@ func TestBatchInsertStructsCandlesTable(t *testing.T) {
 	}
 
 	// 批量插入数据
-	err := client.BatchInsertStructs(context.Background(), insertQuery, data)
-	assert.NoError(t, err, "BatchInsertStructsCandlesTable 应该成功执行")
+	err := client.BatchStructs(context.Background(), insertQuery, data)
+	assert.NoError(t, err, "BatchStructsCandlesTable 应该成功执行")
 }
 
-func TestAsyncInsertIntoCandlesTable(t *testing.T) {
+func TestInternalAsyncInsertIntoCandlesTable(t *testing.T) {
 	client := createTestClient()
 	assert.NotNil(t, client)
 
@@ -211,7 +341,7 @@ func TestAsyncInsertIntoCandlesTable(t *testing.T) {
 	`
 
 	// 测试数据
-	err := client.AsyncInsert(context.Background(), insertQuery, true,
+	err := client.asyncInsert(context.Background(), insertQuery, true,
 		"2023-10-01 12:00:00", "AAPL", 100.5, 105.0, 99.5, 102.0, 1500.0)
 	assert.NoError(t, err, "InsertIntoCandlesTable 应该成功执行")
 }
@@ -300,7 +430,7 @@ func TestQueryRow(t *testing.T) {
 		INSERT INTO candles (timestamp, symbol, open, high, low, close, volume)
 		VALUES (?, ?, ?, ?, ?, ?, ?)
 	`
-	err := client.AsyncInsert(context.Background(), insertQuery, true,
+	err := client.asyncInsert(context.Background(), insertQuery, true,
 		"2023-10-01 12:00:00", "AAPL", 100.5, 105.0, 99.5, 102.0, 1500.0)
 	assert.NoError(t, err, "数据插入失败")
 
