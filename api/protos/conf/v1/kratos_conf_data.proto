@@ -74,33 +74,36 @@ message Data {
   message ClickHouse {
     repeated string addresses = 1; // 对端网络地址
 
-    string database = 2; // 数据库名
-    string username = 3; // 用户名
-    string password = 4; // 密码
+    optional string database = 2; // 数据库名
+    optional string username = 3; // 用户名
+    optional string password = 4; // 密码
 
-    bool debug = 5; // 调试开关
-    string protocol = 6; // 协议：http、https、tcp、native
+    optional bool debug = 5; // 调试开关
+    optional string scheme = 6; // 协议：http、https、native
 
-    TLS tls = 7;  // TLS配置
+    optional TLS tls = 7;  // TLS配置
 
-    string compression_method = 10; // 压缩方法：lz4、zstd、none
-    string conn_open_strategy = 11; // 连接打开策略：default、lazy、always
+    optional int32 block_buffer_size = 8; // 数据块缓冲区大小
 
-    google.protobuf.Duration dial_timeout = 20;
-    google.protobuf.Duration conn_max_life_time = 21;
-    google.protobuf.Duration connection_max_lifetime = 22; // 连接可重用的最大时间长度
-    int32 max_execution_time = 23; // 最大执行时间（秒）
+    optional string compression_method = 10; // 压缩方法：zstd、lz4、lz4hc、gzip、deflate、br、none
+    optional int32 compression_level = 11; // 压缩级别：0-9
+    optional int32 max_compression_buffer = 12; // 最大压缩缓冲区大小
 
-    int32 max_open_conns = 30; // 连接池最大打开连接数
-    int32 max_idle_conns = 31; // 连接池最大空闲连接数
-    int32 max_idle_connections = 32; // 连接池最大空闲连接数
-    int32 max_open_connections = 33; // 连接池最大打开连接数
+    optional string connection_open_strategy = 20; // 连接打开策略：in_order、round_robin、random
 
-    int32 block_buffer_size = 40; // 数据块缓冲区大小
-    int32 max_compression_buffer = 41; // 最大压缩缓冲区大小
+    optional google.protobuf.Duration dial_timeout = 30; // 连接超时时间
+    optional google.protobuf.Duration read_timeout = 31; // 读取超时时间
+    optional google.protobuf.Duration conn_max_lifetime = 32; // 连接可重用的最大时间长度
 
-    bool enable_tracing = 100; // 打开链路追踪
-    bool enable_metrics = 101; // 打开性能度量
+    optional int32 max_idle_conns = 40; // 连接池最大空闲连接数
+    optional int32 max_open_conns = 41; // 连接池最大打开连接数
+
+    optional string dsn = 50; // 数据源名称（DSN字符串）
+
+    optional string http_proxy = 60; // HTTP代理地址
+
+    optional bool enable_tracing = 100; // 打开链路追踪
+    optional bool enable_metrics = 101; // 打开性能度量
   }
 
   // InfluxDB

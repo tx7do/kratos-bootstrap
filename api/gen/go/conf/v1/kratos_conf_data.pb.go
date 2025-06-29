@@ -604,30 +604,30 @@ func (x *Data_MongoDB) GetEnableMetrics() bool {
 
 // ClickHouse
 type Data_ClickHouse struct {
-	state                 protoimpl.MessageState `protogen:"open.v1"`
-	Addresses             []string               `protobuf:"bytes,1,rep,name=addresses,proto3" json:"addresses,omitempty"`                                           // 对端网络地址
-	Database              string                 `protobuf:"bytes,2,opt,name=database,proto3" json:"database,omitempty"`                                             // 数据库名
-	Username              string                 `protobuf:"bytes,3,opt,name=username,proto3" json:"username,omitempty"`                                             // 用户名
-	Password              string                 `protobuf:"bytes,4,opt,name=password,proto3" json:"password,omitempty"`                                             // 密码
-	Debug                 bool                   `protobuf:"varint,5,opt,name=debug,proto3" json:"debug,omitempty"`                                                  // 调试开关
-	Protocol              string                 `protobuf:"bytes,6,opt,name=protocol,proto3" json:"protocol,omitempty"`                                             // 协议：http、https、tcp、native
-	Tls                   *TLS                   `protobuf:"bytes,7,opt,name=tls,proto3" json:"tls,omitempty"`                                                       // TLS配置
-	CompressionMethod     string                 `protobuf:"bytes,10,opt,name=compression_method,json=compressionMethod,proto3" json:"compression_method,omitempty"` // 压缩方法：lz4、zstd、none
-	ConnOpenStrategy      string                 `protobuf:"bytes,11,opt,name=conn_open_strategy,json=connOpenStrategy,proto3" json:"conn_open_strategy,omitempty"`  // 连接打开策略：default、lazy、always
-	DialTimeout           *durationpb.Duration   `protobuf:"bytes,20,opt,name=dial_timeout,json=dialTimeout,proto3" json:"dial_timeout,omitempty"`
-	ConnMaxLifeTime       *durationpb.Duration   `protobuf:"bytes,21,opt,name=conn_max_life_time,json=connMaxLifeTime,proto3" json:"conn_max_life_time,omitempty"`
-	ConnectionMaxLifetime *durationpb.Duration   `protobuf:"bytes,22,opt,name=connection_max_lifetime,json=connectionMaxLifetime,proto3" json:"connection_max_lifetime,omitempty"` // 连接可重用的最大时间长度
-	MaxExecutionTime      int32                  `protobuf:"varint,23,opt,name=max_execution_time,json=maxExecutionTime,proto3" json:"max_execution_time,omitempty"`               // 最大执行时间（秒）
-	MaxOpenConns          int32                  `protobuf:"varint,30,opt,name=max_open_conns,json=maxOpenConns,proto3" json:"max_open_conns,omitempty"`                           // 连接池最大打开连接数
-	MaxIdleConns          int32                  `protobuf:"varint,31,opt,name=max_idle_conns,json=maxIdleConns,proto3" json:"max_idle_conns,omitempty"`                           // 连接池最大空闲连接数
-	MaxIdleConnections    int32                  `protobuf:"varint,32,opt,name=max_idle_connections,json=maxIdleConnections,proto3" json:"max_idle_connections,omitempty"`         // 连接池最大空闲连接数
-	MaxOpenConnections    int32                  `protobuf:"varint,33,opt,name=max_open_connections,json=maxOpenConnections,proto3" json:"max_open_connections,omitempty"`         // 连接池最大打开连接数
-	BlockBufferSize       int32                  `protobuf:"varint,40,opt,name=block_buffer_size,json=blockBufferSize,proto3" json:"block_buffer_size,omitempty"`                  // 数据块缓冲区大小
-	MaxCompressionBuffer  int32                  `protobuf:"varint,41,opt,name=max_compression_buffer,json=maxCompressionBuffer,proto3" json:"max_compression_buffer,omitempty"`   // 最大压缩缓冲区大小
-	EnableTracing         bool                   `protobuf:"varint,100,opt,name=enable_tracing,json=enableTracing,proto3" json:"enable_tracing,omitempty"`                         // 打开链路追踪
-	EnableMetrics         bool                   `protobuf:"varint,101,opt,name=enable_metrics,json=enableMetrics,proto3" json:"enable_metrics,omitempty"`                         // 打开性能度量
-	unknownFields         protoimpl.UnknownFields
-	sizeCache             protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"open.v1"`
+	Addresses              []string               `protobuf:"bytes,1,rep,name=addresses,proto3" json:"addresses,omitempty"`                                                                  // 对端网络地址
+	Database               *string                `protobuf:"bytes,2,opt,name=database,proto3,oneof" json:"database,omitempty"`                                                              // 数据库名
+	Username               *string                `protobuf:"bytes,3,opt,name=username,proto3,oneof" json:"username,omitempty"`                                                              // 用户名
+	Password               *string                `protobuf:"bytes,4,opt,name=password,proto3,oneof" json:"password,omitempty"`                                                              // 密码
+	Debug                  *bool                  `protobuf:"varint,5,opt,name=debug,proto3,oneof" json:"debug,omitempty"`                                                                   // 调试开关
+	Scheme                 *string                `protobuf:"bytes,6,opt,name=scheme,proto3,oneof" json:"scheme,omitempty"`                                                                  // 协议：http、https、native
+	Tls                    *TLS                   `protobuf:"bytes,7,opt,name=tls,proto3,oneof" json:"tls,omitempty"`                                                                        // TLS配置
+	BlockBufferSize        *int32                 `protobuf:"varint,8,opt,name=block_buffer_size,json=blockBufferSize,proto3,oneof" json:"block_buffer_size,omitempty"`                      // 数据块缓冲区大小
+	CompressionMethod      *string                `protobuf:"bytes,10,opt,name=compression_method,json=compressionMethod,proto3,oneof" json:"compression_method,omitempty"`                  // 压缩方法：zstd、lz4、lz4hc、gzip、deflate、br、none
+	CompressionLevel       *int32                 `protobuf:"varint,11,opt,name=compression_level,json=compressionLevel,proto3,oneof" json:"compression_level,omitempty"`                    // 压缩级别：0-9
+	MaxCompressionBuffer   *int32                 `protobuf:"varint,12,opt,name=max_compression_buffer,json=maxCompressionBuffer,proto3,oneof" json:"max_compression_buffer,omitempty"`      // 最大压缩缓冲区大小
+	ConnectionOpenStrategy *string                `protobuf:"bytes,20,opt,name=connection_open_strategy,json=connectionOpenStrategy,proto3,oneof" json:"connection_open_strategy,omitempty"` // 连接打开策略：in_order、round_robin、random
+	DialTimeout            *durationpb.Duration   `protobuf:"bytes,30,opt,name=dial_timeout,json=dialTimeout,proto3,oneof" json:"dial_timeout,omitempty"`                                    // 连接超时时间
+	ReadTimeout            *durationpb.Duration   `protobuf:"bytes,31,opt,name=read_timeout,json=readTimeout,proto3,oneof" json:"read_timeout,omitempty"`                                    // 读取超时时间
+	ConnMaxLifetime        *durationpb.Duration   `protobuf:"bytes,32,opt,name=conn_max_lifetime,json=connMaxLifetime,proto3,oneof" json:"conn_max_lifetime,omitempty"`                      // 连接可重用的最大时间长度
+	MaxIdleConns           *int32                 `protobuf:"varint,40,opt,name=max_idle_conns,json=maxIdleConns,proto3,oneof" json:"max_idle_conns,omitempty"`                              // 连接池最大空闲连接数
+	MaxOpenConns           *int32                 `protobuf:"varint,41,opt,name=max_open_conns,json=maxOpenConns,proto3,oneof" json:"max_open_conns,omitempty"`                              // 连接池最大打开连接数
+	Dsn                    *string                `protobuf:"bytes,50,opt,name=dsn,proto3,oneof" json:"dsn,omitempty"`                                                                       // 数据源名称（DSN字符串）
+	HttpProxy              *string                `protobuf:"bytes,60,opt,name=http_proxy,json=httpProxy,proto3,oneof" json:"http_proxy,omitempty"`                                          // HTTP代理地址
+	EnableTracing          *bool                  `protobuf:"varint,100,opt,name=enable_tracing,json=enableTracing,proto3,oneof" json:"enable_tracing,omitempty"`                            // 打开链路追踪
+	EnableMetrics          *bool                  `protobuf:"varint,101,opt,name=enable_metrics,json=enableMetrics,proto3,oneof" json:"enable_metrics,omitempty"`                            // 打开性能度量
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *Data_ClickHouse) Reset() {
@@ -668,36 +668,36 @@ func (x *Data_ClickHouse) GetAddresses() []string {
 }
 
 func (x *Data_ClickHouse) GetDatabase() string {
-	if x != nil {
-		return x.Database
+	if x != nil && x.Database != nil {
+		return *x.Database
 	}
 	return ""
 }
 
 func (x *Data_ClickHouse) GetUsername() string {
-	if x != nil {
-		return x.Username
+	if x != nil && x.Username != nil {
+		return *x.Username
 	}
 	return ""
 }
 
 func (x *Data_ClickHouse) GetPassword() string {
-	if x != nil {
-		return x.Password
+	if x != nil && x.Password != nil {
+		return *x.Password
 	}
 	return ""
 }
 
 func (x *Data_ClickHouse) GetDebug() bool {
-	if x != nil {
-		return x.Debug
+	if x != nil && x.Debug != nil {
+		return *x.Debug
 	}
 	return false
 }
 
-func (x *Data_ClickHouse) GetProtocol() string {
-	if x != nil {
-		return x.Protocol
+func (x *Data_ClickHouse) GetScheme() string {
+	if x != nil && x.Scheme != nil {
+		return *x.Scheme
 	}
 	return ""
 }
@@ -709,16 +709,37 @@ func (x *Data_ClickHouse) GetTls() *TLS {
 	return nil
 }
 
+func (x *Data_ClickHouse) GetBlockBufferSize() int32 {
+	if x != nil && x.BlockBufferSize != nil {
+		return *x.BlockBufferSize
+	}
+	return 0
+}
+
 func (x *Data_ClickHouse) GetCompressionMethod() string {
-	if x != nil {
-		return x.CompressionMethod
+	if x != nil && x.CompressionMethod != nil {
+		return *x.CompressionMethod
 	}
 	return ""
 }
 
-func (x *Data_ClickHouse) GetConnOpenStrategy() string {
-	if x != nil {
-		return x.ConnOpenStrategy
+func (x *Data_ClickHouse) GetCompressionLevel() int32 {
+	if x != nil && x.CompressionLevel != nil {
+		return *x.CompressionLevel
+	}
+	return 0
+}
+
+func (x *Data_ClickHouse) GetMaxCompressionBuffer() int32 {
+	if x != nil && x.MaxCompressionBuffer != nil {
+		return *x.MaxCompressionBuffer
+	}
+	return 0
+}
+
+func (x *Data_ClickHouse) GetConnectionOpenStrategy() string {
+	if x != nil && x.ConnectionOpenStrategy != nil {
+		return *x.ConnectionOpenStrategy
 	}
 	return ""
 }
@@ -730,79 +751,58 @@ func (x *Data_ClickHouse) GetDialTimeout() *durationpb.Duration {
 	return nil
 }
 
-func (x *Data_ClickHouse) GetConnMaxLifeTime() *durationpb.Duration {
+func (x *Data_ClickHouse) GetReadTimeout() *durationpb.Duration {
 	if x != nil {
-		return x.ConnMaxLifeTime
+		return x.ReadTimeout
 	}
 	return nil
 }
 
-func (x *Data_ClickHouse) GetConnectionMaxLifetime() *durationpb.Duration {
+func (x *Data_ClickHouse) GetConnMaxLifetime() *durationpb.Duration {
 	if x != nil {
-		return x.ConnectionMaxLifetime
+		return x.ConnMaxLifetime
 	}
 	return nil
 }
 
-func (x *Data_ClickHouse) GetMaxExecutionTime() int32 {
-	if x != nil {
-		return x.MaxExecutionTime
+func (x *Data_ClickHouse) GetMaxIdleConns() int32 {
+	if x != nil && x.MaxIdleConns != nil {
+		return *x.MaxIdleConns
 	}
 	return 0
 }
 
 func (x *Data_ClickHouse) GetMaxOpenConns() int32 {
-	if x != nil {
-		return x.MaxOpenConns
+	if x != nil && x.MaxOpenConns != nil {
+		return *x.MaxOpenConns
 	}
 	return 0
 }
 
-func (x *Data_ClickHouse) GetMaxIdleConns() int32 {
-	if x != nil {
-		return x.MaxIdleConns
+func (x *Data_ClickHouse) GetDsn() string {
+	if x != nil && x.Dsn != nil {
+		return *x.Dsn
 	}
-	return 0
+	return ""
 }
 
-func (x *Data_ClickHouse) GetMaxIdleConnections() int32 {
-	if x != nil {
-		return x.MaxIdleConnections
+func (x *Data_ClickHouse) GetHttpProxy() string {
+	if x != nil && x.HttpProxy != nil {
+		return *x.HttpProxy
 	}
-	return 0
-}
-
-func (x *Data_ClickHouse) GetMaxOpenConnections() int32 {
-	if x != nil {
-		return x.MaxOpenConnections
-	}
-	return 0
-}
-
-func (x *Data_ClickHouse) GetBlockBufferSize() int32 {
-	if x != nil {
-		return x.BlockBufferSize
-	}
-	return 0
-}
-
-func (x *Data_ClickHouse) GetMaxCompressionBuffer() int32 {
-	if x != nil {
-		return x.MaxCompressionBuffer
-	}
-	return 0
+	return ""
 }
 
 func (x *Data_ClickHouse) GetEnableTracing() bool {
-	if x != nil {
-		return x.EnableTracing
+	if x != nil && x.EnableTracing != nil {
+		return *x.EnableTracing
 	}
 	return false
 }
 
 func (x *Data_ClickHouse) GetEnableMetrics() bool {
-	if x != nil {
-		return x.EnableMetrics
+	if x != nil && x.EnableMetrics != nil {
+		return *x.EnableMetrics
 	}
 	return false
 }
@@ -1843,7 +1843,7 @@ var File_conf_v1_kratos_conf_data_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_data_proto_rawDesc = "" +
 	"\n" +
-	"\x1econf/v1/kratos_conf_data.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\x1a\x1dconf/v1/kratos_conf_tls.proto\"\xc75\n" +
+	"\x1econf/v1/kratos_conf_data.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\x1a\x1dconf/v1/kratos_conf_tls.proto\"\xc38\n" +
 	"\x04Data\x124\n" +
 	"\bdatabase\x18\x01 \x01(\v2\x13.conf.Data.DatabaseH\x00R\bdatabase\x88\x01\x01\x12+\n" +
 	"\x05redis\x18\n" +
@@ -1922,31 +1922,54 @@ const file_conf_v1_kratos_conf_data_proto_rawDesc = "" +
 	"\t_usernameB\v\n" +
 	"\t_passwordB\x11\n" +
 	"\x0f_auth_mechanismB\x0e\n" +
-	"\f_auth_source\x1a\x91\a\n" +
+	"\f_auth_source\x1a\x8d\n" +
+	"\n" +
 	"\n" +
 	"ClickHouse\x12\x1c\n" +
-	"\taddresses\x18\x01 \x03(\tR\taddresses\x12\x1a\n" +
-	"\bdatabase\x18\x02 \x01(\tR\bdatabase\x12\x1a\n" +
-	"\busername\x18\x03 \x01(\tR\busername\x12\x1a\n" +
-	"\bpassword\x18\x04 \x01(\tR\bpassword\x12\x14\n" +
-	"\x05debug\x18\x05 \x01(\bR\x05debug\x12\x1a\n" +
-	"\bprotocol\x18\x06 \x01(\tR\bprotocol\x12\x1b\n" +
-	"\x03tls\x18\a \x01(\v2\t.conf.TLSR\x03tls\x12-\n" +
+	"\taddresses\x18\x01 \x03(\tR\taddresses\x12\x1f\n" +
+	"\bdatabase\x18\x02 \x01(\tH\x00R\bdatabase\x88\x01\x01\x12\x1f\n" +
+	"\busername\x18\x03 \x01(\tH\x01R\busername\x88\x01\x01\x12\x1f\n" +
+	"\bpassword\x18\x04 \x01(\tH\x02R\bpassword\x88\x01\x01\x12\x19\n" +
+	"\x05debug\x18\x05 \x01(\bH\x03R\x05debug\x88\x01\x01\x12\x1b\n" +
+	"\x06scheme\x18\x06 \x01(\tH\x04R\x06scheme\x88\x01\x01\x12 \n" +
+	"\x03tls\x18\a \x01(\v2\t.conf.TLSH\x05R\x03tls\x88\x01\x01\x12/\n" +
+	"\x11block_buffer_size\x18\b \x01(\x05H\x06R\x0fblockBufferSize\x88\x01\x01\x122\n" +
 	"\x12compression_method\x18\n" +
-	" \x01(\tR\x11compressionMethod\x12,\n" +
-	"\x12conn_open_strategy\x18\v \x01(\tR\x10connOpenStrategy\x12<\n" +
-	"\fdial_timeout\x18\x14 \x01(\v2\x19.google.protobuf.DurationR\vdialTimeout\x12F\n" +
-	"\x12conn_max_life_time\x18\x15 \x01(\v2\x19.google.protobuf.DurationR\x0fconnMaxLifeTime\x12Q\n" +
-	"\x17connection_max_lifetime\x18\x16 \x01(\v2\x19.google.protobuf.DurationR\x15connectionMaxLifetime\x12,\n" +
-	"\x12max_execution_time\x18\x17 \x01(\x05R\x10maxExecutionTime\x12$\n" +
-	"\x0emax_open_conns\x18\x1e \x01(\x05R\fmaxOpenConns\x12$\n" +
-	"\x0emax_idle_conns\x18\x1f \x01(\x05R\fmaxIdleConns\x120\n" +
-	"\x14max_idle_connections\x18  \x01(\x05R\x12maxIdleConnections\x120\n" +
-	"\x14max_open_connections\x18! \x01(\x05R\x12maxOpenConnections\x12*\n" +
-	"\x11block_buffer_size\x18( \x01(\x05R\x0fblockBufferSize\x124\n" +
-	"\x16max_compression_buffer\x18) \x01(\x05R\x14maxCompressionBuffer\x12%\n" +
-	"\x0eenable_tracing\x18d \x01(\bR\renableTracing\x12%\n" +
-	"\x0eenable_metrics\x18e \x01(\bR\renableMetrics\x1a\xe5\x02\n" +
+	" \x01(\tH\aR\x11compressionMethod\x88\x01\x01\x120\n" +
+	"\x11compression_level\x18\v \x01(\x05H\bR\x10compressionLevel\x88\x01\x01\x129\n" +
+	"\x16max_compression_buffer\x18\f \x01(\x05H\tR\x14maxCompressionBuffer\x88\x01\x01\x12=\n" +
+	"\x18connection_open_strategy\x18\x14 \x01(\tH\n" +
+	"R\x16connectionOpenStrategy\x88\x01\x01\x12A\n" +
+	"\fdial_timeout\x18\x1e \x01(\v2\x19.google.protobuf.DurationH\vR\vdialTimeout\x88\x01\x01\x12A\n" +
+	"\fread_timeout\x18\x1f \x01(\v2\x19.google.protobuf.DurationH\fR\vreadTimeout\x88\x01\x01\x12J\n" +
+	"\x11conn_max_lifetime\x18  \x01(\v2\x19.google.protobuf.DurationH\rR\x0fconnMaxLifetime\x88\x01\x01\x12)\n" +
+	"\x0emax_idle_conns\x18( \x01(\x05H\x0eR\fmaxIdleConns\x88\x01\x01\x12)\n" +
+	"\x0emax_open_conns\x18) \x01(\x05H\x0fR\fmaxOpenConns\x88\x01\x01\x12\x15\n" +
+	"\x03dsn\x182 \x01(\tH\x10R\x03dsn\x88\x01\x01\x12\"\n" +
+	"\n" +
+	"http_proxy\x18< \x01(\tH\x11R\thttpProxy\x88\x01\x01\x12*\n" +
+	"\x0eenable_tracing\x18d \x01(\bH\x12R\renableTracing\x88\x01\x01\x12*\n" +
+	"\x0eenable_metrics\x18e \x01(\bH\x13R\renableMetrics\x88\x01\x01B\v\n" +
+	"\t_databaseB\v\n" +
+	"\t_usernameB\v\n" +
+	"\t_passwordB\b\n" +
+	"\x06_debugB\t\n" +
+	"\a_schemeB\x06\n" +
+	"\x04_tlsB\x14\n" +
+	"\x12_block_buffer_sizeB\x15\n" +
+	"\x13_compression_methodB\x14\n" +
+	"\x12_compression_levelB\x19\n" +
+	"\x17_max_compression_bufferB\x1b\n" +
+	"\x19_connection_open_strategyB\x0f\n" +
+	"\r_dial_timeoutB\x0f\n" +
+	"\r_read_timeoutB\x14\n" +
+	"\x12_conn_max_lifetimeB\x11\n" +
+	"\x0f_max_idle_connsB\x11\n" +
+	"\x0f_max_open_connsB\x06\n" +
+	"\x04_dsnB\r\n" +
+	"\v_http_proxyB\x11\n" +
+	"\x0f_enable_tracingB\x11\n" +
+	"\x0f_enable_metrics\x1a\xe5\x02\n" +
 	"\bInfluxDB\x12\x12\n" +
 	"\x04host\x18\x01 \x01(\tR\x04host\x12\x14\n" +
 	"\x05token\x18\x02 \x01(\tR\x05token\x12\x1f\n" +
@@ -2129,8 +2152,8 @@ var file_conf_v1_kratos_conf_data_proto_depIdxs = []int32{
 	19, // 28: conf.Data.MongoDB.timeout:type_name -> google.protobuf.Duration
 	20, // 29: conf.Data.ClickHouse.tls:type_name -> conf.TLS
 	19, // 30: conf.Data.ClickHouse.dial_timeout:type_name -> google.protobuf.Duration
-	19, // 31: conf.Data.ClickHouse.conn_max_life_time:type_name -> google.protobuf.Duration
-	19, // 32: conf.Data.ClickHouse.connection_max_lifetime:type_name -> google.protobuf.Duration
+	19, // 31: conf.Data.ClickHouse.read_timeout:type_name -> google.protobuf.Duration
+	19, // 32: conf.Data.ClickHouse.conn_max_lifetime:type_name -> google.protobuf.Duration
 	19, // 33: conf.Data.InfluxDB.timeout:type_name -> google.protobuf.Duration
 	19, // 34: conf.Data.InfluxDB.idle_connection_timeout:type_name -> google.protobuf.Duration
 	19, // 35: conf.Data.ElasticSearch.discover_nodes_interval:type_name -> google.protobuf.Duration
@@ -2157,6 +2180,7 @@ func file_conf_v1_kratos_conf_data_proto_init() {
 	file_conf_v1_kratos_conf_data_proto_msgTypes[0].OneofWrappers = []any{}
 	file_conf_v1_kratos_conf_data_proto_msgTypes[1].OneofWrappers = []any{}
 	file_conf_v1_kratos_conf_data_proto_msgTypes[3].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_data_proto_msgTypes[4].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
