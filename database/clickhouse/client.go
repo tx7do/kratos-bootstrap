@@ -335,14 +335,21 @@ func (c *Client) prepareInsertData(data any) (string, string, []any, error) {
 	for i := 0; i < typ.NumField(); i++ {
 		field := typ.Field(i)
 
-		// 优先获取 `cn` 标签，其次获取 `json` 标签，最后使用字段名
-		columnName := field.Tag.Get("cn")
+		// 优先获取 `ch` 标签，其次获取 `json` 标签，最后使用字段名
+		columnName := field.Tag.Get("ch")
 		if columnName == "" {
-			columnName = field.Tag.Get("json")
+			jsonTag := field.Tag.Get("json")
+			if jsonTag != "" {
+				tags := strings.Split(jsonTag, ",") // 只取逗号前的部分
+				if len(tags) > 0 {
+					columnName = tags[0]
+				}
+			}
 		}
 		if columnName == "" {
 			columnName = field.Name
 		}
+		//columnName = strings.TrimSpace(columnName)
 
 		columns = append(columns, columnName)
 		placeholders = append(placeholders, "?")
@@ -352,15 +359,15 @@ func (c *Client) prepareInsertData(data any) (string, string, []any, error) {
 }
 
 // Insert 插入数据到指定表
-func (c *Client) Insert(ctx context.Context, tableName string, data any) error {
+func (c *Client) Insert(ctx context.Context, tableName string, in any) error {
 	if c.conn == nil {
 		c.log.Error("clickhouse client is not initialized")
 		return ErrClientNotInitialized
 	}
 
-	columns, placeholders, values, err := c.prepareInsertData(data)
+	columns, placeholders, values, err := c.prepareInsertData(in)
 	if err != nil {
-		c.log.Errorf("prepare insert data failed: %v", err)
+		c.log.Errorf("prepare insert in failed: %v", err)
 		return ErrPrepareInsertDataFailed
 	}
 
@@ -372,7 +379,7 @@ func (c *Client) Insert(ctx context.Context, tableName string, data any) error {
 	)
 
 	// 执行插入操作
-	if err := c.conn.Exec(ctx, query, values...); err != nil {
+	if err = c.conn.Exec(ctx, query, values...); err != nil {
 		c.log.Errorf("insert failed: %v", err)
 		return ErrInsertFailed
 	}
@@ -414,7 +421,7 @@ func (c *Client) InsertMany(ctx context.Context, tableName string, data []any) e
 	}
 
 	// 构造 SQL 语句
-	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES %s",
+	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)",
 		tableName,
 		columns,
 		strings.Join(placeholders, ", "),
@@ -444,10 +451,14 @@ func (c *Client) AsyncInsert(ctx context.Context, tableName string, data any, wa
 	}
 
 	// 构造 SQL 语句
-	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)", tableName, columns, placeholders)
+	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)",
+		tableName,
+		columns,
+		placeholders,
+	)
 
 	// 执行异步插入
-	if err := c.asyncInsert(ctx, query, wait, values...); err != nil {
+	if err = c.asyncInsert(ctx, query, wait, values...); err != nil {
 		c.log.Errorf("async insert failed: %v", err)
 		return ErrAsyncInsertFailed
 	}

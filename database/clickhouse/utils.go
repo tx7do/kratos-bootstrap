@@ -109,6 +109,34 @@ func structToValueArray(input any) []any {
 				values = append(values, nil) // 如果时间为零值，插入 NULL
 			}
 
+		case []any:
+			// 处理切片类型
+			if len(v) > 0 {
+				for _, item := range v {
+					if item == nil {
+						values = append(values, nil)
+					} else {
+						values = append(values, item)
+					}
+				}
+			} else {
+				values = append(values, nil) // 如果切片为空，插入 NULL
+			}
+
+		case [][]any:
+			// 处理二维切片类型
+			if len(v) > 0 {
+				for _, item := range v {
+					if len(item) > 0 {
+						values = append(values, item)
+					} else {
+						values = append(values, nil) // 如果子切片为空，插入 NULL
+					}
+				}
+			} else {
+				values = append(values, nil) // 如果二维切片为空，插入 NULL
+			}
+
 		default:
 			values = append(values, v)
 		}

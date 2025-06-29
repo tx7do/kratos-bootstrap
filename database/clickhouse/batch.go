@@ -167,14 +167,15 @@ func appendStructToBatch(batch driverV2.Batch, obj interface{}, columns []string
 			field := t.Field(j)
 
 			// 检查ch标签
-			if tag := field.Tag.Get("ch"); tag == col {
+			if tag := field.Tag.Get("ch"); strings.TrimSpace(tag) == col {
 				values[i] = v.Field(j).Interface()
 				found = true
 				break
 			}
 
 			// 检查json标签
-			if tag := field.Tag.Get("json"); tag == col {
+			jsonTags := strings.Split(field.Tag.Get("json"), ",")
+			if len(jsonTags) > 0 && strings.TrimSpace(jsonTags[0]) == col {
 				values[i] = v.Field(j).Interface()
 				found = true
 				break
