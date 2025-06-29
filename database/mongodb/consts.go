@@ -50,8 +50,6 @@ const (
 	OperatorInc         = "$inc"         // 增加值
 	OperatorMul         = "$mul"         // 乘法
 	OperatorRename      = "$rename"      // 重命名字段
-	OperatorMin         = "$min"         // 设置最小值
-	OperatorMax         = "$max"         // 设置最大值
 	OperatorCurrentDate = "$currentDate" // 设置当前日期
 	OperatorAddToSet    = "$addToSet"    // 添加到集合
 	OperatorPop         = "$pop"         // 删除数组中的元素
@@ -81,6 +79,23 @@ const (
 	OperatorIndexStats  = "$indexStats"  // 索引统计
 	OperatorOut         = "$out"         // 输出
 	OperatorMerge       = "$merge"       // 合并
+	OperatorSum         = "$sum"         // 求和
+	OperatorAvg         = "$avg"         // 平均值
+	OperatorMin         = "$min"         // 最小值
+	OperatorMax         = "$max"         // 最大值
+	OperatorFirst       = "$first"       // 第一个值
+	OperatorLast        = "$last"        // 最后一个值
+	OperatorStdDevPop   = "$stdDevPop"   // 总体标准差
+	OperatorStdDevSamp  = "$stdDevSamp"  // 样本标准差
+
+	// 类型转换操作符
+
+	OperatorToLong    = "$toLong"    // 转换为 long 类型
+	OperatorToDouble  = "$toDouble"  // 转换为 double 类型
+	OperatorToDecimal = "$toDecimal" // 转换为 decimal 类型
+	OperatorToString  = "$toString"  // 转换为 string 类型
+	OperatorToDate    = "$toDate"    // 转换为 date 类型
+	OperatorToInt     = "$toInt"     // 转换为 int 类型
 
 	// 地理空间操作符
 

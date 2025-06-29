@@ -3,11 +3,8 @@ package influxdb
 import (
 	"context"
 
-	"github.com/go-kratos/kratos/v2/encoding"
-	_ "github.com/go-kratos/kratos/v2/encoding/json"
-	"github.com/go-kratos/kratos/v2/log"
-
 	"github.com/InfluxCommunity/influxdb3-go/v2/influxdb3"
+	"github.com/go-kratos/kratos/v2/log"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
@@ -15,14 +12,12 @@ import (
 type Client struct {
 	cli *influxdb3.Client
 
-	log   *log.Helper
-	codec encoding.Codec
+	log *log.Helper
 }
 
 func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*Client, error) {
 	c := &Client{
-		log:   log.NewHelper(log.With(logger, "module", "influxdb-client")),
-		codec: encoding.GetCodec("json"),
+		log: log.NewHelper(log.With(logger, "module", "influxdb-client")),
 	}
 
 	if err := c.createInfluxdbClient(cfg); err != nil {
@@ -74,6 +69,31 @@ func (c *Client) Query(ctx context.Context, query string) (*influxdb3.QueryItera
 		return nil, ErrInfluxDBClientNotInitialized
 	}
 
+	result, err := c.cli.Query(
+		ctx,
+		query,
+		influxdb3.WithQueryType(influxdb3.InfluxQL),
+	)
+	if err != nil {
+		c.log.Errorf("failed to query data: %v", err)
+		return nil, ErrInfluxDBQueryFailed
+	}
+
+	return result, nil
+}
+
+func (c *Client) QueryWithParams(
+	ctx context.Context,
+	table string,
+	filters map[string]interface{},
+	operators map[string]string,
+	fields []string,
+) (*influxdb3.QueryIterator, error) {
+	if c.cli == nil {
+		return nil, ErrInfluxDBClientNotInitialized
+	}
+
+	query := BuildQueryWithParams(table, filters, operators, fields)
 	result, err := c.cli.Query(
 		ctx,
 		query,

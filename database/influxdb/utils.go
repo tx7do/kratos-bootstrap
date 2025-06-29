@@ -10,6 +10,43 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+func BuildQuery(
+	table string,
+	filters map[string]interface{},
+	operators map[string]string,
+	fields []string,
+) (string, []interface{}) {
+	var queryBuilder strings.Builder
+	args := make([]interface{}, 0)
+
+	// 构建 SELECT 语句
+	queryBuilder.WriteString("SELECT ")
+	if len(fields) > 0 {
+		queryBuilder.WriteString(strings.Join(fields, ", "))
+	} else {
+		queryBuilder.WriteString("*")
+	}
+	queryBuilder.WriteString(fmt.Sprintf(" FROM %s", table))
+
+	// 构建 WHERE 条件
+	if len(filters) > 0 {
+		queryBuilder.WriteString(" WHERE ")
+		var conditions []string
+		var operator string
+		for key, value := range filters {
+			operator = "=" // 默认操作符
+			if op, exists := operators[key]; exists {
+				operator = op
+			}
+			conditions = append(conditions, fmt.Sprintf("%s %s ?", key, operator))
+			args = append(args, value)
+		}
+		queryBuilder.WriteString(strings.Join(conditions, " AND "))
+	}
+
+	return queryBuilder.String(), args
+}
+
 func GetPointTag(point *influxdb3.Point, name string) *string {
 	if point == nil {
 		return nil

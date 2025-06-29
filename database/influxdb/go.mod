@@ -11,7 +11,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.8.4
 	github.com/stretchr/testify v1.10.0
 	github.com/tx7do/go-utils v1.1.29
-	github.com/tx7do/kratos-bootstrap/api v0.0.25
+	github.com/tx7do/kratos-bootstrap/api v0.0.27
 	google.golang.org/protobuf v1.36.6
 )
 

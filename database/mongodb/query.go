@@ -6,8 +6,9 @@ import (
 )
 
 type QueryBuilder struct {
-	filter bsonV2.M
-	opts   *optionsV2.FindOptions
+	filter   bsonV2.M
+	opts     *optionsV2.FindOptions
+	pipeline []bsonV2.M
 }
 
 func NewQuery() *QueryBuilder {
@@ -209,6 +210,17 @@ func (qb *QueryBuilder) SetPage(page, size int64) *QueryBuilder {
 	qb.opts.Skip = &offset
 	qb.opts.Limit = &size
 	return qb
+}
+
+// AddStage 添加聚合阶段到管道
+func (qb *QueryBuilder) AddStage(stage bsonV2.M) *QueryBuilder {
+	qb.pipeline = append(qb.pipeline, stage)
+	return qb
+}
+
+// BuildPipeline 返回最终的聚合管道
+func (qb *QueryBuilder) BuildPipeline() []bsonV2.M {
+	return qb.pipeline
 }
 
 // Build 返回最终的过滤条件和查询选项

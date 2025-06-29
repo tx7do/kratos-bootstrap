@@ -6,8 +6,6 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/go-kratos/kratos/v2/encoding"
-	_ "github.com/go-kratos/kratos/v2/encoding/json"
 	"github.com/go-kratos/kratos/v2/log"
 
 	elasticsearchV9 "github.com/elastic/go-elasticsearch/v9"
@@ -18,15 +16,13 @@ import (
 )
 
 type Client struct {
-	cli   *elasticsearchV9.Client
-	log   *log.Helper
-	codec encoding.Codec
+	cli *elasticsearchV9.Client
+	log *log.Helper
 }
 
 func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*Client, error) {
 	c := &Client{
-		log:   log.NewHelper(log.With(logger, "module", "elasticsearch-client")),
-		codec: encoding.GetCodec("json"),
+		log: log.NewHelper(log.With(logger, "module", "elasticsearch-client")),
 	}
 
 	if err := c.createESClient(cfg); err != nil {

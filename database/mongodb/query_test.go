@@ -217,3 +217,22 @@ func TestSetNearSphere(t *testing.T) {
 
 	assert.Equal(t, expected, qb.filter[field])
 }
+
+func TestQueryBuilderPipeline(t *testing.T) {
+	// 创建 QueryBuilder 实例
+	qb := NewQuery()
+
+	// 添加聚合阶段
+	matchStage := bsonV2.M{OperatorMatch: bsonV2.M{"status": "active"}}
+	groupStage := bsonV2.M{OperatorGroup: bsonV2.M{"_id": "$category", "count": bsonV2.M{OperatorSum: 1}}}
+	sortStage := bsonV2.M{OperatorSortAgg: bsonV2.M{"count": -1}}
+
+	qb.AddStage(matchStage).AddStage(groupStage).AddStage(sortStage)
+
+	// 构建 Pipeline
+	pipeline := qb.BuildPipeline()
+
+	// 验证 Pipeline
+	expectedPipeline := []bsonV2.M{matchStage, groupStage, sortStage}
+	assert.Equal(t, expectedPipeline, pipeline)
+}
