@@ -9,12 +9,13 @@ import (
 	"github.com/go-kratos/aegis/ratelimit"
 	"github.com/go-kratos/aegis/ratelimit/bbr"
 
-	"github.com/go-kratos/kratos/contrib/middleware/validate/v2"
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/metadata"
 	midRateLimit "github.com/go-kratos/kratos/v2/middleware/ratelimit"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
+
+	"github.com/tx7do/kratos-bootstrap/rpc/middleware/validate"
 
 	kratosRest "github.com/go-kratos/kratos/v2/transport/http"
 
