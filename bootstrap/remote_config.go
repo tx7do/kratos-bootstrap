@@ -2,12 +2,12 @@ package bootstrap
 
 import (
 	"github.com/go-kratos/kratos/v2/config"
+
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 
 	"github.com/tx7do/kratos-bootstrap/remoteconfig/apollo"
 	"github.com/tx7do/kratos-bootstrap/remoteconfig/consul"
 	"github.com/tx7do/kratos-bootstrap/remoteconfig/etcd"
-	"github.com/tx7do/kratos-bootstrap/remoteconfig/kubernetes"
 	"github.com/tx7do/kratos-bootstrap/remoteconfig/nacos"
 	"github.com/tx7do/kratos-bootstrap/remoteconfig/polaris"
 )
@@ -41,8 +41,8 @@ func NewRemoteConfigSource(c *conf.RemoteConfig) config.Source {
 		return etcd.NewConfigSource(c)
 	case Apollo:
 		return apollo.NewConfigSource(c)
-	case Kubernetes:
-		return kubernetes.NewConfigSource(c)
+	//case Kubernetes:
+	//	return kubernetes.NewConfigSource(c)
 	case Polaris:
 		return polaris.NewConfigSource(c)
 	}
