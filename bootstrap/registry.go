@@ -21,6 +21,10 @@ func NewRegistry(cfg *conf.Registry) kRegistry.Registrar {
 		return nil
 	}
 
+	if cfg.GetType() == "" {
+		return nil
+	}
+
 	creator := registry.GetRegistrarCreator(cfg.GetType())
 	if creator == nil {
 		panic("registrar creator not found:" + cfg.GetType())
@@ -33,6 +37,10 @@ func NewRegistry(cfg *conf.Registry) kRegistry.Registrar {
 // NewDiscovery 创建一个发现客户端
 func NewDiscovery(cfg *conf.Registry) kRegistry.Discovery {
 	if cfg == nil {
+		return nil
+	}
+
+	if cfg.GetType() == "" {
 		return nil
 	}
 

@@ -1,8 +1,6 @@
 module github.com/tx7do/kratos-bootstrap/registry/nacos
 
-go 1.24.0
-
-toolchain go1.24.3
+go 1.24.6
 
 replace (
 	github.com/armon/go-metrics => github.com/hashicorp/go-metrics v0.4.1
@@ -13,9 +11,9 @@ replace (
 
 require (
 	github.com/go-kratos/kratos/v2 v2.8.4
-	github.com/nacos-group/nacos-sdk-go/v2 v2.3.2
-	github.com/stretchr/testify v1.10.0
-	github.com/tx7do/kratos-bootstrap/api v0.0.21
+	github.com/nacos-group/nacos-sdk-go/v2 v2.3.3
+	github.com/stretchr/testify v1.11.1
+	github.com/tx7do/kratos-bootstrap/api v0.0.27
 	github.com/tx7do/kratos-bootstrap/registry v0.1.0
 )
 
@@ -67,13 +65,13 @@ require (
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/crypto v0.38.0 // indirect
 	golang.org/x/net v0.40.0 // indirect
-	golang.org/x/sync v0.14.0 // indirect
+	golang.org/x/sync v0.16.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.25.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250528174236-200df99c418a // indirect
 	google.golang.org/grpc v1.72.2 // indirect
-	google.golang.org/protobuf v1.36.6 // indirect
+	google.golang.org/protobuf v1.36.8 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

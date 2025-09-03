@@ -85,15 +85,20 @@ go get all
 go mod tidy
 
 
-cd %DIR%\registry\oss\minio
+cd %DIR%\oss\minio
 go get all
 go mod tidy
+
 
 cd %DIR%\database\cassandra
 go get all
 go mod tidy
 
 cd %DIR%\database\clickhouse
+go get all
+go mod tidy
+
+cd %DIR%\database\elasticsearch
 go get all
 go mod tidy
 

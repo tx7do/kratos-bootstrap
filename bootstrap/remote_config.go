@@ -28,7 +28,11 @@ const (
 
 // NewRemoteConfigSource 创建一个远程配置源
 func NewRemoteConfigSource(c *conf.RemoteConfig) config.Source {
-	switch Type(c.Type) {
+	if c.GetType() == "" {
+		return nil
+	}
+
+	switch Type(c.GetType()) {
 	default:
 		fallthrough
 	case LocalFile:

@@ -1,8 +1,6 @@
 module github.com/tx7do/kratos-bootstrap/registry/consul
 
-go 1.24.0
-
-toolchain go1.24.3
+go 1.24.6
 
 replace (
 	github.com/armon/go-metrics => github.com/hashicorp/go-metrics v0.4.1
@@ -14,8 +12,8 @@ replace (
 require (
 	github.com/go-kratos/kratos/v2 v2.8.4
 	github.com/hashicorp/consul/api v1.32.1
-	github.com/stretchr/testify v1.10.0
-	github.com/tx7do/kratos-bootstrap/api v0.0.21
+	github.com/stretchr/testify v1.11.1
+	github.com/tx7do/kratos-bootstrap/api v0.0.27
 	github.com/tx7do/kratos-bootstrap/registry v0.1.0
 )
 
@@ -41,9 +39,9 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
-	golang.org/x/exp v0.0.0-20250531010427-b6e5de432a8b // indirect
+	golang.org/x/exp v0.0.0-20250819193227-8b4c13bb791b // indirect
 	golang.org/x/net v0.40.0 // indirect
-	golang.org/x/sys v0.33.0 // indirect
-	google.golang.org/protobuf v1.36.6 // indirect
+	golang.org/x/sys v0.35.0 // indirect
+	google.golang.org/protobuf v1.36.8 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
