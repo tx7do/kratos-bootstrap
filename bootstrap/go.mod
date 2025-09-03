@@ -34,45 +34,46 @@ require (
 	github.com/olekukonko/tablewriter v1.0.8
 	github.com/spf13/cobra v1.10.1
 	github.com/tx7do/kratos-bootstrap/api v0.0.27
-	github.com/tx7do/kratos-bootstrap/logger v0.0.10
+	github.com/tx7do/kratos-bootstrap/logger v0.0.11
 	github.com/tx7do/kratos-bootstrap/registry v0.1.0
-	github.com/tx7do/kratos-bootstrap/registry/consul v0.1.0
-	github.com/tx7do/kratos-bootstrap/registry/etcd v0.1.0
-	github.com/tx7do/kratos-bootstrap/registry/eureka v0.1.0
-	github.com/tx7do/kratos-bootstrap/registry/nacos v0.1.0
-	github.com/tx7do/kratos-bootstrap/registry/servicecomb v0.1.0
-	github.com/tx7do/kratos-bootstrap/registry/zookeeper v0.1.0
-	github.com/tx7do/kratos-bootstrap/remoteconfig/apollo v0.1.0
-	github.com/tx7do/kratos-bootstrap/remoteconfig/consul v0.1.0
-	github.com/tx7do/kratos-bootstrap/remoteconfig/etcd v0.1.0
-	github.com/tx7do/kratos-bootstrap/remoteconfig/nacos v0.1.1
-	github.com/tx7do/kratos-bootstrap/remoteconfig/polaris v0.1.0
-	github.com/tx7do/kratos-bootstrap/tracer v0.0.10
+	github.com/tx7do/kratos-bootstrap/registry/consul v0.1.1
+	github.com/tx7do/kratos-bootstrap/registry/etcd v0.1.1
+	github.com/tx7do/kratos-bootstrap/registry/eureka v0.1.1
+	github.com/tx7do/kratos-bootstrap/registry/nacos v0.1.1
+	github.com/tx7do/kratos-bootstrap/registry/servicecomb v0.1.1
+	github.com/tx7do/kratos-bootstrap/registry/zookeeper v0.1.1
+	github.com/tx7do/kratos-bootstrap/remoteconfig/apollo v0.1.1
+	github.com/tx7do/kratos-bootstrap/remoteconfig/consul v0.1.1
+	github.com/tx7do/kratos-bootstrap/remoteconfig/etcd v0.1.1
+	github.com/tx7do/kratos-bootstrap/remoteconfig/nacos v0.1.2
+	github.com/tx7do/kratos-bootstrap/remoteconfig/polaris v0.1.1
+	github.com/tx7do/kratos-bootstrap/tracer v0.0.11
 	github.com/tx7do/kratos-bootstrap/utils v0.1.5
 	golang.org/x/tools v0.36.0
 )
 
 require (
 	dario.cat/mergo v1.0.2 // indirect
-	github.com/alibabacloud-go/alibabacloud-gateway-pop v0.0.8 // indirect
+	github.com/alibabacloud-go/alibabacloud-gateway-pop v0.1.0 // indirect
 	github.com/alibabacloud-go/alibabacloud-gateway-spi v0.0.5 // indirect
 	github.com/alibabacloud-go/darabonba-array v0.1.0 // indirect
 	github.com/alibabacloud-go/darabonba-encode-util v0.0.2 // indirect
 	github.com/alibabacloud-go/darabonba-map v0.0.2 // indirect
-	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.8 // indirect
+	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.11 // indirect
 	github.com/alibabacloud-go/darabonba-signature-util v0.0.7 // indirect
 	github.com/alibabacloud-go/darabonba-string v1.0.2 // indirect
 	github.com/alibabacloud-go/debug v1.0.1 // indirect
 	github.com/alibabacloud-go/endpoint-util v1.1.1 // indirect
-	github.com/alibabacloud-go/kms-20160120/v3 v3.2.3 // indirect
+	github.com/alibabacloud-go/kms-20160120/v3 v3.3.1 // indirect
 	github.com/alibabacloud-go/openapi-util v0.1.1 // indirect
-	github.com/alibabacloud-go/tea v1.3.9 // indirect
+	github.com/alibabacloud-go/tea v1.3.11 // indirect
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.7 // indirect
+	github.com/alibabacloud-go/tea-xml v1.1.3 // indirect
 	github.com/aliyun/alibaba-cloud-sdk-go v1.63.107 // indirect
 	github.com/aliyun/alibabacloud-dkms-gcs-go-sdk v0.5.1 // indirect
 	github.com/aliyun/alibabacloud-dkms-transfer-go-sdk v0.1.9 // indirect
 	github.com/aliyun/aliyun-secretsmanager-client-go v1.1.5 // indirect
-	github.com/aliyun/credentials-go v1.4.6 // indirect
+	github.com/aliyun/credentials-go v1.4.7 // indirect
 	github.com/apolloconfig/agollo/v4 v4.4.0 // indirect
 	github.com/armon/go-metrics v0.5.4 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
