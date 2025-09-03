@@ -4,7 +4,6 @@ go 1.24.6
 
 replace (
 	github.com/tx7do/kratos-bootstrap/api => ../../api
-	github.com/tx7do/kratos-bootstrap/utils => ../../utils
 )
 
 require (

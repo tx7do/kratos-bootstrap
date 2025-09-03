@@ -6,7 +6,6 @@ replace (
 	github.com/armon/go-metrics => github.com/hashicorp/go-metrics v0.4.1
 
 	github.com/tx7do/kratos-bootstrap/api => ../../api
-	github.com/tx7do/kratos-bootstrap/utils => ../../utils
 )
 
 require (
