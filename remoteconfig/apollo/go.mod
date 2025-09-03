@@ -2,9 +2,7 @@ module github.com/tx7do/kratos-bootstrap/remoteconfig/apollo
 
 go 1.24.6
 
-replace (
-	github.com/tx7do/kratos-bootstrap/api => ../../api
-)
+replace github.com/tx7do/kratos-bootstrap/api => ../../api
 
 require (
 	github.com/apolloconfig/agollo/v4 v4.4.0

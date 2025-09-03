@@ -2,9 +2,7 @@ module github.com/tx7do/kratos-bootstrap/remoteconfig/nacos
 
 go 1.24.6
 
-replace (
-	github.com/tx7do/kratos-bootstrap/api => ../../api
-)
+replace github.com/tx7do/kratos-bootstrap/api => ../../api
 
 require (
 	github.com/go-kratos/kratos/v2 v2.8.4

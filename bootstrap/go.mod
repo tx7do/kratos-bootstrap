@@ -48,7 +48,7 @@ require (
 	github.com/tx7do/kratos-bootstrap/remoteconfig/nacos v0.1.1
 	github.com/tx7do/kratos-bootstrap/remoteconfig/polaris v0.1.0
 	github.com/tx7do/kratos-bootstrap/tracer v0.0.10
-	github.com/tx7do/kratos-bootstrap/utils v0.1.3
+	github.com/tx7do/kratos-bootstrap/utils v0.1.5
 	golang.org/x/tools v0.36.0
 )
 
