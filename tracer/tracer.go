@@ -43,7 +43,12 @@ func NewTracerExporter(exporterName, endpoint string, insecure bool) (traceSdk.S
 // NewTracerProvider 创建一个链路追踪器
 func NewTracerProvider(cfg *conf.Tracer, serviceInfo *utils.ServiceInfo) error {
 	if cfg == nil {
-		return errors.New("tracer config is nil")
+		//return errors.New("tracer config is nil")
+		return nil
+	}
+	if serviceInfo == nil {
+		//return errors.New("service info is nil")
+		return nil
 	}
 
 	if cfg.Sampler == 0 {

@@ -6,7 +6,7 @@ git tag cache/redis/v0.0.12 --force
 git tag oss/minio/v0.0.11 --force
 git tag logger/v0.0.11 --force
 git tag rpc/v0.0.19 --force
-git tag tracer/v0.0.11 --force
+git tag tracer/v0.0.12 --force
 
 git tag database/ent/v0.0.11 --force
 git tag database/gorm/v0.0.11 --force
@@ -33,7 +33,7 @@ git tag remoteconfig/kubernetes/v0.1.2 --force
 git tag remoteconfig/nacos/v0.1.2 --force
 git tag remoteconfig/polaris/v0.1.1 --force
 
-git tag bootstrap/v0.0.19 --force
+git tag bootstrap/v0.0.20 --force
 
 git tag v0.7.0
 
