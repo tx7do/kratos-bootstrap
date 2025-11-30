@@ -43,6 +43,7 @@ type Server struct {
 	Sse           *Server_SSE            `protobuf:"bytes,21,opt,name=sse,proto3,oneof" json:"sse,omitempty"`             // SSE服务
 	Socketio      *Server_SocketIO       `protobuf:"bytes,22,opt,name=socketio,proto3,oneof" json:"socketio,omitempty"`   // SocketIO服务
 	Signalr       *Server_SignalR        `protobuf:"bytes,23,opt,name=signalr,proto3,oneof" json:"signalr,omitempty"`     // SignalR服务
+	Mcp           *Server_MCP            `protobuf:"bytes,24,opt,name=mcp,proto3,oneof" json:"mcp,omitempty"`             // MCP服务
 	Asynq         *Server_Asynq          `protobuf:"bytes,30,opt,name=asynq,proto3,oneof" json:"asynq,omitempty"`         // Asynq服务
 	Machinery     *Server_Machinery      `protobuf:"bytes,31,opt,name=machinery,proto3,oneof" json:"machinery,omitempty"` // Machinery服务
 	unknownFields protoimpl.UnknownFields
@@ -201,6 +202,13 @@ func (x *Server) GetSocketio() *Server_SocketIO {
 func (x *Server) GetSignalr() *Server_SignalR {
 	if x != nil {
 		return x.Signalr
+	}
+	return nil
+}
+
+func (x *Server) GetMcp() *Server_MCP {
+	if x != nil {
+		return x.Mcp
 	}
 	return nil
 }
@@ -697,6 +705,7 @@ func (x *Server_RabbitMQ) GetTls() *TLS {
 	return nil
 }
 
+// ActiveMQ
 type Server_ActiveMQ struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Endpoint      string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"` // 对端网络地址
@@ -757,6 +766,7 @@ func (x *Server_ActiveMQ) GetTls() *TLS {
 	return nil
 }
 
+// NATS
 type Server_NATS struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Endpoint      string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"` // 对端网络地址
@@ -817,6 +827,7 @@ func (x *Server_NATS) GetTls() *TLS {
 	return nil
 }
 
+// NSQ
 type Server_NSQ struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Endpoint      string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"` // 对端网络地址
@@ -877,6 +888,7 @@ func (x *Server_NSQ) GetTls() *TLS {
 	return nil
 }
 
+// Pulsar
 type Server_Pulsar struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Endpoint      string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"` // 对端网络地址
@@ -937,6 +949,7 @@ func (x *Server_Pulsar) GetTls() *TLS {
 	return nil
 }
 
+// Redis
 type Server_Redis struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Endpoint      string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"` // 对端网络地址
@@ -997,6 +1010,7 @@ func (x *Server_Redis) GetTls() *TLS {
 	return nil
 }
 
+// RocketMQ
 type Server_RocketMQ struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
 	Version          string                 `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"` // 驱动版本：aliyun、v2、v5
@@ -1564,10 +1578,10 @@ type Server_SSE struct {
 	Codec         string                 `protobuf:"bytes,4,opt,name=codec,proto3" json:"codec,omitempty"`                                     // 编解码器
 	Tls           *TLS                   `protobuf:"bytes,5,opt,name=tls,proto3" json:"tls,omitempty"`                                         // TLS配置
 	Timeout       *durationpb.Duration   `protobuf:"bytes,10,opt,name=timeout,proto3" json:"timeout,omitempty"`                                // 超时时间
-	EventTtl      *durationpb.Duration   `protobuf:"bytes,11,opt,name=event_ttl,json=eventTtl,proto3" json:"event_ttl,omitempty"`              //
-	AutoStream    bool                   `protobuf:"varint,20,opt,name=auto_stream,json=autoStream,proto3" json:"auto_stream,omitempty"`       //
-	AutoReply     bool                   `protobuf:"varint,21,opt,name=auto_reply,json=autoReply,proto3" json:"auto_reply,omitempty"`          //
-	SplitData     bool                   `protobuf:"varint,22,opt,name=split_data,json=splitData,proto3" json:"split_data,omitempty"`          //
+	EventTtl      *durationpb.Duration   `protobuf:"bytes,11,opt,name=event_ttl,json=eventTtl,proto3" json:"event_ttl,omitempty"`              // 事件存活时间
+	AutoStream    bool                   `protobuf:"varint,20,opt,name=auto_stream,json=autoStream,proto3" json:"auto_stream,omitempty"`       // 自动管理流
+	AutoReply     bool                   `protobuf:"varint,21,opt,name=auto_reply,json=autoReply,proto3" json:"auto_reply,omitempty"`          // 自动回复事件
+	SplitData     bool                   `protobuf:"varint,22,opt,name=split_data,json=splitData,proto3" json:"split_data,omitempty"`          // 分割数据
 	EncodeBase64  bool                   `protobuf:"varint,23,opt,name=encode_base64,json=encodeBase64,proto3" json:"encode_base64,omitempty"` // 进行BASE64编码
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -1858,6 +1872,139 @@ func (x *Server_SignalR) GetStreamBufferCapacity() uint32 {
 	return 0
 }
 
+// MCP
+type Server_MCP struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	ServerName         string                 `protobuf:"bytes,1,opt,name=server_name,json=serverName,proto3" json:"server_name,omitempty"`                           // 服务器名称
+	ServerVersion      string                 `protobuf:"bytes,2,opt,name=server_version,json=serverVersion,proto3" json:"server_version,omitempty"`                  // 服务器版本
+	ServerType         string                 `protobuf:"bytes,3,opt,name=server_type,json=serverType,proto3" json:"server_type,omitempty"`                           // 服务器类型，SSE、HTTP、STDIO、IN_PROCESS。
+	Address            string                 `protobuf:"bytes,4,opt,name=address,proto3" json:"address,omitempty"`                                                   // 服务器地址
+	Tls                *TLS                   `protobuf:"bytes,5,opt,name=tls,proto3" json:"tls,omitempty"`                                                           // TLS配置
+	Instructions       string                 `protobuf:"bytes,6,opt,name=instructions,proto3" json:"instructions,omitempty"`                                         // 指令集
+	Recovery           bool                   `protobuf:"varint,10,opt,name=recovery,proto3" json:"recovery,omitempty"`                                               // 恢复模式
+	Logging            bool                   `protobuf:"varint,11,opt,name=logging,proto3" json:"logging,omitempty"`                                                 // 日志记录
+	ToolCapabilities   bool                   `protobuf:"varint,12,opt,name=tool_capabilities,json=toolCapabilities,proto3" json:"tool_capabilities,omitempty"`       // 工具能力集
+	PromptCapabilities bool                   `protobuf:"varint,13,opt,name=prompt_capabilities,json=promptCapabilities,proto3" json:"prompt_capabilities,omitempty"` // 提示词能力集
+	Elicitation        bool                   `protobuf:"varint,14,opt,name=elicitation,proto3" json:"elicitation,omitempty"`                                         // 需求挖掘
+	Roots              bool                   `protobuf:"varint,15,opt,name=roots,proto3" json:"roots,omitempty"`                                                     // 根源
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *Server_MCP) Reset() {
+	*x = Server_MCP{}
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Server_MCP) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Server_MCP) ProtoMessage() {}
+
+func (x *Server_MCP) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Server_MCP.ProtoReflect.Descriptor instead.
+func (*Server_MCP) Descriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_server_proto_rawDescGZIP(), []int{0, 17}
+}
+
+func (x *Server_MCP) GetServerName() string {
+	if x != nil {
+		return x.ServerName
+	}
+	return ""
+}
+
+func (x *Server_MCP) GetServerVersion() string {
+	if x != nil {
+		return x.ServerVersion
+	}
+	return ""
+}
+
+func (x *Server_MCP) GetServerType() string {
+	if x != nil {
+		return x.ServerType
+	}
+	return ""
+}
+
+func (x *Server_MCP) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
+func (x *Server_MCP) GetTls() *TLS {
+	if x != nil {
+		return x.Tls
+	}
+	return nil
+}
+
+func (x *Server_MCP) GetInstructions() string {
+	if x != nil {
+		return x.Instructions
+	}
+	return ""
+}
+
+func (x *Server_MCP) GetRecovery() bool {
+	if x != nil {
+		return x.Recovery
+	}
+	return false
+}
+
+func (x *Server_MCP) GetLogging() bool {
+	if x != nil {
+		return x.Logging
+	}
+	return false
+}
+
+func (x *Server_MCP) GetToolCapabilities() bool {
+	if x != nil {
+		return x.ToolCapabilities
+	}
+	return false
+}
+
+func (x *Server_MCP) GetPromptCapabilities() bool {
+	if x != nil {
+		return x.PromptCapabilities
+	}
+	return false
+}
+
+func (x *Server_MCP) GetElicitation() bool {
+	if x != nil {
+		return x.Elicitation
+	}
+	return false
+}
+
+func (x *Server_MCP) GetRoots() bool {
+	if x != nil {
+		return x.Roots
+	}
+	return false
+}
+
 // GraphQL
 type Server_GraphQL struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -1874,7 +2021,7 @@ type Server_GraphQL struct {
 
 func (x *Server_GraphQL) Reset() {
 	*x = Server_GraphQL{}
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[18]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1886,7 +2033,7 @@ func (x *Server_GraphQL) String() string {
 func (*Server_GraphQL) ProtoMessage() {}
 
 func (x *Server_GraphQL) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[18]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1899,7 +2046,7 @@ func (x *Server_GraphQL) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Server_GraphQL.ProtoReflect.Descriptor instead.
 func (*Server_GraphQL) Descriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_server_proto_rawDescGZIP(), []int{0, 17}
+	return file_conf_v1_kratos_conf_server_proto_rawDescGZIP(), []int{0, 18}
 }
 
 func (x *Server_GraphQL) GetNetwork() string {
@@ -1967,7 +2114,7 @@ type Server_Thrift struct {
 
 func (x *Server_Thrift) Reset() {
 	*x = Server_Thrift{}
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[19]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1979,7 +2126,7 @@ func (x *Server_Thrift) String() string {
 func (*Server_Thrift) ProtoMessage() {}
 
 func (x *Server_Thrift) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[19]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1992,7 +2139,7 @@ func (x *Server_Thrift) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Server_Thrift.ProtoReflect.Descriptor instead.
 func (*Server_Thrift) Descriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_server_proto_rawDescGZIP(), []int{0, 18}
+	return file_conf_v1_kratos_conf_server_proto_rawDescGZIP(), []int{0, 19}
 }
 
 func (x *Server_Thrift) GetNetwork() string {
@@ -2044,6 +2191,7 @@ func (x *Server_Thrift) GetTls() *TLS {
 	return nil
 }
 
+// 保活服务
 type Server_KeepAlive struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Network       string                 `protobuf:"bytes,1,opt,name=network,proto3" json:"network,omitempty"` // 网络
@@ -2055,7 +2203,7 @@ type Server_KeepAlive struct {
 
 func (x *Server_KeepAlive) Reset() {
 	*x = Server_KeepAlive{}
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[20]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2067,7 +2215,7 @@ func (x *Server_KeepAlive) String() string {
 func (*Server_KeepAlive) ProtoMessage() {}
 
 func (x *Server_KeepAlive) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[20]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2080,7 +2228,7 @@ func (x *Server_KeepAlive) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Server_KeepAlive.ProtoReflect.Descriptor instead.
 func (*Server_KeepAlive) Descriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_server_proto_rawDescGZIP(), []int{0, 19}
+	return file_conf_v1_kratos_conf_server_proto_rawDescGZIP(), []int{0, 20}
 }
 
 func (x *Server_KeepAlive) GetNetwork() string {
@@ -2115,7 +2263,7 @@ type Server_REST_CORS struct {
 
 func (x *Server_REST_CORS) Reset() {
 	*x = Server_REST_CORS{}
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[21]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2127,7 +2275,7 @@ func (x *Server_REST_CORS) String() string {
 func (*Server_REST_CORS) ProtoMessage() {}
 
 func (x *Server_REST_CORS) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[21]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2183,7 +2331,7 @@ type Server_Machinery_Redis struct {
 
 func (x *Server_Machinery_Redis) Reset() {
 	*x = Server_Machinery_Redis{}
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[23]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2195,7 +2343,7 @@ func (x *Server_Machinery_Redis) String() string {
 func (*Server_Machinery_Redis) ProtoMessage() {}
 
 func (x *Server_Machinery_Redis) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[23]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2304,7 +2452,7 @@ type Server_Machinery_AMQP struct {
 
 func (x *Server_Machinery_AMQP) Reset() {
 	*x = Server_Machinery_AMQP{}
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[24]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2316,7 +2464,7 @@ func (x *Server_Machinery_AMQP) String() string {
 func (*Server_Machinery_AMQP) ProtoMessage() {}
 
 func (x *Server_Machinery_AMQP) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[24]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2398,7 +2546,7 @@ type Server_Machinery_SQS struct {
 
 func (x *Server_Machinery_SQS) Reset() {
 	*x = Server_Machinery_SQS{}
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[25]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2410,7 +2558,7 @@ func (x *Server_Machinery_SQS) String() string {
 func (*Server_Machinery_SQS) ProtoMessage() {}
 
 func (x *Server_Machinery_SQS) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[25]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2449,7 +2597,7 @@ type Server_Machinery_GCP struct {
 
 func (x *Server_Machinery_GCP) Reset() {
 	*x = Server_Machinery_GCP{}
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[26]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2461,7 +2609,7 @@ func (x *Server_Machinery_GCP) String() string {
 func (*Server_Machinery_GCP) ProtoMessage() {}
 
 func (x *Server_Machinery_GCP) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[26]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2493,7 +2641,7 @@ type Server_Machinery_MongoDB struct {
 
 func (x *Server_Machinery_MongoDB) Reset() {
 	*x = Server_Machinery_MongoDB{}
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[27]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2505,7 +2653,7 @@ func (x *Server_Machinery_MongoDB) String() string {
 func (*Server_Machinery_MongoDB) ProtoMessage() {}
 
 func (x *Server_Machinery_MongoDB) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[27]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2538,7 +2686,7 @@ type Server_Machinery_DynamoDB struct {
 
 func (x *Server_Machinery_DynamoDB) Reset() {
 	*x = Server_Machinery_DynamoDB{}
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[28]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2550,7 +2698,7 @@ func (x *Server_Machinery_DynamoDB) String() string {
 func (*Server_Machinery_DynamoDB) ProtoMessage() {}
 
 func (x *Server_Machinery_DynamoDB) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[28]
+	mi := &file_conf_v1_kratos_conf_server_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2584,7 +2732,7 @@ var File_conf_v1_kratos_conf_server_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_server_proto_rawDesc = "" +
 	"\n" +
-	" conf/v1/kratos_conf_server.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\x1a$conf/v1/kratos_conf_middleware.proto\x1a\x1dconf/v1/kratos_conf_tls.proto\"\xec=\n" +
+	" conf/v1/kratos_conf_server.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\x1a$conf/v1/kratos_conf_middleware.proto\x1a\x1dconf/v1/kratos_conf_tls.proto\"\xb5A\n" +
 	"\x06Server\x12*\n" +
 	"\x04rest\x18\x01 \x01(\v2\x11.conf.Server.RESTH\x00R\x04rest\x88\x01\x01\x12*\n" +
 	"\x04grpc\x18\x02 \x01(\v2\x11.conf.Server.GRPCH\x01R\x04grpc\x88\x01\x01\x123\n" +
@@ -2605,9 +2753,10 @@ const file_conf_v1_kratos_conf_server_proto_rawDesc = "" +
 	"\twebsocket\x18\x14 \x01(\v2\x16.conf.Server.WebsocketH\x0eR\twebsocket\x88\x01\x01\x12'\n" +
 	"\x03sse\x18\x15 \x01(\v2\x10.conf.Server.SSEH\x0fR\x03sse\x88\x01\x01\x126\n" +
 	"\bsocketio\x18\x16 \x01(\v2\x15.conf.Server.SocketIOH\x10R\bsocketio\x88\x01\x01\x123\n" +
-	"\asignalr\x18\x17 \x01(\v2\x14.conf.Server.SignalRH\x11R\asignalr\x88\x01\x01\x12-\n" +
-	"\x05asynq\x18\x1e \x01(\v2\x12.conf.Server.AsynqH\x12R\x05asynq\x88\x01\x01\x129\n" +
-	"\tmachinery\x18\x1f \x01(\v2\x16.conf.Server.MachineryH\x13R\tmachinery\x88\x01\x01\x1a\x84\x03\n" +
+	"\asignalr\x18\x17 \x01(\v2\x14.conf.Server.SignalRH\x11R\asignalr\x88\x01\x01\x12'\n" +
+	"\x03mcp\x18\x18 \x01(\v2\x10.conf.Server.MCPH\x12R\x03mcp\x88\x01\x01\x12-\n" +
+	"\x05asynq\x18\x1e \x01(\v2\x12.conf.Server.AsynqH\x13R\x05asynq\x88\x01\x01\x129\n" +
+	"\tmachinery\x18\x1f \x01(\v2\x16.conf.Server.MachineryH\x14R\tmachinery\x88\x01\x01\x1a\x84\x03\n" +
 	"\x04REST\x12\x18\n" +
 	"\anetwork\x18\x01 \x01(\tR\anetwork\x12\x12\n" +
 	"\x04addr\x18\x02 \x01(\tR\x04addr\x123\n" +
@@ -2820,7 +2969,23 @@ const file_conf_v1_kratos_conf_server_proto_rawDesc = "" +
 	" \x01(\v2\x19.google.protobuf.DurationR\x11keepAliveInterval\x12K\n" +
 	"\x14chan_receive_timeout\x18\v \x01(\v2\x19.google.protobuf.DurationR\x12chanReceiveTimeout\x12\x14\n" +
 	"\x05debug\x18\x06 \x01(\bR\x05debug\x124\n" +
-	"\x16stream_buffer_capacity\x18\a \x01(\rR\x14streamBufferCapacity\x1a\xd6\x01\n" +
+	"\x16stream_buffer_capacity\x18\a \x01(\rR\x14streamBufferCapacity\x1a\x95\x03\n" +
+	"\x03MCP\x12\x1f\n" +
+	"\vserver_name\x18\x01 \x01(\tR\n" +
+	"serverName\x12%\n" +
+	"\x0eserver_version\x18\x02 \x01(\tR\rserverVersion\x12\x1f\n" +
+	"\vserver_type\x18\x03 \x01(\tR\n" +
+	"serverType\x12\x18\n" +
+	"\aaddress\x18\x04 \x01(\tR\aaddress\x12\x1b\n" +
+	"\x03tls\x18\x05 \x01(\v2\t.conf.TLSR\x03tls\x12\"\n" +
+	"\finstructions\x18\x06 \x01(\tR\finstructions\x12\x1a\n" +
+	"\brecovery\x18\n" +
+	" \x01(\bR\brecovery\x12\x18\n" +
+	"\alogging\x18\v \x01(\bR\alogging\x12+\n" +
+	"\x11tool_capabilities\x18\f \x01(\bR\x10toolCapabilities\x12/\n" +
+	"\x13prompt_capabilities\x18\r \x01(\bR\x12promptCapabilities\x12 \n" +
+	"\velicitation\x18\x0e \x01(\bR\velicitation\x12\x14\n" +
+	"\x05roots\x18\x0f \x01(\bR\x05roots\x1a\xd6\x01\n" +
 	"\aGraphQL\x12\x18\n" +
 	"\anetwork\x18\x01 \x01(\tR\anetwork\x12\x12\n" +
 	"\x04addr\x18\x02 \x01(\tR\x04addr\x12\x12\n" +
@@ -2863,7 +3028,8 @@ const file_conf_v1_kratos_conf_server_proto_rawDesc = "" +
 	"\x04_sseB\v\n" +
 	"\t_socketioB\n" +
 	"\n" +
-	"\b_signalrB\b\n" +
+	"\b_signalrB\x06\n" +
+	"\x04_mcpB\b\n" +
 	"\x06_asynqB\f\n" +
 	"\n" +
 	"_machineryB\x87\x01\n" +
@@ -2881,7 +3047,7 @@ func file_conf_v1_kratos_conf_server_proto_rawDescGZIP() []byte {
 	return file_conf_v1_kratos_conf_server_proto_rawDescData
 }
 
-var file_conf_v1_kratos_conf_server_proto_msgTypes = make([]protoimpl.MessageInfo, 31)
+var file_conf_v1_kratos_conf_server_proto_msgTypes = make([]protoimpl.MessageInfo, 32)
 var file_conf_v1_kratos_conf_server_proto_goTypes = []any{
 	(*Server)(nil),                    // 0: conf.Server
 	(*Server_REST)(nil),               // 1: conf.Server.REST
@@ -2901,29 +3067,30 @@ var file_conf_v1_kratos_conf_server_proto_goTypes = []any{
 	(*Server_SSE)(nil),                // 15: conf.Server.SSE
 	(*Server_SocketIO)(nil),           // 16: conf.Server.SocketIO
 	(*Server_SignalR)(nil),            // 17: conf.Server.SignalR
-	(*Server_GraphQL)(nil),            // 18: conf.Server.GraphQL
-	(*Server_Thrift)(nil),             // 19: conf.Server.Thrift
-	(*Server_KeepAlive)(nil),          // 20: conf.Server.KeepAlive
-	(*Server_REST_CORS)(nil),          // 21: conf.Server.REST.CORS
-	nil,                               // 22: conf.Server.Asynq.QueuesEntry
-	(*Server_Machinery_Redis)(nil),    // 23: conf.Server.Machinery.Redis
-	(*Server_Machinery_AMQP)(nil),     // 24: conf.Server.Machinery.AMQP
-	(*Server_Machinery_SQS)(nil),      // 25: conf.Server.Machinery.SQS
-	(*Server_Machinery_GCP)(nil),      // 26: conf.Server.Machinery.GCP
-	(*Server_Machinery_MongoDB)(nil),  // 27: conf.Server.Machinery.MongoDB
-	(*Server_Machinery_DynamoDB)(nil), // 28: conf.Server.Machinery.DynamoDB
-	nil,                               // 29: conf.Server.Machinery.AMQP.QueueDeclareArgsEntry
-	nil,                               // 30: conf.Server.Machinery.AMQP.QueueBindingArgsEntry
-	(*durationpb.Duration)(nil),       // 31: google.protobuf.Duration
-	(*Middleware)(nil),                // 32: conf.Middleware
-	(*TLS)(nil),                       // 33: conf.TLS
+	(*Server_MCP)(nil),                // 18: conf.Server.MCP
+	(*Server_GraphQL)(nil),            // 19: conf.Server.GraphQL
+	(*Server_Thrift)(nil),             // 20: conf.Server.Thrift
+	(*Server_KeepAlive)(nil),          // 21: conf.Server.KeepAlive
+	(*Server_REST_CORS)(nil),          // 22: conf.Server.REST.CORS
+	nil,                               // 23: conf.Server.Asynq.QueuesEntry
+	(*Server_Machinery_Redis)(nil),    // 24: conf.Server.Machinery.Redis
+	(*Server_Machinery_AMQP)(nil),     // 25: conf.Server.Machinery.AMQP
+	(*Server_Machinery_SQS)(nil),      // 26: conf.Server.Machinery.SQS
+	(*Server_Machinery_GCP)(nil),      // 27: conf.Server.Machinery.GCP
+	(*Server_Machinery_MongoDB)(nil),  // 28: conf.Server.Machinery.MongoDB
+	(*Server_Machinery_DynamoDB)(nil), // 29: conf.Server.Machinery.DynamoDB
+	nil,                               // 30: conf.Server.Machinery.AMQP.QueueDeclareArgsEntry
+	nil,                               // 31: conf.Server.Machinery.AMQP.QueueBindingArgsEntry
+	(*durationpb.Duration)(nil),       // 32: google.protobuf.Duration
+	(*Middleware)(nil),                // 33: conf.Middleware
+	(*TLS)(nil),                       // 34: conf.TLS
 }
 var file_conf_v1_kratos_conf_server_proto_depIdxs = []int32{
 	1,  // 0: conf.Server.rest:type_name -> conf.Server.REST
 	2,  // 1: conf.Server.grpc:type_name -> conf.Server.GRPC
-	18, // 2: conf.Server.graphql:type_name -> conf.Server.GraphQL
-	19, // 3: conf.Server.thrift:type_name -> conf.Server.Thrift
-	20, // 4: conf.Server.keepalive:type_name -> conf.Server.KeepAlive
+	19, // 2: conf.Server.graphql:type_name -> conf.Server.GraphQL
+	20, // 3: conf.Server.thrift:type_name -> conf.Server.Thrift
+	21, // 4: conf.Server.keepalive:type_name -> conf.Server.KeepAlive
 	4,  // 5: conf.Server.mqtt:type_name -> conf.Server.Mqtt
 	5,  // 6: conf.Server.kafka:type_name -> conf.Server.Kafka
 	6,  // 7: conf.Server.rabbitmq:type_name -> conf.Server.RabbitMQ
@@ -2937,62 +3104,64 @@ var file_conf_v1_kratos_conf_server_proto_depIdxs = []int32{
 	15, // 15: conf.Server.sse:type_name -> conf.Server.SSE
 	16, // 16: conf.Server.socketio:type_name -> conf.Server.SocketIO
 	17, // 17: conf.Server.signalr:type_name -> conf.Server.SignalR
-	13, // 18: conf.Server.asynq:type_name -> conf.Server.Asynq
-	14, // 19: conf.Server.machinery:type_name -> conf.Server.Machinery
-	31, // 20: conf.Server.REST.timeout:type_name -> google.protobuf.Duration
-	21, // 21: conf.Server.REST.cors:type_name -> conf.Server.REST.CORS
-	32, // 22: conf.Server.REST.middleware:type_name -> conf.Middleware
-	33, // 23: conf.Server.REST.tls:type_name -> conf.TLS
-	31, // 24: conf.Server.GRPC.timeout:type_name -> google.protobuf.Duration
-	32, // 25: conf.Server.GRPC.middleware:type_name -> conf.Middleware
-	33, // 26: conf.Server.GRPC.tls:type_name -> conf.TLS
-	31, // 27: conf.Server.Websocket.timeout:type_name -> google.protobuf.Duration
-	33, // 28: conf.Server.Websocket.tls:type_name -> conf.TLS
-	33, // 29: conf.Server.Mqtt.tls:type_name -> conf.TLS
-	33, // 30: conf.Server.Kafka.tls:type_name -> conf.TLS
-	33, // 31: conf.Server.RabbitMQ.tls:type_name -> conf.TLS
-	33, // 32: conf.Server.ActiveMQ.tls:type_name -> conf.TLS
-	33, // 33: conf.Server.NATS.tls:type_name -> conf.TLS
-	33, // 34: conf.Server.NSQ.tls:type_name -> conf.TLS
-	33, // 35: conf.Server.Pulsar.tls:type_name -> conf.TLS
-	33, // 36: conf.Server.Redis.tls:type_name -> conf.TLS
-	33, // 37: conf.Server.RocketMQ.tls:type_name -> conf.TLS
-	33, // 38: conf.Server.Asynq.tls:type_name -> conf.TLS
-	22, // 39: conf.Server.Asynq.queues:type_name -> conf.Server.Asynq.QueuesEntry
-	31, // 40: conf.Server.Asynq.shutdown_timeout:type_name -> google.protobuf.Duration
-	31, // 41: conf.Server.Asynq.dial_timeout:type_name -> google.protobuf.Duration
-	31, // 42: conf.Server.Asynq.read_timeout:type_name -> google.protobuf.Duration
-	31, // 43: conf.Server.Asynq.write_timeout:type_name -> google.protobuf.Duration
-	31, // 44: conf.Server.Asynq.health_check_interval:type_name -> google.protobuf.Duration
-	31, // 45: conf.Server.Asynq.delayed_task_check_interval:type_name -> google.protobuf.Duration
-	31, // 46: conf.Server.Asynq.group_grace_period:type_name -> google.protobuf.Duration
-	31, // 47: conf.Server.Asynq.group_max_delay:type_name -> google.protobuf.Duration
-	33, // 48: conf.Server.Machinery.tls:type_name -> conf.TLS
-	23, // 49: conf.Server.Machinery.redis:type_name -> conf.Server.Machinery.Redis
-	24, // 50: conf.Server.Machinery.amqp:type_name -> conf.Server.Machinery.AMQP
-	25, // 51: conf.Server.Machinery.sqs:type_name -> conf.Server.Machinery.SQS
-	26, // 52: conf.Server.Machinery.gcp:type_name -> conf.Server.Machinery.GCP
-	27, // 53: conf.Server.Machinery.mongodb:type_name -> conf.Server.Machinery.MongoDB
-	28, // 54: conf.Server.Machinery.dynamodb:type_name -> conf.Server.Machinery.DynamoDB
-	33, // 55: conf.Server.SSE.tls:type_name -> conf.TLS
-	31, // 56: conf.Server.SSE.timeout:type_name -> google.protobuf.Duration
-	31, // 57: conf.Server.SSE.event_ttl:type_name -> google.protobuf.Duration
-	33, // 58: conf.Server.SocketIO.tls:type_name -> conf.TLS
-	33, // 59: conf.Server.SignalR.tls:type_name -> conf.TLS
-	31, // 60: conf.Server.SignalR.keep_alive_interval:type_name -> google.protobuf.Duration
-	31, // 61: conf.Server.SignalR.chan_receive_timeout:type_name -> google.protobuf.Duration
-	31, // 62: conf.Server.GraphQL.timeout:type_name -> google.protobuf.Duration
-	33, // 63: conf.Server.GraphQL.tls:type_name -> conf.TLS
-	33, // 64: conf.Server.Thrift.tls:type_name -> conf.TLS
-	33, // 65: conf.Server.KeepAlive.tls:type_name -> conf.TLS
-	29, // 66: conf.Server.Machinery.AMQP.queue_declare_args:type_name -> conf.Server.Machinery.AMQP.QueueDeclareArgsEntry
-	30, // 67: conf.Server.Machinery.AMQP.queue_binding_args:type_name -> conf.Server.Machinery.AMQP.QueueBindingArgsEntry
-	31, // 68: conf.Server.Machinery.GCP.max_extension:type_name -> google.protobuf.Duration
-	69, // [69:69] is the sub-list for method output_type
-	69, // [69:69] is the sub-list for method input_type
-	69, // [69:69] is the sub-list for extension type_name
-	69, // [69:69] is the sub-list for extension extendee
-	0,  // [0:69] is the sub-list for field type_name
+	18, // 18: conf.Server.mcp:type_name -> conf.Server.MCP
+	13, // 19: conf.Server.asynq:type_name -> conf.Server.Asynq
+	14, // 20: conf.Server.machinery:type_name -> conf.Server.Machinery
+	32, // 21: conf.Server.REST.timeout:type_name -> google.protobuf.Duration
+	22, // 22: conf.Server.REST.cors:type_name -> conf.Server.REST.CORS
+	33, // 23: conf.Server.REST.middleware:type_name -> conf.Middleware
+	34, // 24: conf.Server.REST.tls:type_name -> conf.TLS
+	32, // 25: conf.Server.GRPC.timeout:type_name -> google.protobuf.Duration
+	33, // 26: conf.Server.GRPC.middleware:type_name -> conf.Middleware
+	34, // 27: conf.Server.GRPC.tls:type_name -> conf.TLS
+	32, // 28: conf.Server.Websocket.timeout:type_name -> google.protobuf.Duration
+	34, // 29: conf.Server.Websocket.tls:type_name -> conf.TLS
+	34, // 30: conf.Server.Mqtt.tls:type_name -> conf.TLS
+	34, // 31: conf.Server.Kafka.tls:type_name -> conf.TLS
+	34, // 32: conf.Server.RabbitMQ.tls:type_name -> conf.TLS
+	34, // 33: conf.Server.ActiveMQ.tls:type_name -> conf.TLS
+	34, // 34: conf.Server.NATS.tls:type_name -> conf.TLS
+	34, // 35: conf.Server.NSQ.tls:type_name -> conf.TLS
+	34, // 36: conf.Server.Pulsar.tls:type_name -> conf.TLS
+	34, // 37: conf.Server.Redis.tls:type_name -> conf.TLS
+	34, // 38: conf.Server.RocketMQ.tls:type_name -> conf.TLS
+	34, // 39: conf.Server.Asynq.tls:type_name -> conf.TLS
+	23, // 40: conf.Server.Asynq.queues:type_name -> conf.Server.Asynq.QueuesEntry
+	32, // 41: conf.Server.Asynq.shutdown_timeout:type_name -> google.protobuf.Duration
+	32, // 42: conf.Server.Asynq.dial_timeout:type_name -> google.protobuf.Duration
+	32, // 43: conf.Server.Asynq.read_timeout:type_name -> google.protobuf.Duration
+	32, // 44: conf.Server.Asynq.write_timeout:type_name -> google.protobuf.Duration
+	32, // 45: conf.Server.Asynq.health_check_interval:type_name -> google.protobuf.Duration
+	32, // 46: conf.Server.Asynq.delayed_task_check_interval:type_name -> google.protobuf.Duration
+	32, // 47: conf.Server.Asynq.group_grace_period:type_name -> google.protobuf.Duration
+	32, // 48: conf.Server.Asynq.group_max_delay:type_name -> google.protobuf.Duration
+	34, // 49: conf.Server.Machinery.tls:type_name -> conf.TLS
+	24, // 50: conf.Server.Machinery.redis:type_name -> conf.Server.Machinery.Redis
+	25, // 51: conf.Server.Machinery.amqp:type_name -> conf.Server.Machinery.AMQP
+	26, // 52: conf.Server.Machinery.sqs:type_name -> conf.Server.Machinery.SQS
+	27, // 53: conf.Server.Machinery.gcp:type_name -> conf.Server.Machinery.GCP
+	28, // 54: conf.Server.Machinery.mongodb:type_name -> conf.Server.Machinery.MongoDB
+	29, // 55: conf.Server.Machinery.dynamodb:type_name -> conf.Server.Machinery.DynamoDB
+	34, // 56: conf.Server.SSE.tls:type_name -> conf.TLS
+	32, // 57: conf.Server.SSE.timeout:type_name -> google.protobuf.Duration
+	32, // 58: conf.Server.SSE.event_ttl:type_name -> google.protobuf.Duration
+	34, // 59: conf.Server.SocketIO.tls:type_name -> conf.TLS
+	34, // 60: conf.Server.SignalR.tls:type_name -> conf.TLS
+	32, // 61: conf.Server.SignalR.keep_alive_interval:type_name -> google.protobuf.Duration
+	32, // 62: conf.Server.SignalR.chan_receive_timeout:type_name -> google.protobuf.Duration
+	34, // 63: conf.Server.MCP.tls:type_name -> conf.TLS
+	32, // 64: conf.Server.GraphQL.timeout:type_name -> google.protobuf.Duration
+	34, // 65: conf.Server.GraphQL.tls:type_name -> conf.TLS
+	34, // 66: conf.Server.Thrift.tls:type_name -> conf.TLS
+	34, // 67: conf.Server.KeepAlive.tls:type_name -> conf.TLS
+	30, // 68: conf.Server.Machinery.AMQP.queue_declare_args:type_name -> conf.Server.Machinery.AMQP.QueueDeclareArgsEntry
+	31, // 69: conf.Server.Machinery.AMQP.queue_binding_args:type_name -> conf.Server.Machinery.AMQP.QueueBindingArgsEntry
+	32, // 70: conf.Server.Machinery.GCP.max_extension:type_name -> google.protobuf.Duration
+	71, // [71:71] is the sub-list for method output_type
+	71, // [71:71] is the sub-list for method input_type
+	71, // [71:71] is the sub-list for extension type_name
+	71, // [71:71] is the sub-list for extension extendee
+	0,  // [0:71] is the sub-list for field type_name
 }
 
 func init() { file_conf_v1_kratos_conf_server_proto_init() }
@@ -3003,14 +3172,14 @@ func file_conf_v1_kratos_conf_server_proto_init() {
 	file_conf_v1_kratos_conf_middleware_proto_init()
 	file_conf_v1_kratos_conf_tls_proto_init()
 	file_conf_v1_kratos_conf_server_proto_msgTypes[0].OneofWrappers = []any{}
-	file_conf_v1_kratos_conf_server_proto_msgTypes[25].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_server_proto_msgTypes[26].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_v1_kratos_conf_server_proto_rawDesc), len(file_conf_v1_kratos_conf_server_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   31,
+			NumMessages:   32,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

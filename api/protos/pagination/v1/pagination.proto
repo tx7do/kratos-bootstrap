@@ -5,30 +5,244 @@ package pagination;
 option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/pagination/v1;pagination";
 
 import "google/protobuf/field_mask.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/any.proto";
+
 import "gnostic/openapi/v3/annotations.proto";
 
-// 分页通用请求
-message PagingRequest {
-  // 当前页码
-  optional int32 page = 1 [
+// ------------------------------
+// 特别说明
+// ------------------------------
+// 1. 本文件定义了多种分页方式（页码-页大小、偏移量-限制、令牌分页、不分页）
+//    以及通用的分页请求与响应结构，供不同场景选择使用。
+// 2. 排序规则、过滤表达式等均可复用，避免重复定义。
+// 3. 通用分页请求与响应适用于大多数场景，建议优先使用。
+// 4. 具体业务可根据需要扩展请求与响应结构。
+// 5. 请根据实际数据库与ORM支持情况，合理使用过滤操作符与表达式，避免SQL注入等安全风险。
+// 6. 建议在服务端对分页参数进行合理限制，如最大页大小、最大偏移量等，以防止恶意请求影响性能。
+// 7. 复杂过滤表达式建议使用参数化查询，避免SQL注入风险。
+// 8. 排序规则建议必传，确保分页结果稳定性。
+// 9. 字段掩码用于控制SELECT字段，提升查询效率。
+// 10. 如果使用GET请求传递分页参数，建议对参数进行URL编码，避免特殊字符引起的问题。
+// 11. 如果查询请求的URL字符串过长，建议使用POST请求以避免URL长度限制问题，旧版浏览器可能限制为2083字节。
+// ------------------------------
+
+
+// 排序规则（分页场景通常需配合排序保证结果稳定）
+message Sorting {
+  // 排序方向（ASC/DESC，默认ASC）
+  enum Order {
+    ASC = 0;
+    DESC = 1;
+  }
+
+  // 排序字段（如"id"、"create_time"）
+  string field = 1;
+
+  Order order = 2;
+}
+
+// 操作符枚举
+enum Operator {
+  // 未指定
+  OPERATOR_UNSPECIFIED = 0;
+
+  // 基本比较
+  EQ = 1;        // =
+  NEQ = 2;       // !=
+  GT = 3;        // >
+  GTE = 4;       // >=
+  LT = 5;        // <
+  LTE = 6;       // <=
+
+  // 模糊 / 大小写不敏感模糊 / 非模糊
+  LIKE = 7;      // SQL LIKE
+  ILIKE = 8;     // 大小写不敏感的 LIKE（如 Postgres ILIKE）
+  NOT_LIKE = 9;  // NOT LIKE
+
+  // 集合操作
+  IN = 10;       // IN (v1, v2, ...)
+  NIN = 11;      // NOT IN
+
+  // 空值判断
+  IS_NULL = 12;      // IS NULL
+  IS_NOT_NULL = 13;  // IS NOT NULL
+
+  // 范围与正则
+  BETWEEN = 14;   // BETWEEN a AND b（或服务端映射为 >=a AND <=b）
+  REGEXP = 15;    // 正则匹配（DB/引擎支持）
+
+  // 语义化的字符串操作
+  CONTAINS = 16;     // 包含（等价于 LIKE %v%）
+  STARTS_WITH = 17;  // 前缀（等价于 LIKE v%）
+  ENDS_WITH = 18;    // 后缀（等价于 LIKE %v）
+
+  // JSON / 数组 / 集合相关（按需在服务端映射为具体 DB 运算）
+  JSON_CONTAINS = 19;   // JSON 包含（如 Postgres/ MySQL 的 JSON 包含）
+  ARRAY_CONTAINS = 20;  // 数组包含某元素
+  EXISTS = 21;          // 子查询 / 存在性（按需实现）
+}
+
+// 单个条件
+message Condition {
+  string field = 1;
+  Operator op = 2;
+  string value = 3;
+  repeated string values = 4;
+}
+
+// 过滤表达式类型
+enum ExprType {
+  EXPR_TYPE_UNSPECIFIED = 0;
+
+  AND = 1;
+  OR = 2;
+}
+
+// 过滤表达式
+message FilterExpr {
+  // 过滤表达式类型
+  ExprType type = 1;
+
+  // 条件列表
+  repeated Condition conditions = 2;
+
+  // 子表达式列表
+  repeated FilterExpr groups = 3;
+}
+
+// 页码-页大小分页（Page-PageSize）
+message PageBasedPagination {
+  // 当前页码（从1开始，默认1）
+  uint32 page = 1 [
     json_name = "page",
     (gnostic.openapi.v3.property) = {
-      description: "当前页码",
+      description: "当前页码（从1开始，默认1）",
       default: {number: 1}
     }
   ];
 
-  // 每一页的行数
-  optional int32 page_size = 2 [
+  // 每页条数（默认10，建议设置上限如100）
+  uint32 page_size = 2 [
     json_name = "pageSize",
     (gnostic.openapi.v3.property) = {
       description: "每一页的行数",
       default: {number: 10}
     }
   ];
+}
+
+// 偏移量-限制分页（Offset-Limit）
+message OffsetBasedPagination {
+  // 跳过的记录数（从0开始，默认0）
+  uint64 offset = 1 [
+    json_name = "offset",
+    (gnostic.openapi.v3.property) = {
+      description: "跳过的记录数（从0开始，默认0）",
+      default: {number: 0}
+    }
+  ];
+
+  // 最多返回的记录数（默认10，建议设置上限如100）
+  uint32 limit = 2 [
+    json_name = "limit",
+    (gnostic.openapi.v3.property) = {
+      description: "最多返回的记录数（默认10，建议设置上限如100）",
+      default: {number: 10}
+    }
+  ];
+}
+
+// 令牌分页（Token-Based）
+message TokenBasedPagination {
+  // 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+  string token = 1 [
+    json_name = "token",
+    (gnostic.openapi.v3.property) = {
+      description: "上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）",
+    }
+  ];
+
+  // 每页条数（默认10，建议设置上限如100）
+  uint32 page_size = 2 [
+    json_name = "pageSize",
+    (gnostic.openapi.v3.property) = {
+      description: "每页条数（默认10，建议设置上限如100）",
+      default: {number: 10}
+    }
+  ];
+}
+
+// 不分页
+message NoPaging {}
+
+// ------------------------------
+// 分页通用请求
+// ------------------------------
+message PagingRequest {
+  // 当前页码（从1开始，默认1）
+  optional uint32 page = 1 [
+    json_name = "page",
+    (gnostic.openapi.v3.property) = {
+      description: "当前页码（从1开始，默认1）",
+      default: {number: 1}
+    }
+  ];
+
+  // 每页条数（默认10，建议设置上限如100）
+  optional uint32 page_size = 2 [
+    json_name = "pageSize",
+    (gnostic.openapi.v3.property) = {
+      description: "每页条数（默认10，建议设置上限如100）",
+      default: {number: 10}
+    }
+  ];
+
+  // 跳过的记录数（从0开始，默认0）
+  optional uint64 offset = 3 [
+    json_name = "offset",
+    (gnostic.openapi.v3.property) = {
+      description: "跳过的记录数（从0开始，默认0）",
+      default: {number: 0}
+    }
+  ];
+
+  // 最多返回的记录数（默认10，建议设置上限如100）
+  optional uint32 limit = 4 [
+    json_name = "limit",
+    (gnostic.openapi.v3.property) = {
+      description: "最多返回的记录数（默认10，建议设置上限如100）",
+      default: {number: 10}
+    }
+  ];
+
+  // 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+  optional string token = 5 [
+    json_name = "token",
+    (gnostic.openapi.v3.property) = {
+      description: "上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）",
+    }
+  ];
+
+  // 排序条件，其语法为JSON字符串，例如：{"val1", "-val2"}。字段名前加'-'为降序，否则为升序。
+  repeated string order_by = 10 [
+    json_name = "orderBy",
+    (gnostic.openapi.v3.property) = {
+      description: "排序条件，其语法为JSON字符串，例如：{\"val1\", \"-val2\"}。字段名前加'-'为降序，否则为升序。"
+      example: {yaml: "{\"val1\", \"-val2\"}"}
+    }
+  ];
+
+  // 排序规则（可选，建议必传以保证分页结果稳定）
+  repeated Sorting sorting = 11 [
+    json_name = "sorting",
+    (gnostic.openapi.v3.property) = {
+      description: "排序规则（可选，建议必传以保证分页结果稳定）"
+    }
+  ];
 
   // AND过滤参数，其语法为json格式的字符串，如：{"key1":"val1","key2":"val2"}，具体请参见：https://github.com/tx7do/go-utils/tree/main/entgo/query/README.md
-  optional string query = 3 [
+  optional string query = 20 [
     json_name = "query",
     (gnostic.openapi.v3.property) = {
       description: "AND过滤参数，其语法为json格式的字符串，如：{\"key1\":\"val1\",\"key2\":\"val2\"}，具体请参见：https://github.com/tx7do/go-utils/tree/main/entgo/query/README.md",
@@ -37,7 +251,7 @@ message PagingRequest {
   ];
 
   // OR过滤参数，语法同AND过滤参数。
-  optional string or_query = 4 [
+  optional string or_query = 21 [
     json_name = "or",
     (gnostic.openapi.v3.property) = {
       description: "OR过滤参数",
@@ -45,43 +259,203 @@ message PagingRequest {
     }
   ];
 
-  // 排序条件，其语法为JSON字符串，例如：{"val1", "-val2"}。字段名前加'-'为降序，否则为升序。
-  repeated string order_by = 5 [
-    json_name = "orderBy",
+  // 复杂过滤表达式
+  optional FilterExpr filter_expr = 22 [
+    json_name = "filterExpr",
     (gnostic.openapi.v3.property) = {
-      description: "排序条件，其语法为JSON字符串，例如：{\"val1\", \"-val2\"}。字段名前加'-'为降序，否则为升序。"
-      example: {yaml: "{\"val1\", \"-val2\"}"}
-    }
-  ];
-
-  // 是否不分页，如果为true，则page和pageSize参数无效。
-  optional bool no_paging = 6 [
-    json_name = "noPaging",
-    (gnostic.openapi.v3.property) = {
-      description: "是否不分页，如果为true，则page和pageSize参数无效。"
+      description: "复杂过滤表达式"
     }
   ];
 
   // 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
-  optional google.protobuf.FieldMask field_mask = 7 [
+  optional google.protobuf.FieldMask field_mask = 30 [
     json_name = "fieldMask",
     (gnostic.openapi.v3.property) = {
       description: "字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。",
       example: {yaml : "id,realName,userName"}
     }
   ];
-
-  optional uint32 tenant_id = 8 [
-    (gnostic.openapi.v3.property) = {description: "租户ID"},
-    json_name = "tenantId"
-  ]; // 租户ID
 }
 
+// ------------------------------
+// 分页响应元数据
+// ------------------------------
+message PaginationResponseMeta {
+  // 总记录数（仅Page/Offset分页有效，Token分页通常不返回总数）
+  optional google.protobuf.UInt64Value total = 1 [
+    json_name = "total",
+    (gnostic.openapi.v3.property) = {
+      description: "总记录数（仅Page/Offset分页有效，Token分页通常不返回总数）"
+    }
+  ];
+
+  // 总页数（仅Page分页有效）
+  optional google.protobuf.UInt32Value total_pages = 2 [
+    json_name = "totalPages",
+    (gnostic.openapi.v3.property) = {
+      description: "总页数（仅Page分页有效）"
+    }
+  ];
+
+  // 当前页码（仅Page分页有效）
+  optional google.protobuf.UInt32Value current_page = 3 [
+    json_name = "currentPage",
+    (gnostic.openapi.v3.property) = {
+      description: "当前页码（仅Page分页有效）"
+    }
+  ];
+
+  // 当前偏移量（仅Offset分页有效）
+  optional google.protobuf.UInt64Value current_offset = 4 [
+    json_name = "currentOffset",
+    (gnostic.openapi.v3.property) = {
+      description: "当前偏移量（仅Offset分页有效）"
+    }
+  ];
+
+  // 下一页令牌（仅Token分页有效，无更多数据时为空）
+  optional string next_token = 5 [
+    json_name = "next_token",
+    (gnostic.openapi.v3.property) = {
+      description: "下一页令牌（仅Token分页有效，无更多数据时为空）"
+    }
+  ];
+
+  // 每页实际条数
+  optional uint32 page_size = 6 [
+    json_name = "pageSize",
+    (gnostic.openapi.v3.property) = {
+      description: "每页实际条数"
+    }
+  ];
+
+  // 当前页实际返回条数
+  optional uint32 current_size = 7 [
+    json_name = "currentSize",
+    (gnostic.openapi.v3.property) = {
+      description: "当前页实际返回条数"
+    }
+  ];
+}
+
+// ------------------------------
 // 分页通用结果
+// ------------------------------
 message PagingResponse {
-  // 总数
-  int32 total = 1;
+  // 总记录数
+  optional google.protobuf.UInt64Value total = 1 [
+    json_name = "total",
+    (gnostic.openapi.v3.property) = {
+      description: "总记录数（仅Page/Offset分页有效，Token分页通常不返回总数）"
+    }
+  ];
 
   // 分页数据
   repeated bytes items = 2;
+}
+
+// ------------------------------
+// 通用分页请求
+// ------------------------------
+message PaginationRequest {
+  // 分页类型（三种方式互斥，必须选其一）
+  oneof pagination_type {
+    // 基于页码的分页方式
+    PageBasedPagination page_based = 1 [
+      json_name = "pageBased",
+      (gnostic.openapi.v3.property) = {
+        description: "基于页码的分页方式"
+      }
+    ];
+
+    // 基于偏移量的分页方式
+    OffsetBasedPagination offset_based = 2 [
+      json_name = "offsetBased",
+      (gnostic.openapi.v3.property) = {
+        description: "基于偏移量的分页方式"
+      }
+    ];
+
+    // 基于令牌的分页方式
+    TokenBasedPagination token_based = 3 [
+      json_name = "tokenBased",
+      (gnostic.openapi.v3.property) = {
+        description: "基于令牌的分页方式"
+      }
+    ];
+
+    // 不分页
+    NoPaging no_paging = 4 [
+      json_name = "noPaging",
+      (gnostic.openapi.v3.property) = {
+        description: "不分页"
+      }
+    ];
+  }
+
+  // 排序条件，其语法为JSON字符串，例如：{"val1", "-val2"}。字段名前加'-'为降序，否则为升序。
+  repeated string order_by = 10 [
+    json_name = "orderBy",
+    deprecated = true,
+    (gnostic.openapi.v3.property) = {
+      description: "排序条件，其语法为JSON字符串，例如：{\"val1\", \"-val2\"}。字段名前加'-'为降序，否则为升序。"
+      example: {yaml: "{\"val1\", \"-val2\"}"}
+    }
+  ];
+
+  // 排序规则（可选，建议必传以保证分页结果稳定）
+  repeated Sorting sorting = 11 [
+    json_name = "sorting",
+    (gnostic.openapi.v3.property) = {
+      description: "排序规则（可选，建议必传以保证分页结果稳定）"
+    }
+  ];
+
+  // AND过滤参数，其语法为json格式的字符串，如：{"key1":"val1","key2":"val2"}，具体请参见：https://github.com/tx7do/go-utils/tree/main/entgo/query/README.md
+  optional string query = 20 [
+    json_name = "query",
+    deprecated = true,
+    (gnostic.openapi.v3.property) = {
+      description: "AND过滤参数，其语法为json格式的字符串，如：{\"key1\":\"val1\",\"key2\":\"val2\"}，具体请参见：https://github.com/tx7do/go-utils/tree/main/entgo/query/README.md",
+      example: {yaml: "{\"key1\":\"val1\",\"key2\":\"val2\"}"}
+    }
+  ];
+
+  // OR过滤参数，语法同AND过滤参数。
+  optional string or_query = 21 [
+    json_name = "or",
+    deprecated = true,
+    (gnostic.openapi.v3.property) = {
+      description: "OR过滤参数",
+      example: {yaml: "{\"key1\":\"val1\",\"key2\":\"val2\"}"}
+    }
+  ];
+
+  // 复杂过滤表达式（优先使用）
+  optional FilterExpr filter_expr = 22 [
+    json_name = "filterExpr",
+    (gnostic.openapi.v3.property) = {
+      description: "复杂过滤表达式，优先于已弃用的 query/or_query。服务端应以此为准并执行严格校验与参数化。"
+    }
+  ];
+
+  // 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+  optional google.protobuf.FieldMask field_mask = 30 [
+    json_name = "fieldMask",
+    (gnostic.openapi.v3.property) = {
+      description: "字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。",
+      example: {yaml : "id,realName,userName"}
+    }
+  ];
+}
+
+// ------------------------------
+// 通用分页响应
+// ------------------------------
+message PaginationResponse {
+  // 分页元数据
+  PaginationResponseMeta meta = 2;
+
+  // 业务数据列表（示例用Any，实际业务需替换为具体message，如repeated User users = 1）
+  repeated google.protobuf.Any data = 1;
 }

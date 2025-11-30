@@ -10,7 +10,9 @@ import (
 	_ "github.com/google/gnostic/openapiv3"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	anypb "google.golang.org/protobuf/types/known/anypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
+	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -23,31 +25,641 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// 操作符枚举
+type Operator int32
+
+const (
+	// 未指定
+	Operator_OPERATOR_UNSPECIFIED Operator = 0
+	// 基本比较
+	Operator_EQ  Operator = 1 // =
+	Operator_NEQ Operator = 2 // !=
+	Operator_GT  Operator = 3 // >
+	Operator_GTE Operator = 4 // >=
+	Operator_LT  Operator = 5 // <
+	Operator_LTE Operator = 6 // <=
+	// 模糊 / 大小写不敏感模糊 / 非模糊
+	Operator_LIKE     Operator = 7 // SQL LIKE
+	Operator_ILIKE    Operator = 8 // 大小写不敏感的 LIKE（如 Postgres ILIKE）
+	Operator_NOT_LIKE Operator = 9 // NOT LIKE
+	// 集合操作
+	Operator_IN  Operator = 10 // IN (v1, v2, ...)
+	Operator_NIN Operator = 11 // NOT IN
+	// 空值判断
+	Operator_IS_NULL     Operator = 12 // IS NULL
+	Operator_IS_NOT_NULL Operator = 13 // IS NOT NULL
+	// 范围与正则
+	Operator_BETWEEN Operator = 14 // BETWEEN a AND b（或服务端映射为 >=a AND <=b）
+	Operator_REGEXP  Operator = 15 // 正则匹配（DB/引擎支持）
+	// 语义化的字符串操作
+	Operator_CONTAINS    Operator = 16 // 包含（等价于 LIKE %v%）
+	Operator_STARTS_WITH Operator = 17 // 前缀（等价于 LIKE v%）
+	Operator_ENDS_WITH   Operator = 18 // 后缀（等价于 LIKE %v）
+	// JSON / 数组 / 集合相关（按需在服务端映射为具体 DB 运算）
+	Operator_JSON_CONTAINS  Operator = 19 // JSON 包含（如 Postgres/ MySQL 的 JSON 包含）
+	Operator_ARRAY_CONTAINS Operator = 20 // 数组包含某元素
+	Operator_EXISTS         Operator = 21 // 子查询 / 存在性（按需实现）
+)
+
+// Enum value maps for Operator.
+var (
+	Operator_name = map[int32]string{
+		0:  "OPERATOR_UNSPECIFIED",
+		1:  "EQ",
+		2:  "NEQ",
+		3:  "GT",
+		4:  "GTE",
+		5:  "LT",
+		6:  "LTE",
+		7:  "LIKE",
+		8:  "ILIKE",
+		9:  "NOT_LIKE",
+		10: "IN",
+		11: "NIN",
+		12: "IS_NULL",
+		13: "IS_NOT_NULL",
+		14: "BETWEEN",
+		15: "REGEXP",
+		16: "CONTAINS",
+		17: "STARTS_WITH",
+		18: "ENDS_WITH",
+		19: "JSON_CONTAINS",
+		20: "ARRAY_CONTAINS",
+		21: "EXISTS",
+	}
+	Operator_value = map[string]int32{
+		"OPERATOR_UNSPECIFIED": 0,
+		"EQ":                   1,
+		"NEQ":                  2,
+		"GT":                   3,
+		"GTE":                  4,
+		"LT":                   5,
+		"LTE":                  6,
+		"LIKE":                 7,
+		"ILIKE":                8,
+		"NOT_LIKE":             9,
+		"IN":                   10,
+		"NIN":                  11,
+		"IS_NULL":              12,
+		"IS_NOT_NULL":          13,
+		"BETWEEN":              14,
+		"REGEXP":               15,
+		"CONTAINS":             16,
+		"STARTS_WITH":          17,
+		"ENDS_WITH":            18,
+		"JSON_CONTAINS":        19,
+		"ARRAY_CONTAINS":       20,
+		"EXISTS":               21,
+	}
+)
+
+func (x Operator) Enum() *Operator {
+	p := new(Operator)
+	*p = x
+	return p
+}
+
+func (x Operator) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Operator) Descriptor() protoreflect.EnumDescriptor {
+	return file_pagination_v1_pagination_proto_enumTypes[0].Descriptor()
+}
+
+func (Operator) Type() protoreflect.EnumType {
+	return &file_pagination_v1_pagination_proto_enumTypes[0]
+}
+
+func (x Operator) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Operator.Descriptor instead.
+func (Operator) EnumDescriptor() ([]byte, []int) {
+	return file_pagination_v1_pagination_proto_rawDescGZIP(), []int{0}
+}
+
+// 过滤表达式类型
+type ExprType int32
+
+const (
+	ExprType_EXPR_TYPE_UNSPECIFIED ExprType = 0
+	ExprType_AND                   ExprType = 1
+	ExprType_OR                    ExprType = 2
+)
+
+// Enum value maps for ExprType.
+var (
+	ExprType_name = map[int32]string{
+		0: "EXPR_TYPE_UNSPECIFIED",
+		1: "AND",
+		2: "OR",
+	}
+	ExprType_value = map[string]int32{
+		"EXPR_TYPE_UNSPECIFIED": 0,
+		"AND":                   1,
+		"OR":                    2,
+	}
+)
+
+func (x ExprType) Enum() *ExprType {
+	p := new(ExprType)
+	*p = x
+	return p
+}
+
+func (x ExprType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ExprType) Descriptor() protoreflect.EnumDescriptor {
+	return file_pagination_v1_pagination_proto_enumTypes[1].Descriptor()
+}
+
+func (ExprType) Type() protoreflect.EnumType {
+	return &file_pagination_v1_pagination_proto_enumTypes[1]
+}
+
+func (x ExprType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ExprType.Descriptor instead.
+func (ExprType) EnumDescriptor() ([]byte, []int) {
+	return file_pagination_v1_pagination_proto_rawDescGZIP(), []int{1}
+}
+
+// 排序方向（ASC/DESC，默认ASC）
+type Sorting_Order int32
+
+const (
+	Sorting_ASC  Sorting_Order = 0
+	Sorting_DESC Sorting_Order = 1
+)
+
+// Enum value maps for Sorting_Order.
+var (
+	Sorting_Order_name = map[int32]string{
+		0: "ASC",
+		1: "DESC",
+	}
+	Sorting_Order_value = map[string]int32{
+		"ASC":  0,
+		"DESC": 1,
+	}
+)
+
+func (x Sorting_Order) Enum() *Sorting_Order {
+	p := new(Sorting_Order)
+	*p = x
+	return p
+}
+
+func (x Sorting_Order) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Sorting_Order) Descriptor() protoreflect.EnumDescriptor {
+	return file_pagination_v1_pagination_proto_enumTypes[2].Descriptor()
+}
+
+func (Sorting_Order) Type() protoreflect.EnumType {
+	return &file_pagination_v1_pagination_proto_enumTypes[2]
+}
+
+func (x Sorting_Order) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Sorting_Order.Descriptor instead.
+func (Sorting_Order) EnumDescriptor() ([]byte, []int) {
+	return file_pagination_v1_pagination_proto_rawDescGZIP(), []int{0, 0}
+}
+
+// 排序规则（分页场景通常需配合排序保证结果稳定）
+type Sorting struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 排序字段（如"id"、"create_time"）
+	Field         string        `protobuf:"bytes,1,opt,name=field,proto3" json:"field,omitempty"`
+	Order         Sorting_Order `protobuf:"varint,2,opt,name=order,proto3,enum=pagination.Sorting_Order" json:"order,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Sorting) Reset() {
+	*x = Sorting{}
+	mi := &file_pagination_v1_pagination_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Sorting) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Sorting) ProtoMessage() {}
+
+func (x *Sorting) ProtoReflect() protoreflect.Message {
+	mi := &file_pagination_v1_pagination_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Sorting.ProtoReflect.Descriptor instead.
+func (*Sorting) Descriptor() ([]byte, []int) {
+	return file_pagination_v1_pagination_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *Sorting) GetField() string {
+	if x != nil {
+		return x.Field
+	}
+	return ""
+}
+
+func (x *Sorting) GetOrder() Sorting_Order {
+	if x != nil {
+		return x.Order
+	}
+	return Sorting_ASC
+}
+
+// 单个条件
+type Condition struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Field         string                 `protobuf:"bytes,1,opt,name=field,proto3" json:"field,omitempty"`
+	Op            Operator               `protobuf:"varint,2,opt,name=op,proto3,enum=pagination.Operator" json:"op,omitempty"`
+	Value         string                 `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
+	Values        []string               `protobuf:"bytes,4,rep,name=values,proto3" json:"values,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Condition) Reset() {
+	*x = Condition{}
+	mi := &file_pagination_v1_pagination_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Condition) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Condition) ProtoMessage() {}
+
+func (x *Condition) ProtoReflect() protoreflect.Message {
+	mi := &file_pagination_v1_pagination_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Condition.ProtoReflect.Descriptor instead.
+func (*Condition) Descriptor() ([]byte, []int) {
+	return file_pagination_v1_pagination_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *Condition) GetField() string {
+	if x != nil {
+		return x.Field
+	}
+	return ""
+}
+
+func (x *Condition) GetOp() Operator {
+	if x != nil {
+		return x.Op
+	}
+	return Operator_OPERATOR_UNSPECIFIED
+}
+
+func (x *Condition) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
+func (x *Condition) GetValues() []string {
+	if x != nil {
+		return x.Values
+	}
+	return nil
+}
+
+// 过滤表达式
+type FilterExpr struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 过滤表达式类型
+	Type ExprType `protobuf:"varint,1,opt,name=type,proto3,enum=pagination.ExprType" json:"type,omitempty"`
+	// 条件列表
+	Conditions []*Condition `protobuf:"bytes,2,rep,name=conditions,proto3" json:"conditions,omitempty"`
+	// 子表达式列表
+	Groups        []*FilterExpr `protobuf:"bytes,3,rep,name=groups,proto3" json:"groups,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FilterExpr) Reset() {
+	*x = FilterExpr{}
+	mi := &file_pagination_v1_pagination_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FilterExpr) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FilterExpr) ProtoMessage() {}
+
+func (x *FilterExpr) ProtoReflect() protoreflect.Message {
+	mi := &file_pagination_v1_pagination_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FilterExpr.ProtoReflect.Descriptor instead.
+func (*FilterExpr) Descriptor() ([]byte, []int) {
+	return file_pagination_v1_pagination_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *FilterExpr) GetType() ExprType {
+	if x != nil {
+		return x.Type
+	}
+	return ExprType_EXPR_TYPE_UNSPECIFIED
+}
+
+func (x *FilterExpr) GetConditions() []*Condition {
+	if x != nil {
+		return x.Conditions
+	}
+	return nil
+}
+
+func (x *FilterExpr) GetGroups() []*FilterExpr {
+	if x != nil {
+		return x.Groups
+	}
+	return nil
+}
+
+// 页码-页大小分页（Page-PageSize）
+type PageBasedPagination struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 当前页码（从1开始，默认1）
+	Page uint32 `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	// 每页条数（默认10，建议设置上限如100）
+	PageSize      uint32 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PageBasedPagination) Reset() {
+	*x = PageBasedPagination{}
+	mi := &file_pagination_v1_pagination_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PageBasedPagination) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PageBasedPagination) ProtoMessage() {}
+
+func (x *PageBasedPagination) ProtoReflect() protoreflect.Message {
+	mi := &file_pagination_v1_pagination_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PageBasedPagination.ProtoReflect.Descriptor instead.
+func (*PageBasedPagination) Descriptor() ([]byte, []int) {
+	return file_pagination_v1_pagination_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *PageBasedPagination) GetPage() uint32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *PageBasedPagination) GetPageSize() uint32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+// 偏移量-限制分页（Offset-Limit）
+type OffsetBasedPagination struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 跳过的记录数（从0开始，默认0）
+	Offset uint64 `protobuf:"varint,1,opt,name=offset,proto3" json:"offset,omitempty"`
+	// 最多返回的记录数（默认10，建议设置上限如100）
+	Limit         uint32 `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *OffsetBasedPagination) Reset() {
+	*x = OffsetBasedPagination{}
+	mi := &file_pagination_v1_pagination_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OffsetBasedPagination) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OffsetBasedPagination) ProtoMessage() {}
+
+func (x *OffsetBasedPagination) ProtoReflect() protoreflect.Message {
+	mi := &file_pagination_v1_pagination_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OffsetBasedPagination.ProtoReflect.Descriptor instead.
+func (*OffsetBasedPagination) Descriptor() ([]byte, []int) {
+	return file_pagination_v1_pagination_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *OffsetBasedPagination) GetOffset() uint64 {
+	if x != nil {
+		return x.Offset
+	}
+	return 0
+}
+
+func (x *OffsetBasedPagination) GetLimit() uint32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+// 令牌分页（Token-Based）
+type TokenBasedPagination struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+	Token string `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	// 每页条数（默认10，建议设置上限如100）
+	PageSize      uint32 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TokenBasedPagination) Reset() {
+	*x = TokenBasedPagination{}
+	mi := &file_pagination_v1_pagination_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TokenBasedPagination) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TokenBasedPagination) ProtoMessage() {}
+
+func (x *TokenBasedPagination) ProtoReflect() protoreflect.Message {
+	mi := &file_pagination_v1_pagination_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TokenBasedPagination.ProtoReflect.Descriptor instead.
+func (*TokenBasedPagination) Descriptor() ([]byte, []int) {
+	return file_pagination_v1_pagination_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *TokenBasedPagination) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+func (x *TokenBasedPagination) GetPageSize() uint32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+// 不分页
+type NoPaging struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *NoPaging) Reset() {
+	*x = NoPaging{}
+	mi := &file_pagination_v1_pagination_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *NoPaging) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NoPaging) ProtoMessage() {}
+
+func (x *NoPaging) ProtoReflect() protoreflect.Message {
+	mi := &file_pagination_v1_pagination_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NoPaging.ProtoReflect.Descriptor instead.
+func (*NoPaging) Descriptor() ([]byte, []int) {
+	return file_pagination_v1_pagination_proto_rawDescGZIP(), []int{6}
+}
+
+// ------------------------------
 // 分页通用请求
+// ------------------------------
 type PagingRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// 当前页码
-	Page *int32 `protobuf:"varint,1,opt,name=page,proto3,oneof" json:"page,omitempty"`
-	// 每一页的行数
-	PageSize *int32 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3,oneof" json:"page_size,omitempty"`
-	// AND过滤参数，其语法为json格式的字符串，如：{"key1":"val1","key2":"val2"}，具体请参见：https://github.com/tx7do/go-utils/tree/main/entgo/query/README.md
-	Query *string `protobuf:"bytes,3,opt,name=query,proto3,oneof" json:"query,omitempty"`
-	// OR过滤参数，语法同AND过滤参数。
-	OrQuery *string `protobuf:"bytes,4,opt,name=or_query,json=or,proto3,oneof" json:"or_query,omitempty"`
+	// 当前页码（从1开始，默认1）
+	Page *uint32 `protobuf:"varint,1,opt,name=page,proto3,oneof" json:"page,omitempty"`
+	// 每页条数（默认10，建议设置上限如100）
+	PageSize *uint32 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3,oneof" json:"page_size,omitempty"`
+	// 跳过的记录数（从0开始，默认0）
+	Offset *uint64 `protobuf:"varint,3,opt,name=offset,proto3,oneof" json:"offset,omitempty"`
+	// 最多返回的记录数（默认10，建议设置上限如100）
+	Limit *uint32 `protobuf:"varint,4,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
+	// 上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）
+	Token *string `protobuf:"bytes,5,opt,name=token,proto3,oneof" json:"token,omitempty"`
 	// 排序条件，其语法为JSON字符串，例如：{"val1", "-val2"}。字段名前加'-'为降序，否则为升序。
-	OrderBy []string `protobuf:"bytes,5,rep,name=order_by,json=orderBy,proto3" json:"order_by,omitempty"`
-	// 是否不分页，如果为true，则page和pageSize参数无效。
-	NoPaging *bool `protobuf:"varint,6,opt,name=no_paging,json=noPaging,proto3,oneof" json:"no_paging,omitempty"`
+	OrderBy []string `protobuf:"bytes,10,rep,name=order_by,json=orderBy,proto3" json:"order_by,omitempty"`
+	// 排序规则（可选，建议必传以保证分页结果稳定）
+	Sorting []*Sorting `protobuf:"bytes,11,rep,name=sorting,proto3" json:"sorting,omitempty"`
+	// AND过滤参数，其语法为json格式的字符串，如：{"key1":"val1","key2":"val2"}，具体请参见：https://github.com/tx7do/go-utils/tree/main/entgo/query/README.md
+	Query *string `protobuf:"bytes,20,opt,name=query,proto3,oneof" json:"query,omitempty"`
+	// OR过滤参数，语法同AND过滤参数。
+	OrQuery *string `protobuf:"bytes,21,opt,name=or_query,json=or,proto3,oneof" json:"or_query,omitempty"`
+	// 复杂过滤表达式
+	FilterExpr *FilterExpr `protobuf:"bytes,22,opt,name=filter_expr,json=filterExpr,proto3,oneof" json:"filter_expr,omitempty"`
 	// 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
-	FieldMask     *fieldmaskpb.FieldMask `protobuf:"bytes,7,opt,name=field_mask,json=fieldMask,proto3,oneof" json:"field_mask,omitempty"`
-	TenantId      *uint32                `protobuf:"varint,8,opt,name=tenant_id,json=tenantId,proto3,oneof" json:"tenant_id,omitempty"` // 租户ID
+	FieldMask     *fieldmaskpb.FieldMask `protobuf:"bytes,30,opt,name=field_mask,json=fieldMask,proto3,oneof" json:"field_mask,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *PagingRequest) Reset() {
 	*x = PagingRequest{}
-	mi := &file_pagination_v1_pagination_proto_msgTypes[0]
+	mi := &file_pagination_v1_pagination_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -59,7 +671,7 @@ func (x *PagingRequest) String() string {
 func (*PagingRequest) ProtoMessage() {}
 
 func (x *PagingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pagination_v1_pagination_proto_msgTypes[0]
+	mi := &file_pagination_v1_pagination_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -72,21 +684,56 @@ func (x *PagingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PagingRequest.ProtoReflect.Descriptor instead.
 func (*PagingRequest) Descriptor() ([]byte, []int) {
-	return file_pagination_v1_pagination_proto_rawDescGZIP(), []int{0}
+	return file_pagination_v1_pagination_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *PagingRequest) GetPage() int32 {
+func (x *PagingRequest) GetPage() uint32 {
 	if x != nil && x.Page != nil {
 		return *x.Page
 	}
 	return 0
 }
 
-func (x *PagingRequest) GetPageSize() int32 {
+func (x *PagingRequest) GetPageSize() uint32 {
 	if x != nil && x.PageSize != nil {
 		return *x.PageSize
 	}
 	return 0
+}
+
+func (x *PagingRequest) GetOffset() uint64 {
+	if x != nil && x.Offset != nil {
+		return *x.Offset
+	}
+	return 0
+}
+
+func (x *PagingRequest) GetLimit() uint32 {
+	if x != nil && x.Limit != nil {
+		return *x.Limit
+	}
+	return 0
+}
+
+func (x *PagingRequest) GetToken() string {
+	if x != nil && x.Token != nil {
+		return *x.Token
+	}
+	return ""
+}
+
+func (x *PagingRequest) GetOrderBy() []string {
+	if x != nil {
+		return x.OrderBy
+	}
+	return nil
+}
+
+func (x *PagingRequest) GetSorting() []*Sorting {
+	if x != nil {
+		return x.Sorting
+	}
+	return nil
 }
 
 func (x *PagingRequest) GetQuery() string {
@@ -103,18 +750,11 @@ func (x *PagingRequest) GetOrQuery() string {
 	return ""
 }
 
-func (x *PagingRequest) GetOrderBy() []string {
+func (x *PagingRequest) GetFilterExpr() *FilterExpr {
 	if x != nil {
-		return x.OrderBy
+		return x.FilterExpr
 	}
 	return nil
-}
-
-func (x *PagingRequest) GetNoPaging() bool {
-	if x != nil && x.NoPaging != nil {
-		return *x.NoPaging
-	}
-	return false
 }
 
 func (x *PagingRequest) GetFieldMask() *fieldmaskpb.FieldMask {
@@ -124,18 +764,115 @@ func (x *PagingRequest) GetFieldMask() *fieldmaskpb.FieldMask {
 	return nil
 }
 
-func (x *PagingRequest) GetTenantId() uint32 {
-	if x != nil && x.TenantId != nil {
-		return *x.TenantId
+// ------------------------------
+// 分页响应元数据
+// ------------------------------
+type PaginationResponseMeta struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 总记录数（仅Page/Offset分页有效，Token分页通常不返回总数）
+	Total *wrapperspb.UInt64Value `protobuf:"bytes,1,opt,name=total,proto3,oneof" json:"total,omitempty"`
+	// 总页数（仅Page分页有效）
+	TotalPages *wrapperspb.UInt32Value `protobuf:"bytes,2,opt,name=total_pages,json=totalPages,proto3,oneof" json:"total_pages,omitempty"`
+	// 当前页码（仅Page分页有效）
+	CurrentPage *wrapperspb.UInt32Value `protobuf:"bytes,3,opt,name=current_page,json=currentPage,proto3,oneof" json:"current_page,omitempty"`
+	// 当前偏移量（仅Offset分页有效）
+	CurrentOffset *wrapperspb.UInt64Value `protobuf:"bytes,4,opt,name=current_offset,json=currentOffset,proto3,oneof" json:"current_offset,omitempty"`
+	// 下一页令牌（仅Token分页有效，无更多数据时为空）
+	NextToken *string `protobuf:"bytes,5,opt,name=next_token,proto3,oneof" json:"next_token,omitempty"`
+	// 每页实际条数
+	PageSize *uint32 `protobuf:"varint,6,opt,name=page_size,json=pageSize,proto3,oneof" json:"page_size,omitempty"`
+	// 当前页实际返回条数
+	CurrentSize   *uint32 `protobuf:"varint,7,opt,name=current_size,json=currentSize,proto3,oneof" json:"current_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PaginationResponseMeta) Reset() {
+	*x = PaginationResponseMeta{}
+	mi := &file_pagination_v1_pagination_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PaginationResponseMeta) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PaginationResponseMeta) ProtoMessage() {}
+
+func (x *PaginationResponseMeta) ProtoReflect() protoreflect.Message {
+	mi := &file_pagination_v1_pagination_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PaginationResponseMeta.ProtoReflect.Descriptor instead.
+func (*PaginationResponseMeta) Descriptor() ([]byte, []int) {
+	return file_pagination_v1_pagination_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *PaginationResponseMeta) GetTotal() *wrapperspb.UInt64Value {
+	if x != nil {
+		return x.Total
+	}
+	return nil
+}
+
+func (x *PaginationResponseMeta) GetTotalPages() *wrapperspb.UInt32Value {
+	if x != nil {
+		return x.TotalPages
+	}
+	return nil
+}
+
+func (x *PaginationResponseMeta) GetCurrentPage() *wrapperspb.UInt32Value {
+	if x != nil {
+		return x.CurrentPage
+	}
+	return nil
+}
+
+func (x *PaginationResponseMeta) GetCurrentOffset() *wrapperspb.UInt64Value {
+	if x != nil {
+		return x.CurrentOffset
+	}
+	return nil
+}
+
+func (x *PaginationResponseMeta) GetNextToken() string {
+	if x != nil && x.NextToken != nil {
+		return *x.NextToken
+	}
+	return ""
+}
+
+func (x *PaginationResponseMeta) GetPageSize() uint32 {
+	if x != nil && x.PageSize != nil {
+		return *x.PageSize
 	}
 	return 0
 }
 
+func (x *PaginationResponseMeta) GetCurrentSize() uint32 {
+	if x != nil && x.CurrentSize != nil {
+		return *x.CurrentSize
+	}
+	return 0
+}
+
+// ------------------------------
 // 分页通用结果
+// ------------------------------
 type PagingResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// 总数
-	Total int32 `protobuf:"varint,1,opt,name=total,proto3" json:"total,omitempty"`
+	// 总记录数
+	Total *wrapperspb.UInt64Value `protobuf:"bytes,1,opt,name=total,proto3,oneof" json:"total,omitempty"`
 	// 分页数据
 	Items         [][]byte `protobuf:"bytes,2,rep,name=items,proto3" json:"items,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -144,7 +881,7 @@ type PagingResponse struct {
 
 func (x *PagingResponse) Reset() {
 	*x = PagingResponse{}
-	mi := &file_pagination_v1_pagination_proto_msgTypes[1]
+	mi := &file_pagination_v1_pagination_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -156,7 +893,7 @@ func (x *PagingResponse) String() string {
 func (*PagingResponse) ProtoMessage() {}
 
 func (x *PagingResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pagination_v1_pagination_proto_msgTypes[1]
+	mi := &file_pagination_v1_pagination_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -169,14 +906,14 @@ func (x *PagingResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PagingResponse.ProtoReflect.Descriptor instead.
 func (*PagingResponse) Descriptor() ([]byte, []int) {
-	return file_pagination_v1_pagination_proto_rawDescGZIP(), []int{1}
+	return file_pagination_v1_pagination_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *PagingResponse) GetTotal() int32 {
+func (x *PagingResponse) GetTotal() *wrapperspb.UInt64Value {
 	if x != nil {
 		return x.Total
 	}
-	return 0
+	return nil
 }
 
 func (x *PagingResponse) GetItems() [][]byte {
@@ -186,35 +923,386 @@ func (x *PagingResponse) GetItems() [][]byte {
 	return nil
 }
 
+// ------------------------------
+// 通用分页请求
+// ------------------------------
+type PaginationRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 分页类型（三种方式互斥，必须选其一）
+	//
+	// Types that are valid to be assigned to PaginationType:
+	//
+	//	*PaginationRequest_PageBased
+	//	*PaginationRequest_OffsetBased
+	//	*PaginationRequest_TokenBased
+	//	*PaginationRequest_NoPaging
+	PaginationType isPaginationRequest_PaginationType `protobuf_oneof:"pagination_type"`
+	// 排序条件，其语法为JSON字符串，例如：{"val1", "-val2"}。字段名前加'-'为降序，否则为升序。
+	//
+	// Deprecated: Marked as deprecated in pagination/v1/pagination.proto.
+	OrderBy []string `protobuf:"bytes,10,rep,name=order_by,json=orderBy,proto3" json:"order_by,omitempty"`
+	// 排序规则（可选，建议必传以保证分页结果稳定）
+	Sorting []*Sorting `protobuf:"bytes,11,rep,name=sorting,proto3" json:"sorting,omitempty"`
+	// AND过滤参数，其语法为json格式的字符串，如：{"key1":"val1","key2":"val2"}，具体请参见：https://github.com/tx7do/go-utils/tree/main/entgo/query/README.md
+	//
+	// Deprecated: Marked as deprecated in pagination/v1/pagination.proto.
+	Query *string `protobuf:"bytes,20,opt,name=query,proto3,oneof" json:"query,omitempty"`
+	// OR过滤参数，语法同AND过滤参数。
+	//
+	// Deprecated: Marked as deprecated in pagination/v1/pagination.proto.
+	OrQuery *string `protobuf:"bytes,21,opt,name=or_query,json=or,proto3,oneof" json:"or_query,omitempty"`
+	// 复杂过滤表达式（优先使用）
+	FilterExpr *FilterExpr `protobuf:"bytes,22,opt,name=filter_expr,json=filterExpr,proto3,oneof" json:"filter_expr,omitempty"`
+	// 字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。
+	FieldMask     *fieldmaskpb.FieldMask `protobuf:"bytes,30,opt,name=field_mask,json=fieldMask,proto3,oneof" json:"field_mask,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PaginationRequest) Reset() {
+	*x = PaginationRequest{}
+	mi := &file_pagination_v1_pagination_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PaginationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PaginationRequest) ProtoMessage() {}
+
+func (x *PaginationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_pagination_v1_pagination_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PaginationRequest.ProtoReflect.Descriptor instead.
+func (*PaginationRequest) Descriptor() ([]byte, []int) {
+	return file_pagination_v1_pagination_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *PaginationRequest) GetPaginationType() isPaginationRequest_PaginationType {
+	if x != nil {
+		return x.PaginationType
+	}
+	return nil
+}
+
+func (x *PaginationRequest) GetPageBased() *PageBasedPagination {
+	if x != nil {
+		if x, ok := x.PaginationType.(*PaginationRequest_PageBased); ok {
+			return x.PageBased
+		}
+	}
+	return nil
+}
+
+func (x *PaginationRequest) GetOffsetBased() *OffsetBasedPagination {
+	if x != nil {
+		if x, ok := x.PaginationType.(*PaginationRequest_OffsetBased); ok {
+			return x.OffsetBased
+		}
+	}
+	return nil
+}
+
+func (x *PaginationRequest) GetTokenBased() *TokenBasedPagination {
+	if x != nil {
+		if x, ok := x.PaginationType.(*PaginationRequest_TokenBased); ok {
+			return x.TokenBased
+		}
+	}
+	return nil
+}
+
+func (x *PaginationRequest) GetNoPaging() *NoPaging {
+	if x != nil {
+		if x, ok := x.PaginationType.(*PaginationRequest_NoPaging); ok {
+			return x.NoPaging
+		}
+	}
+	return nil
+}
+
+// Deprecated: Marked as deprecated in pagination/v1/pagination.proto.
+func (x *PaginationRequest) GetOrderBy() []string {
+	if x != nil {
+		return x.OrderBy
+	}
+	return nil
+}
+
+func (x *PaginationRequest) GetSorting() []*Sorting {
+	if x != nil {
+		return x.Sorting
+	}
+	return nil
+}
+
+// Deprecated: Marked as deprecated in pagination/v1/pagination.proto.
+func (x *PaginationRequest) GetQuery() string {
+	if x != nil && x.Query != nil {
+		return *x.Query
+	}
+	return ""
+}
+
+// Deprecated: Marked as deprecated in pagination/v1/pagination.proto.
+func (x *PaginationRequest) GetOrQuery() string {
+	if x != nil && x.OrQuery != nil {
+		return *x.OrQuery
+	}
+	return ""
+}
+
+func (x *PaginationRequest) GetFilterExpr() *FilterExpr {
+	if x != nil {
+		return x.FilterExpr
+	}
+	return nil
+}
+
+func (x *PaginationRequest) GetFieldMask() *fieldmaskpb.FieldMask {
+	if x != nil {
+		return x.FieldMask
+	}
+	return nil
+}
+
+type isPaginationRequest_PaginationType interface {
+	isPaginationRequest_PaginationType()
+}
+
+type PaginationRequest_PageBased struct {
+	// 基于页码的分页方式
+	PageBased *PageBasedPagination `protobuf:"bytes,1,opt,name=page_based,json=pageBased,proto3,oneof"`
+}
+
+type PaginationRequest_OffsetBased struct {
+	// 基于偏移量的分页方式
+	OffsetBased *OffsetBasedPagination `protobuf:"bytes,2,opt,name=offset_based,json=offsetBased,proto3,oneof"`
+}
+
+type PaginationRequest_TokenBased struct {
+	// 基于令牌的分页方式
+	TokenBased *TokenBasedPagination `protobuf:"bytes,3,opt,name=token_based,json=tokenBased,proto3,oneof"`
+}
+
+type PaginationRequest_NoPaging struct {
+	// 不分页
+	NoPaging *NoPaging `protobuf:"bytes,4,opt,name=no_paging,json=noPaging,proto3,oneof"`
+}
+
+func (*PaginationRequest_PageBased) isPaginationRequest_PaginationType() {}
+
+func (*PaginationRequest_OffsetBased) isPaginationRequest_PaginationType() {}
+
+func (*PaginationRequest_TokenBased) isPaginationRequest_PaginationType() {}
+
+func (*PaginationRequest_NoPaging) isPaginationRequest_PaginationType() {}
+
+// ------------------------------
+// 通用分页响应
+// ------------------------------
+type PaginationResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 分页元数据
+	Meta *PaginationResponseMeta `protobuf:"bytes,2,opt,name=meta,proto3" json:"meta,omitempty"`
+	// 业务数据列表（示例用Any，实际业务需替换为具体message，如repeated User users = 1）
+	Data          []*anypb.Any `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PaginationResponse) Reset() {
+	*x = PaginationResponse{}
+	mi := &file_pagination_v1_pagination_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PaginationResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PaginationResponse) ProtoMessage() {}
+
+func (x *PaginationResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_pagination_v1_pagination_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PaginationResponse.ProtoReflect.Descriptor instead.
+func (*PaginationResponse) Descriptor() ([]byte, []int) {
+	return file_pagination_v1_pagination_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *PaginationResponse) GetMeta() *PaginationResponseMeta {
+	if x != nil {
+		return x.Meta
+	}
+	return nil
+}
+
+func (x *PaginationResponse) GetData() []*anypb.Any {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
 var File_pagination_v1_pagination_proto protoreflect.FileDescriptor
 
 const file_pagination_v1_pagination_proto_rawDesc = "" +
 	"\n" +
 	"\x1epagination/v1/pagination.proto\x12\n" +
-	"pagination\x1a google/protobuf/field_mask.proto\x1a$gnostic/openapi/v3/annotations.proto\"\x95\t\n" +
-	"\rPagingRequest\x127\n" +
-	"\x04page\x18\x01 \x01(\x05B\x1e\xbaG\x1b\x8a\x02\t\t\x00\x00\x00\x00\x00\x00\xf0?\x92\x02\f当前页码H\x00R\x04page\x88\x01\x01\x12F\n" +
-	"\tpage_size\x18\x02 \x01(\x05B$\xbaG!\x8a\x02\t\t\x00\x00\x00\x00\x00\x00$@\x92\x02\x12每一页的行数H\x01R\bpageSize\x88\x01\x01\x12\xf5\x01\n" +
-	"\x05query\x18\x03 \x01(\tB\xd9\x01\xbaG\xd5\x01:\x1f\x12\x1d{\"key1\":\"val1\",\"key2\":\"val2\"}\x92\x02\xb0\x01AND过滤参数，其语法为json格式的字符串，如：{\"key1\":\"val1\",\"key2\":\"val2\"}，具体请参见：https://github.com/tx7do/go-utils/tree/main/entgo/query/README.mdH\x02R\x05query\x88\x01\x01\x12P\n" +
-	"\bor_query\x18\x04 \x01(\tB5\xbaG2:\x1f\x12\x1d{\"key1\":\"val1\",\"key2\":\"val2\"}\x92\x02\x0eOR过滤参数H\x03R\x02or\x88\x01\x01\x12\xb0\x01\n" +
-	"\border_by\x18\x05 \x03(\tB\x94\x01\xbaG\x90\x01:\x13\x12\x11{\"val1\", \"-val2\"}\x92\x02x排序条件，其语法为JSON字符串，例如：{\"val1\", \"-val2\"}。字段名前加'-'为降序，否则为升序。R\aorderBy\x12k\n" +
-	"\tno_paging\x18\x06 \x01(\bBI\xbaGF\x92\x02C是否不分页，如果为true，则page和pageSize参数无效。H\x04R\bnoPaging\x88\x01\x01\x12\x8d\x02\n" +
+	"pagination\x1a google/protobuf/field_mask.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x19google/protobuf/any.proto\x1a$gnostic/openapi/v3/annotations.proto\"l\n" +
+	"\aSorting\x12\x14\n" +
+	"\x05field\x18\x01 \x01(\tR\x05field\x12/\n" +
+	"\x05order\x18\x02 \x01(\x0e2\x19.pagination.Sorting.OrderR\x05order\"\x1a\n" +
+	"\x05Order\x12\a\n" +
+	"\x03ASC\x10\x00\x12\b\n" +
+	"\x04DESC\x10\x01\"u\n" +
+	"\tCondition\x12\x14\n" +
+	"\x05field\x18\x01 \x01(\tR\x05field\x12$\n" +
+	"\x02op\x18\x02 \x01(\x0e2\x14.pagination.OperatorR\x02op\x12\x14\n" +
+	"\x05value\x18\x03 \x01(\tR\x05value\x12\x16\n" +
+	"\x06values\x18\x04 \x03(\tR\x06values\"\x9d\x01\n" +
 	"\n" +
-	"field_mask\x18\a \x01(\v2\x1a.google.protobuf.FieldMaskB\xcc\x01\xbaG\xc8\x01:\x16\x12\x14id,realName,userName\x92\x02\xac\x01字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。H\x05R\tfieldMask\x88\x01\x01\x120\n" +
-	"\ttenant_id\x18\b \x01(\rB\x0e\xbaG\v\x92\x02\b租户IDH\x06R\btenantId\x88\x01\x01B\a\n" +
+	"FilterExpr\x12(\n" +
+	"\x04type\x18\x01 \x01(\x0e2\x14.pagination.ExprTypeR\x04type\x125\n" +
+	"\n" +
+	"conditions\x18\x02 \x03(\v2\x15.pagination.ConditionR\n" +
+	"conditions\x12.\n" +
+	"\x06groups\x18\x03 \x03(\v2\x16.pagination.FilterExprR\x06groups\"\xa6\x01\n" +
+	"\x13PageBasedPagination\x12L\n" +
+	"\x04page\x18\x01 \x01(\rB8\xbaG5\x8a\x02\t\t\x00\x00\x00\x00\x00\x00\xf0?\x92\x02&当前页码（从1开始，默认1）R\x04page\x12A\n" +
+	"\tpage_size\x18\x02 \x01(\rB$\xbaG!\x8a\x02\t\t\x00\x00\x00\x00\x00\x00$@\x92\x02\x12每一页的行数R\bpageSize\"\xda\x01\n" +
+	"\x15OffsetBasedPagination\x12V\n" +
+	"\x06offset\x18\x01 \x01(\x04B>\xbaG;\x8a\x02\t\t\x00\x00\x00\x00\x00\x00\x00\x00\x92\x02,跳过的记录数（从0开始，默认0）R\x06offset\x12i\n" +
+	"\x05limit\x18\x02 \x01(\rBS\xbaGP\x8a\x02\t\t\x00\x00\x00\x00\x00\x00$@\x92\x02A最多返回的记录数（默认10，建议设置上限如100）R\x05limit\"\xeb\x01\n" +
+	"\x14TokenBasedPagination\x12m\n" +
+	"\x05token\x18\x01 \x01(\tBW\xbaGT\x92\x02Q上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）R\x05token\x12d\n" +
+	"\tpage_size\x18\x02 \x01(\rBG\xbaGD\x8a\x02\t\t\x00\x00\x00\x00\x00\x00$@\x92\x025每页条数（默认10，建议设置上限如100）R\bpageSize\"\n" +
+	"\n" +
+	"\bNoPaging\"\xdb\f\n" +
+	"\rPagingRequest\x12Q\n" +
+	"\x04page\x18\x01 \x01(\rB8\xbaG5\x8a\x02\t\t\x00\x00\x00\x00\x00\x00\xf0?\x92\x02&当前页码（从1开始，默认1）H\x00R\x04page\x88\x01\x01\x12i\n" +
+	"\tpage_size\x18\x02 \x01(\rBG\xbaGD\x8a\x02\t\t\x00\x00\x00\x00\x00\x00$@\x92\x025每页条数（默认10，建议设置上限如100）H\x01R\bpageSize\x88\x01\x01\x12[\n" +
+	"\x06offset\x18\x03 \x01(\x04B>\xbaG;\x8a\x02\t\t\x00\x00\x00\x00\x00\x00\x00\x00\x92\x02,跳过的记录数（从0开始，默认0）H\x02R\x06offset\x88\x01\x01\x12n\n" +
+	"\x05limit\x18\x04 \x01(\rBS\xbaGP\x8a\x02\t\t\x00\x00\x00\x00\x00\x00$@\x92\x02A最多返回的记录数（默认10，建议设置上限如100）H\x03R\x05limit\x88\x01\x01\x12r\n" +
+	"\x05token\x18\x05 \x01(\tBW\xbaGT\x92\x02Q上一页最后一条记录的游标（如ID/时间戳+ID，首次请求为空）H\x04R\x05token\x88\x01\x01\x12\xb0\x01\n" +
+	"\border_by\x18\n" +
+	" \x03(\tB\x94\x01\xbaG\x90\x01:\x13\x12\x11{\"val1\", \"-val2\"}\x92\x02x排序条件，其语法为JSON字符串，例如：{\"val1\", \"-val2\"}。字段名前加'-'为降序，否则为升序。R\aorderBy\x12w\n" +
+	"\asorting\x18\v \x03(\v2\x13.pagination.SortingBH\xbaGE\x92\x02B排序规则（可选，建议必传以保证分页结果稳定）R\asorting\x12\xf5\x01\n" +
+	"\x05query\x18\x14 \x01(\tB\xd9\x01\xbaG\xd5\x01:\x1f\x12\x1d{\"key1\":\"val1\",\"key2\":\"val2\"}\x92\x02\xb0\x01AND过滤参数，其语法为json格式的字符串，如：{\"key1\":\"val1\",\"key2\":\"val2\"}，具体请参见：https://github.com/tx7do/go-utils/tree/main/entgo/query/README.mdH\x05R\x05query\x88\x01\x01\x12P\n" +
+	"\bor_query\x18\x15 \x01(\tB5\xbaG2:\x1f\x12\x1d{\"key1\":\"val1\",\"key2\":\"val2\"}\x92\x02\x0eOR过滤参数H\x06R\x02or\x88\x01\x01\x12Y\n" +
+	"\vfilter_expr\x18\x16 \x01(\v2\x16.pagination.FilterExprB\x1b\xbaG\x18\x92\x02\x15复杂过滤表达式H\aR\n" +
+	"filterExpr\x88\x01\x01\x12\x8d\x02\n" +
+	"\n" +
+	"field_mask\x18\x1e \x01(\v2\x1a.google.protobuf.FieldMaskB\xcc\x01\xbaG\xc8\x01:\x16\x12\x14id,realName,userName\x92\x02\xac\x01字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。H\bR\tfieldMask\x88\x01\x01B\a\n" +
 	"\x05_pageB\f\n" +
 	"\n" +
-	"_page_sizeB\b\n" +
+	"_page_sizeB\t\n" +
+	"\a_offsetB\b\n" +
+	"\x06_limitB\b\n" +
+	"\x06_tokenB\b\n" +
 	"\x06_queryB\v\n" +
-	"\t_or_queryB\f\n" +
+	"\t_or_queryB\x0e\n" +
+	"\f_filter_exprB\r\n" +
+	"\v_field_mask\"\xea\x06\n" +
+	"\x16PaginationResponseMeta\x12\x8e\x01\n" +
+	"\x05total\x18\x01 \x01(\v2\x1c.google.protobuf.UInt64ValueBU\xbaGR\x92\x02O总记录数（仅Page/Offset分页有效，Token分页通常不返回总数）H\x00R\x05total\x88\x01\x01\x12l\n" +
+	"\vtotal_pages\x18\x02 \x01(\v2\x1c.google.protobuf.UInt32ValueB(\xbaG%\x92\x02\"总页数（仅Page分页有效）H\x01R\n" +
+	"totalPages\x88\x01\x01\x12q\n" +
+	"\fcurrent_page\x18\x03 \x01(\v2\x1c.google.protobuf.UInt32ValueB+\xbaG(\x92\x02%当前页码（仅Page分页有效）H\x02R\vcurrentPage\x88\x01\x01\x12z\n" +
+	"\x0ecurrent_offset\x18\x04 \x01(\v2\x1c.google.protobuf.UInt64ValueB0\xbaG-\x92\x02*当前偏移量（仅Offset分页有效）H\x03R\rcurrentOffset\x88\x01\x01\x12o\n" +
 	"\n" +
-	"_no_pagingB\r\n" +
-	"\v_field_maskB\f\n" +
+	"next_token\x18\x05 \x01(\tBJ\xbaGG\x92\x02D下一页令牌（仅Token分页有效，无更多数据时为空）H\x04R\n" +
+	"next_token\x88\x01\x01\x12:\n" +
+	"\tpage_size\x18\x06 \x01(\rB\x18\xbaG\x15\x92\x02\x12每页实际条数H\x05R\bpageSize\x88\x01\x01\x12I\n" +
+	"\fcurrent_size\x18\a \x01(\rB!\xbaG\x1e\x92\x02\x1b当前页实际返回条数H\x06R\vcurrentSize\x88\x01\x01B\b\n" +
+	"\x06_totalB\x0e\n" +
+	"\f_total_pagesB\x0f\n" +
+	"\r_current_pageB\x11\n" +
+	"\x0f_current_offsetB\r\n" +
+	"\v_next_tokenB\f\n" +
 	"\n" +
-	"_tenant_id\"<\n" +
-	"\x0ePagingResponse\x12\x14\n" +
-	"\x05total\x18\x01 \x01(\x05R\x05total\x12\x14\n" +
-	"\x05items\x18\x02 \x03(\fR\x05itemsB\xa5\x01\n" +
+	"_page_sizeB\x0f\n" +
+	"\r_current_size\"\xc1\x01\n" +
+	"\x0ePagingResponse\x12\x8e\x01\n" +
+	"\x05total\x18\x01 \x01(\v2\x1c.google.protobuf.UInt64ValueBU\xbaGR\x92\x02O总记录数（仅Page/Offset分页有效，Token分页通常不返回总数）H\x00R\x05total\x88\x01\x01\x12\x14\n" +
+	"\x05items\x18\x02 \x03(\fR\x05itemsB\b\n" +
+	"\x06_total\"\xac\f\n" +
+	"\x11PaginationRequest\x12c\n" +
+	"\n" +
+	"page_based\x18\x01 \x01(\v2\x1f.pagination.PageBasedPaginationB!\xbaG\x1e\x92\x02\x1b基于页码的分页方式H\x00R\tpageBased\x12l\n" +
+	"\foffset_based\x18\x02 \x01(\v2!.pagination.OffsetBasedPaginationB$\xbaG!\x92\x02\x1e基于偏移量的分页方式H\x00R\voffsetBased\x12f\n" +
+	"\vtoken_based\x18\x03 \x01(\v2 .pagination.TokenBasedPaginationB!\xbaG\x1e\x92\x02\x1b基于令牌的分页方式H\x00R\n" +
+	"tokenBased\x12D\n" +
+	"\tno_paging\x18\x04 \x01(\v2\x14.pagination.NoPagingB\x0f\xbaG\f\x92\x02\t不分页H\x00R\bnoPaging\x12\xb2\x01\n" +
+	"\border_by\x18\n" +
+	" \x03(\tB\x96\x01\xbaG\x90\x01:\x13\x12\x11{\"val1\", \"-val2\"}\x92\x02x排序条件，其语法为JSON字符串，例如：{\"val1\", \"-val2\"}。字段名前加'-'为降序，否则为升序。\x18\x01R\aorderBy\x12w\n" +
+	"\asorting\x18\v \x03(\v2\x13.pagination.SortingBH\xbaGE\x92\x02B排序规则（可选，建议必传以保证分页结果稳定）R\asorting\x12\xf7\x01\n" +
+	"\x05query\x18\x14 \x01(\tB\xdb\x01\xbaG\xd5\x01:\x1f\x12\x1d{\"key1\":\"val1\",\"key2\":\"val2\"}\x92\x02\xb0\x01AND过滤参数，其语法为json格式的字符串，如：{\"key1\":\"val1\",\"key2\":\"val2\"}，具体请参见：https://github.com/tx7do/go-utils/tree/main/entgo/query/README.md\x18\x01H\x01R\x05query\x88\x01\x01\x12R\n" +
+	"\bor_query\x18\x15 \x01(\tB7\xbaG2:\x1f\x12\x1d{\"key1\":\"val1\",\"key2\":\"val2\"}\x92\x02\x0eOR过滤参数\x18\x01H\x02R\x02or\x88\x01\x01\x12\xc0\x01\n" +
+	"\vfilter_expr\x18\x16 \x01(\v2\x16.pagination.FilterExprB\x81\x01\xbaG~\x92\x02{复杂过滤表达式，优先于已弃用的 query/or_query。服务端应以此为准并执行严格校验与参数化。H\x03R\n" +
+	"filterExpr\x88\x01\x01\x12\x8d\x02\n" +
+	"\n" +
+	"field_mask\x18\x1e \x01(\v2\x1a.google.protobuf.FieldMaskB\xcc\x01\xbaG\xc8\x01:\x16\x12\x14id,realName,userName\x92\x02\xac\x01字段掩码，其作用为SELECT中的字段，其语法为使用逗号分隔字段名，例如：id,realName,userName。如果为空则选中所有字段，即SELECT *。H\x04R\tfieldMask\x88\x01\x01B\x11\n" +
+	"\x0fpagination_typeB\b\n" +
+	"\x06_queryB\v\n" +
+	"\t_or_queryB\x0e\n" +
+	"\f_filter_exprB\r\n" +
+	"\v_field_mask\"v\n" +
+	"\x12PaginationResponse\x126\n" +
+	"\x04meta\x18\x02 \x01(\v2\".pagination.PaginationResponseMetaR\x04meta\x12(\n" +
+	"\x04data\x18\x01 \x03(\v2\x14.google.protobuf.AnyR\x04data*\xa3\x02\n" +
+	"\bOperator\x12\x18\n" +
+	"\x14OPERATOR_UNSPECIFIED\x10\x00\x12\x06\n" +
+	"\x02EQ\x10\x01\x12\a\n" +
+	"\x03NEQ\x10\x02\x12\x06\n" +
+	"\x02GT\x10\x03\x12\a\n" +
+	"\x03GTE\x10\x04\x12\x06\n" +
+	"\x02LT\x10\x05\x12\a\n" +
+	"\x03LTE\x10\x06\x12\b\n" +
+	"\x04LIKE\x10\a\x12\t\n" +
+	"\x05ILIKE\x10\b\x12\f\n" +
+	"\bNOT_LIKE\x10\t\x12\x06\n" +
+	"\x02IN\x10\n" +
+	"\x12\a\n" +
+	"\x03NIN\x10\v\x12\v\n" +
+	"\aIS_NULL\x10\f\x12\x0f\n" +
+	"\vIS_NOT_NULL\x10\r\x12\v\n" +
+	"\aBETWEEN\x10\x0e\x12\n" +
+	"\n" +
+	"\x06REGEXP\x10\x0f\x12\f\n" +
+	"\bCONTAINS\x10\x10\x12\x0f\n" +
+	"\vSTARTS_WITH\x10\x11\x12\r\n" +
+	"\tENDS_WITH\x10\x12\x12\x11\n" +
+	"\rJSON_CONTAINS\x10\x13\x12\x12\n" +
+	"\x0eARRAY_CONTAINS\x10\x14\x12\n" +
+	"\n" +
+	"\x06EXISTS\x10\x15*6\n" +
+	"\bExprType\x12\x19\n" +
+	"\x15EXPR_TYPE_UNSPECIFIED\x10\x00\x12\a\n" +
+	"\x03AND\x10\x01\x12\x06\n" +
+	"\x02OR\x10\x02B\xa5\x01\n" +
 	"\x0ecom.paginationB\x0fPaginationProtoP\x01Z:github.com/tx7do/kratos-bootstrap/api/gen/go/pagination/v1\xa2\x02\x03PXX\xaa\x02\n" +
 	"Pagination\xca\x02\n" +
 	"Pagination\xe2\x02\x16Pagination\\GPBMetadata\xea\x02\n" +
@@ -232,19 +1320,57 @@ func file_pagination_v1_pagination_proto_rawDescGZIP() []byte {
 	return file_pagination_v1_pagination_proto_rawDescData
 }
 
-var file_pagination_v1_pagination_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_pagination_v1_pagination_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_pagination_v1_pagination_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_pagination_v1_pagination_proto_goTypes = []any{
-	(*PagingRequest)(nil),         // 0: pagination.PagingRequest
-	(*PagingResponse)(nil),        // 1: pagination.PagingResponse
-	(*fieldmaskpb.FieldMask)(nil), // 2: google.protobuf.FieldMask
+	(Operator)(0),                  // 0: pagination.Operator
+	(ExprType)(0),                  // 1: pagination.ExprType
+	(Sorting_Order)(0),             // 2: pagination.Sorting.Order
+	(*Sorting)(nil),                // 3: pagination.Sorting
+	(*Condition)(nil),              // 4: pagination.Condition
+	(*FilterExpr)(nil),             // 5: pagination.FilterExpr
+	(*PageBasedPagination)(nil),    // 6: pagination.PageBasedPagination
+	(*OffsetBasedPagination)(nil),  // 7: pagination.OffsetBasedPagination
+	(*TokenBasedPagination)(nil),   // 8: pagination.TokenBasedPagination
+	(*NoPaging)(nil),               // 9: pagination.NoPaging
+	(*PagingRequest)(nil),          // 10: pagination.PagingRequest
+	(*PaginationResponseMeta)(nil), // 11: pagination.PaginationResponseMeta
+	(*PagingResponse)(nil),         // 12: pagination.PagingResponse
+	(*PaginationRequest)(nil),      // 13: pagination.PaginationRequest
+	(*PaginationResponse)(nil),     // 14: pagination.PaginationResponse
+	(*fieldmaskpb.FieldMask)(nil),  // 15: google.protobuf.FieldMask
+	(*wrapperspb.UInt64Value)(nil), // 16: google.protobuf.UInt64Value
+	(*wrapperspb.UInt32Value)(nil), // 17: google.protobuf.UInt32Value
+	(*anypb.Any)(nil),              // 18: google.protobuf.Any
 }
 var file_pagination_v1_pagination_proto_depIdxs = []int32{
-	2, // 0: pagination.PagingRequest.field_mask:type_name -> google.protobuf.FieldMask
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2,  // 0: pagination.Sorting.order:type_name -> pagination.Sorting.Order
+	0,  // 1: pagination.Condition.op:type_name -> pagination.Operator
+	1,  // 2: pagination.FilterExpr.type:type_name -> pagination.ExprType
+	4,  // 3: pagination.FilterExpr.conditions:type_name -> pagination.Condition
+	5,  // 4: pagination.FilterExpr.groups:type_name -> pagination.FilterExpr
+	3,  // 5: pagination.PagingRequest.sorting:type_name -> pagination.Sorting
+	5,  // 6: pagination.PagingRequest.filter_expr:type_name -> pagination.FilterExpr
+	15, // 7: pagination.PagingRequest.field_mask:type_name -> google.protobuf.FieldMask
+	16, // 8: pagination.PaginationResponseMeta.total:type_name -> google.protobuf.UInt64Value
+	17, // 9: pagination.PaginationResponseMeta.total_pages:type_name -> google.protobuf.UInt32Value
+	17, // 10: pagination.PaginationResponseMeta.current_page:type_name -> google.protobuf.UInt32Value
+	16, // 11: pagination.PaginationResponseMeta.current_offset:type_name -> google.protobuf.UInt64Value
+	16, // 12: pagination.PagingResponse.total:type_name -> google.protobuf.UInt64Value
+	6,  // 13: pagination.PaginationRequest.page_based:type_name -> pagination.PageBasedPagination
+	7,  // 14: pagination.PaginationRequest.offset_based:type_name -> pagination.OffsetBasedPagination
+	8,  // 15: pagination.PaginationRequest.token_based:type_name -> pagination.TokenBasedPagination
+	9,  // 16: pagination.PaginationRequest.no_paging:type_name -> pagination.NoPaging
+	3,  // 17: pagination.PaginationRequest.sorting:type_name -> pagination.Sorting
+	5,  // 18: pagination.PaginationRequest.filter_expr:type_name -> pagination.FilterExpr
+	15, // 19: pagination.PaginationRequest.field_mask:type_name -> google.protobuf.FieldMask
+	11, // 20: pagination.PaginationResponse.meta:type_name -> pagination.PaginationResponseMeta
+	18, // 21: pagination.PaginationResponse.data:type_name -> google.protobuf.Any
+	22, // [22:22] is the sub-list for method output_type
+	22, // [22:22] is the sub-list for method input_type
+	22, // [22:22] is the sub-list for extension type_name
+	22, // [22:22] is the sub-list for extension extendee
+	0,  // [0:22] is the sub-list for field type_name
 }
 
 func init() { file_pagination_v1_pagination_proto_init() }
@@ -252,19 +1378,28 @@ func file_pagination_v1_pagination_proto_init() {
 	if File_pagination_v1_pagination_proto != nil {
 		return
 	}
-	file_pagination_v1_pagination_proto_msgTypes[0].OneofWrappers = []any{}
+	file_pagination_v1_pagination_proto_msgTypes[7].OneofWrappers = []any{}
+	file_pagination_v1_pagination_proto_msgTypes[8].OneofWrappers = []any{}
+	file_pagination_v1_pagination_proto_msgTypes[9].OneofWrappers = []any{}
+	file_pagination_v1_pagination_proto_msgTypes[10].OneofWrappers = []any{
+		(*PaginationRequest_PageBased)(nil),
+		(*PaginationRequest_OffsetBased)(nil),
+		(*PaginationRequest_TokenBased)(nil),
+		(*PaginationRequest_NoPaging)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pagination_v1_pagination_proto_rawDesc), len(file_pagination_v1_pagination_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   2,
+			NumEnums:      3,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_pagination_v1_pagination_proto_goTypes,
 		DependencyIndexes: file_pagination_v1_pagination_proto_depIdxs,
+		EnumInfos:         file_pagination_v1_pagination_proto_enumTypes,
 		MessageInfos:      file_pagination_v1_pagination_proto_msgTypes,
 	}.Build()
 	File_pagination_v1_pagination_proto = out.File

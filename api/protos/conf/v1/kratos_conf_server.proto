@@ -78,36 +78,42 @@ message Server {
     TLS tls = 3;  // TLS配置
   }
 
+  // ActiveMQ
   message ActiveMQ {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
   }
 
+  // NATS
   message NATS {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
   }
 
+  // NSQ
   message NSQ {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
   }
 
+  // Pulsar
   message Pulsar {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
   }
 
+  // Redis
   message Redis {
     string endpoint = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
   }
 
+  // RocketMQ
   message RocketMQ {
     string version = 1; // 驱动版本：aliyun、v2、v5
     string codec = 2;  // 编解码器: json,xml,yaml...
@@ -241,11 +247,11 @@ message Server {
     TLS tls = 5;  // TLS配置
 
     google.protobuf.Duration timeout = 10; // 超时时间
-    google.protobuf.Duration event_ttl = 11; //
+    google.protobuf.Duration event_ttl = 11; // 事件存活时间
 
-    bool auto_stream = 20; //
-    bool auto_reply = 21; //
-    bool split_data = 22; //
+    bool auto_stream = 20; // 自动管理流
+    bool auto_reply = 21; // 自动回复事件
+    bool split_data = 22; // 分割数据
     bool encode_base64 = 23; // 进行BASE64编码
   }
 
@@ -272,6 +278,23 @@ message Server {
     uint32 stream_buffer_capacity = 7; //
   }
 
+  // MCP
+  message MCP {
+    string server_name = 1;  // 服务器名称
+    string server_version = 2;  // 服务器版本
+    string server_type = 3;  // 服务器类型，SSE、HTTP、STDIO、IN_PROCESS。
+    string address = 4; // 服务器地址
+    TLS tls = 5;  // TLS配置
+    string instructions = 6;  // 指令集
+
+    bool recovery = 10; // 恢复模式
+    bool logging = 11; // 日志记录
+    bool tool_capabilities = 12; // 工具能力集
+    bool prompt_capabilities = 13; // 提示词能力集
+    bool elicitation = 14; // 需求挖掘
+    bool roots = 15; // 根源
+  }
+
   // GraphQL
   message GraphQL {
     string network = 1; // 网络
@@ -294,6 +317,7 @@ message Server {
     TLS tls = 7;  // TLS配置
   }
 
+  // 保活服务
   message KeepAlive {
     string network = 1; // 网络
     string addr = 2;  // 服务监听地址
@@ -326,6 +350,7 @@ message Server {
   optional SSE sse = 21;  // SSE服务
   optional SocketIO socketio = 22;  // SocketIO服务
   optional SignalR signalr = 23;  // SignalR服务
+  optional MCP mcp = 24;  // MCP服务
 
   // Task Queue
 
