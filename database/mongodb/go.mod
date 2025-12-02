@@ -7,7 +7,7 @@ replace github.com/tx7do/kratos-bootstrap/api => ../../api
 require (
 	github.com/go-kratos/kratos/v2 v2.9.1
 	github.com/stretchr/testify v1.11.1
-	github.com/tx7do/go-utils v1.1.31
+	github.com/tx7do/go-utils v1.1.34
 	github.com/tx7do/kratos-bootstrap/api v0.0.28
 	go.mongodb.org/mongo-driver/v2 v2.4.0
 	google.golang.org/protobuf v1.36.10
@@ -17,7 +17,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/klauspost/compress v1.18.1 // indirect
+	github.com/klauspost/compress v1.18.2 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect

@@ -11,15 +11,15 @@ replace (
 )
 
 require (
-	github.com/go-kratos/kratos/contrib/log/aliyun/v2 v2.0.0-20251129143201-3912477ac4d8
-	github.com/go-kratos/kratos/contrib/log/fluent/v2 v2.0.0-20251129143201-3912477ac4d8
-	github.com/go-kratos/kratos/contrib/log/logrus/v2 v2.0.0-20251129143201-3912477ac4d8
-	github.com/go-kratos/kratos/contrib/log/tencent/v2 v2.0.0-20251129143201-3912477ac4d8
-	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20251129143201-3912477ac4d8
+	github.com/go-kratos/kratos/contrib/log/aliyun/v2 v2.0.0-20251201062103-6f0b3015b803
+	github.com/go-kratos/kratos/contrib/log/fluent/v2 v2.0.0-20251201062103-6f0b3015b803
+	github.com/go-kratos/kratos/contrib/log/logrus/v2 v2.0.0-20251201062103-6f0b3015b803
+	github.com/go-kratos/kratos/contrib/log/tencent/v2 v2.0.0-20251201062103-6f0b3015b803
+	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20251201062103-6f0b3015b803
 	github.com/go-kratos/kratos/v2 v2.9.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/tx7do/kratos-bootstrap/api v0.0.28
-	github.com/tx7do/kratos-bootstrap/utils v0.1.5
+	github.com/tx7do/kratos-bootstrap/utils v0.1.7
 	go.uber.org/zap v1.27.1
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
@@ -43,7 +43,7 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/grafana/regexp v0.0.0-20250905093917-f7b3be9d1853 // indirect
-	github.com/klauspost/compress v1.18.1 // indirect
+	github.com/klauspost/compress v1.18.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/philhofer/fwd v1.2.0 // indirect
 	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
@@ -54,7 +54,7 @@ require (
 	github.com/prometheus/common v0.67.4 // indirect
 	github.com/prometheus/procfs v0.19.2 // indirect
 	github.com/prometheus/prometheus v0.307.3 // indirect
-	github.com/tencentcloud/tencentcloud-cls-sdk-go v1.0.13 // indirect
+	github.com/tencentcloud/tencentcloud-cls-sdk-go v1.0.14 // indirect
 	github.com/tinylib/msgp v1.5.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/otel v1.38.0 // indirect

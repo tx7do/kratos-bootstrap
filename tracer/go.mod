@@ -9,7 +9,7 @@ replace (
 
 require (
 	github.com/tx7do/kratos-bootstrap/api v0.0.28
-	github.com/tx7do/kratos-bootstrap/utils v0.1.5
+	github.com/tx7do/kratos-bootstrap/utils v0.1.7
 	go.opentelemetry.io/otel v1.38.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.38.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.38.0

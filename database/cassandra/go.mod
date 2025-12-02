@@ -8,7 +8,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.9.1
 	github.com/gocql/gocql v1.7.0
 	github.com/tx7do/kratos-bootstrap/api v0.0.28
-	github.com/tx7do/kratos-bootstrap/utils v0.1.5
+	github.com/tx7do/kratos-bootstrap/utils v0.1.7
 )
 
 require (

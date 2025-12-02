@@ -27,8 +27,8 @@ github.com/rogpeppe/go-internal v1.11.0 h1:cWPaGQEPrBb5/AsnsZesgZZ9yb1OQ+GOISoDN
 github.com/rogpeppe/go-internal v1.11.0/go.mod h1:ddIwULY96R17DhadqLgMfk9H9tvdUzkipdSkR5nkCZA=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
-github.com/tx7do/kratos-bootstrap/utils v0.1.5 h1:KfQdX7p9IJjiPe+M4j62QSYwMMC96rDQDYO6U47S9bc=
-github.com/tx7do/kratos-bootstrap/utils v0.1.5/go.mod h1:SP6IUBvz2eZ1po1rwKKhazWqMSfEw2CUsq899nHSjRo=
+github.com/tx7do/kratos-bootstrap/utils v0.1.7 h1:SjdKIRMP4InXTEzl5jNLizzbt6CeEc6XlF8y64oAivw=
+github.com/tx7do/kratos-bootstrap/utils v0.1.7/go.mod h1:74+drjleTGJYILIRPX0+Sn76ZC/d8c0nl/LiPCRPB68=
 golang.org/x/sync v0.10.0 h1:3NQrjDixjgGwUOCaF8w2+VYHv0Ve/vGYSbdkTa98gmQ=
 golang.org/x/sync v0.10.0/go.mod h1:Czt+wKu1gCyEFDUtn0jG5QVvpJ6rzVqr5aXyt9drQfk=
 google.golang.org/protobuf v1.36.10 h1:AYd7cD/uASjIL6Q9LiTjz8JLcrh/88q5UObnmY3aOOE=

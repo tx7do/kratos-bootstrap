@@ -12,7 +12,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.9.1
 	github.com/stretchr/testify v1.11.1
 	github.com/tx7do/kratos-bootstrap/api v0.0.28
-	github.com/tx7do/kratos-bootstrap/utils v0.1.5
+	github.com/tx7do/kratos-bootstrap/utils v0.1.7
 	google.golang.org/protobuf v1.36.10
 )
 
@@ -23,7 +23,7 @@ require (
 	github.com/go-faster/city v1.0.1 // indirect
 	github.com/go-faster/errors v0.7.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/klauspost/compress v1.18.1 // indirect
+	github.com/klauspost/compress v1.18.2 // indirect
 	github.com/paulmach/orb v0.12.0 // indirect
 	github.com/pierrec/lz4/v4 v4.1.22 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

@@ -31,7 +31,7 @@ replace (
 require (
 	github.com/go-kratos/kratos/v2 v2.9.1
 	github.com/google/subcommands v1.2.0
-	github.com/olekukonko/tablewriter v1.1.1
+	github.com/olekukonko/tablewriter v1.1.2
 	github.com/spf13/cobra v1.10.1
 	github.com/tx7do/kratos-bootstrap/api v0.0.28
 	github.com/tx7do/kratos-bootstrap/logger v0.0.11
@@ -48,7 +48,7 @@ require (
 	github.com/tx7do/kratos-bootstrap/remoteconfig/nacos v0.1.2
 	github.com/tx7do/kratos-bootstrap/remoteconfig/polaris v0.1.1
 	github.com/tx7do/kratos-bootstrap/tracer v0.0.12
-	github.com/tx7do/kratos-bootstrap/utils v0.1.5
+	github.com/tx7do/kratos-bootstrap/utils v0.1.7
 	golang.org/x/tools v0.39.0
 )
 
@@ -82,7 +82,7 @@ require (
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/clbanning/mxj/v2 v2.7.0 // indirect
-	github.com/clipperhouse/displaywidth v0.6.0 // indirect
+	github.com/clipperhouse/displaywidth v0.6.1 // indirect
 	github.com/clipperhouse/stringish v0.1.1 // indirect
 	github.com/clipperhouse/uax29/v2 v2.3.0 // indirect
 	github.com/coreos/go-semver v0.3.1 // indirect
@@ -96,10 +96,10 @@ require (
 	github.com/go-chassis/openlog v1.1.3 // indirect
 	github.com/go-chassis/sc-client v0.7.0 // indirect
 	github.com/go-kratos/aegis v0.2.0 // indirect
-	github.com/go-kratos/kratos/contrib/log/fluent/v2 v2.0.0-20251129143201-3912477ac4d8 // indirect
-	github.com/go-kratos/kratos/contrib/log/logrus/v2 v2.0.0-20251129143201-3912477ac4d8 // indirect
-	github.com/go-kratos/kratos/contrib/log/tencent/v2 v2.0.0-20251129143201-3912477ac4d8 // indirect
-	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20251129143201-3912477ac4d8 // indirect
+	github.com/go-kratos/kratos/contrib/log/fluent/v2 v2.0.0-20251201062103-6f0b3015b803 // indirect
+	github.com/go-kratos/kratos/contrib/log/logrus/v2 v2.0.0-20251201062103-6f0b3015b803 // indirect
+	github.com/go-kratos/kratos/contrib/log/tencent/v2 v2.0.0-20251201062103-6f0b3015b803 // indirect
+	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20251201062103-6f0b3015b803 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/form/v4 v4.3.0 // indirect
@@ -127,7 +127,7 @@ require (
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/karlseguin/ccache/v2 v2.0.8 // indirect
-	github.com/klauspost/compress v1.18.1 // indirect
+	github.com/klauspost/compress v1.18.2 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.19 // indirect
@@ -159,7 +159,7 @@ require (
 	github.com/spf13/viper v1.21.0 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
-	github.com/tencentcloud/tencentcloud-cls-sdk-go v1.0.13 // indirect
+	github.com/tencentcloud/tencentcloud-cls-sdk-go v1.0.14 // indirect
 	github.com/tinylib/msgp v1.5.0 // indirect
 	github.com/tjfoc/gmsm v1.4.1 // indirect
 	go.etcd.io/etcd/api/v3 v3.6.6 // indirect

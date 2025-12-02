@@ -10,7 +10,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.9.1
 	github.com/gorilla/handlers v1.5.2
 	github.com/tx7do/kratos-bootstrap/api v0.0.28
-	github.com/tx7do/kratos-bootstrap/utils v0.1.5
+	github.com/tx7do/kratos-bootstrap/utils v0.1.7
 	google.golang.org/grpc v1.77.0
 	google.golang.org/protobuf v1.36.10
 )
