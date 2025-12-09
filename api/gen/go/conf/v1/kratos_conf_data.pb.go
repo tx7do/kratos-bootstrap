@@ -432,23 +432,24 @@ func (x *Data_Redis) GetEnableMetrics() bool {
 // MongoDB
 type Data_MongoDB struct {
 	state                   protoimpl.MessageState `protogen:"open.v1"`
-	Uri                     string                 `protobuf:"bytes,1,opt,name=uri,proto3" json:"uri,omitempty"`
+	Uri                     *string                `protobuf:"bytes,1,opt,name=uri,proto3,oneof" json:"uri,omitempty"`
 	Database                *string                `protobuf:"bytes,2,opt,name=database,proto3,oneof" json:"database,omitempty"`
 	Username                *string                `protobuf:"bytes,10,opt,name=username,proto3,oneof" json:"username,omitempty"`
 	Password                *string                `protobuf:"bytes,11,opt,name=password,proto3,oneof" json:"password,omitempty"`
 	AuthMechanism           *string                `protobuf:"bytes,20,opt,name=auth_mechanism,json=authMechanism,proto3,oneof" json:"auth_mechanism,omitempty"`                                                                                                     // 认证机制：SCRAM-SHA-1、SCRAM-SHA-256、MONGODB-X509、GSSAPI、PLAIN
 	AuthMechanismProperties map[string]string      `protobuf:"bytes,21,rep,name=auth_mechanism_properties,json=authMechanismProperties,proto3" json:"auth_mechanism_properties,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` // 认证机制属性
 	AuthSource              *string                `protobuf:"bytes,22,opt,name=auth_source,json=authSource,proto3,oneof" json:"auth_source,omitempty"`                                                                                                              // 认证源：admin、$external等
-	ConnectTimeout          *durationpb.Duration   `protobuf:"bytes,50,opt,name=connect_timeout,json=connectTimeout,proto3" json:"connect_timeout,omitempty"`                                                                                                        // 连接超时时间
-	HeartbeatInterval       *durationpb.Duration   `protobuf:"bytes,51,opt,name=heartbeat_interval,json=heartbeatInterval,proto3" json:"heartbeat_interval,omitempty"`                                                                                               // 心跳间隔
-	LocalThreshold          *durationpb.Duration   `protobuf:"bytes,52,opt,name=local_threshold,json=localThreshold,proto3" json:"local_threshold,omitempty"`                                                                                                        // 本地延迟阈值
-	MaxConnIdleTime         *durationpb.Duration   `protobuf:"bytes,53,opt,name=max_conn_idle_time,json=maxConnIdleTime,proto3" json:"max_conn_idle_time,omitempty"`                                                                                                 // 最大连接空闲时间
-	MaxStaleness            *durationpb.Duration   `protobuf:"bytes,54,opt,name=max_staleness,json=maxStaleness,proto3" json:"max_staleness,omitempty"`                                                                                                              // 最大陈旧时间
-	ServerSelectionTimeout  *durationpb.Duration   `protobuf:"bytes,55,opt,name=server_selection_timeout,json=serverSelectionTimeout,proto3" json:"server_selection_timeout,omitempty"`                                                                              // 服务器选择超时时间
-	SocketTimeout           *durationpb.Duration   `protobuf:"bytes,56,opt,name=socket_timeout,json=socketTimeout,proto3" json:"socket_timeout,omitempty"`                                                                                                           // 套接字超时时间
-	Timeout                 *durationpb.Duration   `protobuf:"bytes,57,opt,name=timeout,proto3" json:"timeout,omitempty"`                                                                                                                                            // 总超时时间
-	EnableTracing           bool                   `protobuf:"varint,100,opt,name=enable_tracing,json=enableTracing,proto3" json:"enable_tracing,omitempty"`                                                                                                         // 打开链路追踪
-	EnableMetrics           bool                   `protobuf:"varint,101,opt,name=enable_metrics,json=enableMetrics,proto3" json:"enable_metrics,omitempty"`                                                                                                         // 打开性能度量
+	ConnectTimeout          *durationpb.Duration   `protobuf:"bytes,50,opt,name=connect_timeout,json=connectTimeout,proto3,oneof" json:"connect_timeout,omitempty"`                                                                                                  // 连接超时时间
+	HeartbeatInterval       *durationpb.Duration   `protobuf:"bytes,51,opt,name=heartbeat_interval,json=heartbeatInterval,proto3,oneof" json:"heartbeat_interval,omitempty"`                                                                                         // 心跳间隔
+	LocalThreshold          *durationpb.Duration   `protobuf:"bytes,52,opt,name=local_threshold,json=localThreshold,proto3,oneof" json:"local_threshold,omitempty"`                                                                                                  // 本地延迟阈值
+	MaxConnIdleTime         *durationpb.Duration   `protobuf:"bytes,53,opt,name=max_conn_idle_time,json=maxConnIdleTime,proto3,oneof" json:"max_conn_idle_time,omitempty"`                                                                                           // 最大连接空闲时间
+	MaxStaleness            *durationpb.Duration   `protobuf:"bytes,54,opt,name=max_staleness,json=maxStaleness,proto3,oneof" json:"max_staleness,omitempty"`                                                                                                        // 最大陈旧时间
+	ServerSelectionTimeout  *durationpb.Duration   `protobuf:"bytes,55,opt,name=server_selection_timeout,json=serverSelectionTimeout,proto3,oneof" json:"server_selection_timeout,omitempty"`                                                                        // 服务器选择超时时间
+	SocketTimeout           *durationpb.Duration   `protobuf:"bytes,56,opt,name=socket_timeout,json=socketTimeout,proto3,oneof" json:"socket_timeout,omitempty"`                                                                                                     // 套接字超时时间
+	Timeout                 *durationpb.Duration   `protobuf:"bytes,57,opt,name=timeout,proto3,oneof" json:"timeout,omitempty"`                                                                                                                                      // 总超时时间
+	EnableTracing           *bool                  `protobuf:"varint,100,opt,name=enable_tracing,json=enableTracing,proto3,oneof" json:"enable_tracing,omitempty"`                                                                                                   // 打开链路追踪
+	EnableMetrics           *bool                  `protobuf:"varint,101,opt,name=enable_metrics,json=enableMetrics,proto3,oneof" json:"enable_metrics,omitempty"`                                                                                                   // 打开性能度量
+	Tls                     *TLS                   `protobuf:"bytes,70,opt,name=tls,proto3,oneof" json:"tls,omitempty"`                                                                                                                                              // TLS配置
 	unknownFields           protoimpl.UnknownFields
 	sizeCache               protoimpl.SizeCache
 }
@@ -484,8 +485,8 @@ func (*Data_MongoDB) Descriptor() ([]byte, []int) {
 }
 
 func (x *Data_MongoDB) GetUri() string {
-	if x != nil {
-		return x.Uri
+	if x != nil && x.Uri != nil {
+		return *x.Uri
 	}
 	return ""
 }
@@ -589,17 +590,24 @@ func (x *Data_MongoDB) GetTimeout() *durationpb.Duration {
 }
 
 func (x *Data_MongoDB) GetEnableTracing() bool {
-	if x != nil {
-		return x.EnableTracing
+	if x != nil && x.EnableTracing != nil {
+		return *x.EnableTracing
 	}
 	return false
 }
 
 func (x *Data_MongoDB) GetEnableMetrics() bool {
-	if x != nil {
-		return x.EnableMetrics
+	if x != nil && x.EnableMetrics != nil {
+		return *x.EnableMetrics
 	}
 	return false
+}
+
+func (x *Data_MongoDB) GetTls() *TLS {
+	if x != nil {
+		return x.Tls
+	}
+	return nil
 }
 
 // ClickHouse
@@ -810,15 +818,17 @@ func (x *Data_ClickHouse) GetEnableMetrics() bool {
 // InfluxDB
 type Data_InfluxDB struct {
 	state                 protoimpl.MessageState `protogen:"open.v1"`
-	Host                  string                 `protobuf:"bytes,1,opt,name=host,proto3" json:"host,omitempty"`                                                                   // 主机地址
-	Token                 string                 `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`                                                                 // 认证令牌
-	AuthScheme            string                 `protobuf:"bytes,3,opt,name=auth_scheme,json=authScheme,proto3" json:"auth_scheme,omitempty"`                                     // 认证方案：default、basic
-	Proxy                 string                 `protobuf:"bytes,4,opt,name=proxy,proto3" json:"proxy,omitempty"`                                                                 // 代理地址
-	Organization          string                 `protobuf:"bytes,10,opt,name=organization,proto3" json:"organization,omitempty"`                                                  // 组织名
-	Database              string                 `protobuf:"bytes,11,opt,name=database,proto3" json:"database,omitempty"`                                                          // 数据库名
-	Timeout               *durationpb.Duration   `protobuf:"bytes,20,opt,name=timeout,proto3" json:"timeout,omitempty"`                                                            // 连接超时时间
-	IdleConnectionTimeout *durationpb.Duration   `protobuf:"bytes,21,opt,name=idle_connection_timeout,json=idleConnectionTimeout,proto3" json:"idle_connection_timeout,omitempty"` // 空闲连接超时时间
-	MaxIdleConnections    int32                  `protobuf:"varint,22,opt,name=max_idle_connections,json=maxIdleConnections,proto3" json:"max_idle_connections,omitempty"`         // 连接池最大空闲连接数
+	Host                  *string                `protobuf:"bytes,1,opt,name=host,proto3,oneof" json:"host,omitempty"`                                                                   // 主机地址
+	Token                 *string                `protobuf:"bytes,2,opt,name=token,proto3,oneof" json:"token,omitempty"`                                                                 // 认证令牌
+	AuthScheme            *string                `protobuf:"bytes,3,opt,name=auth_scheme,json=authScheme,proto3,oneof" json:"auth_scheme,omitempty"`                                     // 认证方案：default、basic
+	Proxy                 *string                `protobuf:"bytes,4,opt,name=proxy,proto3,oneof" json:"proxy,omitempty"`                                                                 // 代理地址
+	Organization          *string                `protobuf:"bytes,10,opt,name=organization,proto3,oneof" json:"organization,omitempty"`                                                  // 组织名
+	Database              *string                `protobuf:"bytes,11,opt,name=database,proto3,oneof" json:"database,omitempty"`                                                          // 数据库名
+	WriteTimeout          *durationpb.Duration   `protobuf:"bytes,20,opt,name=write_timeout,json=writeTimeout,proto3,oneof" json:"write_timeout,omitempty"`                              // 连接超时时间
+	QueryTimeout          *durationpb.Duration   `protobuf:"bytes,21,opt,name=query_timeout,json=queryTimeout,proto3,oneof" json:"query_timeout,omitempty"`                              // 连接超时时间
+	IdleConnectionTimeout *durationpb.Duration   `protobuf:"bytes,22,opt,name=idle_connection_timeout,json=idleConnectionTimeout,proto3,oneof" json:"idle_connection_timeout,omitempty"` // 空闲连接超时时间
+	MaxIdleConnections    *int32                 `protobuf:"varint,23,opt,name=max_idle_connections,json=maxIdleConnections,proto3,oneof" json:"max_idle_connections,omitempty"`         // 连接池最大空闲连接数
+	Tls                   *TLS                   `protobuf:"bytes,70,opt,name=tls,proto3,oneof" json:"tls,omitempty"`                                                                    // TLS配置
 	unknownFields         protoimpl.UnknownFields
 	sizeCache             protoimpl.SizeCache
 }
@@ -854,50 +864,57 @@ func (*Data_InfluxDB) Descriptor() ([]byte, []int) {
 }
 
 func (x *Data_InfluxDB) GetHost() string {
-	if x != nil {
-		return x.Host
+	if x != nil && x.Host != nil {
+		return *x.Host
 	}
 	return ""
 }
 
 func (x *Data_InfluxDB) GetToken() string {
-	if x != nil {
-		return x.Token
+	if x != nil && x.Token != nil {
+		return *x.Token
 	}
 	return ""
 }
 
 func (x *Data_InfluxDB) GetAuthScheme() string {
-	if x != nil {
-		return x.AuthScheme
+	if x != nil && x.AuthScheme != nil {
+		return *x.AuthScheme
 	}
 	return ""
 }
 
 func (x *Data_InfluxDB) GetProxy() string {
-	if x != nil {
-		return x.Proxy
+	if x != nil && x.Proxy != nil {
+		return *x.Proxy
 	}
 	return ""
 }
 
 func (x *Data_InfluxDB) GetOrganization() string {
-	if x != nil {
-		return x.Organization
+	if x != nil && x.Organization != nil {
+		return *x.Organization
 	}
 	return ""
 }
 
 func (x *Data_InfluxDB) GetDatabase() string {
-	if x != nil {
-		return x.Database
+	if x != nil && x.Database != nil {
+		return *x.Database
 	}
 	return ""
 }
 
-func (x *Data_InfluxDB) GetTimeout() *durationpb.Duration {
+func (x *Data_InfluxDB) GetWriteTimeout() *durationpb.Duration {
 	if x != nil {
-		return x.Timeout
+		return x.WriteTimeout
+	}
+	return nil
+}
+
+func (x *Data_InfluxDB) GetQueryTimeout() *durationpb.Duration {
+	if x != nil {
+		return x.QueryTimeout
 	}
 	return nil
 }
@@ -910,10 +927,17 @@ func (x *Data_InfluxDB) GetIdleConnectionTimeout() *durationpb.Duration {
 }
 
 func (x *Data_InfluxDB) GetMaxIdleConnections() int32 {
-	if x != nil {
-		return x.MaxIdleConnections
+	if x != nil && x.MaxIdleConnections != nil {
+		return *x.MaxIdleConnections
 	}
 	return 0
+}
+
+func (x *Data_InfluxDB) GetTls() *TLS {
+	if x != nil {
+		return x.Tls
+	}
+	return nil
 }
 
 type Data_Doris struct {
@@ -963,24 +987,24 @@ func (x *Data_Doris) GetAddress() string {
 type Data_ElasticSearch struct {
 	state                    protoimpl.MessageState `protogen:"open.v1"`
 	Addresses                []string               `protobuf:"bytes,1,rep,name=addresses,proto3" json:"addresses,omitempty"`
-	Username                 string                 `protobuf:"bytes,10,opt,name=username,proto3" json:"username,omitempty"`
-	Password                 string                 `protobuf:"bytes,11,opt,name=password,proto3" json:"password,omitempty"`
-	CloudId                  string                 `protobuf:"bytes,20,opt,name=cloud_id,json=cloudId,proto3" json:"cloud_id,omitempty"`
-	ApiKey                   string                 `protobuf:"bytes,21,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
-	ServiceToken             string                 `protobuf:"bytes,22,opt,name=service_token,json=serviceToken,proto3" json:"service_token,omitempty"`
-	CertificateFingerprint   string                 `protobuf:"bytes,23,opt,name=certificate_fingerprint,json=certificateFingerprint,proto3" json:"certificate_fingerprint,omitempty"`
-	DisableRetry             bool                   `protobuf:"varint,30,opt,name=disable_retry,json=disableRetry,proto3" json:"disable_retry,omitempty"`
-	MaxRetries               int32                  `protobuf:"varint,31,opt,name=max_retries,json=maxRetries,proto3" json:"max_retries,omitempty"`
-	CompressRequestBody      bool                   `protobuf:"varint,40,opt,name=compress_request_body,json=compressRequestBody,proto3" json:"compress_request_body,omitempty"`
-	CompressRequestBodyLevel int32                  `protobuf:"varint,41,opt,name=compress_request_body_level,json=compressRequestBodyLevel,proto3" json:"compress_request_body_level,omitempty"`
-	PoolCompressor           bool                   `protobuf:"varint,42,opt,name=pool_compressor,json=poolCompressor,proto3" json:"pool_compressor,omitempty"`
-	DiscoverNodesOnStart     bool                   `protobuf:"varint,50,opt,name=discover_nodes_on_start,json=discoverNodesOnStart,proto3" json:"discover_nodes_on_start,omitempty"`
-	DiscoverNodesInterval    *durationpb.Duration   `protobuf:"bytes,51,opt,name=discover_nodes_interval,json=discoverNodesInterval,proto3" json:"discover_nodes_interval,omitempty"`
-	EnableMetrics            bool                   `protobuf:"varint,60,opt,name=enable_metrics,json=enableMetrics,proto3" json:"enable_metrics,omitempty"`
-	EnableDebugLogger        bool                   `protobuf:"varint,61,opt,name=enable_debug_logger,json=enableDebugLogger,proto3" json:"enable_debug_logger,omitempty"`
-	EnableCompatibilityMode  bool                   `protobuf:"varint,62,opt,name=enable_compatibility_mode,json=enableCompatibilityMode,proto3" json:"enable_compatibility_mode,omitempty"`
-	DisableMetaHeader        bool                   `protobuf:"varint,63,opt,name=disable_meta_header,json=disableMetaHeader,proto3" json:"disable_meta_header,omitempty"`
-	Tls                      *TLS                   `protobuf:"bytes,70,opt,name=tls,proto3" json:"tls,omitempty"` // TLS配置
+	Username                 *string                `protobuf:"bytes,10,opt,name=username,proto3,oneof" json:"username,omitempty"`
+	Password                 *string                `protobuf:"bytes,11,opt,name=password,proto3,oneof" json:"password,omitempty"`
+	CloudId                  *string                `protobuf:"bytes,20,opt,name=cloud_id,json=cloudId,proto3,oneof" json:"cloud_id,omitempty"`
+	ApiKey                   *string                `protobuf:"bytes,21,opt,name=api_key,json=apiKey,proto3,oneof" json:"api_key,omitempty"`
+	ServiceToken             *string                `protobuf:"bytes,22,opt,name=service_token,json=serviceToken,proto3,oneof" json:"service_token,omitempty"`
+	CertificateFingerprint   *string                `protobuf:"bytes,23,opt,name=certificate_fingerprint,json=certificateFingerprint,proto3,oneof" json:"certificate_fingerprint,omitempty"`
+	DisableRetry             *bool                  `protobuf:"varint,30,opt,name=disable_retry,json=disableRetry,proto3,oneof" json:"disable_retry,omitempty"`
+	MaxRetries               *int32                 `protobuf:"varint,31,opt,name=max_retries,json=maxRetries,proto3,oneof" json:"max_retries,omitempty"`
+	CompressRequestBody      *bool                  `protobuf:"varint,40,opt,name=compress_request_body,json=compressRequestBody,proto3,oneof" json:"compress_request_body,omitempty"`
+	CompressRequestBodyLevel *int32                 `protobuf:"varint,41,opt,name=compress_request_body_level,json=compressRequestBodyLevel,proto3,oneof" json:"compress_request_body_level,omitempty"`
+	PoolCompressor           *bool                  `protobuf:"varint,42,opt,name=pool_compressor,json=poolCompressor,proto3,oneof" json:"pool_compressor,omitempty"`
+	DiscoverNodesOnStart     *bool                  `protobuf:"varint,50,opt,name=discover_nodes_on_start,json=discoverNodesOnStart,proto3,oneof" json:"discover_nodes_on_start,omitempty"`
+	DiscoverNodesInterval    *durationpb.Duration   `protobuf:"bytes,51,opt,name=discover_nodes_interval,json=discoverNodesInterval,proto3,oneof" json:"discover_nodes_interval,omitempty"`
+	EnableMetrics            *bool                  `protobuf:"varint,60,opt,name=enable_metrics,json=enableMetrics,proto3,oneof" json:"enable_metrics,omitempty"`
+	EnableDebugLogger        *bool                  `protobuf:"varint,61,opt,name=enable_debug_logger,json=enableDebugLogger,proto3,oneof" json:"enable_debug_logger,omitempty"`
+	EnableCompatibilityMode  *bool                  `protobuf:"varint,62,opt,name=enable_compatibility_mode,json=enableCompatibilityMode,proto3,oneof" json:"enable_compatibility_mode,omitempty"`
+	DisableMetaHeader        *bool                  `protobuf:"varint,63,opt,name=disable_meta_header,json=disableMetaHeader,proto3,oneof" json:"disable_meta_header,omitempty"`
+	Tls                      *TLS                   `protobuf:"bytes,70,opt,name=tls,proto3,oneof" json:"tls,omitempty"` // TLS配置
 	unknownFields            protoimpl.UnknownFields
 	sizeCache                protoimpl.SizeCache
 }
@@ -1023,85 +1047,85 @@ func (x *Data_ElasticSearch) GetAddresses() []string {
 }
 
 func (x *Data_ElasticSearch) GetUsername() string {
-	if x != nil {
-		return x.Username
+	if x != nil && x.Username != nil {
+		return *x.Username
 	}
 	return ""
 }
 
 func (x *Data_ElasticSearch) GetPassword() string {
-	if x != nil {
-		return x.Password
+	if x != nil && x.Password != nil {
+		return *x.Password
 	}
 	return ""
 }
 
 func (x *Data_ElasticSearch) GetCloudId() string {
-	if x != nil {
-		return x.CloudId
+	if x != nil && x.CloudId != nil {
+		return *x.CloudId
 	}
 	return ""
 }
 
 func (x *Data_ElasticSearch) GetApiKey() string {
-	if x != nil {
-		return x.ApiKey
+	if x != nil && x.ApiKey != nil {
+		return *x.ApiKey
 	}
 	return ""
 }
 
 func (x *Data_ElasticSearch) GetServiceToken() string {
-	if x != nil {
-		return x.ServiceToken
+	if x != nil && x.ServiceToken != nil {
+		return *x.ServiceToken
 	}
 	return ""
 }
 
 func (x *Data_ElasticSearch) GetCertificateFingerprint() string {
-	if x != nil {
-		return x.CertificateFingerprint
+	if x != nil && x.CertificateFingerprint != nil {
+		return *x.CertificateFingerprint
 	}
 	return ""
 }
 
 func (x *Data_ElasticSearch) GetDisableRetry() bool {
-	if x != nil {
-		return x.DisableRetry
+	if x != nil && x.DisableRetry != nil {
+		return *x.DisableRetry
 	}
 	return false
 }
 
 func (x *Data_ElasticSearch) GetMaxRetries() int32 {
-	if x != nil {
-		return x.MaxRetries
+	if x != nil && x.MaxRetries != nil {
+		return *x.MaxRetries
 	}
 	return 0
 }
 
 func (x *Data_ElasticSearch) GetCompressRequestBody() bool {
-	if x != nil {
-		return x.CompressRequestBody
+	if x != nil && x.CompressRequestBody != nil {
+		return *x.CompressRequestBody
 	}
 	return false
 }
 
 func (x *Data_ElasticSearch) GetCompressRequestBodyLevel() int32 {
-	if x != nil {
-		return x.CompressRequestBodyLevel
+	if x != nil && x.CompressRequestBodyLevel != nil {
+		return *x.CompressRequestBodyLevel
 	}
 	return 0
 }
 
 func (x *Data_ElasticSearch) GetPoolCompressor() bool {
-	if x != nil {
-		return x.PoolCompressor
+	if x != nil && x.PoolCompressor != nil {
+		return *x.PoolCompressor
 	}
 	return false
 }
 
 func (x *Data_ElasticSearch) GetDiscoverNodesOnStart() bool {
-	if x != nil {
-		return x.DiscoverNodesOnStart
+	if x != nil && x.DiscoverNodesOnStart != nil {
+		return *x.DiscoverNodesOnStart
 	}
 	return false
 }
@@ -1114,29 +1138,29 @@ func (x *Data_ElasticSearch) GetDiscoverNodesInterval() *durationpb.Duration {
 }
 
 func (x *Data_ElasticSearch) GetEnableMetrics() bool {
-	if x != nil {
-		return x.EnableMetrics
+	if x != nil && x.EnableMetrics != nil {
+		return *x.EnableMetrics
 	}
 	return false
 }
 
 func (x *Data_ElasticSearch) GetEnableDebugLogger() bool {
-	if x != nil {
-		return x.EnableDebugLogger
+	if x != nil && x.EnableDebugLogger != nil {
+		return *x.EnableDebugLogger
 	}
 	return false
 }
 
 func (x *Data_ElasticSearch) GetEnableCompatibilityMode() bool {
-	if x != nil {
-		return x.EnableCompatibilityMode
+	if x != nil && x.EnableCompatibilityMode != nil {
+		return *x.EnableCompatibilityMode
 	}
 	return false
 }
 
 func (x *Data_ElasticSearch) GetDisableMetaHeader() bool {
-	if x != nil {
-		return x.DisableMetaHeader
+	if x != nil && x.DisableMetaHeader != nil {
+		return *x.DisableMetaHeader
 	}
 	return false
 }
@@ -1150,16 +1174,16 @@ func (x *Data_ElasticSearch) GetTls() *TLS {
 
 type Data_Cassandra struct {
 	state                    protoimpl.MessageState `protogen:"open.v1"`
-	Address                  string                 `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	Username                 string                 `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
-	Password                 string                 `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
-	Keyspace                 string                 `protobuf:"bytes,5,opt,name=keyspace,proto3" json:"keyspace,omitempty"`
-	ConnectTimeout           *durationpb.Duration   `protobuf:"bytes,6,opt,name=connect_timeout,json=connectTimeout,proto3" json:"connect_timeout,omitempty"`
-	Timeout                  *durationpb.Duration   `protobuf:"bytes,7,opt,name=timeout,proto3" json:"timeout,omitempty"`
-	Consistency              uint32                 `protobuf:"varint,8,opt,name=consistency,proto3" json:"consistency,omitempty"`
-	DisableInitialHostLookup bool                   `protobuf:"varint,9,opt,name=disable_initial_host_lookup,json=disableInitialHostLookup,proto3" json:"disable_initial_host_lookup,omitempty"`
-	IgnorePeerAddr           bool                   `protobuf:"varint,10,opt,name=ignore_peer_addr,json=ignorePeerAddr,proto3" json:"ignore_peer_addr,omitempty"`
-	Tls                      *TLS                   `protobuf:"bytes,11,opt,name=tls,proto3" json:"tls,omitempty"` // TLS配置
+	Address                  *string                `protobuf:"bytes,1,opt,name=address,proto3,oneof" json:"address,omitempty"`
+	Username                 *string                `protobuf:"bytes,2,opt,name=username,proto3,oneof" json:"username,omitempty"`
+	Password                 *string                `protobuf:"bytes,3,opt,name=password,proto3,oneof" json:"password,omitempty"`
+	Keyspace                 *string                `protobuf:"bytes,5,opt,name=keyspace,proto3,oneof" json:"keyspace,omitempty"`
+	ConnectTimeout           *durationpb.Duration   `protobuf:"bytes,6,opt,name=connect_timeout,json=connectTimeout,proto3,oneof" json:"connect_timeout,omitempty"`
+	Timeout                  *durationpb.Duration   `protobuf:"bytes,7,opt,name=timeout,proto3,oneof" json:"timeout,omitempty"`
+	Consistency              *uint32                `protobuf:"varint,8,opt,name=consistency,proto3,oneof" json:"consistency,omitempty"`
+	DisableInitialHostLookup *bool                  `protobuf:"varint,9,opt,name=disable_initial_host_lookup,json=disableInitialHostLookup,proto3,oneof" json:"disable_initial_host_lookup,omitempty"`
+	IgnorePeerAddr           *bool                  `protobuf:"varint,10,opt,name=ignore_peer_addr,json=ignorePeerAddr,proto3,oneof" json:"ignore_peer_addr,omitempty"`
+	Tls                      *TLS                   `protobuf:"bytes,11,opt,name=tls,proto3,oneof" json:"tls,omitempty"` // TLS配置
 	unknownFields            protoimpl.UnknownFields
 	sizeCache                protoimpl.SizeCache
 }
@@ -1195,29 +1219,29 @@ func (*Data_Cassandra) Descriptor() ([]byte, []int) {
 }
 
 func (x *Data_Cassandra) GetAddress() string {
-	if x != nil {
-		return x.Address
+	if x != nil && x.Address != nil {
+		return *x.Address
 	}
 	return ""
 }
 
 func (x *Data_Cassandra) GetUsername() string {
-	if x != nil {
-		return x.Username
+	if x != nil && x.Username != nil {
+		return *x.Username
 	}
 	return ""
 }
 
 func (x *Data_Cassandra) GetPassword() string {
-	if x != nil {
-		return x.Password
+	if x != nil && x.Password != nil {
+		return *x.Password
 	}
 	return ""
 }
 
 func (x *Data_Cassandra) GetKeyspace() string {
-	if x != nil {
-		return x.Keyspace
+	if x != nil && x.Keyspace != nil {
+		return *x.Keyspace
 	}
 	return ""
 }
@@ -1237,22 +1261,22 @@ func (x *Data_Cassandra) GetTimeout() *durationpb.Duration {
 }
 
 func (x *Data_Cassandra) GetConsistency() uint32 {
-	if x != nil {
-		return x.Consistency
+	if x != nil && x.Consistency != nil {
+		return *x.Consistency
 	}
 	return 0
 }
 
 func (x *Data_Cassandra) GetDisableInitialHostLookup() bool {
-	if x != nil {
-		return x.DisableInitialHostLookup
+	if x != nil && x.DisableInitialHostLookup != nil {
+		return *x.DisableInitialHostLookup
 	}
 	return false
 }
 
 func (x *Data_Cassandra) GetIgnorePeerAddr() bool {
-	if x != nil {
-		return x.IgnorePeerAddr
+	if x != nil && x.IgnorePeerAddr != nil {
+		return *x.IgnorePeerAddr
 	}
 	return false
 }
@@ -1843,7 +1867,7 @@ var File_conf_v1_kratos_conf_data_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_data_proto_rawDesc = "" +
 	"\n" +
-	"\x1econf/v1/kratos_conf_data.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\x1a\x1dconf/v1/kratos_conf_tls.proto\"\xc38\n" +
+	"\x1econf/v1/kratos_conf_data.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\x1a\x1dconf/v1/kratos_conf_tls.proto\"\xdfB\n" +
 	"\x04Data\x124\n" +
 	"\bdatabase\x18\x01 \x01(\v2\x13.conf.Data.DatabaseH\x00R\bdatabase\x88\x01\x01\x12+\n" +
 	"\x05redis\x18\n" +
@@ -1894,35 +1918,51 @@ const file_conf_v1_kratos_conf_data_proto_rawDesc = "" +
 	"\fread_timeout\x183 \x01(\v2\x19.google.protobuf.DurationR\vreadTimeout\x12>\n" +
 	"\rwrite_timeout\x184 \x01(\v2\x19.google.protobuf.DurationR\fwriteTimeout\x12%\n" +
 	"\x0eenable_tracing\x18d \x01(\bR\renableTracing\x12&\n" +
-	"\x0eenable_metrics\x18\xe9\a \x01(\bR\renableMetrics\x1a\xc7\b\n" +
-	"\aMongoDB\x12\x10\n" +
-	"\x03uri\x18\x01 \x01(\tR\x03uri\x12\x1f\n" +
-	"\bdatabase\x18\x02 \x01(\tH\x00R\bdatabase\x88\x01\x01\x12\x1f\n" +
+	"\x0eenable_metrics\x18\xe9\a \x01(\bR\renableMetrics\x1a\xfa\n" +
+	"\n" +
+	"\aMongoDB\x12\x15\n" +
+	"\x03uri\x18\x01 \x01(\tH\x00R\x03uri\x88\x01\x01\x12\x1f\n" +
+	"\bdatabase\x18\x02 \x01(\tH\x01R\bdatabase\x88\x01\x01\x12\x1f\n" +
 	"\busername\x18\n" +
-	" \x01(\tH\x01R\busername\x88\x01\x01\x12\x1f\n" +
-	"\bpassword\x18\v \x01(\tH\x02R\bpassword\x88\x01\x01\x12*\n" +
-	"\x0eauth_mechanism\x18\x14 \x01(\tH\x03R\rauthMechanism\x88\x01\x01\x12k\n" +
+	" \x01(\tH\x02R\busername\x88\x01\x01\x12\x1f\n" +
+	"\bpassword\x18\v \x01(\tH\x03R\bpassword\x88\x01\x01\x12*\n" +
+	"\x0eauth_mechanism\x18\x14 \x01(\tH\x04R\rauthMechanism\x88\x01\x01\x12k\n" +
 	"\x19auth_mechanism_properties\x18\x15 \x03(\v2/.conf.Data.MongoDB.AuthMechanismPropertiesEntryR\x17authMechanismProperties\x12$\n" +
-	"\vauth_source\x18\x16 \x01(\tH\x04R\n" +
-	"authSource\x88\x01\x01\x12B\n" +
-	"\x0fconnect_timeout\x182 \x01(\v2\x19.google.protobuf.DurationR\x0econnectTimeout\x12H\n" +
-	"\x12heartbeat_interval\x183 \x01(\v2\x19.google.protobuf.DurationR\x11heartbeatInterval\x12B\n" +
-	"\x0flocal_threshold\x184 \x01(\v2\x19.google.protobuf.DurationR\x0elocalThreshold\x12F\n" +
-	"\x12max_conn_idle_time\x185 \x01(\v2\x19.google.protobuf.DurationR\x0fmaxConnIdleTime\x12>\n" +
-	"\rmax_staleness\x186 \x01(\v2\x19.google.protobuf.DurationR\fmaxStaleness\x12S\n" +
-	"\x18server_selection_timeout\x187 \x01(\v2\x19.google.protobuf.DurationR\x16serverSelectionTimeout\x12@\n" +
-	"\x0esocket_timeout\x188 \x01(\v2\x19.google.protobuf.DurationR\rsocketTimeout\x123\n" +
-	"\atimeout\x189 \x01(\v2\x19.google.protobuf.DurationR\atimeout\x12%\n" +
-	"\x0eenable_tracing\x18d \x01(\bR\renableTracing\x12%\n" +
-	"\x0eenable_metrics\x18e \x01(\bR\renableMetrics\x1aJ\n" +
+	"\vauth_source\x18\x16 \x01(\tH\x05R\n" +
+	"authSource\x88\x01\x01\x12G\n" +
+	"\x0fconnect_timeout\x182 \x01(\v2\x19.google.protobuf.DurationH\x06R\x0econnectTimeout\x88\x01\x01\x12M\n" +
+	"\x12heartbeat_interval\x183 \x01(\v2\x19.google.protobuf.DurationH\aR\x11heartbeatInterval\x88\x01\x01\x12G\n" +
+	"\x0flocal_threshold\x184 \x01(\v2\x19.google.protobuf.DurationH\bR\x0elocalThreshold\x88\x01\x01\x12K\n" +
+	"\x12max_conn_idle_time\x185 \x01(\v2\x19.google.protobuf.DurationH\tR\x0fmaxConnIdleTime\x88\x01\x01\x12C\n" +
+	"\rmax_staleness\x186 \x01(\v2\x19.google.protobuf.DurationH\n" +
+	"R\fmaxStaleness\x88\x01\x01\x12X\n" +
+	"\x18server_selection_timeout\x187 \x01(\v2\x19.google.protobuf.DurationH\vR\x16serverSelectionTimeout\x88\x01\x01\x12E\n" +
+	"\x0esocket_timeout\x188 \x01(\v2\x19.google.protobuf.DurationH\fR\rsocketTimeout\x88\x01\x01\x128\n" +
+	"\atimeout\x189 \x01(\v2\x19.google.protobuf.DurationH\rR\atimeout\x88\x01\x01\x12*\n" +
+	"\x0eenable_tracing\x18d \x01(\bH\x0eR\renableTracing\x88\x01\x01\x12*\n" +
+	"\x0eenable_metrics\x18e \x01(\bH\x0fR\renableMetrics\x88\x01\x01\x12 \n" +
+	"\x03tls\x18F \x01(\v2\t.conf.TLSH\x10R\x03tls\x88\x01\x01\x1aJ\n" +
 	"\x1cAuthMechanismPropertiesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\v\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x06\n" +
+	"\x04_uriB\v\n" +
 	"\t_databaseB\v\n" +
 	"\t_usernameB\v\n" +
 	"\t_passwordB\x11\n" +
 	"\x0f_auth_mechanismB\x0e\n" +
-	"\f_auth_source\x1a\x8d\n" +
+	"\f_auth_sourceB\x12\n" +
+	"\x10_connect_timeoutB\x15\n" +
+	"\x13_heartbeat_intervalB\x12\n" +
+	"\x10_local_thresholdB\x15\n" +
+	"\x13_max_conn_idle_timeB\x10\n" +
+	"\x0e_max_stalenessB\x1b\n" +
+	"\x19_server_selection_timeoutB\x11\n" +
+	"\x0f_socket_timeoutB\n" +
+	"\n" +
+	"\b_timeoutB\x11\n" +
+	"\x0f_enable_tracingB\x11\n" +
+	"\x0f_enable_metricsB\x06\n" +
+	"\x04_tls\x1a\x8d\n" +
 	"\n" +
 	"\n" +
 	"ClickHouse\x12\x1c\n" +
@@ -1969,55 +2009,102 @@ const file_conf_v1_kratos_conf_data_proto_rawDesc = "" +
 	"\x04_dsnB\r\n" +
 	"\v_http_proxyB\x11\n" +
 	"\x0f_enable_tracingB\x11\n" +
-	"\x0f_enable_metrics\x1a\xe5\x02\n" +
-	"\bInfluxDB\x12\x12\n" +
-	"\x04host\x18\x01 \x01(\tR\x04host\x12\x14\n" +
-	"\x05token\x18\x02 \x01(\tR\x05token\x12\x1f\n" +
-	"\vauth_scheme\x18\x03 \x01(\tR\n" +
-	"authScheme\x12\x14\n" +
-	"\x05proxy\x18\x04 \x01(\tR\x05proxy\x12\"\n" +
+	"\x0f_enable_metrics\x1a\xb0\x05\n" +
+	"\bInfluxDB\x12\x17\n" +
+	"\x04host\x18\x01 \x01(\tH\x00R\x04host\x88\x01\x01\x12\x19\n" +
+	"\x05token\x18\x02 \x01(\tH\x01R\x05token\x88\x01\x01\x12$\n" +
+	"\vauth_scheme\x18\x03 \x01(\tH\x02R\n" +
+	"authScheme\x88\x01\x01\x12\x19\n" +
+	"\x05proxy\x18\x04 \x01(\tH\x03R\x05proxy\x88\x01\x01\x12'\n" +
 	"\forganization\x18\n" +
-	" \x01(\tR\forganization\x12\x1a\n" +
-	"\bdatabase\x18\v \x01(\tR\bdatabase\x123\n" +
-	"\atimeout\x18\x14 \x01(\v2\x19.google.protobuf.DurationR\atimeout\x12Q\n" +
-	"\x17idle_connection_timeout\x18\x15 \x01(\v2\x19.google.protobuf.DurationR\x15idleConnectionTimeout\x120\n" +
-	"\x14max_idle_connections\x18\x16 \x01(\x05R\x12maxIdleConnections\x1a!\n" +
+	" \x01(\tH\x04R\forganization\x88\x01\x01\x12\x1f\n" +
+	"\bdatabase\x18\v \x01(\tH\x05R\bdatabase\x88\x01\x01\x12C\n" +
+	"\rwrite_timeout\x18\x14 \x01(\v2\x19.google.protobuf.DurationH\x06R\fwriteTimeout\x88\x01\x01\x12C\n" +
+	"\rquery_timeout\x18\x15 \x01(\v2\x19.google.protobuf.DurationH\aR\fqueryTimeout\x88\x01\x01\x12V\n" +
+	"\x17idle_connection_timeout\x18\x16 \x01(\v2\x19.google.protobuf.DurationH\bR\x15idleConnectionTimeout\x88\x01\x01\x125\n" +
+	"\x14max_idle_connections\x18\x17 \x01(\x05H\tR\x12maxIdleConnections\x88\x01\x01\x12 \n" +
+	"\x03tls\x18F \x01(\v2\t.conf.TLSH\n" +
+	"R\x03tls\x88\x01\x01B\a\n" +
+	"\x05_hostB\b\n" +
+	"\x06_tokenB\x0e\n" +
+	"\f_auth_schemeB\b\n" +
+	"\x06_proxyB\x0f\n" +
+	"\r_organizationB\v\n" +
+	"\t_databaseB\x10\n" +
+	"\x0e_write_timeoutB\x10\n" +
+	"\x0e_query_timeoutB\x1a\n" +
+	"\x18_idle_connection_timeoutB\x17\n" +
+	"\x15_max_idle_connectionsB\x06\n" +
+	"\x04_tls\x1a!\n" +
 	"\x05Doris\x12\x18\n" +
-	"\aaddress\x18\x01 \x01(\tR\aaddress\x1a\xc3\x06\n" +
+	"\aaddress\x18\x01 \x01(\tR\aaddress\x1a\x8f\n" +
+	"\n" +
 	"\rElasticSearch\x12\x1c\n" +
-	"\taddresses\x18\x01 \x03(\tR\taddresses\x12\x1a\n" +
+	"\taddresses\x18\x01 \x03(\tR\taddresses\x12\x1f\n" +
 	"\busername\x18\n" +
-	" \x01(\tR\busername\x12\x1a\n" +
-	"\bpassword\x18\v \x01(\tR\bpassword\x12\x19\n" +
-	"\bcloud_id\x18\x14 \x01(\tR\acloudId\x12\x17\n" +
-	"\aapi_key\x18\x15 \x01(\tR\x06apiKey\x12#\n" +
-	"\rservice_token\x18\x16 \x01(\tR\fserviceToken\x127\n" +
-	"\x17certificate_fingerprint\x18\x17 \x01(\tR\x16certificateFingerprint\x12#\n" +
-	"\rdisable_retry\x18\x1e \x01(\bR\fdisableRetry\x12\x1f\n" +
-	"\vmax_retries\x18\x1f \x01(\x05R\n" +
-	"maxRetries\x122\n" +
-	"\x15compress_request_body\x18( \x01(\bR\x13compressRequestBody\x12=\n" +
-	"\x1bcompress_request_body_level\x18) \x01(\x05R\x18compressRequestBodyLevel\x12'\n" +
-	"\x0fpool_compressor\x18* \x01(\bR\x0epoolCompressor\x125\n" +
-	"\x17discover_nodes_on_start\x182 \x01(\bR\x14discoverNodesOnStart\x12Q\n" +
-	"\x17discover_nodes_interval\x183 \x01(\v2\x19.google.protobuf.DurationR\x15discoverNodesInterval\x12%\n" +
-	"\x0eenable_metrics\x18< \x01(\bR\renableMetrics\x12.\n" +
-	"\x13enable_debug_logger\x18= \x01(\bR\x11enableDebugLogger\x12:\n" +
-	"\x19enable_compatibility_mode\x18> \x01(\bR\x17enableCompatibilityMode\x12.\n" +
-	"\x13disable_meta_header\x18? \x01(\bR\x11disableMetaHeader\x12\x1b\n" +
-	"\x03tls\x18F \x01(\v2\t.conf.TLSR\x03tls\x1a\x9a\x03\n" +
-	"\tCassandra\x12\x18\n" +
-	"\aaddress\x18\x01 \x01(\tR\aaddress\x12\x1a\n" +
-	"\busername\x18\x02 \x01(\tR\busername\x12\x1a\n" +
-	"\bpassword\x18\x03 \x01(\tR\bpassword\x12\x1a\n" +
-	"\bkeyspace\x18\x05 \x01(\tR\bkeyspace\x12B\n" +
-	"\x0fconnect_timeout\x18\x06 \x01(\v2\x19.google.protobuf.DurationR\x0econnectTimeout\x123\n" +
-	"\atimeout\x18\a \x01(\v2\x19.google.protobuf.DurationR\atimeout\x12 \n" +
-	"\vconsistency\x18\b \x01(\rR\vconsistency\x12=\n" +
-	"\x1bdisable_initial_host_lookup\x18\t \x01(\bR\x18disableInitialHostLookup\x12(\n" +
+	" \x01(\tH\x00R\busername\x88\x01\x01\x12\x1f\n" +
+	"\bpassword\x18\v \x01(\tH\x01R\bpassword\x88\x01\x01\x12\x1e\n" +
+	"\bcloud_id\x18\x14 \x01(\tH\x02R\acloudId\x88\x01\x01\x12\x1c\n" +
+	"\aapi_key\x18\x15 \x01(\tH\x03R\x06apiKey\x88\x01\x01\x12(\n" +
+	"\rservice_token\x18\x16 \x01(\tH\x04R\fserviceToken\x88\x01\x01\x12<\n" +
+	"\x17certificate_fingerprint\x18\x17 \x01(\tH\x05R\x16certificateFingerprint\x88\x01\x01\x12(\n" +
+	"\rdisable_retry\x18\x1e \x01(\bH\x06R\fdisableRetry\x88\x01\x01\x12$\n" +
+	"\vmax_retries\x18\x1f \x01(\x05H\aR\n" +
+	"maxRetries\x88\x01\x01\x127\n" +
+	"\x15compress_request_body\x18( \x01(\bH\bR\x13compressRequestBody\x88\x01\x01\x12B\n" +
+	"\x1bcompress_request_body_level\x18) \x01(\x05H\tR\x18compressRequestBodyLevel\x88\x01\x01\x12,\n" +
+	"\x0fpool_compressor\x18* \x01(\bH\n" +
+	"R\x0epoolCompressor\x88\x01\x01\x12:\n" +
+	"\x17discover_nodes_on_start\x182 \x01(\bH\vR\x14discoverNodesOnStart\x88\x01\x01\x12V\n" +
+	"\x17discover_nodes_interval\x183 \x01(\v2\x19.google.protobuf.DurationH\fR\x15discoverNodesInterval\x88\x01\x01\x12*\n" +
+	"\x0eenable_metrics\x18< \x01(\bH\rR\renableMetrics\x88\x01\x01\x123\n" +
+	"\x13enable_debug_logger\x18= \x01(\bH\x0eR\x11enableDebugLogger\x88\x01\x01\x12?\n" +
+	"\x19enable_compatibility_mode\x18> \x01(\bH\x0fR\x17enableCompatibilityMode\x88\x01\x01\x123\n" +
+	"\x13disable_meta_header\x18? \x01(\bH\x10R\x11disableMetaHeader\x88\x01\x01\x12 \n" +
+	"\x03tls\x18F \x01(\v2\t.conf.TLSH\x11R\x03tls\x88\x01\x01B\v\n" +
+	"\t_usernameB\v\n" +
+	"\t_passwordB\v\n" +
+	"\t_cloud_idB\n" +
+	"\n" +
+	"\b_api_keyB\x10\n" +
+	"\x0e_service_tokenB\x1a\n" +
+	"\x18_certificate_fingerprintB\x10\n" +
+	"\x0e_disable_retryB\x0e\n" +
+	"\f_max_retriesB\x18\n" +
+	"\x16_compress_request_bodyB\x1e\n" +
+	"\x1c_compress_request_body_levelB\x12\n" +
+	"\x10_pool_compressorB\x1a\n" +
+	"\x18_discover_nodes_on_startB\x1a\n" +
+	"\x18_discover_nodes_intervalB\x11\n" +
+	"\x0f_enable_metricsB\x16\n" +
+	"\x14_enable_debug_loggerB\x1c\n" +
+	"\x1a_enable_compatibility_modeB\x16\n" +
+	"\x14_disable_meta_headerB\x06\n" +
+	"\x04_tls\x1a\xec\x04\n" +
+	"\tCassandra\x12\x1d\n" +
+	"\aaddress\x18\x01 \x01(\tH\x00R\aaddress\x88\x01\x01\x12\x1f\n" +
+	"\busername\x18\x02 \x01(\tH\x01R\busername\x88\x01\x01\x12\x1f\n" +
+	"\bpassword\x18\x03 \x01(\tH\x02R\bpassword\x88\x01\x01\x12\x1f\n" +
+	"\bkeyspace\x18\x05 \x01(\tH\x03R\bkeyspace\x88\x01\x01\x12G\n" +
+	"\x0fconnect_timeout\x18\x06 \x01(\v2\x19.google.protobuf.DurationH\x04R\x0econnectTimeout\x88\x01\x01\x128\n" +
+	"\atimeout\x18\a \x01(\v2\x19.google.protobuf.DurationH\x05R\atimeout\x88\x01\x01\x12%\n" +
+	"\vconsistency\x18\b \x01(\rH\x06R\vconsistency\x88\x01\x01\x12B\n" +
+	"\x1bdisable_initial_host_lookup\x18\t \x01(\bH\aR\x18disableInitialHostLookup\x88\x01\x01\x12-\n" +
 	"\x10ignore_peer_addr\x18\n" +
-	" \x01(\bR\x0eignorePeerAddr\x12\x1b\n" +
-	"\x03tls\x18\v \x01(\v2\t.conf.TLSR\x03tls\x1a\v\n" +
+	" \x01(\bH\bR\x0eignorePeerAddr\x88\x01\x01\x12 \n" +
+	"\x03tls\x18\v \x01(\v2\t.conf.TLSH\tR\x03tls\x88\x01\x01B\n" +
+	"\n" +
+	"\b_addressB\v\n" +
+	"\t_usernameB\v\n" +
+	"\t_passwordB\v\n" +
+	"\t_keyspaceB\x12\n" +
+	"\x10_connect_timeoutB\n" +
+	"\n" +
+	"\b_timeoutB\x0e\n" +
+	"\f_consistencyB\x1e\n" +
+	"\x1c_disable_initial_host_lookupB\x13\n" +
+	"\x11_ignore_peer_addrB\x06\n" +
+	"\x04_tls\x1a\v\n" +
 	"\tSnowflake\x1a\x8a\x03\n" +
 	"\x05Kafka\x12\x1c\n" +
 	"\tendpoints\x18\x01 \x03(\tR\tendpoints\x12\x14\n" +
@@ -2150,25 +2237,28 @@ var file_conf_v1_kratos_conf_data_proto_depIdxs = []int32{
 	19, // 26: conf.Data.MongoDB.server_selection_timeout:type_name -> google.protobuf.Duration
 	19, // 27: conf.Data.MongoDB.socket_timeout:type_name -> google.protobuf.Duration
 	19, // 28: conf.Data.MongoDB.timeout:type_name -> google.protobuf.Duration
-	20, // 29: conf.Data.ClickHouse.tls:type_name -> conf.TLS
-	19, // 30: conf.Data.ClickHouse.dial_timeout:type_name -> google.protobuf.Duration
-	19, // 31: conf.Data.ClickHouse.read_timeout:type_name -> google.protobuf.Duration
-	19, // 32: conf.Data.ClickHouse.conn_max_lifetime:type_name -> google.protobuf.Duration
-	19, // 33: conf.Data.InfluxDB.timeout:type_name -> google.protobuf.Duration
-	19, // 34: conf.Data.InfluxDB.idle_connection_timeout:type_name -> google.protobuf.Duration
-	19, // 35: conf.Data.ElasticSearch.discover_nodes_interval:type_name -> google.protobuf.Duration
-	20, // 36: conf.Data.ElasticSearch.tls:type_name -> conf.TLS
-	19, // 37: conf.Data.Cassandra.connect_timeout:type_name -> google.protobuf.Duration
-	19, // 38: conf.Data.Cassandra.timeout:type_name -> google.protobuf.Duration
-	20, // 39: conf.Data.Cassandra.tls:type_name -> conf.TLS
-	19, // 40: conf.Data.Kafka.batch_timeout:type_name -> google.protobuf.Duration
-	19, // 41: conf.Data.Kafka.read_timeout:type_name -> google.protobuf.Duration
-	19, // 42: conf.Data.Kafka.write_timeout:type_name -> google.protobuf.Duration
-	43, // [43:43] is the sub-list for method output_type
-	43, // [43:43] is the sub-list for method input_type
-	43, // [43:43] is the sub-list for extension type_name
-	43, // [43:43] is the sub-list for extension extendee
-	0,  // [0:43] is the sub-list for field type_name
+	20, // 29: conf.Data.MongoDB.tls:type_name -> conf.TLS
+	20, // 30: conf.Data.ClickHouse.tls:type_name -> conf.TLS
+	19, // 31: conf.Data.ClickHouse.dial_timeout:type_name -> google.protobuf.Duration
+	19, // 32: conf.Data.ClickHouse.read_timeout:type_name -> google.protobuf.Duration
+	19, // 33: conf.Data.ClickHouse.conn_max_lifetime:type_name -> google.protobuf.Duration
+	19, // 34: conf.Data.InfluxDB.write_timeout:type_name -> google.protobuf.Duration
+	19, // 35: conf.Data.InfluxDB.query_timeout:type_name -> google.protobuf.Duration
+	19, // 36: conf.Data.InfluxDB.idle_connection_timeout:type_name -> google.protobuf.Duration
+	20, // 37: conf.Data.InfluxDB.tls:type_name -> conf.TLS
+	19, // 38: conf.Data.ElasticSearch.discover_nodes_interval:type_name -> google.protobuf.Duration
+	20, // 39: conf.Data.ElasticSearch.tls:type_name -> conf.TLS
+	19, // 40: conf.Data.Cassandra.connect_timeout:type_name -> google.protobuf.Duration
+	19, // 41: conf.Data.Cassandra.timeout:type_name -> google.protobuf.Duration
+	20, // 42: conf.Data.Cassandra.tls:type_name -> conf.TLS
+	19, // 43: conf.Data.Kafka.batch_timeout:type_name -> google.protobuf.Duration
+	19, // 44: conf.Data.Kafka.read_timeout:type_name -> google.protobuf.Duration
+	19, // 45: conf.Data.Kafka.write_timeout:type_name -> google.protobuf.Duration
+	46, // [46:46] is the sub-list for method output_type
+	46, // [46:46] is the sub-list for method input_type
+	46, // [46:46] is the sub-list for extension type_name
+	46, // [46:46] is the sub-list for extension extendee
+	0,  // [0:46] is the sub-list for field type_name
 }
 
 func init() { file_conf_v1_kratos_conf_data_proto_init() }
@@ -2181,6 +2271,9 @@ func file_conf_v1_kratos_conf_data_proto_init() {
 	file_conf_v1_kratos_conf_data_proto_msgTypes[1].OneofWrappers = []any{}
 	file_conf_v1_kratos_conf_data_proto_msgTypes[3].OneofWrappers = []any{}
 	file_conf_v1_kratos_conf_data_proto_msgTypes[4].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_data_proto_msgTypes[5].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_data_proto_msgTypes[7].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_data_proto_msgTypes[8].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

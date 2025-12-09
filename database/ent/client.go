@@ -2,23 +2,24 @@ package ent
 
 import (
 	_ "github.com/go-sql-driver/mysql"
-
 	_ "github.com/jackc/pgx/v5/stdlib"
 	_ "github.com/lib/pq"
 
 	"github.com/go-kratos/kratos/v2/log"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
+
+	entCrud "github.com/tx7do/go-crud/entgo"
 )
 
 // NewEntClient 创建Ent ORM数据库客户端
-func NewEntClient[T ClientInterface](cfg *conf.Bootstrap, l *log.Helper, db T) *ClientWrapper[T] {
+func NewEntClient[T entCrud.EntClientInterface](cfg *conf.Bootstrap, l *log.Helper, db T) *entCrud.EntClient[T] {
 	if cfg.Data == nil || cfg.Data.Database == nil {
 		l.Warn("database config is nil")
 		return nil
 	}
 
-	drv, err := CreateDriver(
+	drv, err := entCrud.CreateDriver(
 		cfg.Data.Database.GetDriver(),
 		cfg.Data.Database.GetSource(),
 		cfg.Data.Database.GetEnableTrace(),
@@ -29,7 +30,7 @@ func NewEntClient[T ClientInterface](cfg *conf.Bootstrap, l *log.Helper, db T) *
 		return nil
 	}
 
-	wrapperClient := NewEntClientWrapper(db, drv)
+	wrapperClient := entCrud.NewEntClient(db, drv)
 
 	if cfg.Data.Database.MaxIdleConnections != nil &&
 		cfg.Data.Database.MaxOpenConnections != nil &&
