@@ -34,20 +34,20 @@ require (
 	github.com/olekukonko/tablewriter v1.1.2
 	github.com/spf13/cobra v1.10.2
 	github.com/tx7do/kratos-bootstrap/api v0.0.29
-	github.com/tx7do/kratos-bootstrap/logger v0.0.12
-	github.com/tx7do/kratos-bootstrap/registry v0.1.0
-	github.com/tx7do/kratos-bootstrap/registry/consul v0.1.2
-	github.com/tx7do/kratos-bootstrap/registry/etcd v0.1.2
-	github.com/tx7do/kratos-bootstrap/registry/eureka v0.1.2
-	github.com/tx7do/kratos-bootstrap/registry/nacos v0.1.2
-	github.com/tx7do/kratos-bootstrap/registry/servicecomb v0.1.2
-	github.com/tx7do/kratos-bootstrap/registry/zookeeper v0.1.2
-	github.com/tx7do/kratos-bootstrap/remoteconfig/apollo v0.1.2
-	github.com/tx7do/kratos-bootstrap/remoteconfig/consul v0.1.2
-	github.com/tx7do/kratos-bootstrap/remoteconfig/etcd v0.1.2
-	github.com/tx7do/kratos-bootstrap/remoteconfig/nacos v0.1.3
-	github.com/tx7do/kratos-bootstrap/remoteconfig/polaris v0.1.2
-	github.com/tx7do/kratos-bootstrap/tracer v0.0.13
+	github.com/tx7do/kratos-bootstrap/logger v0.0.13
+	github.com/tx7do/kratos-bootstrap/registry v0.1.1
+	github.com/tx7do/kratos-bootstrap/registry/consul v0.1.3
+	github.com/tx7do/kratos-bootstrap/registry/etcd v0.1.3
+	github.com/tx7do/kratos-bootstrap/registry/eureka v0.1.3
+	github.com/tx7do/kratos-bootstrap/registry/nacos v0.1.3
+	github.com/tx7do/kratos-bootstrap/registry/servicecomb v0.1.3
+	github.com/tx7do/kratos-bootstrap/registry/zookeeper v0.1.3
+	github.com/tx7do/kratos-bootstrap/remoteconfig/apollo v0.1.3
+	github.com/tx7do/kratos-bootstrap/remoteconfig/consul v0.1.3
+	github.com/tx7do/kratos-bootstrap/remoteconfig/etcd v0.1.3
+	github.com/tx7do/kratos-bootstrap/remoteconfig/nacos v0.1.4
+	github.com/tx7do/kratos-bootstrap/remoteconfig/polaris v0.1.3
+	github.com/tx7do/kratos-bootstrap/tracer v0.0.14
 	github.com/tx7do/kratos-bootstrap/utils v0.1.8
 	golang.org/x/tools v0.40.0
 )
