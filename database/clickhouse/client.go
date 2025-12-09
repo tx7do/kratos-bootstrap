@@ -103,7 +103,7 @@ func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*clickhouseCrud.Client, 
 	}
 
 	if cfg.Data.Clickhouse.BlockBufferSize != nil {
-		options = append(options, clickhouseCrud.WithBlockBufferSize(int(cfg.Data.Clickhouse.GetBlockBufferSize())))
+		options = append(options, clickhouseCrud.WithBlockBufferSize(uint8(cfg.Data.Clickhouse.GetBlockBufferSize())))
 	}
 
 	c, err := clickhouseCrud.NewClient(options...)
