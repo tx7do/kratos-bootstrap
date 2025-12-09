@@ -1,6 +1,6 @@
 git tag api/v0.0.29 --force
 
-git tag utils/v0.1.7 --force
+git tag utils/v0.1.8 --force
 
 git tag cache/redis/v0.0.13 --force
 git tag oss/minio/v0.0.12 --force
@@ -16,7 +16,7 @@ git tag database/clickhouse/v0.0.16 --force
 git tag database/elasticsearch/v0.0.14 --force
 git tag database/cassandra/v0.0.12 --force
 
-git tag registry/v0.1.0 --force
+git tag registry/v0.1.1 --force
 git tag registry/consul/v0.1.2 --force
 git tag registry/etcd/v0.1.2 --force
 git tag registry/eureka/v0.1.2 --force
