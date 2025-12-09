@@ -53,7 +53,7 @@ require (
 	github.com/prometheus/client_model v0.6.2 // indirect
 	github.com/prometheus/common v0.67.4 // indirect
 	github.com/prometheus/procfs v0.19.2 // indirect
-	github.com/prometheus/prometheus v0.307.3 // indirect
+	github.com/prometheus/prometheus v0.308.0 // indirect
 	github.com/tencentcloud/tencentcloud-cls-sdk-go v1.0.14 // indirect
 	github.com/tinylib/msgp v1.5.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
