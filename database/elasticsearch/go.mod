@@ -7,7 +7,7 @@ replace github.com/tx7do/kratos-bootstrap/api => ../../api
 require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/tx7do/go-crud/elasticsearch v0.0.2
-	github.com/tx7do/kratos-bootstrap/api v0.0.28
+	github.com/tx7do/kratos-bootstrap/api v0.0.29
 	github.com/tx7do/kratos-bootstrap/utils v0.1.7
 )
 

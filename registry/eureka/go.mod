@@ -10,9 +10,9 @@ replace (
 )
 
 require (
-	github.com/go-kratos/kratos/v2 v2.9.1
+	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/stretchr/testify v1.11.1
-	github.com/tx7do/kratos-bootstrap/api v0.0.28
+	github.com/tx7do/kratos-bootstrap/api v0.0.29
 	github.com/tx7do/kratos-bootstrap/registry v0.1.0
 )
 

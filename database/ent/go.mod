@@ -10,7 +10,7 @@ require (
 	github.com/jackc/pgx/v5 v5.7.6
 	github.com/lib/pq v1.10.9
 	github.com/tx7do/go-crud/entgo v0.0.13
-	github.com/tx7do/kratos-bootstrap/api v0.0.28
+	github.com/tx7do/kratos-bootstrap/api v0.0.29
 )
 
 require (

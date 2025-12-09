@@ -5,10 +5,10 @@ go 1.24.6
 replace github.com/tx7do/kratos-bootstrap/api => ../../api
 
 require (
-	github.com/go-kratos/kratos/v2 v2.9.1
+	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/redis/go-redis/extra/redisotel/v9 v9.17.2
 	github.com/redis/go-redis/v9 v9.17.2
-	github.com/tx7do/kratos-bootstrap/api v0.0.28
+	github.com/tx7do/kratos-bootstrap/api v0.0.29
 )
 
 require (
@@ -18,8 +18,8 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/redis/go-redis/extra/rediscmd/v9 v9.17.2 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
-	go.opentelemetry.io/otel v1.38.0 // indirect
-	go.opentelemetry.io/otel/metric v1.38.0 // indirect
-	go.opentelemetry.io/otel/trace v1.38.0 // indirect
+	go.opentelemetry.io/otel v1.39.0 // indirect
+	go.opentelemetry.io/otel/metric v1.39.0 // indirect
+	go.opentelemetry.io/otel/trace v1.39.0 // indirect
 	google.golang.org/protobuf v1.36.10 // indirect
 )

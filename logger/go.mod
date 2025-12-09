@@ -11,14 +11,14 @@ replace (
 )
 
 require (
-	github.com/go-kratos/kratos/contrib/log/aliyun/v2 v2.0.0-20251201062103-6f0b3015b803
-	github.com/go-kratos/kratos/contrib/log/fluent/v2 v2.0.0-20251201062103-6f0b3015b803
-	github.com/go-kratos/kratos/contrib/log/logrus/v2 v2.0.0-20251201062103-6f0b3015b803
-	github.com/go-kratos/kratos/contrib/log/tencent/v2 v2.0.0-20251201062103-6f0b3015b803
-	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20251201062103-6f0b3015b803
-	github.com/go-kratos/kratos/v2 v2.9.1
+	github.com/go-kratos/kratos/contrib/log/aliyun/v2 v2.0.0-20251205160234-b9fab9a5a5ab
+	github.com/go-kratos/kratos/contrib/log/fluent/v2 v2.0.0-20251205160234-b9fab9a5a5ab
+	github.com/go-kratos/kratos/contrib/log/logrus/v2 v2.0.0-20251205160234-b9fab9a5a5ab
+	github.com/go-kratos/kratos/contrib/log/tencent/v2 v2.0.0-20251205160234-b9fab9a5a5ab
+	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20251205160234-b9fab9a5a5ab
+	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/sirupsen/logrus v1.9.3
-	github.com/tx7do/kratos-bootstrap/api v0.0.28
+	github.com/tx7do/kratos-bootstrap/api v0.0.29
 	github.com/tx7do/kratos-bootstrap/utils v0.1.7
 	go.uber.org/zap v1.27.1
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
@@ -55,19 +55,19 @@ require (
 	github.com/prometheus/procfs v0.19.2 // indirect
 	github.com/prometheus/prometheus v0.308.0 // indirect
 	github.com/tencentcloud/tencentcloud-cls-sdk-go v1.0.14 // indirect
-	github.com/tinylib/msgp v1.5.0 // indirect
+	github.com/tinylib/msgp v1.6.1 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
-	go.opentelemetry.io/otel v1.38.0 // indirect
-	go.opentelemetry.io/otel/metric v1.38.0 // indirect
-	go.opentelemetry.io/otel/trace v1.38.0 // indirect
+	go.opentelemetry.io/otel v1.39.0 // indirect
+	go.opentelemetry.io/otel/metric v1.39.0 // indirect
+	go.opentelemetry.io/otel/trace v1.39.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.3 // indirect
-	golang.org/x/net v0.47.0 // indirect
-	golang.org/x/sync v0.18.0 // indirect
-	golang.org/x/sys v0.38.0 // indirect
-	golang.org/x/text v0.31.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20251124214823-79d6a2a48846 // indirect
+	golang.org/x/net v0.48.0 // indirect
+	golang.org/x/sync v0.19.0 // indirect
+	golang.org/x/sys v0.39.0 // indirect
+	golang.org/x/text v0.32.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20251202230838-ff82c1b0f217 // indirect
 	google.golang.org/grpc v1.77.0 // indirect
 	google.golang.org/protobuf v1.36.10 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
