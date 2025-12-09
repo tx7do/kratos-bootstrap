@@ -17,14 +17,14 @@ git tag database/elasticsearch/v0.0.15 --force
 git tag database/cassandra/v0.0.13 --force
 
 git tag registry/v0.1.1 --force
-git tag registry/consul/v0.1.3 --force
-git tag registry/etcd/v0.1.3 --force
-git tag registry/eureka/v0.1.3 --force
-git tag registry/kubernetes/v0.1.4 --force
-git tag registry/nacos/v0.1.3 --force
-git tag registry/polaris/v0.1.3 --force
-git tag registry/servicecomb/v0.1.3 --force
-git tag registry/zookeeper/v0.1.3 --force
+git tag registry/consul/v0.1.4 --force
+git tag registry/etcd/v0.1.4 --force
+git tag registry/eureka/v0.1.4 --force
+git tag registry/kubernetes/v0.1.5 --force
+git tag registry/nacos/v0.1.4 --force
+git tag registry/polaris/v0.1.4 --force
+git tag registry/servicecomb/v0.1.4 --force
+git tag registry/zookeeper/v0.1.4 --force
 
 git tag remoteconfig/apollo/v0.1.3 --force
 git tag remoteconfig/consul/v0.1.3 --force
