@@ -33,7 +33,7 @@ git tag remoteconfig/kubernetes/v0.1.4 --force
 git tag remoteconfig/nacos/v0.1.4 --force
 git tag remoteconfig/polaris/v0.1.3 --force
 
-git tag bootstrap/v0.0.20 --force
+git tag bootstrap/v0.0.21 --force
 
 git tag v0.7.0
 
