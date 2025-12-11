@@ -9,7 +9,7 @@ git tag rpc/v0.0.21 --force
 git tag tracer/v0.0.14 --force
 
 git tag database/ent/v0.0.14 --force
-git tag database/gorm/v0.0.14 --force
+git tag database/gorm/v0.0.15 --force
 git tag database/mongodb/v0.0.15 --force
 git tag database/influxdb/v0.0.15 --force
 git tag database/clickhouse/v0.0.17 --force
