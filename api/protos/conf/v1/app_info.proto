@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package conf;
+
+option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
+
+import "google/protobuf/timestamp.proto";
+
+// 应用/实例信息
+message AppInfo {
+  // 逻辑应用 ID（服务名）
+  string app_id = 1;
+  // 实例 ID（单个运行实例）
+  string instance_id = 2;
+  // 人类可读的名称
+  string name = 3;
+  // 语义化版本号
+  string version = 4;
+
+  // 运行时信息
+  string hostname = 10;
+  repeated Endpoint endpoints = 11;
+  google.protobuf.Timestamp start_time = 12;
+
+  // 部署/环境/标签
+  string environment = 20; // dev/stage/prod
+  string region = 21;
+  string zone = 22;
+  map<string, string> labels = 23;
+
+  // 构建信息
+  string build_id = 30;
+  string git_commit = 31;
+
+  // 任意键值元数据
+  map<string, string> metadata = 40;
+}
+
+// 表示一个可访问的 endpoint（IP:PORT 或 URI）
+message Endpoint {
+  string kind = 1;    // e.g., "grpc", "http", "metrics"
+  string address = 2; // e.g., "10.0.0.1:8080" or "http://host:8080"
+}
