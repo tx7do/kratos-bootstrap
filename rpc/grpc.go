@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-kratos/aegis/ratelimit"
 	"github.com/go-kratos/aegis/ratelimit/bbr"
-
+	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"google.golang.org/grpc"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -25,7 +25,6 @@ import (
 	kratosGrpc "github.com/go-kratos/kratos/v2/transport/grpc"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"github.com/tx7do/kratos-bootstrap/utils"
 )
 
 const defaultTimeout = 5 * time.Second
@@ -90,7 +89,7 @@ func initGrpcClientConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []k
 		var tlsCfg *tls.Config
 		var err error
 
-		if tlsCfg, err = utils.LoadClientTlsConfig(cfg.Client.Grpc.Tls); err != nil {
+		if tlsCfg, err = loadClientTlsConfig(cfg.Client.Grpc.Tls); err != nil {
 			panic(err)
 		}
 
@@ -153,7 +152,7 @@ func initGrpcServerConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []k
 		var tlsCfg *tls.Config
 		var err error
 
-		if tlsCfg, err = utils.LoadServerTlsConfig(cfg.Server.Grpc.Tls); err != nil {
+		if tlsCfg, err = loadServerTlsConfig(cfg.Server.Grpc.Tls); err != nil {
 			panic(err)
 		}
 
@@ -173,4 +172,17 @@ func initGrpcServerConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []k
 	}
 
 	return options
+}
+
+func NewGrpcWhiteListMatcher(whiteList *WhiteList) selector.MatchFunc {
+	return func(ctx context.Context, operation string) bool {
+		if operation == "" {
+			return true
+		}
+		op := normalizeOp(operation)
+		whiteList.mu.RLock()
+		defer whiteList.mu.RUnlock()
+		// skip middleware when whitelisted
+		return !whiteList.isWhitelistedLocked(op)
+	}
 }

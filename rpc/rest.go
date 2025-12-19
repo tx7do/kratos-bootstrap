@@ -9,38 +9,39 @@ import (
 	"github.com/go-kratos/aegis/ratelimit"
 	"github.com/go-kratos/aegis/ratelimit/bbr"
 
+	kratosRest "github.com/go-kratos/kratos/v2/transport/http"
+
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/metadata"
 	midRateLimit "github.com/go-kratos/kratos/v2/middleware/ratelimit"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
+	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 
-	"github.com/tx7do/kratos-bootstrap/rpc/middleware/validate"
-
-	kratosRest "github.com/go-kratos/kratos/v2/transport/http"
-
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"github.com/tx7do/kratos-bootstrap/utils"
+	"github.com/tx7do/kratos-bootstrap/rpc/middleware/validate"
 )
 
 // CreateRestServer 创建REST服务端
-func CreateRestServer(cfg *conf.Bootstrap, mds ...middleware.Middleware) *kratosRest.Server {
-	var options []kratosRest.ServerOption
-
-	options = append(options, initRestConfig(cfg, mds...)...)
+func CreateRestServer(cfg *conf.Bootstrap, mds ...middleware.Middleware) (*kratosRest.Server, error) {
+	options, err := initRestConfig(cfg, mds...)
+	if err != nil {
+		return nil, err
+	}
 
 	srv := kratosRest.NewServer(options...)
 
-	if cfg.Server != nil && cfg.Server.Rest != nil && cfg.Server.Rest.GetEnablePprof() {
+	if cfg != nil && cfg.Server != nil && cfg.Server.Rest != nil && cfg.Server.Rest.GetEnablePprof() {
 		registerHttpPprof(srv)
 	}
 
-	return srv
+	return srv, nil
 }
 
-func initRestConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []kratosRest.ServerOption {
-	if cfg.Server == nil || cfg.Server.Rest == nil {
-		return nil
+// initRestConfig 初始化REST服务配置
+func initRestConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) ([]kratosRest.ServerOption, error) {
+	if cfg == nil || cfg.Server == nil || cfg.Server.Rest == nil {
+		return nil, nil
 	}
 
 	var options []kratosRest.ServerOption
@@ -96,8 +97,8 @@ func initRestConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []kratosR
 		var tlsCfg *tls.Config
 		var err error
 
-		if tlsCfg, err = utils.LoadServerTlsConfig(cfg.Server.Rest.Tls); err != nil {
-			panic(err)
+		if tlsCfg, err = loadServerTlsConfig(cfg.Server.Rest.Tls); err != nil {
+			return nil, err
 		}
 
 		if tlsCfg != nil {
@@ -105,9 +106,10 @@ func initRestConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []kratosR
 		}
 	}
 
-	return options
+	return options, nil
 }
 
+// registerHttpPprof 注册pprof路由
 func registerHttpPprof(s *kratosRest.Server) {
 	s.HandleFunc("/debug/pprof", pprof.Index)
 
@@ -122,4 +124,10 @@ func registerHttpPprof(s *kratosRest.Server) {
 	s.HandleFunc("/debug/heap", pprof.Handler("heap").ServeHTTP)
 	s.HandleFunc("/debug/mutex", pprof.Handler("mutex").ServeHTTP)
 	s.HandleFunc("/debug/threadcreate", pprof.Handler("threadcreate").ServeHTTP)
+}
+
+// NewRestWhiteListMatcher 创建REST白名单匹配器
+func NewRestWhiteListMatcher() selector.MatchFunc {
+	// reuse package-level DefaultWhiteList matcher for REST
+	return NewWhiteListMatcher()
 }
