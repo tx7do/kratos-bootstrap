@@ -23,14 +23,18 @@ const (
 
 // 链路追踪
 type Tracer struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Batcher       string                 `protobuf:"bytes,1,opt,name=batcher,proto3" json:"batcher,omitempty"`   // jaeger或者zipkin
-	Endpoint      string                 `protobuf:"bytes,2,opt,name=endpoint,proto3" json:"endpoint,omitempty"` // 端口
-	Sampler       float64                `protobuf:"fixed64,3,opt,name=sampler,proto3" json:"sampler,omitempty"` // 采样率，默认：1.0
-	Env           string                 `protobuf:"bytes,4,opt,name=env,proto3" json:"env,omitempty"`           // 运行环境：dev、debug、product
-	Insecure      bool                   `protobuf:"varint,5,opt,name=insecure,proto3" json:"insecure,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// exporter 名称，例如: "otlp-grpc", "otlp-http", "zipkin", "stdout"
+	Exporter string `protobuf:"bytes,1,opt,name=exporter,proto3" json:"exporter,omitempty"`
+	// 目标 endpoint，例如 "localhost:4317" 或 "http://host:9411/api/v2/spans"
+	Endpoint string  `protobuf:"bytes,2,opt,name=endpoint,proto3" json:"endpoint,omitempty"`
+	Sampler  float64 `protobuf:"fixed64,3,opt,name=sampler,proto3" json:"sampler,omitempty"` // 采样率，默认：1.0
+	Env      string  `protobuf:"bytes,4,opt,name=env,proto3" json:"env,omitempty"`           // 运行环境：dev、debug、product
+	Insecure bool    `protobuf:"varint,5,opt,name=insecure,proto3" json:"insecure,omitempty"`
+	// 批处理/Span processor 配置（可选）
+	BatcherOptions *BatcherOptions `protobuf:"bytes,6,opt,name=batcher_options,json=batcherOptions,proto3,oneof" json:"batcher_options,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *Tracer) Reset() {
@@ -63,9 +67,9 @@ func (*Tracer) Descriptor() ([]byte, []int) {
 	return file_conf_v1_kratos_conf_tracer_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Tracer) GetBatcher() string {
+func (x *Tracer) GetExporter() string {
 	if x != nil {
-		return x.Batcher
+		return x.Exporter
 	}
 	return ""
 }
@@ -98,17 +102,108 @@ func (x *Tracer) GetInsecure() bool {
 	return false
 }
 
+func (x *Tracer) GetBatcherOptions() *BatcherOptions {
+	if x != nil {
+		return x.BatcherOptions
+	}
+	return nil
+}
+
+type BatcherOptions struct {
+	state               protoimpl.MessageState `protogen:"open.v1"`
+	Enabled             bool                   `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"` // 是否启用 BatchSpanProcessor（默认 true）
+	MaxQueueSize        uint32                 `protobuf:"varint,2,opt,name=max_queue_size,json=maxQueueSize,proto3" json:"max_queue_size,omitempty"`
+	MaxExportBatchSize  uint32                 `protobuf:"varint,3,opt,name=max_export_batch_size,json=maxExportBatchSize,proto3" json:"max_export_batch_size,omitempty"`
+	ScheduleDelayMillis uint32                 `protobuf:"varint,4,opt,name=schedule_delay_millis,json=scheduleDelayMillis,proto3" json:"schedule_delay_millis,omitempty"`
+	ExportTimeoutMillis uint32                 `protobuf:"varint,5,opt,name=export_timeout_millis,json=exportTimeoutMillis,proto3" json:"export_timeout_millis,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
+}
+
+func (x *BatcherOptions) Reset() {
+	*x = BatcherOptions{}
+	mi := &file_conf_v1_kratos_conf_tracer_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BatcherOptions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BatcherOptions) ProtoMessage() {}
+
+func (x *BatcherOptions) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_v1_kratos_conf_tracer_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BatcherOptions.ProtoReflect.Descriptor instead.
+func (*BatcherOptions) Descriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_tracer_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *BatcherOptions) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
+func (x *BatcherOptions) GetMaxQueueSize() uint32 {
+	if x != nil {
+		return x.MaxQueueSize
+	}
+	return 0
+}
+
+func (x *BatcherOptions) GetMaxExportBatchSize() uint32 {
+	if x != nil {
+		return x.MaxExportBatchSize
+	}
+	return 0
+}
+
+func (x *BatcherOptions) GetScheduleDelayMillis() uint32 {
+	if x != nil {
+		return x.ScheduleDelayMillis
+	}
+	return 0
+}
+
+func (x *BatcherOptions) GetExportTimeoutMillis() uint32 {
+	if x != nil {
+		return x.ExportTimeoutMillis
+	}
+	return 0
+}
+
 var File_conf_v1_kratos_conf_tracer_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_tracer_proto_rawDesc = "" +
 	"\n" +
-	" conf/v1/kratos_conf_tracer.proto\x12\x04conf\"\x86\x01\n" +
-	"\x06Tracer\x12\x18\n" +
-	"\abatcher\x18\x01 \x01(\tR\abatcher\x12\x1a\n" +
+	" conf/v1/kratos_conf_tracer.proto\x12\x04conf\"\xe0\x01\n" +
+	"\x06Tracer\x12\x1a\n" +
+	"\bexporter\x18\x01 \x01(\tR\bexporter\x12\x1a\n" +
 	"\bendpoint\x18\x02 \x01(\tR\bendpoint\x12\x18\n" +
 	"\asampler\x18\x03 \x01(\x01R\asampler\x12\x10\n" +
 	"\x03env\x18\x04 \x01(\tR\x03env\x12\x1a\n" +
-	"\binsecure\x18\x05 \x01(\bR\binsecureB\x87\x01\n" +
+	"\binsecure\x18\x05 \x01(\bR\binsecure\x12B\n" +
+	"\x0fbatcher_options\x18\x06 \x01(\v2\x14.conf.BatcherOptionsH\x00R\x0ebatcherOptions\x88\x01\x01B\x12\n" +
+	"\x10_batcher_options\"\xeb\x01\n" +
+	"\x0eBatcherOptions\x12\x18\n" +
+	"\aenabled\x18\x01 \x01(\bR\aenabled\x12$\n" +
+	"\x0emax_queue_size\x18\x02 \x01(\rR\fmaxQueueSize\x121\n" +
+	"\x15max_export_batch_size\x18\x03 \x01(\rR\x12maxExportBatchSize\x122\n" +
+	"\x15schedule_delay_millis\x18\x04 \x01(\rR\x13scheduleDelayMillis\x122\n" +
+	"\x15export_timeout_millis\x18\x05 \x01(\rR\x13exportTimeoutMillisB\x87\x01\n" +
 	"\bcom.confB\x15KratosConfTracerProtoP\x01Z4github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1\xa2\x02\x03CXX\xaa\x02\x04Conf\xca\x02\x04Conf\xe2\x02\x10Conf\\GPBMetadata\xea\x02\x04Confb\x06proto3"
 
 var (
@@ -123,16 +218,18 @@ func file_conf_v1_kratos_conf_tracer_proto_rawDescGZIP() []byte {
 	return file_conf_v1_kratos_conf_tracer_proto_rawDescData
 }
 
-var file_conf_v1_kratos_conf_tracer_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_conf_v1_kratos_conf_tracer_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_conf_v1_kratos_conf_tracer_proto_goTypes = []any{
-	(*Tracer)(nil), // 0: conf.Tracer
+	(*Tracer)(nil),         // 0: conf.Tracer
+	(*BatcherOptions)(nil), // 1: conf.BatcherOptions
 }
 var file_conf_v1_kratos_conf_tracer_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: conf.Tracer.batcher_options:type_name -> conf.BatcherOptions
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_conf_v1_kratos_conf_tracer_proto_init() }
@@ -140,13 +237,14 @@ func file_conf_v1_kratos_conf_tracer_proto_init() {
 	if File_conf_v1_kratos_conf_tracer_proto != nil {
 		return
 	}
+	file_conf_v1_kratos_conf_tracer_proto_msgTypes[0].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_v1_kratos_conf_tracer_proto_rawDesc), len(file_conf_v1_kratos_conf_tracer_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
