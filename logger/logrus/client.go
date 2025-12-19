@@ -1,7 +1,6 @@
 package logrus
 
 import (
-	logrusLogger "github.com/go-kratos/kratos/contrib/log/logrus/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/sirupsen/logrus"
 
@@ -10,7 +9,7 @@ import (
 )
 
 func init() {
-	logger.Register(logger.Logrus, func(cfg *conf.Logger) (log.Logger, error) {
+	_ = logger.Register(logger.Logrus, func(cfg *conf.Logger) (log.Logger, error) {
 		return NewLogger(cfg)
 	})
 }
@@ -49,6 +48,6 @@ func NewLogger(cfg *conf.Logger) (log.Logger, error) {
 	l.Level = loggerLevel
 	l.Formatter = loggerFormatter
 
-	wrapped := logrusLogger.NewLogger(l)
+	wrapped := NewLogrusLogger(l)
 	return wrapped, nil
 }

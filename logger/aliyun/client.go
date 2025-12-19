@@ -3,7 +3,6 @@ package aliyun
 import (
 	"errors"
 
-	aliyunLogger "github.com/go-kratos/kratos/contrib/log/aliyun/v2"
 	"github.com/go-kratos/kratos/v2/log"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
@@ -11,7 +10,7 @@ import (
 )
 
 func init() {
-	logger.Register(logger.Aliyun, func(cfg *conf.Logger) (log.Logger, error) {
+	_ = logger.Register(logger.Aliyun, func(cfg *conf.Logger) (log.Logger, error) {
 		return NewLogger(cfg)
 	})
 }
@@ -27,11 +26,11 @@ func NewLogger(cfg *conf.Logger) (log.Logger, error) {
 		return nil, errors.New("aliyun config invalid")
 	}
 
-	wrapped, err := aliyunLogger.NewAliyunLog(
-		aliyunLogger.WithProject(cfg.Aliyun.Project),
-		aliyunLogger.WithEndpoint(cfg.Aliyun.Endpoint),
-		aliyunLogger.WithAccessKey(cfg.Aliyun.AccessKey),
-		aliyunLogger.WithAccessSecret(cfg.Aliyun.AccessSecret),
+	wrapped, err := NewAliyunLog(
+		WithProject(cfg.Aliyun.Project),
+		WithEndpoint(cfg.Aliyun.Endpoint),
+		WithAccessKey(cfg.Aliyun.AccessKey),
+		WithAccessSecret(cfg.Aliyun.AccessSecret),
 	)
 	if err != nil {
 		// creation failed, return nil so caller can fallback

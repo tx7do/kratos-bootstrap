@@ -8,7 +8,7 @@ replace (
 )
 
 require (
-	github.com/go-kratos/kratos/contrib/log/fluent/v2 v2.0.0-20251217105121-fb8e43efb207
+	github.com/fluent/fluent-logger-golang v1.10.1
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/tx7do/kratos-bootstrap/api v0.0.31
 	github.com/tx7do/kratos-bootstrap/logger v0.0.13
@@ -16,7 +16,6 @@ require (
 
 require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/fluent/fluent-logger-golang v1.10.1 // indirect
 	github.com/go-kratos/aegis v0.2.0 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect

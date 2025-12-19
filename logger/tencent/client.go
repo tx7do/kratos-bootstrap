@@ -1,7 +1,6 @@
 package tencent
 
 import (
-	tencentLogger "github.com/go-kratos/kratos/contrib/log/tencent/v2"
 	"github.com/go-kratos/kratos/v2/log"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
@@ -9,7 +8,7 @@ import (
 )
 
 func init() {
-	logger.Register(logger.Tencent, func(cfg *conf.Logger) (log.Logger, error) {
+	_ = logger.Register(logger.Tencent, func(cfg *conf.Logger) (log.Logger, error) {
 		return NewLogger(cfg)
 	})
 }
@@ -20,11 +19,11 @@ func NewLogger(cfg *conf.Logger) (log.Logger, error) {
 		return nil, nil
 	}
 
-	wrapped, err := tencentLogger.NewLogger(
-		tencentLogger.WithTopicID(cfg.Tencent.TopicId),
-		tencentLogger.WithEndpoint(cfg.Tencent.Endpoint),
-		tencentLogger.WithAccessKey(cfg.Tencent.AccessKey),
-		tencentLogger.WithAccessSecret(cfg.Tencent.AccessSecret),
+	wrapped, err := NewTencentLogger(
+		WithTopicID(cfg.Tencent.TopicId),
+		WithEndpoint(cfg.Tencent.Endpoint),
+		WithAccessKey(cfg.Tencent.AccessKey),
+		WithAccessSecret(cfg.Tencent.AccessSecret),
 	)
 	if err != nil {
 		return nil, err

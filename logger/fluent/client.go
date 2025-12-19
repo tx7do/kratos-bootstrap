@@ -1,7 +1,6 @@
 package fluent
 
 import (
-	fluentLogger "github.com/go-kratos/kratos/contrib/log/fluent/v2"
 	"github.com/go-kratos/kratos/v2/log"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
@@ -9,7 +8,7 @@ import (
 )
 
 func init() {
-	logger.Register(logger.Fluent, func(cfg *conf.Logger) (log.Logger, error) {
+	_ = logger.Register(logger.Fluent, func(cfg *conf.Logger) (log.Logger, error) {
 		return NewLogger(cfg)
 	})
 }
@@ -20,7 +19,7 @@ func NewLogger(cfg *conf.Logger) (log.Logger, error) {
 		return nil, nil
 	}
 
-	wrapped, err := fluentLogger.NewLogger(cfg.Fluent.Endpoint)
+	wrapped, err := NewFluentLogger(cfg.Fluent.Endpoint)
 	if err != nil {
 		return nil, err
 	}

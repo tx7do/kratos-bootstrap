@@ -10,4 +10,5 @@ const (
 	Zap     Type = "zap"
 	Aliyun  Type = "aliyun"
 	Tencent Type = "tencent"
+	Zerelog Type = "zerelog"
 )

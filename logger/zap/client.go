@@ -14,7 +14,7 @@ import (
 )
 
 func init() {
-	logger.Register(logger.Zap, func(cfg *conf.Logger) (log.Logger, error) {
+	_ = logger.Register(logger.Zap, func(cfg *conf.Logger) (log.Logger, error) {
 		return NewLogger(cfg)
 	})
 }
