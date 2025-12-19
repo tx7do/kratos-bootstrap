@@ -16,7 +16,7 @@ require (
 	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/stretchr/testify v1.11.1
 	github.com/tx7do/kratos-bootstrap/api v0.0.32
-	github.com/tx7do/kratos-bootstrap/registry v0.1.1
+	github.com/tx7do/kratos-bootstrap/registry v0.2.0
 )
 
 require (
