@@ -3,12 +3,8 @@ package tracer
 import (
 	"context"
 	"errors"
-
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
-	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
-	"go.opentelemetry.io/otel/exporters/zipkin"
+	"fmt"
+	"sync"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
@@ -17,117 +13,110 @@ import (
 	semConv "go.opentelemetry.io/otel/semconv/v1.4.0"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"github.com/tx7do/kratos-bootstrap/utils"
 )
 
-// NewTracerExporter 创建一个导出器，支持：zipkin、otlp-http、otlp-grpc
-func NewTracerExporter(exporterName, endpoint string, insecure bool) (traceSdk.SpanExporter, error) {
-	ctx := context.Background()
+var (
+	// tpInstance holds the currently active global tracer provider (interface type, nil-able)
+	tpMu       sync.Mutex
+	tpInstance *traceSdk.TracerProvider
+)
 
-	switch exporterName {
-	case "zipkin":
-		return NewZipkinExporter(ctx, endpoint)
-	case "jaeger":
-		return nil, errors.New("jaeger exporter is no longer supported, please use otlp-http or otlp-grpc replace it")
-	case "otlp-http":
-		return NewOtlpHttpExporter(ctx, endpoint, insecure)
-	case "otlp-grpc":
-		return NewOtlpGrpcExporter(ctx, endpoint, insecure)
-	default:
-		fallthrough
-	case "stdout":
-		return stdouttrace.New()
+// NewTracerExporter 构建 exporter：优先使用注册表中的 factory。
+// exporterName 不能为空，cfg 传入给 factory 用于读取 endpoint/insecure/headers 等信息。
+func NewTracerExporter(ctx context.Context, cfg *conf.Tracer) (traceSdk.SpanExporter, error) {
+	if cfg == nil {
+		return nil, errors.New("tracer cfg is nil")
 	}
+	if cfg.GetExporter() == "" {
+		return nil, errors.New("exporter name is empty")
+	}
+
+	if f, ok := GetExporterFactory(cfg.GetExporter()); ok {
+		return f(ctx, cfg)
+	}
+	return nil, fmt.Errorf("unknown exporter %q; available: %v", cfg.GetExporter(), ListExporterNames())
 }
 
-// NewTracerProvider 创建一个链路追踪器
-func NewTracerProvider(cfg *conf.Tracer, serviceInfo *utils.ServiceInfo) error {
-	if cfg == nil {
-		//return errors.New("tracer config is nil")
+// ShutdownTracerProvider gracefully shuts down the active global tracer provider (if set).
+// Safe to call multiple times; returns error if shutdown fails.
+func ShutdownTracerProvider(ctx context.Context) error {
+	tpMu.Lock()
+	defer tpMu.Unlock()
+	if tpInstance == nil {
 		return nil
 	}
-	if serviceInfo == nil {
-		//return errors.New("service info is nil")
-		return nil
+	if err := tpInstance.Shutdown(ctx); err != nil {
+		return err
+	}
+	tpInstance = nil
+	return nil
+}
+
+// NewTracerProvider 创建 tracer provider 并设置为全局 provider。
+// 注：为了更好的资源管理，可以使用 NewTracerProviderWithShutdown 获得 shutdown 函数。
+func NewTracerProvider(ctx context.Context, cfg *conf.Tracer, appInfo *conf.AppInfo) error {
+	_, _, err := NewTracerProviderWithShutdown(ctx, cfg, appInfo)
+	return err
+}
+
+// NewTracerProviderWithShutdown 返回 (tp, shutdownFunc, error)，推荐在 main 中使用并在退出时调用 shutdownFunc(ctx)
+func NewTracerProviderWithShutdown(ctx context.Context, cfg *conf.Tracer, appInfo *conf.AppInfo) (*traceSdk.TracerProvider, func(context.Context) error, error) {
+	if cfg == nil || appInfo == nil {
+		return nil, func(context.Context) error { return nil }, nil
 	}
 
-	if cfg.Sampler == 0 {
-		cfg.Sampler = 1.0
+	// do not mutate caller cfg; use local defaults
+	sampler := cfg.GetSampler()
+	if sampler == 0 {
+		sampler = 1.0
 	}
-
-	if cfg.Env == "" {
-		cfg.Env = "dev"
+	env := cfg.GetEnv()
+	if env == "" {
+		env = "dev"
 	}
 
 	opts := []traceSdk.TracerProviderOption{
-		traceSdk.WithSampler(traceSdk.ParentBased(traceSdk.TraceIDRatioBased(cfg.GetSampler()))),
+		traceSdk.WithSampler(traceSdk.ParentBased(traceSdk.TraceIDRatioBased(sampler))),
 		traceSdk.WithResource(resource.NewSchemaless(
-			semConv.ServiceNameKey.String(serviceInfo.Name),
-			semConv.ServiceVersionKey.String(serviceInfo.Version),
-			semConv.ServiceInstanceIDKey.String(serviceInfo.Id),
-			attribute.String("env", cfg.GetEnv()),
+			semConv.ServiceNameKey.String(appInfo.GetName()),
+			semConv.ServiceVersionKey.String(appInfo.GetVersion()),
+			semConv.ServiceInstanceIDKey.String(appInfo.GetAppId()),
+			attribute.String("env", env),
 		)),
 	}
 
+	// NOTE: cfg.GetBatcher() historically used as exporter name in this project.
+	// Consider renaming conf.Tracer fields to `Exporter`/`ExporterName` in the future.
 	if len(cfg.GetEndpoint()) > 0 {
-		exp, err := NewTracerExporter(cfg.GetBatcher(), cfg.GetEndpoint(), cfg.GetInsecure())
+		exp, err := NewTracerExporter(ctx, cfg)
 		if err != nil {
-			panic(err)
+			return nil, nil, err
 		}
-
 		opts = append(opts, traceSdk.WithBatcher(exp))
 	}
 
 	tp := traceSdk.NewTracerProvider(opts...)
+
+	// defensive check (NewTracerProvider does not return nil in normal cases)
 	if tp == nil {
-		return errors.New("create tracer provider failed")
+		return nil, nil, errors.New("create tracer provider failed")
 	}
+
+	// set global provider and keep reference for shutdown
+	tpMu.Lock()
+	// shutdown previous provider if present
+	if tpInstance != nil {
+		_ = tpInstance.Shutdown(ctx)
+	}
+	tpInstance = tp
+	tpMu.Unlock()
 
 	otel.SetTracerProvider(tp)
 
-	return nil
-}
-
-// NewZipkinExporter 创建一个zipkin导出器，默认对端地址：http://localhost:9411/api/v2/spans
-func NewZipkinExporter(_ context.Context, endpoint string) (traceSdk.SpanExporter, error) {
-	return zipkin.New(endpoint)
-}
-
-//// NewJaegerExporter 创建一个jaeger导出器，默认对端地址：http://localhost:14268/api/traces
-//func NewJaegerExporter(_ context.Context, endpoint string) (traceSdk.SpanExporter, error) {
-//	return jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(endpoint)))
-//}
-
-// NewOtlpHttpExporter 创建OTLP/HTTP导出器，默认端口：4318
-func NewOtlpHttpExporter(ctx context.Context, endpoint string, insecure bool, options ...otlptracehttp.Option) (traceSdk.SpanExporter, error) {
-	var opts []otlptracehttp.Option
-	opts = append(opts, otlptracehttp.WithEndpoint(endpoint))
-
-	if insecure {
-		opts = append(opts, otlptracehttp.WithInsecure())
+	shutdown := func(c context.Context) error {
+		// shutdown global provider if it's still the same one
+		return ShutdownTracerProvider(c)
 	}
 
-	opts = append(opts, options...)
-
-	return otlptrace.New(
-		ctx,
-		otlptracehttp.NewClient(opts...),
-	)
-}
-
-// NewOtlpGrpcExporter 创建OTLP/gRPC导出器，默认端口：4317
-func NewOtlpGrpcExporter(ctx context.Context, endpoint string, insecure bool, options ...otlptracegrpc.Option) (traceSdk.SpanExporter, error) {
-	var opts []otlptracegrpc.Option
-	opts = append(opts, otlptracegrpc.WithEndpoint(endpoint))
-
-	if insecure {
-		opts = append(opts, otlptracegrpc.WithInsecure())
-	}
-
-	opts = append(opts, options...)
-
-	return otlptrace.New(
-		ctx,
-		otlptracegrpc.NewClient(opts...),
-	)
+	return tp, shutdown, nil
 }

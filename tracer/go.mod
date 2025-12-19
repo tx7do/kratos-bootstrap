@@ -2,14 +2,10 @@ module github.com/tx7do/kratos-bootstrap/tracer
 
 go 1.24.6
 
-replace (
-	github.com/tx7do/kratos-bootstrap/api => ../api
-	github.com/tx7do/kratos-bootstrap/utils => ../utils
-)
+replace github.com/tx7do/kratos-bootstrap/api => ../api
 
 require (
-	github.com/tx7do/kratos-bootstrap/api v0.0.29
-	github.com/tx7do/kratos-bootstrap/utils v0.1.8
+	github.com/tx7do/kratos-bootstrap/api v0.0.31
 	go.opentelemetry.io/otel v1.39.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.39.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.39.0
@@ -36,8 +32,8 @@ require (
 	golang.org/x/net v0.48.0 // indirect
 	golang.org/x/sys v0.39.0 // indirect
 	golang.org/x/text v0.32.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20251202230838-ff82c1b0f217 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20251202230838-ff82c1b0f217 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20251213004720-97cd9d5aeac2 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20251213004720-97cd9d5aeac2 // indirect
 	google.golang.org/grpc v1.77.0 // indirect
-	google.golang.org/protobuf v1.36.10 // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 )
