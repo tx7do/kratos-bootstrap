@@ -8,6 +8,7 @@ import "google/protobuf/duration.proto";
 
 // 配置服务
 message RemoteConfig {
+  // Nacos 配置
   message Nacos {
     string address = 1; // 服务端地址
     uint64 port = 2; // 服务端端口
@@ -15,20 +16,31 @@ message RemoteConfig {
     string username = 4; // 用户名
     string password = 5; // 密码
     string namespace_id = 6; // 命名空间ID
+    string log_level = 7; // 日志级别
+    string cache_dir = 8; // 缓存目录
+    string log_dir = 9; // 日志目录
+    bool not_load_cache_at_start = 10; // 启动时不加载缓存
+    bool update_cache_when_empty = 11; // 当配置为空时更新缓存
+    int32 update_thread_num = 12; // 更新服务的线程数
+    uint64 timeout_ms = 13; // http请求超时时间，单位毫秒
+    int64 beat_interval = 14; // 心跳间隔时间，单位毫秒
   }
 
+  // Etcd 配置
   message Etcd {
     repeated string endpoints = 1; // 服务端地址
     google.protobuf.Duration timeout = 2; // 超时时间
     string key = 3; // 配置键
   }
 
+  // Consul 配置
   message Consul {
     string scheme = 1;  // 网络样式
     string address = 2; // 服务端地址
     string key = 3; // 配置键
   }
 
+  // Apollo 配置
   message Apollo {
     string endpoint = 1; // 服务端地址
     string app_id = 2; // 应用ID
@@ -37,12 +49,20 @@ message RemoteConfig {
     string secret = 5; // 密钥
   }
 
+  // Kubernetes 配置
   message Kubernetes {
     string namespace = 1; // 命名空间
+    string label_selector = 2; // 标签选择器
+    string field_selector = 3; // 字段选择器
+    string kube_config = 4; // kube配置文件路径
+    string master = 5; // master地址
   }
 
+  // Polaris 配置
   message Polaris {
-
+    string namespace = 1;
+    string file_group = 2;
+    string file_name = 3;
   }
 
   string type = 1; // 配置类型

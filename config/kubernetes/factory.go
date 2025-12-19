@@ -1,10 +1,6 @@
 package kubernetes
 
 import (
-	"path/filepath"
-
-	k8sUtil "k8s.io/client-go/util/homedir"
-
 	"github.com/go-kratos/kratos/v2/config"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
@@ -22,9 +18,11 @@ func NewConfigSource(c *conf.RemoteConfig) (config.Source, error) {
 	}
 
 	source := NewSource(
-		Namespace(c.Kubernetes.Namespace),
-		LabelSelector(""),
-		KubeConfig(filepath.Join(k8sUtil.HomeDir(), ".kube", "config")),
+		WithNamespace(c.Kubernetes.Namespace),
+		WithLabelSelector(c.Kubernetes.LabelSelector),
+		WithFieldSelector(c.Kubernetes.FieldSelector),
+		WithMaster(c.Kubernetes.Master),
+		WithKubeConfig(c.Kubernetes.KubeConfig),
 	)
 	return source, nil
 }

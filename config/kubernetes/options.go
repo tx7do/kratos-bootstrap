@@ -16,36 +16,36 @@ type options struct {
 	Master string
 }
 
-// Namespace with kubernetes namespace.
-func Namespace(ns string) Option {
+// WithNamespace with kubernetes namespace.
+func WithNamespace(ns string) Option {
 	return func(o *options) {
 		o.Namespace = ns
 	}
 }
 
-// LabelSelector with kubernetes label selector.
-func LabelSelector(label string) Option {
+// WithLabelSelector with kubernetes label selector.
+func WithLabelSelector(label string) Option {
 	return func(o *options) {
 		o.LabelSelector = label
 	}
 }
 
-// FieldSelector with kubernetes field selector.
-func FieldSelector(field string) Option {
+// WithFieldSelector with kubernetes field selector.
+func WithFieldSelector(field string) Option {
 	return func(o *options) {
 		o.FieldSelector = field
 	}
 }
 
-// KubeConfig with kubernetes config.
-func KubeConfig(config string) Option {
+// WithKubeConfig with kubernetes config.
+func WithKubeConfig(config string) Option {
 	return func(o *options) {
 		o.KubeConfig = config
 	}
 }
 
-// Master with kubernetes master.
-func Master(master string) Option {
+// WithMaster with kubernetes master.
+func WithMaster(master string) Option {
 	return func(o *options) {
 		o.Master = master
 	}

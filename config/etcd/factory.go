@@ -1,8 +1,13 @@
 package etcd
 
 import (
+	"time"
+
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/log"
+	"google.golang.org/grpc/backoff"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/keepalive"
 
 	"google.golang.org/grpc"
 
@@ -22,10 +27,29 @@ func NewConfigSource(c *conf.RemoteConfig) (config.Source, error) {
 		return nil, nil
 	}
 
+	dialOpts := []grpc.DialOption{
+		grpc.WithConnectParams(grpc.ConnectParams{
+			Backoff: backoff.Config{
+				BaseDelay:  500 * time.Millisecond,
+				Multiplier: 1.6,
+				Jitter:     0.2,
+				MaxDelay:   120 * time.Second,
+			},
+			MinConnectTimeout: 5 * time.Second,
+		}),
+		grpc.WithKeepaliveParams(keepalive.ClientParameters{
+			Time:                30 * time.Second,
+			Timeout:             10 * time.Second,
+			PermitWithoutStream: true,
+		}),
+		// 若使用 TLS，请替换为相应的 credentials.NewClientTLSFromCert(...)
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	}
+
 	cfg := etcdClient.Config{
 		Endpoints:   c.Etcd.Endpoints,
 		DialTimeout: c.Etcd.Timeout.AsDuration(),
-		DialOptions: []grpc.DialOption{grpc.WithBlock()},
+		DialOptions: dialOpts,
 	}
 
 	cli, err := etcdClient.New(cfg)

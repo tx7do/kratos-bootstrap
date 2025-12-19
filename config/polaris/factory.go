@@ -15,16 +15,20 @@ func init() {
 }
 
 // NewConfigSource 创建一个远程配置源 - Polaris
-func NewConfigSource(_ *conf.RemoteConfig) (config.Source, error) {
+func NewConfigSource(cfg *conf.RemoteConfig) (config.Source, error) {
+	if cfg == nil || cfg.Polaris == nil {
+		return nil, nil
+	}
+
 	configApi, err := polarisApi.NewConfigAPI()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	var opts []Option
-	opts = append(opts, WithNamespace("default"))
-	opts = append(opts, WithFileGroup("default"))
-	opts = append(opts, WithFileName("default.yaml"))
+	opts = append(opts, WithNamespace(cfg.Polaris.Namespace))
+	opts = append(opts, WithFileGroup(cfg.Polaris.FileGroup))
+	opts = append(opts, WithFileName(cfg.Polaris.FileName))
 
 	src, err := New(configApi, opts...)
 	if err != nil {

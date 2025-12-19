@@ -27,17 +27,18 @@ func NewConfigSource(c *conf.RemoteConfig) (config.Source, error) {
 	}
 
 	cliConf := nacosConstant.ClientConfig{
-		TimeoutMs:            10 * 1000, // http请求超时时间，单位毫秒
-		BeatInterval:         5 * 1000,  // 心跳间隔时间，单位毫秒
-		UpdateThreadNum:      20,        // 更新服务的线程数
-		LogLevel:             "debug",
-		CacheDir:             "../../configs/cache", // 缓存目录
-		LogDir:               "../../configs/log",   // 日志目录
-		NotLoadCacheAtStart:  true,                  // 在启动时不读取本地缓存数据，true--不读取，false--读取
-		UpdateCacheWhenEmpty: true,                  // 当服务列表为空时是否更新本地缓存，true--更新,false--不更新
-		Username:             c.Nacos.Username,      //用户名
-		Password:             c.Nacos.Password,      //密码
-		NamespaceId:          c.Nacos.NamespaceId,   //命名空间ID
+		TimeoutMs:            c.Nacos.TimeoutMs,            // http请求超时时间，单位毫秒
+		BeatInterval:         c.Nacos.BeatInterval,         // 心跳间隔时间，单位毫秒
+		UpdateThreadNum:      int(c.Nacos.UpdateThreadNum), // 更新服务的线程数
+		LogLevel:             c.Nacos.LogLevel,
+		CacheDir:             c.Nacos.CacheDir,             // 缓存目录
+		LogDir:               c.Nacos.LogDir,               // 日志目录
+		NotLoadCacheAtStart:  c.Nacos.NotLoadCacheAtStart,  // 在启动时不读取本地缓存数据，true--不读取，false--读取
+		UpdateCacheWhenEmpty: c.Nacos.UpdateCacheWhenEmpty, // 当服务列表为空时是否更新本地缓存，true--更新,false--不更新
+
+		Username:    c.Nacos.Username,    // 用户名
+		Password:    c.Nacos.Password,    // 密码
+		NamespaceId: c.Nacos.NamespaceId, // 命名空间ID
 	}
 
 	nacosClient, err := nacosClients.NewConfigClient(

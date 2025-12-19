@@ -115,16 +115,25 @@ func (x *RemoteConfig) GetPolaris() *RemoteConfig_Polaris {
 	return nil
 }
 
+// Nacos 配置
 type RemoteConfig_Nacos struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Address       string                 `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`                            // 服务端地址
-	Port          uint64                 `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`                                 // 服务端端口
-	Key           string                 `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty"`                                    // 配置键
-	Username      string                 `protobuf:"bytes,4,opt,name=username,proto3" json:"username,omitempty"`                          // 用户名
-	Password      string                 `protobuf:"bytes,5,opt,name=password,proto3" json:"password,omitempty"`                          // 密码
-	NamespaceId   string                 `protobuf:"bytes,6,opt,name=namespace_id,json=namespaceId,proto3" json:"namespace_id,omitempty"` // 命名空间ID
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	Address              string                 `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`                                                             // 服务端地址
+	Port                 uint64                 `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`                                                                  // 服务端端口
+	Key                  string                 `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty"`                                                                     // 配置键
+	Username             string                 `protobuf:"bytes,4,opt,name=username,proto3" json:"username,omitempty"`                                                           // 用户名
+	Password             string                 `protobuf:"bytes,5,opt,name=password,proto3" json:"password,omitempty"`                                                           // 密码
+	NamespaceId          string                 `protobuf:"bytes,6,opt,name=namespace_id,json=namespaceId,proto3" json:"namespace_id,omitempty"`                                  // 命名空间ID
+	LogLevel             string                 `protobuf:"bytes,7,opt,name=log_level,json=logLevel,proto3" json:"log_level,omitempty"`                                           // 日志级别
+	CacheDir             string                 `protobuf:"bytes,8,opt,name=cache_dir,json=cacheDir,proto3" json:"cache_dir,omitempty"`                                           // 缓存目录
+	LogDir               string                 `protobuf:"bytes,9,opt,name=log_dir,json=logDir,proto3" json:"log_dir,omitempty"`                                                 // 日志目录
+	NotLoadCacheAtStart  bool                   `protobuf:"varint,10,opt,name=not_load_cache_at_start,json=notLoadCacheAtStart,proto3" json:"not_load_cache_at_start,omitempty"`  // 启动时不加载缓存
+	UpdateCacheWhenEmpty bool                   `protobuf:"varint,11,opt,name=update_cache_when_empty,json=updateCacheWhenEmpty,proto3" json:"update_cache_when_empty,omitempty"` // 当配置为空时更新缓存
+	UpdateThreadNum      int32                  `protobuf:"varint,12,opt,name=update_thread_num,json=updateThreadNum,proto3" json:"update_thread_num,omitempty"`                  // 更新服务的线程数
+	TimeoutMs            uint64                 `protobuf:"varint,13,opt,name=timeout_ms,json=timeoutMs,proto3" json:"timeout_ms,omitempty"`                                      // http请求超时时间，单位毫秒
+	BeatInterval         int64                  `protobuf:"varint,14,opt,name=beat_interval,json=beatInterval,proto3" json:"beat_interval,omitempty"`                             // 心跳间隔时间，单位毫秒
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *RemoteConfig_Nacos) Reset() {
@@ -199,6 +208,63 @@ func (x *RemoteConfig_Nacos) GetNamespaceId() string {
 	return ""
 }
 
+func (x *RemoteConfig_Nacos) GetLogLevel() string {
+	if x != nil {
+		return x.LogLevel
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Nacos) GetCacheDir() string {
+	if x != nil {
+		return x.CacheDir
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Nacos) GetLogDir() string {
+	if x != nil {
+		return x.LogDir
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Nacos) GetNotLoadCacheAtStart() bool {
+	if x != nil {
+		return x.NotLoadCacheAtStart
+	}
+	return false
+}
+
+func (x *RemoteConfig_Nacos) GetUpdateCacheWhenEmpty() bool {
+	if x != nil {
+		return x.UpdateCacheWhenEmpty
+	}
+	return false
+}
+
+func (x *RemoteConfig_Nacos) GetUpdateThreadNum() int32 {
+	if x != nil {
+		return x.UpdateThreadNum
+	}
+	return 0
+}
+
+func (x *RemoteConfig_Nacos) GetTimeoutMs() uint64 {
+	if x != nil {
+		return x.TimeoutMs
+	}
+	return 0
+}
+
+func (x *RemoteConfig_Nacos) GetBeatInterval() int64 {
+	if x != nil {
+		return x.BeatInterval
+	}
+	return 0
+}
+
+// Etcd 配置
 type RemoteConfig_Etcd struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Endpoints     []string               `protobuf:"bytes,1,rep,name=endpoints,proto3" json:"endpoints,omitempty"` // 服务端地址
@@ -259,6 +325,7 @@ func (x *RemoteConfig_Etcd) GetKey() string {
 	return ""
 }
 
+// Consul 配置
 type RemoteConfig_Consul struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Scheme        string                 `protobuf:"bytes,1,opt,name=scheme,proto3" json:"scheme,omitempty"`   // 网络样式
@@ -319,6 +386,7 @@ func (x *RemoteConfig_Consul) GetKey() string {
 	return ""
 }
 
+// Apollo 配置
 type RemoteConfig_Apollo struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Endpoint      string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"`        // 服务端地址
@@ -395,9 +463,14 @@ func (x *RemoteConfig_Apollo) GetSecret() string {
 	return ""
 }
 
+// Kubernetes 配置
 type RemoteConfig_Kubernetes struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Namespace     string                 `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"` // 命名空间
+	Namespace     string                 `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`                              // 命名空间
+	LabelSelector string                 `protobuf:"bytes,2,opt,name=label_selector,json=labelSelector,proto3" json:"label_selector,omitempty"` // 标签选择器
+	FieldSelector string                 `protobuf:"bytes,3,opt,name=field_selector,json=fieldSelector,proto3" json:"field_selector,omitempty"` // 字段选择器
+	KubeConfig    string                 `protobuf:"bytes,4,opt,name=kube_config,json=kubeConfig,proto3" json:"kube_config,omitempty"`          // kube配置文件路径
+	Master        string                 `protobuf:"bytes,5,opt,name=master,proto3" json:"master,omitempty"`                                    // master地址
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -439,8 +512,40 @@ func (x *RemoteConfig_Kubernetes) GetNamespace() string {
 	return ""
 }
 
+func (x *RemoteConfig_Kubernetes) GetLabelSelector() string {
+	if x != nil {
+		return x.LabelSelector
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Kubernetes) GetFieldSelector() string {
+	if x != nil {
+		return x.FieldSelector
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Kubernetes) GetKubeConfig() string {
+	if x != nil {
+		return x.KubeConfig
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Kubernetes) GetMaster() string {
+	if x != nil {
+		return x.Master
+	}
+	return ""
+}
+
+// Polaris 配置
 type RemoteConfig_Polaris struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Namespace     string                 `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	FileGroup     string                 `protobuf:"bytes,2,opt,name=file_group,json=fileGroup,proto3" json:"file_group,omitempty"`
+	FileName      string                 `protobuf:"bytes,3,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -475,11 +580,32 @@ func (*RemoteConfig_Polaris) Descriptor() ([]byte, []int) {
 	return file_conf_v1_kratos_conf_config_proto_rawDescGZIP(), []int{0, 5}
 }
 
+func (x *RemoteConfig_Polaris) GetNamespace() string {
+	if x != nil {
+		return x.Namespace
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Polaris) GetFileGroup() string {
+	if x != nil {
+		return x.FileGroup
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Polaris) GetFileName() string {
+	if x != nil {
+		return x.FileName
+	}
+	return ""
+}
+
 var File_conf_v1_kratos_conf_config_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_config_proto_rawDesc = "" +
 	"\n" +
-	" conf/v1/kratos_conf_config.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\"\xe1\a\n" +
+	" conf/v1/kratos_conf_config.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\"\xf3\v\n" +
 	"\fRemoteConfig\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x120\n" +
 	"\x04etcd\x18\x02 \x01(\v2\x17.conf.RemoteConfig.EtcdH\x00R\x04etcd\x88\x01\x01\x126\n" +
@@ -489,14 +615,24 @@ const file_conf_v1_kratos_conf_config_proto_rawDesc = "" +
 	"\n" +
 	"kubernetes\x18\a \x01(\v2\x1d.conf.RemoteConfig.KubernetesH\x04R\n" +
 	"kubernetes\x88\x01\x01\x129\n" +
-	"\apolaris\x18\b \x01(\v2\x1a.conf.RemoteConfig.PolarisH\x05R\apolaris\x88\x01\x01\x1a\xa2\x01\n" +
+	"\apolaris\x18\b \x01(\v2\x1a.conf.RemoteConfig.PolarisH\x05R\apolaris\x88\x01\x01\x1a\xd2\x03\n" +
 	"\x05Nacos\x12\x18\n" +
 	"\aaddress\x18\x01 \x01(\tR\aaddress\x12\x12\n" +
 	"\x04port\x18\x02 \x01(\x04R\x04port\x12\x10\n" +
 	"\x03key\x18\x03 \x01(\tR\x03key\x12\x1a\n" +
 	"\busername\x18\x04 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x05 \x01(\tR\bpassword\x12!\n" +
-	"\fnamespace_id\x18\x06 \x01(\tR\vnamespaceId\x1ak\n" +
+	"\fnamespace_id\x18\x06 \x01(\tR\vnamespaceId\x12\x1b\n" +
+	"\tlog_level\x18\a \x01(\tR\blogLevel\x12\x1b\n" +
+	"\tcache_dir\x18\b \x01(\tR\bcacheDir\x12\x17\n" +
+	"\alog_dir\x18\t \x01(\tR\x06logDir\x124\n" +
+	"\x17not_load_cache_at_start\x18\n" +
+	" \x01(\bR\x13notLoadCacheAtStart\x125\n" +
+	"\x17update_cache_when_empty\x18\v \x01(\bR\x14updateCacheWhenEmpty\x12*\n" +
+	"\x11update_thread_num\x18\f \x01(\x05R\x0fupdateThreadNum\x12\x1d\n" +
+	"\n" +
+	"timeout_ms\x18\r \x01(\x04R\ttimeoutMs\x12#\n" +
+	"\rbeat_interval\x18\x0e \x01(\x03R\fbeatInterval\x1ak\n" +
 	"\x04Etcd\x12\x1c\n" +
 	"\tendpoints\x18\x01 \x03(\tR\tendpoints\x123\n" +
 	"\atimeout\x18\x02 \x01(\v2\x19.google.protobuf.DurationR\atimeout\x12\x10\n" +
@@ -510,11 +646,20 @@ const file_conf_v1_kratos_conf_config_proto_rawDesc = "" +
 	"\x06app_id\x18\x02 \x01(\tR\x05appId\x12\x18\n" +
 	"\acluster\x18\x03 \x01(\tR\acluster\x12\x1c\n" +
 	"\tnamespace\x18\x04 \x01(\tR\tnamespace\x12\x16\n" +
-	"\x06secret\x18\x05 \x01(\tR\x06secret\x1a*\n" +
+	"\x06secret\x18\x05 \x01(\tR\x06secret\x1a\xb1\x01\n" +
 	"\n" +
 	"Kubernetes\x12\x1c\n" +
-	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x1a\t\n" +
-	"\aPolarisB\a\n" +
+	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12%\n" +
+	"\x0elabel_selector\x18\x02 \x01(\tR\rlabelSelector\x12%\n" +
+	"\x0efield_selector\x18\x03 \x01(\tR\rfieldSelector\x12\x1f\n" +
+	"\vkube_config\x18\x04 \x01(\tR\n" +
+	"kubeConfig\x12\x16\n" +
+	"\x06master\x18\x05 \x01(\tR\x06master\x1ac\n" +
+	"\aPolaris\x12\x1c\n" +
+	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x1d\n" +
+	"\n" +
+	"file_group\x18\x02 \x01(\tR\tfileGroup\x12\x1b\n" +
+	"\tfile_name\x18\x03 \x01(\tR\bfileNameB\a\n" +
 	"\x05_etcdB\t\n" +
 	"\a_consulB\b\n" +
 	"\x06_nacosB\t\n" +

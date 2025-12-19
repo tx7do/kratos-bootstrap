@@ -24,7 +24,7 @@ func TestKube(t *testing.T) {
 	}
 	cmWatcher, err := client.CoreV1().ConfigMaps("mesh").Watch(context.Background(), metav1.ListOptions{
 		LabelSelector: "app=test",
-		// FieldSelector:        "",
+		// WithFieldSelector:        "",
 	})
 	if err != nil {
 		t.Error(err)

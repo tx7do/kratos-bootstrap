@@ -38,9 +38,9 @@ var (
 func TestSource(t *testing.T) {
 	home := homedir.HomeDir()
 	s := NewSource(
-		Namespace("default"),
-		LabelSelector(""),
-		KubeConfig(filepath.Join(home, ".kube", "config")),
+		WithNamespace("default"),
+		WithLabelSelector(""),
+		WithKubeConfig(filepath.Join(home, ".kube", "config")),
 	)
 	kvs, err := s.Load()
 	if err != nil {
@@ -55,9 +55,9 @@ func ExampleNewSource() {
 	conf := config.New(
 		config.WithSource(
 			NewSource(
-				Namespace("mesh"),
-				LabelSelector("app=test"),
-				KubeConfig(filepath.Join(homedir.HomeDir(), ".kube", "config")),
+				WithNamespace("mesh"),
+				WithLabelSelector("app=test"),
+				WithKubeConfig(filepath.Join(homedir.HomeDir(), ".kube", "config")),
 			),
 		),
 	)
@@ -72,8 +72,8 @@ func TestConfig(t *testing.T) {
 	home := homedir.HomeDir()
 
 	options := []Option{
-		Namespace(namespace),
-		LabelSelector("app=test"),
+		WithNamespace(namespace),
+		WithLabelSelector("app=test"),
 	}
 
 	if err != nil {
@@ -82,7 +82,7 @@ func TestConfig(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		options = append(options, KubeConfig(kubeconfig))
+		options = append(options, WithKubeConfig(kubeconfig))
 	}
 	clientSet, err := kubernetes.NewForConfig(restConfig)
 	if err != nil {
@@ -149,8 +149,8 @@ func TestExtToFormat(t *testing.T) {
 	home := homedir.HomeDir()
 
 	options := []Option{
-		Namespace(namespace),
-		LabelSelector("app=test"),
+		WithNamespace(namespace),
+		WithLabelSelector("app=test"),
 	}
 
 	if err != nil {
@@ -159,7 +159,7 @@ func TestExtToFormat(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		options = append(options, KubeConfig(kubeconfig))
+		options = append(options, WithKubeConfig(kubeconfig))
 	}
 	clientSet, err := kubernetes.NewForConfig(restConfig)
 	if err != nil {
