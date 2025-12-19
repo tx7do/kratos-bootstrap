@@ -10,12 +10,19 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
+	"github.com/tx7do/kratos-bootstrap/logger"
 )
 
+func init() {
+	logger.Register(logger.Zap, func(cfg *conf.Logger) (log.Logger, error) {
+		return NewLogger(cfg)
+	})
+}
+
 // NewLogger 创建一个新的日志记录器 - Zap
-func NewLogger(cfg *conf.Logger) log.Logger {
+func NewLogger(cfg *conf.Logger) (log.Logger, error) {
 	if cfg == nil || cfg.Zap == nil {
-		return nil
+		return nil, nil
 	}
 
 	encoderConfig := zap.NewProductionEncoderConfig()
@@ -36,13 +43,13 @@ func NewLogger(cfg *conf.Logger) log.Logger {
 
 	var lvl = new(zapcore.Level)
 	if err := lvl.UnmarshalText([]byte(cfg.Zap.Level)); err != nil {
-		return nil
+		return nil, err
 	}
 
 	core := zapcore.NewCore(jsonEncoder, writeSyncer, lvl)
-	logger := zap.New(core).WithOptions()
+	l := zap.New(core).WithOptions()
 
-	wrapped := zapLogger.NewLogger(logger)
+	wrapped := zapLogger.NewLogger(l)
 
-	return wrapped
+	return wrapped, nil
 }

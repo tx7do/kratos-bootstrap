@@ -1,12 +1,19 @@
-module github.com/tx7do/kratos-bootstrap/logger
+module github.com/tx7do/kratos-bootstrap/logger/zap
 
 go 1.24.6
 
-replace github.com/tx7do/kratos-bootstrap/api => ../api
+replace (
+	github.com/tx7do/kratos-bootstrap/api => ../../api
+	github.com/tx7do/kratos-bootstrap/logger => ../
+)
 
 require (
+	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20251217105121-fb8e43efb207
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/tx7do/kratos-bootstrap/api v0.0.31
+	github.com/tx7do/kratos-bootstrap/logger v0.0.13
+	go.uber.org/zap v1.27.1
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
 require (
@@ -23,7 +30,7 @@ require (
 	go.opentelemetry.io/otel v1.39.0 // indirect
 	go.opentelemetry.io/otel/metric v1.39.0 // indirect
 	go.opentelemetry.io/otel/trace v1.39.0 // indirect
-	golang.org/x/net v0.48.0 // indirect
+	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.39.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251213004720-97cd9d5aeac2 // indirect

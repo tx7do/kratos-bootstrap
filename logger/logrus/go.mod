@@ -1,12 +1,18 @@
-module github.com/tx7do/kratos-bootstrap/logger
+module github.com/tx7do/kratos-bootstrap/logger/logrus
 
 go 1.24.6
 
-replace github.com/tx7do/kratos-bootstrap/api => ../api
+replace (
+	github.com/tx7do/kratos-bootstrap/api => ../../api
+	github.com/tx7do/kratos-bootstrap/logger => ../
+)
 
 require (
+	github.com/go-kratos/kratos/contrib/log/logrus/v2 v2.0.0-20251217105121-fb8e43efb207
 	github.com/go-kratos/kratos/v2 v2.9.2
+	github.com/sirupsen/logrus v1.9.3
 	github.com/tx7do/kratos-bootstrap/api v0.0.31
+	github.com/tx7do/kratos-bootstrap/logger v0.0.13
 )
 
 require (
@@ -23,7 +29,6 @@ require (
 	go.opentelemetry.io/otel v1.39.0 // indirect
 	go.opentelemetry.io/otel/metric v1.39.0 // indirect
 	go.opentelemetry.io/otel/trace v1.39.0 // indirect
-	golang.org/x/net v0.48.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.39.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251213004720-97cd9d5aeac2 // indirect

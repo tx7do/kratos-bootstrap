@@ -3,16 +3,22 @@ package logrus
 import (
 	logrusLogger "github.com/go-kratos/kratos/contrib/log/logrus/v2"
 	"github.com/go-kratos/kratos/v2/log"
-
 	"github.com/sirupsen/logrus"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
+	"github.com/tx7do/kratos-bootstrap/logger"
 )
 
+func init() {
+	logger.Register(logger.Logrus, func(cfg *conf.Logger) (log.Logger, error) {
+		return NewLogger(cfg)
+	})
+}
+
 // NewLogger 创建一个新的日志记录器 - Logrus
-func NewLogger(cfg *conf.Logger) log.Logger {
+func NewLogger(cfg *conf.Logger) (log.Logger, error) {
 	if cfg == nil || cfg.Logrus == nil {
-		return nil
+		return nil, nil
 	}
 
 	loggerLevel, err := logrus.ParseLevel(cfg.Logrus.Level)
@@ -39,10 +45,10 @@ func NewLogger(cfg *conf.Logger) log.Logger {
 		break
 	}
 
-	logger := logrus.New()
-	logger.Level = loggerLevel
-	logger.Formatter = loggerFormatter
+	l := logrus.New()
+	l.Level = loggerLevel
+	l.Formatter = loggerFormatter
 
-	wrapped := logrusLogger.NewLogger(logger)
-	return wrapped
+	wrapped := logrusLogger.NewLogger(l)
+	return wrapped, nil
 }

@@ -1,5 +1,6 @@
 package logger
 
+// Type 日志类型枚举
 type Type string
 
 const (
