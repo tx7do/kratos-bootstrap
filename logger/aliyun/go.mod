@@ -11,7 +11,7 @@ require (
 	github.com/aliyun/aliyun-log-go-sdk v0.1.113
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/tx7do/kratos-bootstrap/api v0.0.32
-	github.com/tx7do/kratos-bootstrap/logger v0.0.13
+	github.com/tx7do/kratos-bootstrap/logger v0.1.0
 	google.golang.org/protobuf v1.36.11
 )
 

@@ -19,7 +19,7 @@ require (
 	github.com/spf13/cobra v1.10.2
 	github.com/tx7do/kratos-bootstrap/api v0.0.32
 	github.com/tx7do/kratos-bootstrap/config v0.0.0-00010101000000-000000000000
-	github.com/tx7do/kratos-bootstrap/logger v0.0.13
+	github.com/tx7do/kratos-bootstrap/logger v0.1.0
 	github.com/tx7do/kratos-bootstrap/registry v0.1.1
 	github.com/tx7do/kratos-bootstrap/tracer v0.0.14
 	golang.org/x/tools v0.40.0
