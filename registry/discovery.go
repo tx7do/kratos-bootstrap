@@ -19,7 +19,17 @@ var (
 )
 
 // NewDiscovery 使用已注册的工厂创建 discovery，找不到时返回错误
-func NewDiscovery(name Type, cfg *conf.Registry) (registry.Discovery, error) {
+func NewDiscovery(cfg *conf.Registry) (registry.Discovery, error) {
+	if cfg == nil {
+		return nil, nil
+	}
+
+	if cfg.GetType() == "" {
+		return nil, nil
+	}
+
+	name := Type(cfg.GetType())
+
 	f, ok := GetDiscoveryFactory(name)
 	if !ok {
 		return nil, fmt.Errorf("registry: discovery factory %q not found", name)

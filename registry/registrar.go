@@ -19,7 +19,17 @@ var (
 )
 
 // NewRegistrar 使用已注册的工厂创建 registrar，找不到时返回错误
-func NewRegistrar(name Type, cfg *conf.Registry) (registry.Registrar, error) {
+func NewRegistrar(cfg *conf.Registry) (registry.Registrar, error) {
+	if cfg == nil {
+		return nil, nil
+	}
+
+	if cfg.GetType() == "" {
+		return nil, nil
+	}
+
+	name := Type(cfg.GetType())
+
 	f, ok := GetRegistrarFactory(name)
 	if !ok {
 		return nil, fmt.Errorf("registry: registrar factory %q not found", name)

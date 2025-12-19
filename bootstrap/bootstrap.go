@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"context"
 	"fmt"
 	"runtime"
 
@@ -10,14 +11,14 @@ import (
 	"github.com/go-kratos/kratos/v2/transport"
 
 	"github.com/tx7do/kratos-bootstrap/logger"
+	bRegistry "github.com/tx7do/kratos-bootstrap/registry"
 	"github.com/tx7do/kratos-bootstrap/tracer"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"github.com/tx7do/kratos-bootstrap/utils"
 )
 
 var (
-	Service = utils.NewServiceInfo(
+	AppInfo = NewAppInfo(
 		"",
 		"1.0.0",
 		"",
@@ -27,10 +28,10 @@ var (
 // NewApp 创建应用程序
 func NewApp(ll log.Logger, rr kratosRegistry.Registrar, srv ...transport.Server) *kratos.App {
 	return kratos.New(
-		kratos.ID(Service.GetInstanceId()),
-		kratos.Name(Service.Name),
-		kratos.Version(Service.Version),
-		kratos.Metadata(Service.Metadata),
+		kratos.ID(AppInfo.GetInstanceId()),
+		kratos.Name(AppInfo.Name),
+		kratos.Version(AppInfo.Version),
+		kratos.Metadata(AppInfo.Metadata),
 		kratos.Logger(ll),
 		kratos.Server(
 			srv...,
@@ -40,7 +41,7 @@ func NewApp(ll log.Logger, rr kratosRegistry.Registrar, srv ...transport.Server)
 }
 
 // DoBootstrap 执行引导
-func DoBootstrap(serviceInfo *utils.ServiceInfo) (*conf.Bootstrap, log.Logger, kratosRegistry.Registrar) {
+func DoBootstrap(appInfo *conf.AppInfo) (*conf.Bootstrap, log.Logger, kratosRegistry.Registrar) {
 	// inject command flags
 	Flags := NewCommandFlags()
 	Flags.Init()
@@ -53,13 +54,17 @@ func DoBootstrap(serviceInfo *utils.ServiceInfo) (*conf.Bootstrap, log.Logger, k
 	}
 
 	// init logger
-	ll := logger.NewLoggerProvider(GetBootstrapConfig().Logger, serviceInfo)
+	ll := logger.NewLoggerProvider(GetBootstrapConfig().Logger, appInfo)
 
 	// init registrar
-	reg := NewRegistry(GetBootstrapConfig().Registry)
+	reg, err := bRegistry.NewRegistrar(GetBootstrapConfig().Registry)
+	if err != nil {
+		panic(fmt.Sprintf("init registrar failed: %v", err))
+		return nil, nil, nil
+	}
 
 	// init tracer
-	if err = tracer.NewTracerProvider(GetBootstrapConfig().Trace, serviceInfo); err != nil {
+	if err = tracer.NewTracerProvider(context.Background(), GetBootstrapConfig().Trace, appInfo); err != nil {
 		panic(fmt.Sprintf("init tracer failed: %v", err))
 	}
 
@@ -71,14 +76,14 @@ type InitApp func(logger log.Logger, registrar kratosRegistry.Registrar, bootstr
 // Bootstrap 应用引导启动
 func Bootstrap(initApp InitApp, serviceName, version *string) {
 	if serviceName != nil && len(*serviceName) != 0 {
-		Service.Name = *serviceName
+		AppInfo.Name = *serviceName
 	}
 	if version != nil && len(*version) != 0 {
-		Service.Version = *version
+		AppInfo.Version = *version
 	}
 
 	// bootstrap
-	cfg, ll, reg := DoBootstrap(Service)
+	cfg, ll, reg := DoBootstrap(AppInfo)
 
 	// init app
 	app, cleanup, err := initApp(ll, reg, cfg)

@@ -11,7 +11,7 @@ replace (
 require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/hashicorp/consul/api v1.33.0
-	github.com/tx7do/kratos-bootstrap/api v0.0.29
+	github.com/tx7do/kratos-bootstrap/api v0.0.31
 )
 
 require (
@@ -36,6 +36,6 @@ require (
 	github.com/stretchr/testify v1.10.0 // indirect
 	golang.org/x/exp v0.0.0-20251125195548-87e1e737ad39 // indirect
 	golang.org/x/sys v0.39.0 // indirect
-	google.golang.org/protobuf v1.36.10 // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

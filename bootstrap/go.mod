@@ -25,7 +25,6 @@ replace (
 	github.com/tx7do/kratos-bootstrap/remoteconfig/nacos => ../remoteconfig/nacos
 	github.com/tx7do/kratos-bootstrap/remoteconfig/polaris => ../remoteconfig/polaris
 	github.com/tx7do/kratos-bootstrap/tracer => ../tracer
-	github.com/tx7do/kratos-bootstrap/utils => ../utils
 )
 
 require (
@@ -33,7 +32,7 @@ require (
 	github.com/google/subcommands v1.2.0
 	github.com/olekukonko/tablewriter v1.1.2
 	github.com/spf13/cobra v1.10.2
-	github.com/tx7do/kratos-bootstrap/api v0.0.29
+	github.com/tx7do/kratos-bootstrap/api v0.0.31
 	github.com/tx7do/kratos-bootstrap/logger v0.0.13
 	github.com/tx7do/kratos-bootstrap/registry v0.1.1
 	github.com/tx7do/kratos-bootstrap/registry/consul v0.1.4
@@ -48,7 +47,6 @@ require (
 	github.com/tx7do/kratos-bootstrap/remoteconfig/nacos v0.1.4
 	github.com/tx7do/kratos-bootstrap/remoteconfig/polaris v0.1.3
 	github.com/tx7do/kratos-bootstrap/tracer v0.0.14
-	github.com/tx7do/kratos-bootstrap/utils v0.1.8
 	golang.org/x/tools v0.40.0
 )
 
@@ -73,7 +71,7 @@ require (
 	github.com/aliyun/alibabacloud-dkms-gcs-go-sdk v0.5.1 // indirect
 	github.com/aliyun/alibabacloud-dkms-transfer-go-sdk v0.1.9 // indirect
 	github.com/aliyun/aliyun-secretsmanager-client-go v1.1.5 // indirect
-	github.com/aliyun/credentials-go v1.4.9 // indirect
+	github.com/aliyun/credentials-go v1.4.10 // indirect
 	github.com/apolloconfig/agollo/v4 v4.4.0 // indirect
 	github.com/armon/go-metrics v0.5.4 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -82,7 +80,7 @@ require (
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/clbanning/mxj/v2 v2.7.0 // indirect
-	github.com/clipperhouse/displaywidth v0.6.1 // indirect
+	github.com/clipperhouse/displaywidth v0.6.2 // indirect
 	github.com/clipperhouse/stringish v0.1.1 // indirect
 	github.com/clipperhouse/uax29/v2 v2.3.0 // indirect
 	github.com/coreos/go-semver v0.3.1 // indirect
@@ -96,10 +94,10 @@ require (
 	github.com/go-chassis/openlog v1.1.3 // indirect
 	github.com/go-chassis/sc-client v0.7.0 // indirect
 	github.com/go-kratos/aegis v0.2.0 // indirect
-	github.com/go-kratos/kratos/contrib/log/fluent/v2 v2.0.0-20251205160234-b9fab9a5a5ab // indirect
-	github.com/go-kratos/kratos/contrib/log/logrus/v2 v2.0.0-20251205160234-b9fab9a5a5ab // indirect
-	github.com/go-kratos/kratos/contrib/log/tencent/v2 v2.0.0-20251205160234-b9fab9a5a5ab // indirect
-	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20251205160234-b9fab9a5a5ab // indirect
+	github.com/go-kratos/kratos/contrib/log/fluent/v2 v2.0.0-20251217105121-fb8e43efb207 // indirect
+	github.com/go-kratos/kratos/contrib/log/logrus/v2 v2.0.0-20251217105121-fb8e43efb207 // indirect
+	github.com/go-kratos/kratos/contrib/log/tencent/v2 v2.0.0-20251217105121-fb8e43efb207 // indirect
+	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20251217105121-fb8e43efb207 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/form/v4 v4.3.0 // indirect
@@ -162,9 +160,9 @@ require (
 	github.com/tencentcloud/tencentcloud-cls-sdk-go v1.0.14 // indirect
 	github.com/tinylib/msgp v1.6.1 // indirect
 	github.com/tjfoc/gmsm v1.4.1 // indirect
-	go.etcd.io/etcd/api/v3 v3.6.6 // indirect
-	go.etcd.io/etcd/client/pkg/v3 v3.6.6 // indirect
-	go.etcd.io/etcd/client/v3 v3.6.6 // indirect
+	go.etcd.io/etcd/api/v3 v3.6.7 // indirect
+	go.etcd.io/etcd/client/pkg/v3 v3.6.7 // indirect
+	go.etcd.io/etcd/client/v3 v3.6.7 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/otel v1.39.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.39.0 // indirect
@@ -189,10 +187,10 @@ require (
 	golang.org/x/sys v0.39.0 // indirect
 	golang.org/x/text v0.32.0 // indirect
 	golang.org/x/time v0.14.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20251202230838-ff82c1b0f217 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20251202230838-ff82c1b0f217 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20251213004720-97cd9d5aeac2 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20251213004720-97cd9d5aeac2 // indirect
 	google.golang.org/grpc v1.77.0 // indirect
-	google.golang.org/protobuf v1.36.10 // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

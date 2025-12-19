@@ -12,10 +12,10 @@ import (
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
 
-func NewCassandraClient(cfg *conf.Bootstrap, l *log.Helper) *gocql.Session {
+func NewCassandraClient(cfg *conf.Bootstrap, l *log.Helper) (*gocql.Session, error) {
 	if cfg.Data == nil || cfg.Data.Cassandra == nil {
 		l.Warn("cassandra config is nil")
-		return nil
+		return nil, nil
 	}
 
 	clusterConfig := gocql.NewCluster(cfg.Data.Cassandra.GetAddress())
@@ -34,7 +34,7 @@ func NewCassandraClient(cfg *conf.Bootstrap, l *log.Helper) *gocql.Session {
 		var err error
 
 		if tlsCfg, err = loadServerTlsConfig(cfg.Data.Cassandra.Tls); err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		if tlsCfg != nil {
@@ -54,10 +54,10 @@ func NewCassandraClient(cfg *conf.Bootstrap, l *log.Helper) *gocql.Session {
 	session, err := clusterConfig.CreateSession()
 	if err != nil {
 		l.Fatalf("failed opening connection to cassandra: %v", err)
-		return nil
+		return nil, err
 	}
 
-	return session
+	return session, nil
 }
 
 func loadServerTlsConfig(cfg *conf.TLS) (*tls.Config, error) {

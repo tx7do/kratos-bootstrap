@@ -1,6 +1,4 @@
-git tag api/v0.0.29 --force
-
-git tag utils/v0.1.8 --force
+git tag api/v0.0.31 --force
 
 git tag cache/redis/v0.0.14 --force
 git tag oss/minio/v0.0.13 --force

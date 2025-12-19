@@ -35,7 +35,7 @@ func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*elasticsearchCrud.Clien
 		var err error
 
 		if tlsCfg, err = loadServerTlsConfig(cfg.Server.Grpc.Tls); err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		if tlsCfg != nil {

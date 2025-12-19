@@ -36,11 +36,11 @@ func TestCustomBootstrap(t *testing.T) {
 	customCfg := &CustomConfig{}
 	RegisterConfig(customCfg)
 
-	Service.SetName("test")
-	Service.SetVersion("v0.0.1")
+	AppInfo.Name = "test"
+	AppInfo.Version = "v0.0.1"
 
 	// bootstrap
-	cfg, ll, reg := DoBootstrap(Service)
+	cfg, ll, reg := DoBootstrap(AppInfo)
 
 	// init app
 	app, cleanup, err := initAppEx(ll, reg, cfg, customCfg)

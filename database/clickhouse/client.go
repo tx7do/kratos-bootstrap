@@ -60,7 +60,7 @@ func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*clickhouseCrud.Client, 
 		var err error
 
 		if tlsCfg, err = loadServerTlsConfig(cfg.Server.Grpc.Tls); err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		if tlsCfg != nil {

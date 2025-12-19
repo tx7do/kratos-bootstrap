@@ -30,7 +30,7 @@ import (
 const defaultTimeout = 5 * time.Second
 
 // CreateGrpcClient 创建GRPC客户端
-func CreateGrpcClient(ctx context.Context, r registry.Discovery, serviceName string, cfg *conf.Bootstrap, mds ...middleware.Middleware) grpc.ClientConnInterface {
+func CreateGrpcClient(ctx context.Context, r registry.Discovery, serviceName string, cfg *conf.Bootstrap, mds ...middleware.Middleware) (grpc.ClientConnInterface, error) {
 	var options []kratosGrpc.ClientOption
 
 	options = append(options, kratosGrpc.WithDiscovery(r))
@@ -43,19 +43,25 @@ func CreateGrpcClient(ctx context.Context, r registry.Discovery, serviceName str
 	}
 	options = append(options, kratosGrpc.WithEndpoint(endpoint))
 
-	options = append(options, initGrpcClientConfig(cfg, mds...)...)
+	cfgs, err := initGrpcClientConfig(cfg, mds...)
+	if err != nil {
+		log.Fatalf("init grpc client config failed: %s", err.Error())
+		return nil, err
+	}
+
+	options = append(options, cfgs...)
 
 	conn, err := kratosGrpc.DialInsecure(ctx, options...)
 	if err != nil {
 		log.Fatalf("dial grpc client [%s] failed: %s", serviceName, err.Error())
 	}
 
-	return conn
+	return conn, nil
 }
 
-func initGrpcClientConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []kratosGrpc.ClientOption {
+func initGrpcClientConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) ([]kratosGrpc.ClientOption, error) {
 	if cfg.Client == nil || cfg.Client.Grpc == nil {
-		return nil
+		return nil, nil
 	}
 
 	var options []kratosGrpc.ClientOption
@@ -90,7 +96,7 @@ func initGrpcClientConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []k
 		var err error
 
 		if tlsCfg, err = loadClientTlsConfig(cfg.Client.Grpc.Tls); err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		if tlsCfg != nil {
@@ -98,23 +104,29 @@ func initGrpcClientConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []k
 		}
 	}
 
-	return options
+	return options, nil
 }
 
 // CreateGrpcServer 创建GRPC服务端
-func CreateGrpcServer(cfg *conf.Bootstrap, mds ...middleware.Middleware) *kratosGrpc.Server {
+func CreateGrpcServer(cfg *conf.Bootstrap, mds ...middleware.Middleware) (*kratosGrpc.Server, error) {
 	var options []kratosGrpc.ServerOption
 
-	options = append(options, initGrpcServerConfig(cfg, mds...)...)
+	cfgs, err := initGrpcServerConfig(cfg, mds...)
+	if err != nil {
+		log.Fatalf("init grpc server config failed: %s", err.Error())
+		return nil, err
+	}
+
+	options = append(options, cfgs...)
 
 	srv := kratosGrpc.NewServer(options...)
 
-	return srv
+	return srv, nil
 }
 
-func initGrpcServerConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []kratosGrpc.ServerOption {
+func initGrpcServerConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) ([]kratosGrpc.ServerOption, error) {
 	if cfg.Server == nil || cfg.Server.Grpc == nil {
-		return nil
+		return nil, nil
 	}
 
 	var options []kratosGrpc.ServerOption
@@ -153,7 +165,7 @@ func initGrpcServerConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []k
 		var err error
 
 		if tlsCfg, err = loadServerTlsConfig(cfg.Server.Grpc.Tls); err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		if tlsCfg != nil {
@@ -171,7 +183,7 @@ func initGrpcServerConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) []k
 		options = append(options, kratosGrpc.Timeout(cfg.Server.Grpc.Timeout.AsDuration()))
 	}
 
-	return options
+	return options, nil
 }
 
 func NewGrpcWhiteListMatcher(whiteList *WhiteList) selector.MatchFunc {

@@ -1,12 +1,13 @@
 package bootstrap
 
 import (
+	"os"
+
 	"github.com/go-kratos/kratos/v2/config"
 	fileKratos "github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"github.com/tx7do/kratos-bootstrap/utils"
 )
 
 // NewFileConfigSource 创建一个本地文件配置源
@@ -69,7 +70,7 @@ func scanConfigs(cfg config.Config) error {
 // LoadRemoteConfigSourceConfigs 加载远程配置源的本地配置
 func LoadRemoteConfigSourceConfigs(configPath string) (error, *conf.RemoteConfig) {
 	configPath = configPath + "/" + remoteConfigSourceConfigFile
-	if !utils.PathExists(configPath) {
+	if !pathExists(configPath) {
 		return nil, nil
 	}
 
@@ -95,4 +96,15 @@ func LoadRemoteConfigSourceConfigs(configPath string) (error, *conf.RemoteConfig
 	}
 
 	return nil, GetBootstrapConfig().Config
+}
+
+func pathExists(path string) bool {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true
+	}
+	if os.IsNotExist(err) {
+		return false
+	}
+	return false
 }
