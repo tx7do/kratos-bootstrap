@@ -7,11 +7,10 @@ import (
 
 	clickhouseV2 "github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/go-kratos/kratos/v2/log"
+	clickhouseCrud "github.com/tx7do/go-crud/clickhouse"
+	tlsUtils "github.com/tx7do/go-utils/tls"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"github.com/tx7do/kratos-bootstrap/utils"
-
-	clickhouseCrud "github.com/tx7do/go-crud/clickhouse"
 )
 
 type Client struct {
@@ -60,7 +59,7 @@ func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*clickhouseCrud.Client, 
 		var tlsCfg *tls.Config
 		var err error
 
-		if tlsCfg, err = utils.LoadServerTlsConfig(cfg.Server.Grpc.Tls); err != nil {
+		if tlsCfg, err = loadServerTlsConfig(cfg.Server.Grpc.Tls); err != nil {
 			panic(err)
 		}
 
@@ -109,4 +108,35 @@ func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*clickhouseCrud.Client, 
 	c, err := clickhouseCrud.NewClient(options...)
 
 	return c, err
+}
+
+func loadServerTlsConfig(cfg *conf.TLS) (*tls.Config, error) {
+	if cfg == nil {
+		return nil, nil
+	}
+
+	var tlsCfg *tls.Config
+	var err error
+
+	if cfg.File != nil {
+		if tlsCfg, err = tlsUtils.LoadServerTlsConfigFile(
+			cfg.File.GetKeyPath(),
+			cfg.File.GetCertPath(),
+			cfg.File.GetCaPath(),
+			cfg.InsecureSkipVerify,
+		); err != nil {
+			return nil, err
+		}
+	} else if cfg.Config != nil {
+		if tlsCfg, err = tlsUtils.LoadServerTlsConfigString(
+			cfg.Config.GetKeyPem(),
+			cfg.Config.GetCertPem(),
+			cfg.Config.GetCaPem(),
+			cfg.InsecureSkipVerify,
+		); err != nil {
+			return nil, err
+		}
+	}
+
+	return tlsCfg, err
 }

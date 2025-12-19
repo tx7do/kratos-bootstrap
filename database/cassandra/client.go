@@ -7,8 +7,9 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 
+	tlsUtils "github.com/tx7do/go-utils/tls"
+
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"github.com/tx7do/kratos-bootstrap/utils"
 )
 
 func NewCassandraClient(cfg *conf.Bootstrap, l *log.Helper) *gocql.Session {
@@ -17,22 +18,22 @@ func NewCassandraClient(cfg *conf.Bootstrap, l *log.Helper) *gocql.Session {
 		return nil
 	}
 
-	clusterConfig := gocql.NewCluster(cfg.Data.Cassandra.Address)
+	clusterConfig := gocql.NewCluster(cfg.Data.Cassandra.GetAddress())
 
 	// 设置用户名密码
 	clusterConfig.Authenticator = gocql.PasswordAuthenticator{
-		Username: cfg.Data.Cassandra.Username,
-		Password: cfg.Data.Cassandra.Password,
+		Username: cfg.Data.Cassandra.GetUsername(),
+		Password: cfg.Data.Cassandra.GetPassword(),
 	}
 
-	clusterConfig.Keyspace = cfg.Data.Cassandra.Keyspace
+	clusterConfig.Keyspace = cfg.Data.Cassandra.GetKeyspace()
 
 	// 设置ssl
 	if cfg.Data.Cassandra.Tls != nil {
 		var tlsCfg *tls.Config
 		var err error
 
-		if tlsCfg, err = utils.LoadServerTlsConfig(cfg.Data.Cassandra.Tls); err != nil {
+		if tlsCfg, err = loadServerTlsConfig(cfg.Data.Cassandra.Tls); err != nil {
 			panic(err)
 		}
 
@@ -45,10 +46,10 @@ func NewCassandraClient(cfg *conf.Bootstrap, l *log.Helper) *gocql.Session {
 	clusterConfig.ConnectTimeout = cfg.Data.Cassandra.ConnectTimeout.AsDuration()
 	clusterConfig.Timeout = cfg.Data.Cassandra.Timeout.AsDuration()
 
-	clusterConfig.Consistency = gocql.Consistency(cfg.Data.Cassandra.Consistency)
+	clusterConfig.Consistency = gocql.Consistency(cfg.Data.Cassandra.GetConsistency())
 
 	// 禁止主机查找
-	clusterConfig.DisableInitialHostLookup = cfg.Data.Cassandra.DisableInitialHostLookup
+	clusterConfig.DisableInitialHostLookup = cfg.Data.Cassandra.GetDisableInitialHostLookup()
 
 	session, err := clusterConfig.CreateSession()
 	if err != nil {
@@ -57,4 +58,35 @@ func NewCassandraClient(cfg *conf.Bootstrap, l *log.Helper) *gocql.Session {
 	}
 
 	return session
+}
+
+func loadServerTlsConfig(cfg *conf.TLS) (*tls.Config, error) {
+	if cfg == nil {
+		return nil, nil
+	}
+
+	var tlsCfg *tls.Config
+	var err error
+
+	if cfg.File != nil {
+		if tlsCfg, err = tlsUtils.LoadServerTlsConfigFile(
+			cfg.File.GetKeyPath(),
+			cfg.File.GetCertPath(),
+			cfg.File.GetCaPath(),
+			cfg.InsecureSkipVerify,
+		); err != nil {
+			return nil, err
+		}
+	} else if cfg.Config != nil {
+		if tlsCfg, err = tlsUtils.LoadServerTlsConfigString(
+			cfg.Config.GetKeyPem(),
+			cfg.Config.GetCertPem(),
+			cfg.Config.GetCaPem(),
+			cfg.InsecureSkipVerify,
+		); err != nil {
+			return nil, err
+		}
+	}
+
+	return tlsCfg, err
 }

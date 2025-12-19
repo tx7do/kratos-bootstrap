@@ -5,9 +5,9 @@ import (
 	"errors"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/tx7do/kratos-bootstrap/utils"
-
 	elasticsearchCrud "github.com/tx7do/go-crud/elasticsearch"
+	tlsUtils "github.com/tx7do/go-utils/tls"
+
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
 
@@ -34,7 +34,7 @@ func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*elasticsearchCrud.Clien
 		var tlsCfg *tls.Config
 		var err error
 
-		if tlsCfg, err = utils.LoadServerTlsConfig(cfg.Server.Grpc.Tls); err != nil {
+		if tlsCfg, err = loadServerTlsConfig(cfg.Server.Grpc.Tls); err != nil {
 			panic(err)
 		}
 
@@ -89,4 +89,35 @@ func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*elasticsearchCrud.Clien
 	}
 
 	return elasticsearchCrud.NewClient(options...)
+}
+
+func loadServerTlsConfig(cfg *conf.TLS) (*tls.Config, error) {
+	if cfg == nil {
+		return nil, nil
+	}
+
+	var tlsCfg *tls.Config
+	var err error
+
+	if cfg.File != nil {
+		if tlsCfg, err = tlsUtils.LoadServerTlsConfigFile(
+			cfg.File.GetKeyPath(),
+			cfg.File.GetCertPath(),
+			cfg.File.GetCaPath(),
+			cfg.InsecureSkipVerify,
+		); err != nil {
+			return nil, err
+		}
+	} else if cfg.Config != nil {
+		if tlsCfg, err = tlsUtils.LoadServerTlsConfigString(
+			cfg.Config.GetKeyPem(),
+			cfg.Config.GetCertPem(),
+			cfg.Config.GetCaPem(),
+			cfg.InsecureSkipVerify,
+		); err != nil {
+			return nil, err
+		}
+	}
+
+	return tlsCfg, err
 }

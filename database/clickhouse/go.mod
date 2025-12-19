@@ -4,15 +4,13 @@ go 1.25.3
 
 replace (
 	github.com/tx7do/kratos-bootstrap/api => ../../api
-	github.com/tx7do/kratos-bootstrap/utils => ../../utils
 )
 
 require (
 	github.com/ClickHouse/clickhouse-go/v2 v2.41.0
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/tx7do/go-crud/clickhouse v0.0.3
-	github.com/tx7do/kratos-bootstrap/api v0.0.29
-	github.com/tx7do/kratos-bootstrap/utils v0.1.8
+	github.com/tx7do/kratos-bootstrap/api v0.0.31
 )
 
 require (
@@ -39,5 +37,5 @@ require (
 	golang.org/x/sys v0.39.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251202230838-ff82c1b0f217 // indirect
 	google.golang.org/grpc v1.77.0 // indirect
-	google.golang.org/protobuf v1.36.10 // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 )

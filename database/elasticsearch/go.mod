@@ -7,8 +7,7 @@ replace github.com/tx7do/kratos-bootstrap/api => ../../api
 require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/tx7do/go-crud/elasticsearch v0.0.2
-	github.com/tx7do/kratos-bootstrap/api v0.0.29
-	github.com/tx7do/kratos-bootstrap/utils v0.1.8
+	github.com/tx7do/kratos-bootstrap/api v0.0.31
 )
 
 require (
@@ -31,5 +30,5 @@ require (
 	golang.org/x/text v0.32.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251202230838-ff82c1b0f217 // indirect
 	google.golang.org/grpc v1.77.0 // indirect
-	google.golang.org/protobuf v1.36.10 // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 )

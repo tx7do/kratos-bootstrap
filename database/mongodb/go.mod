@@ -7,7 +7,7 @@ replace github.com/tx7do/kratos-bootstrap/api => ../../api
 require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/tx7do/go-crud/mongodb v0.0.3
-	github.com/tx7do/kratos-bootstrap/api v0.0.29
+	github.com/tx7do/kratos-bootstrap/api v0.0.31
 	go.mongodb.org/mongo-driver/v2 v2.4.0
 )
 
@@ -29,5 +29,5 @@ require (
 	golang.org/x/crypto v0.46.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/text v0.32.0 // indirect
-	google.golang.org/protobuf v1.36.10 // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 )
