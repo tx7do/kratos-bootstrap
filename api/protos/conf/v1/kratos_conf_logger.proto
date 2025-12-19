@@ -45,6 +45,19 @@ message Logger {
     string access_secret = 4; // 访问密钥
   }
 
+  // Zerolog
+  message Zerolog {
+    string level = 1; // 日志等级
+
+    string time_field_format = 2; // 定义时间戳格式，例如："2006-01-02 15:04:05"
+    string timestamp_field_name = 3; // 时间戳字段名称
+    string level_field_name= 4; // 日志等级字段名称
+    string message_field_name = 5; // 日志消息字段名称
+
+    string writer = 6; // 输出目标，默认stdout，可选：stdout, stderr, file
+    string filename = 7; // 当writer为file时，指定日志文件名
+  }
+
   string type = 1;
 
   optional Zap zap = 2;
@@ -52,4 +65,5 @@ message Logger {
   optional Fluent fluent = 4;
   optional Aliyun aliyun = 5;
   optional Tencent tencent = 6;
+  optional Zerolog zerolog = 7;
 }

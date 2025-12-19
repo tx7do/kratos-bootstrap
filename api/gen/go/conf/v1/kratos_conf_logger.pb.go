@@ -30,6 +30,7 @@ type Logger struct {
 	Fluent        *Logger_Fluent         `protobuf:"bytes,4,opt,name=fluent,proto3,oneof" json:"fluent,omitempty"`
 	Aliyun        *Logger_Aliyun         `protobuf:"bytes,5,opt,name=aliyun,proto3,oneof" json:"aliyun,omitempty"`
 	Tencent       *Logger_Tencent        `protobuf:"bytes,6,opt,name=tencent,proto3,oneof" json:"tencent,omitempty"`
+	Zerolog       *Logger_Zerolog        `protobuf:"bytes,7,opt,name=zerolog,proto3,oneof" json:"zerolog,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -102,6 +103,13 @@ func (x *Logger) GetAliyun() *Logger_Aliyun {
 func (x *Logger) GetTencent() *Logger_Tencent {
 	if x != nil {
 		return x.Tencent
+	}
+	return nil
+}
+
+func (x *Logger) GetZerolog() *Logger_Zerolog {
+	if x != nil {
+		return x.Zerolog
 	}
 	return nil
 }
@@ -443,18 +451,113 @@ func (x *Logger_Tencent) GetAccessSecret() string {
 	return ""
 }
 
+// Zerolog
+type Logger_Zerolog struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	Level              string                 `protobuf:"bytes,1,opt,name=level,proto3" json:"level,omitempty"`                                                       // 日志等级
+	TimeFieldFormat    string                 `protobuf:"bytes,2,opt,name=time_field_format,json=timeFieldFormat,proto3" json:"time_field_format,omitempty"`          // 定义时间戳格式，例如："2006-01-02 15:04:05"
+	TimestampFieldName string                 `protobuf:"bytes,3,opt,name=timestamp_field_name,json=timestampFieldName,proto3" json:"timestamp_field_name,omitempty"` // 时间戳字段名称
+	LevelFieldName     string                 `protobuf:"bytes,4,opt,name=level_field_name,json=levelFieldName,proto3" json:"level_field_name,omitempty"`             // 日志等级字段名称
+	MessageFieldName   string                 `protobuf:"bytes,5,opt,name=message_field_name,json=messageFieldName,proto3" json:"message_field_name,omitempty"`       // 日志消息字段名称
+	Writer             string                 `protobuf:"bytes,6,opt,name=writer,proto3" json:"writer,omitempty"`                                                     // 输出目标，默认stdout，可选：stdout, stderr, file
+	Filename           string                 `protobuf:"bytes,7,opt,name=filename,proto3" json:"filename,omitempty"`                                                 // 当writer为file时，指定日志文件名
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *Logger_Zerolog) Reset() {
+	*x = Logger_Zerolog{}
+	mi := &file_conf_v1_kratos_conf_logger_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Logger_Zerolog) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Logger_Zerolog) ProtoMessage() {}
+
+func (x *Logger_Zerolog) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_v1_kratos_conf_logger_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Logger_Zerolog.ProtoReflect.Descriptor instead.
+func (*Logger_Zerolog) Descriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_logger_proto_rawDescGZIP(), []int{0, 5}
+}
+
+func (x *Logger_Zerolog) GetLevel() string {
+	if x != nil {
+		return x.Level
+	}
+	return ""
+}
+
+func (x *Logger_Zerolog) GetTimeFieldFormat() string {
+	if x != nil {
+		return x.TimeFieldFormat
+	}
+	return ""
+}
+
+func (x *Logger_Zerolog) GetTimestampFieldName() string {
+	if x != nil {
+		return x.TimestampFieldName
+	}
+	return ""
+}
+
+func (x *Logger_Zerolog) GetLevelFieldName() string {
+	if x != nil {
+		return x.LevelFieldName
+	}
+	return ""
+}
+
+func (x *Logger_Zerolog) GetMessageFieldName() string {
+	if x != nil {
+		return x.MessageFieldName
+	}
+	return ""
+}
+
+func (x *Logger_Zerolog) GetWriter() string {
+	if x != nil {
+		return x.Writer
+	}
+	return ""
+}
+
+func (x *Logger_Zerolog) GetFilename() string {
+	if x != nil {
+		return x.Filename
+	}
+	return ""
+}
+
 var File_conf_v1_kratos_conf_logger_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_logger_proto_rawDesc = "" +
 	"\n" +
-	" conf/v1/kratos_conf_logger.proto\x12\x04conf\"\xc4\a\n" +
+	" conf/v1/kratos_conf_logger.proto\x12\x04conf\"\x91\n" +
+	"\n" +
 	"\x06Logger\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12'\n" +
 	"\x03zap\x18\x02 \x01(\v2\x10.conf.Logger.ZapH\x00R\x03zap\x88\x01\x01\x120\n" +
 	"\x06logrus\x18\x03 \x01(\v2\x13.conf.Logger.LogrusH\x01R\x06logrus\x88\x01\x01\x120\n" +
 	"\x06fluent\x18\x04 \x01(\v2\x13.conf.Logger.FluentH\x02R\x06fluent\x88\x01\x01\x120\n" +
 	"\x06aliyun\x18\x05 \x01(\v2\x13.conf.Logger.AliyunH\x03R\x06aliyun\x88\x01\x01\x123\n" +
-	"\atencent\x18\x06 \x01(\v2\x14.conf.Logger.TencentH\x04R\atencent\x88\x01\x01\x1a\x8c\x01\n" +
+	"\atencent\x18\x06 \x01(\v2\x14.conf.Logger.TencentH\x04R\atencent\x88\x01\x01\x123\n" +
+	"\azerolog\x18\a \x01(\v2\x14.conf.Logger.ZerologH\x05R\azerolog\x88\x01\x01\x1a\x8c\x01\n" +
 	"\x03Zap\x12\x1a\n" +
 	"\bfilename\x18\x01 \x01(\tR\bfilename\x12\x14\n" +
 	"\x05level\x18\x02 \x01(\tR\x05level\x12\x19\n" +
@@ -481,13 +584,23 @@ const file_conf_v1_kratos_conf_logger_proto_rawDesc = "" +
 	"\btopic_id\x18\x02 \x01(\tR\atopicId\x12\x1d\n" +
 	"\n" +
 	"access_key\x18\x03 \x01(\tR\taccessKey\x12#\n" +
-	"\raccess_secret\x18\x04 \x01(\tR\faccessSecretB\x06\n" +
+	"\raccess_secret\x18\x04 \x01(\tR\faccessSecret\x1a\x89\x02\n" +
+	"\aZerolog\x12\x14\n" +
+	"\x05level\x18\x01 \x01(\tR\x05level\x12*\n" +
+	"\x11time_field_format\x18\x02 \x01(\tR\x0ftimeFieldFormat\x120\n" +
+	"\x14timestamp_field_name\x18\x03 \x01(\tR\x12timestampFieldName\x12(\n" +
+	"\x10level_field_name\x18\x04 \x01(\tR\x0elevelFieldName\x12,\n" +
+	"\x12message_field_name\x18\x05 \x01(\tR\x10messageFieldName\x12\x16\n" +
+	"\x06writer\x18\x06 \x01(\tR\x06writer\x12\x1a\n" +
+	"\bfilename\x18\a \x01(\tR\bfilenameB\x06\n" +
 	"\x04_zapB\t\n" +
 	"\a_logrusB\t\n" +
 	"\a_fluentB\t\n" +
 	"\a_aliyunB\n" +
 	"\n" +
-	"\b_tencentB\x87\x01\n" +
+	"\b_tencentB\n" +
+	"\n" +
+	"\b_zerologB\x87\x01\n" +
 	"\bcom.confB\x15KratosConfLoggerProtoP\x01Z4github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1\xa2\x02\x03CXX\xaa\x02\x04Conf\xca\x02\x04Conf\xe2\x02\x10Conf\\GPBMetadata\xea\x02\x04Confb\x06proto3"
 
 var (
@@ -502,7 +615,7 @@ func file_conf_v1_kratos_conf_logger_proto_rawDescGZIP() []byte {
 	return file_conf_v1_kratos_conf_logger_proto_rawDescData
 }
 
-var file_conf_v1_kratos_conf_logger_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_conf_v1_kratos_conf_logger_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_conf_v1_kratos_conf_logger_proto_goTypes = []any{
 	(*Logger)(nil),         // 0: conf.Logger
 	(*Logger_Zap)(nil),     // 1: conf.Logger.Zap
@@ -510,6 +623,7 @@ var file_conf_v1_kratos_conf_logger_proto_goTypes = []any{
 	(*Logger_Fluent)(nil),  // 3: conf.Logger.Fluent
 	(*Logger_Aliyun)(nil),  // 4: conf.Logger.Aliyun
 	(*Logger_Tencent)(nil), // 5: conf.Logger.Tencent
+	(*Logger_Zerolog)(nil), // 6: conf.Logger.Zerolog
 }
 var file_conf_v1_kratos_conf_logger_proto_depIdxs = []int32{
 	1, // 0: conf.Logger.zap:type_name -> conf.Logger.Zap
@@ -517,11 +631,12 @@ var file_conf_v1_kratos_conf_logger_proto_depIdxs = []int32{
 	3, // 2: conf.Logger.fluent:type_name -> conf.Logger.Fluent
 	4, // 3: conf.Logger.aliyun:type_name -> conf.Logger.Aliyun
 	5, // 4: conf.Logger.tencent:type_name -> conf.Logger.Tencent
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	6, // 5: conf.Logger.zerolog:type_name -> conf.Logger.Zerolog
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_conf_v1_kratos_conf_logger_proto_init() }
@@ -536,7 +651,7 @@ func file_conf_v1_kratos_conf_logger_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_v1_kratos_conf_logger_proto_rawDesc), len(file_conf_v1_kratos_conf_logger_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
