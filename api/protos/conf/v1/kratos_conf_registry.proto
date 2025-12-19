@@ -8,6 +8,20 @@ import "google/protobuf/duration.proto";
 
 // 注册发现中心
 message Registry {
+  // 注册发现中心类型
+  enum Type {
+    UNKNOWN = 0;
+
+    CONSUL = 1;
+    ETCD = 2;
+    ZOOKEEPER = 3;
+    NACOS = 4;
+    KUBERNETES = 5;
+    EUREKA = 6;
+    POLARIS = 7;
+    SERVICECOMB = 8;
+  }
+
   // Consul
   message Consul {
     string scheme = 1;  // 网络样式

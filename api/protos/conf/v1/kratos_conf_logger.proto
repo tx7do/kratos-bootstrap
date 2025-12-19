@@ -6,6 +6,18 @@ option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
 
 // 日志
 message Logger {
+  // 日志类型
+  enum Type {
+    UNKNOWN = 0;
+
+    ZAP = 1;
+    LOGRUS = 2;
+    FLUENT = 3;
+    ALIYUN = 4;
+    TENCENT = 5;
+    ZEROLOG = 6;
+  }
+
   // Zap
   message Zap {
     string filename = 1; //

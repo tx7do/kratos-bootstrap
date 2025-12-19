@@ -22,6 +22,68 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// 配置服务类型
+type RemoteConfig_Type int32
+
+const (
+	RemoteConfig_UNKNOWN    RemoteConfig_Type = 0
+	RemoteConfig_ETCD       RemoteConfig_Type = 1
+	RemoteConfig_CONSUL     RemoteConfig_Type = 2
+	RemoteConfig_NACOS      RemoteConfig_Type = 3
+	RemoteConfig_APOLLO     RemoteConfig_Type = 4
+	RemoteConfig_KUBERNETES RemoteConfig_Type = 5
+	RemoteConfig_POLARIS    RemoteConfig_Type = 6
+)
+
+// Enum value maps for RemoteConfig_Type.
+var (
+	RemoteConfig_Type_name = map[int32]string{
+		0: "UNKNOWN",
+		1: "ETCD",
+		2: "CONSUL",
+		3: "NACOS",
+		4: "APOLLO",
+		5: "KUBERNETES",
+		6: "POLARIS",
+	}
+	RemoteConfig_Type_value = map[string]int32{
+		"UNKNOWN":    0,
+		"ETCD":       1,
+		"CONSUL":     2,
+		"NACOS":      3,
+		"APOLLO":     4,
+		"KUBERNETES": 5,
+		"POLARIS":    6,
+	}
+)
+
+func (x RemoteConfig_Type) Enum() *RemoteConfig_Type {
+	p := new(RemoteConfig_Type)
+	*p = x
+	return p
+}
+
+func (x RemoteConfig_Type) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (RemoteConfig_Type) Descriptor() protoreflect.EnumDescriptor {
+	return file_conf_v1_kratos_conf_config_proto_enumTypes[0].Descriptor()
+}
+
+func (RemoteConfig_Type) Type() protoreflect.EnumType {
+	return &file_conf_v1_kratos_conf_config_proto_enumTypes[0]
+}
+
+func (x RemoteConfig_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use RemoteConfig_Type.Descriptor instead.
+func (RemoteConfig_Type) EnumDescriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_config_proto_rawDescGZIP(), []int{0, 0}
+}
+
 // 配置服务
 type RemoteConfig struct {
 	state         protoimpl.MessageState   `protogen:"open.v1"`
@@ -605,7 +667,7 @@ var File_conf_v1_kratos_conf_config_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_config_proto_rawDesc = "" +
 	"\n" +
-	" conf/v1/kratos_conf_config.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\"\xf3\v\n" +
+	" conf/v1/kratos_conf_config.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\"\xd2\f\n" +
 	"\fRemoteConfig\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x120\n" +
 	"\x04etcd\x18\x02 \x01(\v2\x17.conf.RemoteConfig.EtcdH\x00R\x04etcd\x88\x01\x01\x126\n" +
@@ -659,7 +721,18 @@ const file_conf_v1_kratos_conf_config_proto_rawDesc = "" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x1d\n" +
 	"\n" +
 	"file_group\x18\x02 \x01(\tR\tfileGroup\x12\x1b\n" +
-	"\tfile_name\x18\x03 \x01(\tR\bfileNameB\a\n" +
+	"\tfile_name\x18\x03 \x01(\tR\bfileName\"]\n" +
+	"\x04Type\x12\v\n" +
+	"\aUNKNOWN\x10\x00\x12\b\n" +
+	"\x04ETCD\x10\x01\x12\n" +
+	"\n" +
+	"\x06CONSUL\x10\x02\x12\t\n" +
+	"\x05NACOS\x10\x03\x12\n" +
+	"\n" +
+	"\x06APOLLO\x10\x04\x12\x0e\n" +
+	"\n" +
+	"KUBERNETES\x10\x05\x12\v\n" +
+	"\aPOLARIS\x10\x06B\a\n" +
 	"\x05_etcdB\t\n" +
 	"\a_consulB\b\n" +
 	"\x06_nacosB\t\n" +
@@ -681,25 +754,27 @@ func file_conf_v1_kratos_conf_config_proto_rawDescGZIP() []byte {
 	return file_conf_v1_kratos_conf_config_proto_rawDescData
 }
 
+var file_conf_v1_kratos_conf_config_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_conf_v1_kratos_conf_config_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_conf_v1_kratos_conf_config_proto_goTypes = []any{
-	(*RemoteConfig)(nil),            // 0: conf.RemoteConfig
-	(*RemoteConfig_Nacos)(nil),      // 1: conf.RemoteConfig.Nacos
-	(*RemoteConfig_Etcd)(nil),       // 2: conf.RemoteConfig.Etcd
-	(*RemoteConfig_Consul)(nil),     // 3: conf.RemoteConfig.Consul
-	(*RemoteConfig_Apollo)(nil),     // 4: conf.RemoteConfig.Apollo
-	(*RemoteConfig_Kubernetes)(nil), // 5: conf.RemoteConfig.Kubernetes
-	(*RemoteConfig_Polaris)(nil),    // 6: conf.RemoteConfig.Polaris
-	(*durationpb.Duration)(nil),     // 7: google.protobuf.Duration
+	(RemoteConfig_Type)(0),          // 0: conf.RemoteConfig.Type
+	(*RemoteConfig)(nil),            // 1: conf.RemoteConfig
+	(*RemoteConfig_Nacos)(nil),      // 2: conf.RemoteConfig.Nacos
+	(*RemoteConfig_Etcd)(nil),       // 3: conf.RemoteConfig.Etcd
+	(*RemoteConfig_Consul)(nil),     // 4: conf.RemoteConfig.Consul
+	(*RemoteConfig_Apollo)(nil),     // 5: conf.RemoteConfig.Apollo
+	(*RemoteConfig_Kubernetes)(nil), // 6: conf.RemoteConfig.Kubernetes
+	(*RemoteConfig_Polaris)(nil),    // 7: conf.RemoteConfig.Polaris
+	(*durationpb.Duration)(nil),     // 8: google.protobuf.Duration
 }
 var file_conf_v1_kratos_conf_config_proto_depIdxs = []int32{
-	2, // 0: conf.RemoteConfig.etcd:type_name -> conf.RemoteConfig.Etcd
-	3, // 1: conf.RemoteConfig.consul:type_name -> conf.RemoteConfig.Consul
-	1, // 2: conf.RemoteConfig.nacos:type_name -> conf.RemoteConfig.Nacos
-	4, // 3: conf.RemoteConfig.apollo:type_name -> conf.RemoteConfig.Apollo
-	5, // 4: conf.RemoteConfig.kubernetes:type_name -> conf.RemoteConfig.Kubernetes
-	6, // 5: conf.RemoteConfig.polaris:type_name -> conf.RemoteConfig.Polaris
-	7, // 6: conf.RemoteConfig.Etcd.timeout:type_name -> google.protobuf.Duration
+	3, // 0: conf.RemoteConfig.etcd:type_name -> conf.RemoteConfig.Etcd
+	4, // 1: conf.RemoteConfig.consul:type_name -> conf.RemoteConfig.Consul
+	2, // 2: conf.RemoteConfig.nacos:type_name -> conf.RemoteConfig.Nacos
+	5, // 3: conf.RemoteConfig.apollo:type_name -> conf.RemoteConfig.Apollo
+	6, // 4: conf.RemoteConfig.kubernetes:type_name -> conf.RemoteConfig.Kubernetes
+	7, // 5: conf.RemoteConfig.polaris:type_name -> conf.RemoteConfig.Polaris
+	8, // 6: conf.RemoteConfig.Etcd.timeout:type_name -> google.protobuf.Duration
 	7, // [7:7] is the sub-list for method output_type
 	7, // [7:7] is the sub-list for method input_type
 	7, // [7:7] is the sub-list for extension type_name
@@ -718,13 +793,14 @@ func file_conf_v1_kratos_conf_config_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_v1_kratos_conf_config_proto_rawDesc), len(file_conf_v1_kratos_conf_config_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_conf_v1_kratos_conf_config_proto_goTypes,
 		DependencyIndexes: file_conf_v1_kratos_conf_config_proto_depIdxs,
+		EnumInfos:         file_conf_v1_kratos_conf_config_proto_enumTypes,
 		MessageInfos:      file_conf_v1_kratos_conf_config_proto_msgTypes,
 	}.Build()
 	File_conf_v1_kratos_conf_config_proto = out.File

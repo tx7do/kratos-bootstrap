@@ -22,6 +22,74 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// 注册发现中心类型
+type Registry_Type int32
+
+const (
+	Registry_UNKNOWN     Registry_Type = 0
+	Registry_CONSUL      Registry_Type = 1
+	Registry_ETCD        Registry_Type = 2
+	Registry_ZOOKEEPER   Registry_Type = 3
+	Registry_NACOS       Registry_Type = 4
+	Registry_KUBERNETES  Registry_Type = 5
+	Registry_EUREKA      Registry_Type = 6
+	Registry_POLARIS     Registry_Type = 7
+	Registry_SERVICECOMB Registry_Type = 8
+)
+
+// Enum value maps for Registry_Type.
+var (
+	Registry_Type_name = map[int32]string{
+		0: "UNKNOWN",
+		1: "CONSUL",
+		2: "ETCD",
+		3: "ZOOKEEPER",
+		4: "NACOS",
+		5: "KUBERNETES",
+		6: "EUREKA",
+		7: "POLARIS",
+		8: "SERVICECOMB",
+	}
+	Registry_Type_value = map[string]int32{
+		"UNKNOWN":     0,
+		"CONSUL":      1,
+		"ETCD":        2,
+		"ZOOKEEPER":   3,
+		"NACOS":       4,
+		"KUBERNETES":  5,
+		"EUREKA":      6,
+		"POLARIS":     7,
+		"SERVICECOMB": 8,
+	}
+)
+
+func (x Registry_Type) Enum() *Registry_Type {
+	p := new(Registry_Type)
+	*p = x
+	return p
+}
+
+func (x Registry_Type) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Registry_Type) Descriptor() protoreflect.EnumDescriptor {
+	return file_conf_v1_kratos_conf_registry_proto_enumTypes[0].Descriptor()
+}
+
+func (Registry_Type) Type() protoreflect.EnumType {
+	return &file_conf_v1_kratos_conf_registry_proto_enumTypes[0]
+}
+
+func (x Registry_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Registry_Type.Descriptor instead.
+func (Registry_Type) EnumDescriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_registry_proto_rawDescGZIP(), []int{0, 0}
+}
+
 // 注册发现中心
 type Registry struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -735,7 +803,7 @@ var File_conf_v1_kratos_conf_registry_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_registry_proto_rawDesc = "" +
 	"\n" +
-	"\"conf/v1/kratos_conf_registry.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\"\xdf\x0f\n" +
+	"\"conf/v1/kratos_conf_registry.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\"\xde\x10\n" +
 	"\bRegistry\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x122\n" +
 	"\x06consul\x18\x02 \x01(\v2\x15.conf.Registry.ConsulH\x00R\x06consul\x88\x01\x01\x12,\n" +
@@ -797,7 +865,20 @@ const file_conf_v1_kratos_conf_registry_proto_rawDesc = "" +
 	"\aservice\x18\x05 \x01(\tR\aservice\x12\x14\n" +
 	"\x05token\x18\x06 \x01(\tR\x05token\x1a+\n" +
 	"\vServicecomb\x12\x1c\n" +
-	"\tendpoints\x18\x01 \x03(\tR\tendpointsB\t\n" +
+	"\tendpoints\x18\x01 \x03(\tR\tendpoints\"}\n" +
+	"\x04Type\x12\v\n" +
+	"\aUNKNOWN\x10\x00\x12\n" +
+	"\n" +
+	"\x06CONSUL\x10\x01\x12\b\n" +
+	"\x04ETCD\x10\x02\x12\r\n" +
+	"\tZOOKEEPER\x10\x03\x12\t\n" +
+	"\x05NACOS\x10\x04\x12\x0e\n" +
+	"\n" +
+	"KUBERNETES\x10\x05\x12\n" +
+	"\n" +
+	"\x06EUREKA\x10\x06\x12\v\n" +
+	"\aPOLARIS\x10\a\x12\x0f\n" +
+	"\vSERVICECOMB\x10\bB\t\n" +
 	"\a_consulB\a\n" +
 	"\x05_etcdB\f\n" +
 	"\n" +
@@ -822,34 +903,36 @@ func file_conf_v1_kratos_conf_registry_proto_rawDescGZIP() []byte {
 	return file_conf_v1_kratos_conf_registry_proto_rawDescData
 }
 
+var file_conf_v1_kratos_conf_registry_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_conf_v1_kratos_conf_registry_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_conf_v1_kratos_conf_registry_proto_goTypes = []any{
-	(*Registry)(nil),             // 0: conf.Registry
-	(*Registry_Consul)(nil),      // 1: conf.Registry.Consul
-	(*Registry_Etcd)(nil),        // 2: conf.Registry.Etcd
-	(*Registry_ZooKeeper)(nil),   // 3: conf.Registry.ZooKeeper
-	(*Registry_Nacos)(nil),       // 4: conf.Registry.Nacos
-	(*Registry_Kubernetes)(nil),  // 5: conf.Registry.Kubernetes
-	(*Registry_Eureka)(nil),      // 6: conf.Registry.Eureka
-	(*Registry_Polaris)(nil),     // 7: conf.Registry.Polaris
-	(*Registry_Servicecomb)(nil), // 8: conf.Registry.Servicecomb
-	(*durationpb.Duration)(nil),  // 9: google.protobuf.Duration
+	(Registry_Type)(0),           // 0: conf.Registry.Type
+	(*Registry)(nil),             // 1: conf.Registry
+	(*Registry_Consul)(nil),      // 2: conf.Registry.Consul
+	(*Registry_Etcd)(nil),        // 3: conf.Registry.Etcd
+	(*Registry_ZooKeeper)(nil),   // 4: conf.Registry.ZooKeeper
+	(*Registry_Nacos)(nil),       // 5: conf.Registry.Nacos
+	(*Registry_Kubernetes)(nil),  // 6: conf.Registry.Kubernetes
+	(*Registry_Eureka)(nil),      // 7: conf.Registry.Eureka
+	(*Registry_Polaris)(nil),     // 8: conf.Registry.Polaris
+	(*Registry_Servicecomb)(nil), // 9: conf.Registry.Servicecomb
+	(*durationpb.Duration)(nil),  // 10: google.protobuf.Duration
 }
 var file_conf_v1_kratos_conf_registry_proto_depIdxs = []int32{
-	1,  // 0: conf.Registry.consul:type_name -> conf.Registry.Consul
-	2,  // 1: conf.Registry.etcd:type_name -> conf.Registry.Etcd
-	3,  // 2: conf.Registry.zookeeper:type_name -> conf.Registry.ZooKeeper
-	4,  // 3: conf.Registry.nacos:type_name -> conf.Registry.Nacos
-	5,  // 4: conf.Registry.kubernetes:type_name -> conf.Registry.Kubernetes
-	6,  // 5: conf.Registry.eureka:type_name -> conf.Registry.Eureka
-	7,  // 6: conf.Registry.polaris:type_name -> conf.Registry.Polaris
-	8,  // 7: conf.Registry.servicecomb:type_name -> conf.Registry.Servicecomb
-	9,  // 8: conf.Registry.ZooKeeper.timeout:type_name -> google.protobuf.Duration
-	9,  // 9: conf.Registry.Nacos.timeout:type_name -> google.protobuf.Duration
-	9,  // 10: conf.Registry.Nacos.beat_interval:type_name -> google.protobuf.Duration
-	9,  // 11: conf.Registry.Nacos.listen_interval:type_name -> google.protobuf.Duration
-	9,  // 12: conf.Registry.Eureka.heartbeat_interval:type_name -> google.protobuf.Duration
-	9,  // 13: conf.Registry.Eureka.refresh_interval:type_name -> google.protobuf.Duration
+	2,  // 0: conf.Registry.consul:type_name -> conf.Registry.Consul
+	3,  // 1: conf.Registry.etcd:type_name -> conf.Registry.Etcd
+	4,  // 2: conf.Registry.zookeeper:type_name -> conf.Registry.ZooKeeper
+	5,  // 3: conf.Registry.nacos:type_name -> conf.Registry.Nacos
+	6,  // 4: conf.Registry.kubernetes:type_name -> conf.Registry.Kubernetes
+	7,  // 5: conf.Registry.eureka:type_name -> conf.Registry.Eureka
+	8,  // 6: conf.Registry.polaris:type_name -> conf.Registry.Polaris
+	9,  // 7: conf.Registry.servicecomb:type_name -> conf.Registry.Servicecomb
+	10, // 8: conf.Registry.ZooKeeper.timeout:type_name -> google.protobuf.Duration
+	10, // 9: conf.Registry.Nacos.timeout:type_name -> google.protobuf.Duration
+	10, // 10: conf.Registry.Nacos.beat_interval:type_name -> google.protobuf.Duration
+	10, // 11: conf.Registry.Nacos.listen_interval:type_name -> google.protobuf.Duration
+	10, // 12: conf.Registry.Eureka.heartbeat_interval:type_name -> google.protobuf.Duration
+	10, // 13: conf.Registry.Eureka.refresh_interval:type_name -> google.protobuf.Duration
 	14, // [14:14] is the sub-list for method output_type
 	14, // [14:14] is the sub-list for method input_type
 	14, // [14:14] is the sub-list for extension type_name
@@ -868,13 +951,14 @@ func file_conf_v1_kratos_conf_registry_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_v1_kratos_conf_registry_proto_rawDesc), len(file_conf_v1_kratos_conf_registry_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_conf_v1_kratos_conf_registry_proto_goTypes,
 		DependencyIndexes: file_conf_v1_kratos_conf_registry_proto_depIdxs,
+		EnumInfos:         file_conf_v1_kratos_conf_registry_proto_enumTypes,
 		MessageInfos:      file_conf_v1_kratos_conf_registry_proto_msgTypes,
 	}.Build()
 	File_conf_v1_kratos_conf_registry_proto = out.File

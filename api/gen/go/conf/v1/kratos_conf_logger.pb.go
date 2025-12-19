@@ -21,6 +21,68 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// 日志类型
+type Logger_Type int32
+
+const (
+	Logger_UNKNOWN Logger_Type = 0
+	Logger_ZAP     Logger_Type = 1
+	Logger_LOGRUS  Logger_Type = 2
+	Logger_FLUENT  Logger_Type = 3
+	Logger_ALIYUN  Logger_Type = 4
+	Logger_TENCENT Logger_Type = 5
+	Logger_ZEROLOG Logger_Type = 6
+)
+
+// Enum value maps for Logger_Type.
+var (
+	Logger_Type_name = map[int32]string{
+		0: "UNKNOWN",
+		1: "ZAP",
+		2: "LOGRUS",
+		3: "FLUENT",
+		4: "ALIYUN",
+		5: "TENCENT",
+		6: "ZEROLOG",
+	}
+	Logger_Type_value = map[string]int32{
+		"UNKNOWN": 0,
+		"ZAP":     1,
+		"LOGRUS":  2,
+		"FLUENT":  3,
+		"ALIYUN":  4,
+		"TENCENT": 5,
+		"ZEROLOG": 6,
+	}
+)
+
+func (x Logger_Type) Enum() *Logger_Type {
+	p := new(Logger_Type)
+	*p = x
+	return p
+}
+
+func (x Logger_Type) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Logger_Type) Descriptor() protoreflect.EnumDescriptor {
+	return file_conf_v1_kratos_conf_logger_proto_enumTypes[0].Descriptor()
+}
+
+func (Logger_Type) Type() protoreflect.EnumType {
+	return &file_conf_v1_kratos_conf_logger_proto_enumTypes[0]
+}
+
+func (x Logger_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Logger_Type.Descriptor instead.
+func (Logger_Type) EnumDescriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_logger_proto_rawDescGZIP(), []int{0, 0}
+}
+
 // 日志
 type Logger struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -548,7 +610,7 @@ var File_conf_v1_kratos_conf_logger_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_logger_proto_rawDesc = "" +
 	"\n" +
-	" conf/v1/kratos_conf_logger.proto\x12\x04conf\"\x91\n" +
+	" conf/v1/kratos_conf_logger.proto\x12\x04conf\"\xed\n" +
 	"\n" +
 	"\x06Logger\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12'\n" +
@@ -592,7 +654,18 @@ const file_conf_v1_kratos_conf_logger_proto_rawDesc = "" +
 	"\x10level_field_name\x18\x04 \x01(\tR\x0elevelFieldName\x12,\n" +
 	"\x12message_field_name\x18\x05 \x01(\tR\x10messageFieldName\x12\x16\n" +
 	"\x06writer\x18\x06 \x01(\tR\x06writer\x12\x1a\n" +
-	"\bfilename\x18\a \x01(\tR\bfilenameB\x06\n" +
+	"\bfilename\x18\a \x01(\tR\bfilename\"Z\n" +
+	"\x04Type\x12\v\n" +
+	"\aUNKNOWN\x10\x00\x12\a\n" +
+	"\x03ZAP\x10\x01\x12\n" +
+	"\n" +
+	"\x06LOGRUS\x10\x02\x12\n" +
+	"\n" +
+	"\x06FLUENT\x10\x03\x12\n" +
+	"\n" +
+	"\x06ALIYUN\x10\x04\x12\v\n" +
+	"\aTENCENT\x10\x05\x12\v\n" +
+	"\aZEROLOG\x10\x06B\x06\n" +
 	"\x04_zapB\t\n" +
 	"\a_logrusB\t\n" +
 	"\a_fluentB\t\n" +
@@ -615,23 +688,25 @@ func file_conf_v1_kratos_conf_logger_proto_rawDescGZIP() []byte {
 	return file_conf_v1_kratos_conf_logger_proto_rawDescData
 }
 
+var file_conf_v1_kratos_conf_logger_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_conf_v1_kratos_conf_logger_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_conf_v1_kratos_conf_logger_proto_goTypes = []any{
-	(*Logger)(nil),         // 0: conf.Logger
-	(*Logger_Zap)(nil),     // 1: conf.Logger.Zap
-	(*Logger_Logrus)(nil),  // 2: conf.Logger.Logrus
-	(*Logger_Fluent)(nil),  // 3: conf.Logger.Fluent
-	(*Logger_Aliyun)(nil),  // 4: conf.Logger.Aliyun
-	(*Logger_Tencent)(nil), // 5: conf.Logger.Tencent
-	(*Logger_Zerolog)(nil), // 6: conf.Logger.Zerolog
+	(Logger_Type)(0),       // 0: conf.Logger.Type
+	(*Logger)(nil),         // 1: conf.Logger
+	(*Logger_Zap)(nil),     // 2: conf.Logger.Zap
+	(*Logger_Logrus)(nil),  // 3: conf.Logger.Logrus
+	(*Logger_Fluent)(nil),  // 4: conf.Logger.Fluent
+	(*Logger_Aliyun)(nil),  // 5: conf.Logger.Aliyun
+	(*Logger_Tencent)(nil), // 6: conf.Logger.Tencent
+	(*Logger_Zerolog)(nil), // 7: conf.Logger.Zerolog
 }
 var file_conf_v1_kratos_conf_logger_proto_depIdxs = []int32{
-	1, // 0: conf.Logger.zap:type_name -> conf.Logger.Zap
-	2, // 1: conf.Logger.logrus:type_name -> conf.Logger.Logrus
-	3, // 2: conf.Logger.fluent:type_name -> conf.Logger.Fluent
-	4, // 3: conf.Logger.aliyun:type_name -> conf.Logger.Aliyun
-	5, // 4: conf.Logger.tencent:type_name -> conf.Logger.Tencent
-	6, // 5: conf.Logger.zerolog:type_name -> conf.Logger.Zerolog
+	2, // 0: conf.Logger.zap:type_name -> conf.Logger.Zap
+	3, // 1: conf.Logger.logrus:type_name -> conf.Logger.Logrus
+	4, // 2: conf.Logger.fluent:type_name -> conf.Logger.Fluent
+	5, // 3: conf.Logger.aliyun:type_name -> conf.Logger.Aliyun
+	6, // 4: conf.Logger.tencent:type_name -> conf.Logger.Tencent
+	7, // 5: conf.Logger.zerolog:type_name -> conf.Logger.Zerolog
 	6, // [6:6] is the sub-list for method output_type
 	6, // [6:6] is the sub-list for method input_type
 	6, // [6:6] is the sub-list for extension type_name
@@ -650,13 +725,14 @@ func file_conf_v1_kratos_conf_logger_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_v1_kratos_conf_logger_proto_rawDesc), len(file_conf_v1_kratos_conf_logger_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_conf_v1_kratos_conf_logger_proto_goTypes,
 		DependencyIndexes: file_conf_v1_kratos_conf_logger_proto_depIdxs,
+		EnumInfos:         file_conf_v1_kratos_conf_logger_proto_enumTypes,
 		MessageInfos:      file_conf_v1_kratos_conf_logger_proto_msgTypes,
 	}.Build()
 	File_conf_v1_kratos_conf_logger_proto = out.File

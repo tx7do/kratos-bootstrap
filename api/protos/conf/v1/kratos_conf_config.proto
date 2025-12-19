@@ -8,6 +8,18 @@ import "google/protobuf/duration.proto";
 
 // 配置服务
 message RemoteConfig {
+  // 配置服务类型
+  enum Type {
+    UNKNOWN = 0;
+
+    ETCD = 1;
+    CONSUL = 2;
+    NACOS = 3;
+    APOLLO = 4;
+    KUBERNETES = 5;
+    POLARIS = 6;
+  }
+
   // Nacos 配置
   message Nacos {
     string address = 1; // 服务端地址

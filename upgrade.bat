@@ -5,15 +5,7 @@ cd %DIR%\api
 go get all
 go mod tidy
 
-cd %DIR%\utils
-go get all
-go mod tidy
-
-cd %DIR%\cache/redis
-go get all
-go mod tidy
-
-cd %DIR%\logger
+cd %DIR%\cache\redis
 go get all
 go mod tidy
 
@@ -23,27 +15,60 @@ go get all
 go mod tidy
 
 
-cd %DIR%\remoteconfig\apollo
+cd %DIR%\logger
 go get all
 go mod tidy
 
-cd %DIR%\remoteconfig\consul
+cd %DIR%\logger\aliyun
 go get all
 go mod tidy
 
-cd %DIR%\remoteconfig\etcd
+cd %DIR%\logger\fluent
 go get all
 go mod tidy
 
-cd %DIR%\remoteconfig\kubernetes
+cd %DIR%\logger\logrus
 go get all
 go mod tidy
 
-cd %DIR%\remoteconfig\nacos
+cd %DIR%\logger\tencent
 go get all
 go mod tidy
 
-cd %DIR%\remoteconfig\polaris
+cd %DIR%\logger\zap
+go get all
+go mod tidy
+
+cd %DIR%\logger\zerolog
+go get all
+go mod tidy
+
+
+cd %DIR%\config
+go get all
+go mod tidy
+
+cd %DIR%\config\apollo
+go get all
+go mod tidy
+
+cd %DIR%\config\consul
+go get all
+go mod tidy
+
+cd %DIR%\config\etcd
+go get all
+go mod tidy
+
+cd %DIR%\config\kubernetes
+go get all
+go mod tidy
+
+cd %DIR%\config\nacos
+go get all
+go mod tidy
+
+cd %DIR%\config\polaris
 go get all
 go mod tidy
 
