@@ -11,7 +11,7 @@ require (
 	github.com/apolloconfig/agollo/v4 v4.4.0
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/tx7do/kratos-bootstrap/api v0.0.32
-	github.com/tx7do/kratos-bootstrap/config v0.0.0-00010101000000-000000000000
+	github.com/tx7do/kratos-bootstrap/config v0.2.0
 )
 
 require (

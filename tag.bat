@@ -31,13 +31,13 @@ git tag registry/polaris/v0.2.0 --force
 git tag registry/servicecomb/v0.2.0 --force
 git tag registry/zookeeper/v0.2.0 --force
 
-git tag config/v0.1.3 --force
-git tag config/apollo/v0.1.3 --force
-git tag config/consul/v0.1.3 --force
-git tag config/etcd/v0.1.3 --force
-git tag config/kubernetes/v0.1.4 --force
-git tag config/nacos/v0.1.4 --force
-git tag config/polaris/v0.1.3 --force
+git tag config/v0.2.0 --force
+git tag config/apollo/v0.2.0 --force
+git tag config/consul/v0.2.0 --force
+git tag config/etcd/v0.2.0 --force
+git tag config/kubernetes/v0.2.0 --force
+git tag config/nacos/v0.2.0 --force
+git tag config/polaris/v0.2.0 --force
 
 git tag bootstrap/v0.0.21 --force
 

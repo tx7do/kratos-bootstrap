@@ -13,7 +13,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/polarismesh/polaris-go v1.6.1
 	github.com/tx7do/kratos-bootstrap/api v0.0.32
-	github.com/tx7do/kratos-bootstrap/config v0.0.10
+	github.com/tx7do/kratos-bootstrap/config v0.2.0
 )
 
 require (
