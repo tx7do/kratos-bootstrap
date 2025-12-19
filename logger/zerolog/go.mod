@@ -11,7 +11,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/rs/zerolog v1.34.0
-	github.com/tx7do/kratos-bootstrap/api v0.0.31
+	github.com/tx7do/kratos-bootstrap/api v0.0.32
 	github.com/tx7do/kratos-bootstrap/logger v0.0.13
 )
 

@@ -5,7 +5,7 @@ go 1.24.6
 replace github.com/tx7do/kratos-bootstrap/api => ../api
 
 require (
-	github.com/tx7do/kratos-bootstrap/api v0.0.31
+	github.com/tx7do/kratos-bootstrap/api v0.0.32
 	go.opentelemetry.io/otel v1.39.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.39.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.39.0

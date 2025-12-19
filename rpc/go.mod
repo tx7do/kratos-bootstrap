@@ -11,7 +11,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/handlers v1.5.2
 	github.com/tx7do/go-utils v1.1.34
-	github.com/tx7do/kratos-bootstrap/api v0.0.31
+	github.com/tx7do/kratos-bootstrap/api v0.0.32
 	google.golang.org/grpc v1.77.0
 	google.golang.org/protobuf v1.36.11
 )

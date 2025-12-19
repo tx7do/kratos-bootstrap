@@ -2,15 +2,14 @@ module github.com/tx7do/kratos-bootstrap/database/clickhouse
 
 go 1.25.3
 
-replace (
-	github.com/tx7do/kratos-bootstrap/api => ../../api
-)
+replace github.com/tx7do/kratos-bootstrap/api => ../../api
 
 require (
 	github.com/ClickHouse/clickhouse-go/v2 v2.41.0
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/tx7do/go-crud/clickhouse v0.0.3
-	github.com/tx7do/kratos-bootstrap/api v0.0.31
+	github.com/tx7do/go-utils v1.1.34
+	github.com/tx7do/kratos-bootstrap/api v0.0.32
 )
 
 require (
@@ -29,7 +28,6 @@ require (
 	github.com/segmentio/asm v1.2.1 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/tx7do/go-crud v0.0.5 // indirect
-	github.com/tx7do/go-utils v1.1.34 // indirect
 	github.com/tx7do/go-utils/mapper v0.0.3 // indirect
 	go.opentelemetry.io/otel v1.39.0 // indirect
 	go.opentelemetry.io/otel/trace v1.39.0 // indirect
