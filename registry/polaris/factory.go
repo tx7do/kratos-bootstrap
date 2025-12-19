@@ -8,22 +8,18 @@ import (
 	polarisModel "github.com/polarismesh/polaris-go/pkg/model"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	r "github.com/tx7do/kratos-bootstrap/registry"
+	baseRegistry "github.com/tx7do/kratos-bootstrap/registry"
 )
 
 func init() {
-	r.RegisterRegistrarCreator(string(r.Polaris), func(c *conf.Registry) registry.Registrar {
-		return NewRegistry(c)
-	})
-	r.RegisterDiscoveryCreator(string(r.Polaris), func(c *conf.Registry) registry.Discovery {
-		return NewRegistry(c)
-	})
+	_ = baseRegistry.RegisterDiscoveryFactory(baseRegistry.Polaris, NewDiscovery)
+	_ = baseRegistry.RegisterRegistrarFactory(baseRegistry.Polaris, NewRegistrar)
 }
 
 // NewRegistry 创建一个注册发现客户端 - Polaris
-func NewRegistry(c *conf.Registry) *Registry {
+func NewRegistry(c *conf.Registry) (*Registry, error) {
 	if c == nil || c.Polaris == nil {
-		return nil
+		return nil, nil
 	}
 
 	var err error
@@ -31,6 +27,7 @@ func NewRegistry(c *conf.Registry) *Registry {
 	var consumer polarisApi.ConsumerAPI
 	if consumer, err = polarisApi.NewConsumerAPI(); err != nil {
 		log.Fatalf("fail to create consumerAPI, err is %v", err)
+		return nil, err
 	}
 
 	var provider polarisApi.ProviderAPI
@@ -49,12 +46,21 @@ func NewRegistry(c *conf.Registry) *Registry {
 		registerRequest.SetHealthy(true)
 		if resp, err = provider.RegisterInstance(registerRequest); err != nil {
 			log.Fatalf("fail to register instance %d, err is %v", i, err)
-		} else {
-			log.Infof("register instance %d response: instanceId %s", i, resp.InstanceID)
+			return nil, err
 		}
+
+		log.Infof("register instance %d response: instanceId %s", i, resp.InstanceID)
 	}
 
 	reg := New(provider, consumer)
 
-	return reg
+	return reg, nil
+}
+
+func NewDiscovery(c *conf.Registry) (registry.Discovery, error) {
+	return NewRegistry(c)
+}
+
+func NewRegistrar(c *conf.Registry) (registry.Registrar, error) {
+	return NewRegistry(c)
 }

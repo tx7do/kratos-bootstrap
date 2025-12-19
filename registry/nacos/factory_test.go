@@ -15,6 +15,7 @@ func TestNewNacosRegistry(t *testing.T) {
 		},
 	}
 
-	reg := NewRegistry(&cfg)
+	reg, err := NewRegistry(&cfg)
+	assert.Nil(t, err)
 	assert.NotNil(t, reg)
 }

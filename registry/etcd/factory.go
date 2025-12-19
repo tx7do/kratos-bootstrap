@@ -7,22 +7,18 @@ import (
 	etcdClient "go.etcd.io/etcd/client/v3"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	r "github.com/tx7do/kratos-bootstrap/registry"
+	baseRegistry "github.com/tx7do/kratos-bootstrap/registry"
 )
 
 func init() {
-	r.RegisterRegistrarCreator(string(r.Etcd), func(c *conf.Registry) registry.Registrar {
-		return NewRegistry(c)
-	})
-	r.RegisterDiscoveryCreator(string(r.Etcd), func(c *conf.Registry) registry.Discovery {
-		return NewRegistry(c)
-	})
+	_ = baseRegistry.RegisterDiscoveryFactory(baseRegistry.Etcd, NewDiscovery)
+	_ = baseRegistry.RegisterRegistrarFactory(baseRegistry.Etcd, NewRegistrar)
 }
 
 // NewRegistry 创建一个注册发现客户端 - Etcd
-func NewRegistry(c *conf.Registry) *Registry {
+func NewRegistry(c *conf.Registry) (*Registry, error) {
 	if c == nil || c.Etcd == nil {
-		return nil
+		return nil, nil
 	}
 
 	cfg := etcdClient.Config{
@@ -37,5 +33,13 @@ func NewRegistry(c *conf.Registry) *Registry {
 
 	reg := New(cli)
 
-	return reg
+	return reg, nil
+}
+
+func NewDiscovery(c *conf.Registry) (registry.Discovery, error) {
+	return NewRegistry(c)
+}
+
+func NewRegistrar(c *conf.Registry) (registry.Registrar, error) {
+	return NewRegistry(c)
 }

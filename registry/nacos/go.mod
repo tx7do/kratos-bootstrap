@@ -13,7 +13,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/nacos-group/nacos-sdk-go/v2 v2.3.5
 	github.com/stretchr/testify v1.11.1
-	github.com/tx7do/kratos-bootstrap/api v0.0.29
+	github.com/tx7do/kratos-bootstrap/api v0.0.31
 	github.com/tx7do/kratos-bootstrap/registry v0.1.1
 )
 
@@ -73,7 +73,7 @@ require (
 	golang.org/x/time v0.14.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251202230838-ff82c1b0f217 // indirect
 	google.golang.org/grpc v1.77.0 // indirect
-	google.golang.org/protobuf v1.36.10 // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

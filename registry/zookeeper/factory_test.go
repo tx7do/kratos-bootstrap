@@ -1,9 +1,10 @@
 package zookeeper
 
 import (
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"testing"
 )
 
 func TestNewZooKeeperRegistry(t *testing.T) {
@@ -13,6 +14,7 @@ func TestNewZooKeeperRegistry(t *testing.T) {
 		},
 	}
 
-	reg := NewRegistry(&cfg)
+	reg, err := NewRegistry(&cfg)
+	assert.Nil(t, err)
 	assert.NotNil(t, reg)
 }

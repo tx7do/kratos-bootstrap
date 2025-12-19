@@ -6,23 +6,20 @@ import (
 
 	consulClient "github.com/hashicorp/consul/api"
 
+	baseRegistry "github.com/tx7do/kratos-bootstrap/registry"
+
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	r "github.com/tx7do/kratos-bootstrap/registry"
 )
 
 func init() {
-	r.RegisterRegistrarCreator(string(r.Consul), func(c *conf.Registry) registry.Registrar {
-		return NewRegistry(c)
-	})
-	r.RegisterDiscoveryCreator(string(r.Consul), func(c *conf.Registry) registry.Discovery {
-		return NewRegistry(c)
-	})
+	_ = baseRegistry.RegisterDiscoveryFactory(baseRegistry.Consul, NewDiscovery)
+	_ = baseRegistry.RegisterRegistrarFactory(baseRegistry.Consul, NewRegistrar)
 }
 
 // NewRegistry 创建一个注册发现客户端 - Consul
-func NewRegistry(c *conf.Registry) *Registry {
+func NewRegistry(c *conf.Registry) (*Registry, error) {
 	if c == nil || c.Consul == nil {
-		return nil
+		return nil, nil
 	}
 
 	cfg := consulClient.DefaultConfig()
@@ -37,5 +34,13 @@ func NewRegistry(c *conf.Registry) *Registry {
 
 	reg := New(cli, WithHealthCheck(c.Consul.GetHealthCheck()))
 
-	return reg
+	return reg, nil
+}
+
+func NewDiscovery(c *conf.Registry) (registry.Discovery, error) {
+	return NewRegistry(c)
+}
+
+func NewRegistrar(c *conf.Registry) (registry.Registrar, error) {
+	return NewRegistry(c)
 }

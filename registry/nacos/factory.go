@@ -9,22 +9,18 @@ import (
 	nacosVo "github.com/nacos-group/nacos-sdk-go/v2/vo"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	r "github.com/tx7do/kratos-bootstrap/registry"
+	baseRegistry "github.com/tx7do/kratos-bootstrap/registry"
 )
 
 func init() {
-	r.RegisterRegistrarCreator(string(r.Nacos), func(c *conf.Registry) registry.Registrar {
-		return NewRegistry(c)
-	})
-	r.RegisterDiscoveryCreator(string(r.Nacos), func(c *conf.Registry) registry.Discovery {
-		return NewRegistry(c)
-	})
+	_ = baseRegistry.RegisterDiscoveryFactory(baseRegistry.Nacos, NewDiscovery)
+	_ = baseRegistry.RegisterRegistrarFactory(baseRegistry.Nacos, NewRegistrar)
 }
 
 // NewRegistry 创建一个注册发现客户端 - Nacos
-func NewRegistry(c *conf.Registry) *Registry {
+func NewRegistry(c *conf.Registry) (*Registry, error) {
 	if c == nil || c.Nacos == nil {
-		return nil
+		return nil, nil
 	}
 
 	srvConf := []nacosConstant.ServerConfig{
@@ -66,9 +62,18 @@ func NewRegistry(c *conf.Registry) *Registry {
 	)
 	if err != nil {
 		log.Fatal(err)
+		return nil, err
 	}
 
 	reg := New(cli)
 
-	return reg
+	return reg, nil
+}
+
+func NewDiscovery(c *conf.Registry) (registry.Discovery, error) {
+	return NewRegistry(c)
+}
+
+func NewRegistrar(c *conf.Registry) (registry.Registrar, error) {
+	return NewRegistry(c)
 }
