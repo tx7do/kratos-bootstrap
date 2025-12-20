@@ -25,16 +25,16 @@ var (
 // exporterName 不能为空，cfg 传入给 factory 用于读取 endpoint/insecure/headers 等信息。
 func NewTracerExporter(ctx context.Context, cfg *conf.Tracer) (traceSdk.SpanExporter, error) {
 	if cfg == nil {
-		return nil, errors.New("tracer cfg is nil")
+		return nil, errors.New("tracer: tracer cfg is nil")
 	}
 	if cfg.GetExporter() == "" {
-		return nil, errors.New("exporter name is empty")
+		return nil, errors.New("tracer: exporter name is empty")
 	}
 
 	if f, ok := GetExporterFactory(cfg.GetExporter()); ok {
 		return f(ctx, cfg)
 	}
-	return nil, fmt.Errorf("unknown exporter %q; available: %v", cfg.GetExporter(), ListExporterNames())
+	return nil, fmt.Errorf("tracer: unknown exporter %q; available: %v", cfg.GetExporter(), ListExporterNames())
 }
 
 // ShutdownTracerProvider gracefully shuts down the active global tracer provider (if set).
@@ -99,7 +99,7 @@ func NewTracerProviderWithShutdown(ctx context.Context, cfg *conf.Tracer, appInf
 
 	// defensive check (NewTracerProvider does not return nil in normal cases)
 	if tp == nil {
-		return nil, nil, errors.New("create tracer provider failed")
+		return nil, nil, errors.New("tracer: create tracer provider failed")
 	}
 
 	// set global provider and keep reference for shutdown
