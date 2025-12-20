@@ -1,10 +1,13 @@
 package bootstrap
 
 import (
-	"flag"
 	"fmt"
-	"os"
-	"os/exec"
+
+	"github.com/spf13/cobra"
+)
+
+var (
+	flags = NewCommandFlags()
 )
 
 // CommandFlags 命令传参
@@ -17,63 +20,52 @@ type CommandFlags struct {
 }
 
 func NewCommandFlags() *CommandFlags {
-	f := &CommandFlags{
-		Conf:       "",
-		Env:        "",
-		ConfigHost: "",
-		ConfigType: "",
+	return &CommandFlags{
+		Conf:       "../../configs",
+		Env:        "dev",
+		ConfigHost: "127.0.0.1:8500",
+		ConfigType: "consul",
 		Daemon:     false,
 	}
-
-	f.defineFlag()
-
-	return f
 }
 
-func (f *CommandFlags) defineFlag() {
-	flag.StringVar(&f.Conf, "conf", "../../configs", "config path, eg: -conf ../../configs")
-	flag.StringVar(&f.Env, "env", "dev", "runtime environment, eg: -env dev")
-	flag.StringVar(&f.ConfigHost, "chost", "127.0.0.1:8500", "config server host, eg: -chost 127.0.0.1:8500")
-	flag.StringVar(&f.ConfigType, "ctype", "consul", "config server host, eg: -ctype consul")
-	flag.BoolVar(&f.Daemon, "d", false, "run app as a daemon with -d=true.")
+// AddFlags 将 flags 绑定到传入的 cobra.Command（通常是 root command）。
+func (f *CommandFlags) AddFlags(cmd *cobra.Command) {
+	cmd.PersistentFlags().StringVar(&f.Conf, "conf", f.Conf, "config path, eg: -conf ../../configs")
+	cmd.PersistentFlags().StringVar(&f.Env, "env", f.Env, "runtime environment, eg: -env dev")
+	cmd.PersistentFlags().StringVar(&f.ConfigHost, "chost", f.ConfigHost, "config server host, eg: -chost 127.0.0.1:8500")
+	cmd.PersistentFlags().StringVar(&f.ConfigType, "ctype", f.ConfigType, "config server type, eg: -ctype consul")
+	cmd.PersistentFlags().BoolVarP(&f.Daemon, "daemon", "d", f.Daemon, "run app as a daemon with -d or --daemon")
 }
 
 func (f *CommandFlags) Init() {
-	flag.Parse()
-
 	if f.Daemon {
 		BeDaemon("-d")
 	}
-}
 
-func stripSlice(slice []string, element string) []string {
-	for i := 0; i < len(slice); {
-		if slice[i] == element && i != len(slice)-1 {
-			slice = append(slice[:i], slice[i+1:]...)
-		} else if slice[i] == element && i == len(slice)-1 {
-			slice = slice[:i]
-		} else {
-			i++
+	ai := GetAppInfo()
+	fmt.Printf("Application: %s\n", ai.Name)
+	fmt.Printf("Version: %s\n", ai.Version)
+	fmt.Printf("AppId: %s\n", ai.AppId)
+	fmt.Printf("InstanceId: %s\n", ai.InstanceId)
+	if len(ai.Metadata) > 0 {
+		fmt.Println("Metadata:")
+		for k, v := range ai.Metadata {
+			fmt.Printf("  %s=%s\n", k, v)
 		}
 	}
-	return slice
 }
 
-func subProcess(args []string) *exec.Cmd {
-	cmd := exec.Command(args[0], args[1:]...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err := cmd.Start()
-	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "[-] Error: %s\n", err)
+// NewRootCmd 创建根命令并绑定命令行参数和执行函数。
+func NewRootCmd(f *CommandFlags, runE func(cmd *cobra.Command, args []string) error) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "server",
+		Short: "A microservice server application",
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			f.Init()
+		},
+		RunE: runE,
 	}
+	f.AddFlags(cmd)
 	return cmd
-}
-
-// BeDaemon 将当前进程转为守护进程
-func BeDaemon(arg string) {
-	subProcess(stripSlice(os.Args, arg))
-	fmt.Printf("[*] Daemon running in PID: %d PPID: %d\n", os.Getpid(), os.Getppid())
-	os.Exit(0)
 }

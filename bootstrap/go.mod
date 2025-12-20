@@ -18,6 +18,7 @@ require (
 	github.com/olekukonko/tablewriter v1.1.2
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
+	github.com/tx7do/go-utils v1.1.34
 	github.com/tx7do/kratos-bootstrap/api v0.0.32
 	github.com/tx7do/kratos-bootstrap/config v0.2.0
 	github.com/tx7do/kratos-bootstrap/logger v0.1.0

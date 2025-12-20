@@ -9,6 +9,8 @@ import (
 	kratosRegistry "github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport"
 
+	"github.com/spf13/cobra"
+
 	bConfig "github.com/tx7do/kratos-bootstrap/config"
 	bLogger "github.com/tx7do/kratos-bootstrap/logger"
 	bRegistry "github.com/tx7do/kratos-bootstrap/registry"
@@ -17,19 +19,10 @@ import (
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
 
-var (
-	// AppInfo 应用信息
-	AppInfo = NewAppInfo(
-		"",
-		"1.0.0",
-		"",
-	)
-)
-
 // NewApp 创建应用程序
 func NewApp(ll kratosLog.Logger, rr kratosRegistry.Registrar, srv ...transport.Server) *kratos.App {
-	if AppInfo.InstanceId != "" {
-		SetInstanceId(AppInfo, AppInfo.GetAppId(), AppInfo.GetName())
+	if appInfo.InstanceId == "" {
+		SetInstanceId(appInfo, appInfo.GetAppId(), appInfo.GetName())
 	}
 
 	var opts []kratos.Option
@@ -43,41 +36,81 @@ func NewApp(ll kratosLog.Logger, rr kratosRegistry.Registrar, srv ...transport.S
 		opts = append(opts, kratos.Server(srv...))
 	}
 
-	if AppInfo.Metadata != nil {
-		opts = append(opts, kratos.Metadata(AppInfo.Metadata))
+	if appInfo.Metadata != nil {
+		opts = append(opts, kratos.Metadata(appInfo.Metadata))
 	}
-	if AppInfo.Name != "" {
-		opts = append(opts, kratos.Name(AppInfo.Name))
+	if appInfo.AppId != "" {
+		opts = append(opts, kratos.Name(appInfo.AppId))
 	}
-	if AppInfo.Version != "" {
-		opts = append(opts, kratos.Version(AppInfo.Version))
+	if appInfo.Version != "" {
+		opts = append(opts, kratos.Version(appInfo.Version))
 	}
-	if AppInfo.InstanceId != "" {
-		opts = append(opts, kratos.ID(AppInfo.InstanceId))
+	if appInfo.InstanceId != "" {
+		opts = append(opts, kratos.ID(appInfo.InstanceId))
 	}
 
 	return kratos.New(opts...)
 }
 
-// Bootstrap 应用引导启动
-func Bootstrap(initApp InitAppFunc, appInfo *conf.AppInfo) error {
-	if appInfo != nil {
-		if appInfo.Name != "" {
-			AppInfo.Name = appInfo.Name
+// RunAppWithOptions 运行应用程序并允许在执行前对 root 命令做定制。
+// opts 可用于注册子命令、对 root 添加 flag 或其他修改。
+func RunAppWithOptions(initApp InitAppFunc, ai *conf.AppInfo, opts ...func(root *cobra.Command)) error {
+	root := NewRootCmd(flags, func(cmd *cobra.Command, args []string) error {
+		return BootstrapWithAppInfo(initApp, ai)
+	})
+
+	// 允许调用方定制 root（如添加子命令、注册额外 flag 等）
+	for _, opt := range opts {
+		if opt != nil {
+			opt(root)
 		}
-		if appInfo.Version != "" {
-			AppInfo.Version = appInfo.Version
+	}
+
+	// 如果 flags 实现了 Register，就在 Execute 前注册到命令上，确保 cobra 能解析这些 flag
+	if rb, ok := interface{}(flags).(interface{ Register(cmd *cobra.Command) }); ok {
+		rb.Register(root)
+	}
+
+	if err := root.Execute(); err != nil {
+		return err
+	}
+	return nil
+}
+
+// RunApp 运行应用程序
+func RunApp(initApp InitAppFunc, appId, version *string) error {
+	ai := NewAppInfo(appId, version, nil)
+	return RunAppWithOptions(initApp, ai)
+}
+
+// Bootstrap 使用服务名称和版本引导启动应用
+func Bootstrap(initApp InitAppFunc, appId, version *string) error {
+	ai := NewAppInfo(appId, version, nil)
+	return BootstrapWithAppInfo(initApp, ai)
+}
+
+// BootstrapWithAppInfo 应用引导启动
+func BootstrapWithAppInfo(initApp InitAppFunc, ai *conf.AppInfo) error {
+	if ai != nil {
+		if ai.Name != "" {
+			appInfo.Name = ai.Name
 		}
-		if appInfo.InstanceId != "" {
-			AppInfo.InstanceId = appInfo.InstanceId
+		if ai.AppId != "" {
+			appInfo.AppId = ai.AppId
 		}
-		if appInfo.Metadata != nil {
-			AppInfo.Metadata = appInfo.Metadata
+		if ai.Version != "" {
+			appInfo.Version = ai.Version
+		}
+		if ai.InstanceId != "" {
+			appInfo.InstanceId = ai.InstanceId
+		}
+		if ai.Metadata != nil {
+			appInfo.Metadata = ai.Metadata
 		}
 	}
 
 	// bootstrap
-	bctx, err := initBootstrap(context.Background(), AppInfo)
+	bctx, err := initBootstrap(context.Background(), appInfo)
 	if err != nil {
 		return err
 	}
@@ -97,29 +130,13 @@ func Bootstrap(initApp InitAppFunc, appInfo *conf.AppInfo) error {
 	return nil
 }
 
-// BootstrapWithNameVersion 使用服务名称和版本引导启动应用
-func BootstrapWithNameVersion(initApp InitAppFunc, serviceName, version *string) error {
-	ai := &conf.AppInfo{}
-	if serviceName != nil {
-		ai.Name = *serviceName
-	}
-	if version != nil {
-		ai.Version = *version
-	}
-	return Bootstrap(initApp, ai)
-}
-
 // initBootstrap 初始化引导程序
-func initBootstrap(ctx context.Context, appInfo *conf.AppInfo) (*Context, error) {
-	// inject command flags
-	Flags := NewCommandFlags()
-	Flags.Init()
-
+func initBootstrap(ctx context.Context, ai *conf.AppInfo) (*Context, error) {
 	var err error
 	var bctx Context
 
 	// load configs
-	if err = bConfig.LoadBootstrapConfig(Flags.Conf); err != nil {
+	if err = bConfig.LoadBootstrapConfig(flags.Conf); err != nil {
 		return &bctx, err
 	}
 
@@ -130,7 +147,7 @@ func initBootstrap(ctx context.Context, appInfo *conf.AppInfo) (*Context, error)
 	}
 
 	// init logger
-	bctx.Logger = bLogger.NewLoggerProvider(bctx.Config.Logger, appInfo)
+	bctx.Logger = bLogger.NewLoggerProvider(bctx.Config.Logger, ai)
 	if bctx.Logger == nil {
 		return &bctx, fmt.Errorf("init logger failed")
 	}
@@ -142,7 +159,7 @@ func initBootstrap(ctx context.Context, appInfo *conf.AppInfo) (*Context, error)
 	}
 
 	// init tracer
-	if err = tracer.NewTracerProvider(ctx, bctx.Config.Trace, appInfo); err != nil {
+	if err = tracer.NewTracerProvider(ctx, bctx.Config.Trace, ai); err != nil {
 		return &bctx, err
 	}
 
