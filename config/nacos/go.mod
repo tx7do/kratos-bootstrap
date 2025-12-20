@@ -1,4 +1,4 @@
-module github.com/tx7do/kratos-bootstrap/remoteconfig/nacos
+module github.com/tx7do/kratos-bootstrap/config/nacos
 
 go 1.24.6
 

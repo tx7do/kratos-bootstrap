@@ -1,4 +1,4 @@
-module github.com/tx7do/kratos-bootstrap/remoteconfig/consul
+module github.com/tx7do/kratos-bootstrap/config/consul
 
 go 1.25.3
 
@@ -36,7 +36,7 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/stretchr/testify v1.10.0 // indirect
-	golang.org/x/exp v0.0.0-20251209150349-8475f28825e9 // indirect
+	golang.org/x/exp v0.0.0-20251219203646-944ab1f22d93 // indirect
 	golang.org/x/sys v0.39.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

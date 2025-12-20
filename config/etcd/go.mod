@@ -1,4 +1,4 @@
-module github.com/tx7do/kratos-bootstrap/remoteconfig/etcd
+module github.com/tx7do/kratos-bootstrap/config/etcd
 
 go 1.24.6
 

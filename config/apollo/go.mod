@@ -1,4 +1,4 @@
-module github.com/tx7do/kratos-bootstrap/remoteconfig/apollo
+module github.com/tx7do/kratos-bootstrap/config/apollo
 
 go 1.24.6
 

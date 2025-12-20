@@ -1,4 +1,4 @@
-module github.com/tx7do/kratos-bootstrap/remoteconfig/polaris
+module github.com/tx7do/kratos-bootstrap/config/polaris
 
 go 1.24.6
 
