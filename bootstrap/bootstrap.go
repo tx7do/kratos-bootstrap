@@ -6,6 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+	"github.com/tx7do/go-utils/stringcase"
 
 	"github.com/go-kratos/kratos/v2"
 	kratosLog "github.com/go-kratos/kratos/v2/log"
@@ -81,13 +82,21 @@ func RunAppWithOptions(initApp InitAppFunc, ai *conf.AppInfo, opts ...func(root 
 
 // RunApp 运行应用程序
 func RunApp(initApp InitAppFunc, appId, version *string) error {
-	ai := NewAppInfo(appId, version, nil)
+	var appName string
+	if appId != nil && *appId != "" {
+		appName = stringcase.UpperCamelCase(*appId)
+	}
+	ai := NewAppInfo(appId, version, &appName)
 	return RunAppWithOptions(initApp, ai)
 }
 
 // Bootstrap 使用服务名称和版本引导启动应用
 func Bootstrap(initApp InitAppFunc, appId, version *string) error {
-	ai := NewAppInfo(appId, version, nil)
+	var appName string
+	if appId != nil && *appId != "" {
+		appName = stringcase.UpperCamelCase(*appId)
+	}
+	ai := NewAppInfo(appId, version, &appName)
 	return BootstrapWithAppInfo(initApp, ai)
 }
 
