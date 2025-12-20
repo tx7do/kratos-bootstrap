@@ -4,12 +4,13 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
+	"github.com/spf13/cobra"
+
 	"github.com/go-kratos/kratos/v2"
 	kratosLog "github.com/go-kratos/kratos/v2/log"
 	kratosRegistry "github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport"
-
-	"github.com/spf13/cobra"
 
 	bConfig "github.com/tx7do/kratos-bootstrap/config"
 	bLogger "github.com/tx7do/kratos-bootstrap/logger"
@@ -22,7 +23,7 @@ import (
 // NewApp 创建应用程序
 func NewApp(ll kratosLog.Logger, rr kratosRegistry.Registrar, srv ...transport.Server) *kratos.App {
 	if appInfo.InstanceId == "" {
-		SetInstanceId(appInfo, appInfo.GetAppId(), appInfo.GetName())
+		appInfo.InstanceId = uuid.NewString()
 	}
 
 	var opts []kratos.Option
