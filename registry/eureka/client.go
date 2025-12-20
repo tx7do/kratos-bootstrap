@@ -127,6 +127,8 @@ type Client struct {
 	client            *http.Client
 	keepalive         map[string]chan struct{}
 	lock              sync.Mutex
+
+	rnd *rand.Rand
 }
 
 func NewClient(urls []string, opts ...ClientOption) *Client {
@@ -142,6 +144,7 @@ func NewClient(urls []string, opts ...ClientOption) *Client {
 		heartbeatInterval: heartbeatTime,
 		client:            &http.Client{Transport: tr, Timeout: httpTimeout},
 		keepalive:         make(map[string]chan struct{}),
+		rnd:               rand.New(rand.NewSource(time.Now().UnixNano())),
 	}
 
 	for _, o := range opts {
@@ -292,8 +295,7 @@ func (e *Client) pickServer(currentTimes int) string {
 }
 
 func (e *Client) shuffle() {
-	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(e.urls), func(i, j int) {
+	e.rnd.Shuffle(len(e.urls), func(i, j int) {
 		e.urls[i], e.urls[j] = e.urls[j], e.urls[i]
 	})
 }
