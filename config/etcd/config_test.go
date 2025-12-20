@@ -12,12 +12,16 @@ import (
 
 const testKey = "/kratos/test/config"
 
-func TestConfig(t *testing.T) {
-	client, err := clientv3.New(clientv3.Config{
+func createTestEtcdClient() (*clientv3.Client, error) {
+	return clientv3.New(clientv3.Config{
 		Endpoints:   []string{"127.0.0.1:2379"},
 		DialTimeout: time.Second,
 		DialOptions: []grpc.DialOption{grpc.WithBlock()},
 	})
+}
+
+func TestConfig(t *testing.T) {
+	client, err := createTestEtcdClient()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -28,12 +32,12 @@ func TestConfig(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	source, err := New(client, WithPath(testKey))
+	src, err := New(client, WithPath(testKey))
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	kvs, err := source.Load()
+	kvs, err := src.Load()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -42,7 +46,7 @@ func TestConfig(t *testing.T) {
 		t.Fatal("config error")
 	}
 
-	w, err := source.Watch()
+	w, err := src.Watch()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -62,16 +66,13 @@ func TestConfig(t *testing.T) {
 		t.Fatal("config error")
 	}
 
-	if _, err := client.Delete(context.Background(), testKey); err != nil {
+	if _, err = client.Delete(context.Background(), testKey); err != nil {
 		t.Error(err)
 	}
 }
 
 func TestExtToFormat(t *testing.T) {
-	client, err := clientv3.New(clientv3.Config{
-		Endpoints:   []string{"127.0.0.1:2379"},
-		DialTimeout: time.Second, DialOptions: []grpc.DialOption{grpc.WithBlock()},
-	})
+	client, err := createTestEtcdClient()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -87,12 +88,12 @@ func TestExtToFormat(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	source, err := New(client, WithPath(tp), WithPrefix(true))
+	src, err := New(client, WithPath(tp), WithPrefix(true))
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	kvs, err := source.Load()
+	kvs, err := src.Load()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -125,14 +126,14 @@ func TestEtcdWithPath(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			options := &options{
+			o := &options{
 				ctx: context.Background(),
 			}
 
 			got := WithPath(tt.fields)
-			got(options)
+			got(o)
 
-			if options.path != tt.want {
+			if o.path != tt.want {
 				t.Errorf("WithPath(tt.fields) = %v, want %v", got, tt.want)
 			}
 		})
@@ -154,14 +155,14 @@ func TestEtcdWithPrefix(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			options := &options{
+			o := &options{
 				ctx: context.Background(),
 			}
 
 			got := WithPrefix(tt.fields)
-			got(options)
+			got(o)
 
-			if options.prefix != tt.want {
+			if o.prefix != tt.want {
 				t.Errorf("WithPrefix(tt.fields) = %v, want %v", got, tt.want)
 			}
 		})

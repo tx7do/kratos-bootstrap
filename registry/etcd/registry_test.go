@@ -13,11 +13,16 @@ import (
 	"github.com/go-kratos/kratos/v2/registry"
 )
 
-func TestRegistry(t *testing.T) {
-	client, err := clientv3.New(clientv3.Config{
+func createTestEtcdClient() (*clientv3.Client, error) {
+	return clientv3.New(clientv3.Config{
 		Endpoints:   []string{"127.0.0.1:2379"},
-		DialTimeout: time.Second, DialOptions: []grpc.DialOption{grpc.WithBlock()},
+		DialTimeout: time.Second,
+		DialOptions: []grpc.DialOption{grpc.WithBlock()},
 	})
+}
+
+func TestRegistry(t *testing.T) {
+	client, err := createTestEtcdClient()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -79,10 +84,7 @@ func TestRegistry(t *testing.T) {
 }
 
 func TestHeartBeat(t *testing.T) {
-	client, err := clientv3.New(clientv3.Config{
-		Endpoints:   []string{"127.0.0.1:2379"},
-		DialTimeout: time.Second, DialOptions: []grpc.DialOption{grpc.WithBlock()},
-	})
+	client, err := createTestEtcdClient()
 	if err != nil {
 		t.Fatal(err)
 	}
