@@ -3,8 +3,6 @@ module github.com/tx7do/kratos-bootstrap/bootstrap
 go 1.25.3
 
 replace (
-	github.com/armon/go-metrics => github.com/hashicorp/go-metrics v0.4.1
-
 	github.com/tx7do/kratos-bootstrap/api => ../api
 	github.com/tx7do/kratos-bootstrap/config => ../config
 	github.com/tx7do/kratos-bootstrap/logger => ../logger
@@ -23,7 +21,7 @@ require (
 	github.com/tx7do/kratos-bootstrap/api v0.0.32
 	github.com/tx7do/kratos-bootstrap/config v0.2.0
 	github.com/tx7do/kratos-bootstrap/logger v0.1.1
-	github.com/tx7do/kratos-bootstrap/registry v0.2.0
+	github.com/tx7do/kratos-bootstrap/registry v0.2.1
 	github.com/tx7do/kratos-bootstrap/tracer v0.1.1
 	golang.org/x/tools v0.40.0
 )
