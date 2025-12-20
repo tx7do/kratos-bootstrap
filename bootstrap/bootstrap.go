@@ -61,9 +61,6 @@ func RunAppWithOptions(initApp InitAppFunc, ai *conf.AppInfo, opts ...func(root 
 		return BootstrapWithAppInfo(initApp, ai)
 	})
 
-	// 打印应用信息
-	printAppInfo()
-
 	// 允许调用方定制 root（如添加子命令、注册额外 flag 等）
 	for _, opt := range opts {
 		if opt != nil {
@@ -119,6 +116,9 @@ func BootstrapWithAppInfo(initApp InitAppFunc, ai *conf.AppInfo) error {
 	if err != nil {
 		return err
 	}
+
+	// 打印应用信息
+	printAppInfo()
 
 	// init app
 	app, cleanup, err := initApp(bctx)
