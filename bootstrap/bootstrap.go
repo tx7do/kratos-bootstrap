@@ -26,16 +26,6 @@ var (
 	)
 )
 
-// InitApp 应用初始化函数类型
-type InitApp func(logger kratosLog.Logger, registrar kratosRegistry.Registrar, bootstrap *conf.Bootstrap) (app *kratos.App, cleanup func(), err error)
-
-// Context 引导上下文
-type Context struct {
-	Config    *conf.Bootstrap          // 引导配置
-	Logger    kratosLog.Logger         // 日志记录器
-	Registrar kratosRegistry.Registrar // 服务注册器
-}
-
 // NewApp 创建应用程序
 func NewApp(ll kratosLog.Logger, rr kratosRegistry.Registrar, srv ...transport.Server) *kratos.App {
 	if AppInfo.InstanceId != "" {
@@ -70,12 +60,20 @@ func NewApp(ll kratosLog.Logger, rr kratosRegistry.Registrar, srv ...transport.S
 }
 
 // Bootstrap 应用引导启动
-func Bootstrap(initApp InitApp, serviceName, version *string) error {
-	if serviceName != nil && len(*serviceName) != 0 {
-		AppInfo.Name = *serviceName
-	}
-	if version != nil && len(*version) != 0 {
-		AppInfo.Version = *version
+func Bootstrap(initApp InitAppFunc, appInfo *conf.AppInfo) error {
+	if appInfo != nil {
+		if appInfo.Name != "" {
+			AppInfo.Name = appInfo.Name
+		}
+		if appInfo.Version != "" {
+			AppInfo.Version = appInfo.Version
+		}
+		if appInfo.InstanceId != "" {
+			AppInfo.InstanceId = appInfo.InstanceId
+		}
+		if appInfo.Metadata != nil {
+			AppInfo.Metadata = appInfo.Metadata
+		}
 	}
 
 	// bootstrap
@@ -85,7 +83,7 @@ func Bootstrap(initApp InitApp, serviceName, version *string) error {
 	}
 
 	// init app
-	app, cleanup, err := initApp(bctx.Logger, bctx.Registrar, bctx.Config)
+	app, cleanup, err := initApp(bctx)
 	if err != nil {
 		return err
 	}
@@ -97,6 +95,18 @@ func Bootstrap(initApp InitApp, serviceName, version *string) error {
 	}
 
 	return nil
+}
+
+// BootstrapWithNameVersion 使用服务名称和版本引导启动应用
+func BootstrapWithNameVersion(initApp InitAppFunc, serviceName, version *string) error {
+	ai := &conf.AppInfo{}
+	if serviceName != nil {
+		ai.Name = *serviceName
+	}
+	if version != nil {
+		ai.Version = *version
+	}
+	return Bootstrap(initApp, ai)
 }
 
 // initBootstrap 初始化引导程序
