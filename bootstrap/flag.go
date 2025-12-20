@@ -1,8 +1,6 @@
 package bootstrap
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
@@ -42,18 +40,6 @@ func (f *CommandFlags) Init() {
 	if f.Daemon {
 		BeDaemon("-d")
 	}
-
-	ai := GetAppInfo()
-	fmt.Printf("Application: %s\n", ai.Name)
-	fmt.Printf("Version: %s\n", ai.Version)
-	fmt.Printf("AppId: %s\n", ai.AppId)
-	fmt.Printf("InstanceId: %s\n", ai.InstanceId)
-	if len(ai.Metadata) > 0 {
-		fmt.Println("Metadata:")
-		for k, v := range ai.Metadata {
-			fmt.Printf("  %s=%s\n", k, v)
-		}
-	}
 }
 
 // NewRootCmd 创建根命令并绑定命令行参数和执行函数。
@@ -63,6 +49,12 @@ func NewRootCmd(f *CommandFlags, runE func(cmd *cobra.Command, args []string) er
 		Short: "A microservice server application",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			f.Init()
+		},
+		PersistentPostRun: func(cmd *cobra.Command, args []string) {
+			// 仅在根命令上打印一次应用信息
+			if cmd == cmd.Root() {
+				printAppInfo()
+			}
 		},
 		RunE: runE,
 	}
