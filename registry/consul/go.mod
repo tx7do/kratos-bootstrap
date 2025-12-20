@@ -14,7 +14,7 @@ require (
 	github.com/hashicorp/consul/api v1.33.0
 	github.com/stretchr/testify v1.11.1
 	github.com/tx7do/kratos-bootstrap/api v0.0.32
-	github.com/tx7do/kratos-bootstrap/registry v0.2.0
+	github.com/tx7do/kratos-bootstrap/registry v0.2.1
 )
 
 require (
@@ -37,7 +37,7 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
-	golang.org/x/exp v0.0.0-20251209150349-8475f28825e9 // indirect
+	golang.org/x/exp v0.0.0-20251219203646-944ab1f22d93 // indirect
 	golang.org/x/sys v0.39.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

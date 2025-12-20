@@ -120,14 +120,19 @@ func BootstrapWithAppInfo(initApp InitAppFunc, ai *conf.AppInfo) error {
 		}
 	}
 
+	// 根据注册中心类型规范化 AppId
+	if bConfig.GetBootstrapConfig().Registry != nil && bConfig.GetBootstrapConfig().Registry.GetType() != "" {
+		appInfo.AppId = bRegistry.NormalizeForRegistry(appInfo.AppId, bConfig.GetBootstrapConfig().Registry.GetType())
+	}
+
+	// 打印应用信息
+	printAppInfo()
+
 	// bootstrap
 	bctx, err := initBootstrap(context.Background(), appInfo)
 	if err != nil {
 		return err
 	}
-
-	// 打印应用信息
-	printAppInfo()
 
 	// init app
 	app, cleanup, err := initApp(bctx)

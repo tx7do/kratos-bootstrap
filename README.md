@@ -49,7 +49,7 @@ kratos-bootstrap 是一个基于 Go 语言的Kratos微服务框架应用引导�
 - 服务器配置（REST、gRPC、Kafka 等多种服务类型）
 - 日志、追踪、认证授权配置
 - 脚本引擎、对象存储（OSS）、通知（短信等）配置
-- 支持远程配置（`Apollo`、`Consul`、`Etcd` 等，`remoteconfig/` 目录）
+- 支持远程配置（`Apollo`、`Consul`、`Etcd` 等，`config/` 目录）
 
 配置结构清晰，便于扩展和维护。
 

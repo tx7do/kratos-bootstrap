@@ -6,9 +6,9 @@ replace github.com/tx7do/kratos-bootstrap/api => ../../api
 
 require (
 	github.com/go-kratos/kratos/v2 v2.9.2
-	github.com/tx7do/go-crud/mongodb v0.0.3
+	github.com/tx7do/go-crud/mongodb v0.0.4
 	github.com/tx7do/kratos-bootstrap/api v0.0.32
-	go.mongodb.org/mongo-driver/v2 v2.4.0
+	go.mongodb.org/mongo-driver/v2 v2.4.1
 )
 
 require (
@@ -17,7 +17,7 @@ require (
 	github.com/google/gnostic-models v0.7.1 // indirect
 	github.com/jinzhu/copier v0.4.0 // indirect
 	github.com/klauspost/compress v1.18.2 // indirect
-	github.com/tx7do/go-crud v0.0.5 // indirect
+	github.com/tx7do/go-crud v0.0.6 // indirect
 	github.com/tx7do/go-utils v1.1.34 // indirect
 	github.com/tx7do/go-utils/mapper v0.0.3 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect

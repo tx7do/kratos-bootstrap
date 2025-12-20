@@ -14,7 +14,7 @@ require (
 	github.com/go-zookeeper/zk v1.0.4
 	github.com/stretchr/testify v1.11.1
 	github.com/tx7do/kratos-bootstrap/api v0.0.32
-	github.com/tx7do/kratos-bootstrap/registry v0.2.0
+	github.com/tx7do/kratos-bootstrap/registry v0.2.1
 	golang.org/x/sync v0.19.0
 )
 
