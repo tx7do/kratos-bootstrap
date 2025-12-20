@@ -40,7 +40,7 @@ git tag config/kubernetes/v0.2.0 --force
 git tag config/nacos/v0.2.0 --force
 git tag config/polaris/v0.2.0 --force
 
-git tag bootstrap/v0.1.7 --force
+git tag bootstrap/v0.1.8 --force
 
 git tag v0.7.0
 

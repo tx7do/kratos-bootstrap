@@ -50,12 +50,6 @@ func NewRootCmd(f *CommandFlags, runE func(cmd *cobra.Command, args []string) er
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			f.Init()
 		},
-		PersistentPostRun: func(cmd *cobra.Command, args []string) {
-			// 仅在根命令上打印一次应用信息
-			if cmd == cmd.Root() {
-				printAppInfo()
-			}
-		},
 		RunE: runE,
 	}
 	f.AddFlags(cmd)

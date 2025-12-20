@@ -56,9 +56,13 @@ func NewApp(ll kratosLog.Logger, rr kratosRegistry.Registrar, srv ...transport.S
 // RunAppWithOptions 运行应用程序并允许在执行前对 root 命令做定制。
 // opts 可用于注册子命令、对 root 添加 flag 或其他修改。
 func RunAppWithOptions(initApp InitAppFunc, ai *conf.AppInfo, opts ...func(root *cobra.Command)) error {
+	// 注入命令行参数
 	root := NewRootCmd(flags, func(cmd *cobra.Command, args []string) error {
 		return BootstrapWithAppInfo(initApp, ai)
 	})
+
+	// 打印应用信息
+	printAppInfo()
 
 	// 允许调用方定制 root（如添加子命令、注册额外 flag 等）
 	for _, opt := range opts {
