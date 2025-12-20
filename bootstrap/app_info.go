@@ -1,9 +1,9 @@
 package bootstrap
 
 import (
-	"os"
 	"sync"
 
+	"github.com/google/uuid"
 	"github.com/tx7do/go-utils/trans"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
@@ -28,7 +28,8 @@ var (
 // NewAppInfo 创建应用信息
 func NewAppInfo(appId, version, appName *string) *conf.AppInfo {
 	ai := &conf.AppInfo{
-		Metadata: map[string]string{},
+		InstanceId: uuid.NewString(),
+		Metadata:   map[string]string{},
 	}
 
 	if appId == nil {
@@ -41,14 +42,6 @@ func NewAppInfo(appId, version, appName *string) *conf.AppInfo {
 		ai.Version = defaultVersion
 	} else {
 		ai.Version = *version
-	}
-
-	if appId != nil && *appId != "" &&
-		version != nil && *version != "" {
-		SetInstanceId(ai, *appId, *version)
-	} else {
-		hostName, _ := os.Hostname()
-		appId = &hostName
 	}
 
 	if appName == nil {
