@@ -4,6 +4,7 @@ git tag cache/redis/v0.1.0 --force
 git tag oss/minio/v0.1.0 --force
 git tag rpc/v0.1.0 --force
 git tag tracer/v0.1.0 --force
+git tag script_engine/v0.0.1 --force
 
 git tag database/ent/v0.1.0 --force
 git tag database/gorm/v0.1.0 --force
@@ -39,7 +40,7 @@ git tag config/kubernetes/v0.2.0 --force
 git tag config/nacos/v0.2.0 --force
 git tag config/polaris/v0.2.0 --force
 
-git tag bootstrap/v0.1.0 --force
+git tag bootstrap/v0.1.1 --force
 
 git tag v0.7.0
 
