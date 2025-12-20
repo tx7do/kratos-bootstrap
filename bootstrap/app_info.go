@@ -85,42 +85,7 @@ func SetAppInfo(src *conf.AppInfo) {
 	}
 }
 
-// SetInstanceId 设置实例ID
-func SetInstanceId(appInfo *conf.AppInfo, appId, version string) string {
-	if appInfo == nil {
-		return ""
-	}
-
-	if appId == "" {
-		return ""
-	}
-
-	appInfo.InstanceId = appId + "-" + version
-	return appInfo.InstanceId
-}
-
-// mergeFrom 更新内部 appInfo（仅合并非空字段）
-func mergeFrom(src *conf.AppInfo) {
-	if src == nil {
-		return
-	}
-	appInfoMu.Lock()
-	defer appInfoMu.Unlock()
-
-	if src.Name != "" {
-		appInfo.Name = src.Name
-	}
-	if src.Version != "" {
-		appInfo.Version = src.Version
-	}
-	if src.InstanceId != "" {
-		appInfo.InstanceId = src.InstanceId
-	}
-	if src.Metadata != nil {
-		appInfo.Metadata = src.Metadata
-	}
-}
-
+// cloneMetadata 克隆元数据映射，避免外部修改内部状态
 func cloneMetadata(m map[string]string) map[string]string {
 	if m == nil {
 		return nil
