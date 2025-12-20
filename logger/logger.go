@@ -76,7 +76,7 @@ func NewLoggerProvider(cfg *conf.Logger, appInfo *conf.AppInfo) log.Logger {
 	if appInfo != nil {
 		fields = append([]interface{}{
 			"service.id", appInfo.GetAppId(),
-			"service.name", appInfo.GetName(),
+			"service.instance", appInfo.GetInstanceId(),
 			"service.version", appInfo.GetVersion(),
 		}, fields...)
 	}

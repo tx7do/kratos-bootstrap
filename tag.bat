@@ -3,7 +3,7 @@ git tag api/v0.0.32 --force
 git tag cache/redis/v0.1.0 --force
 git tag oss/minio/v0.1.0 --force
 git tag rpc/v0.1.0 --force
-git tag tracer/v0.1.0 --force
+git tag tracer/v0.1.1 --force
 git tag script_engine/v0.0.1 --force
 
 git tag database/ent/v0.1.0 --force
@@ -14,7 +14,7 @@ git tag database/clickhouse/v0.1.0 --force
 git tag database/elasticsearch/v0.1.0 --force
 git tag database/cassandra/v0.1.0 --force
 
-git tag logger/v0.1.0 --force
+git tag logger/v0.1.1 --force
 git tag logger/aliyun/v0.1.0 --force
 git tag logger/fluent/v0.1.0 --force
 git tag logger/logrus/v0.1.0 --force
