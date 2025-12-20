@@ -6,6 +6,7 @@ import (
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
 
+// NewAppInfo 创建应用信息
 func NewAppInfo(name, version, id string) *conf.AppInfo {
 	if id == "" {
 		id, _ = os.Hostname()
@@ -18,6 +19,7 @@ func NewAppInfo(name, version, id string) *conf.AppInfo {
 	}
 }
 
+// SetInstanceId 设置实例ID
 func SetInstanceId(appInfo *conf.AppInfo, appId, name string) string {
 	if appInfo == nil {
 		return ""

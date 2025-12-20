@@ -3,10 +3,9 @@ package bootstrap
 import (
 	"context"
 	"fmt"
-	"runtime"
 
 	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/log"
+	kratosLog "github.com/go-kratos/kratos/v2/log"
 	kratosRegistry "github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport"
 
@@ -19,6 +18,7 @@ import (
 )
 
 var (
+	// AppInfo 应用信息
 	AppInfo = NewAppInfo(
 		"",
 		"1.0.0",
@@ -26,62 +26,51 @@ var (
 	)
 )
 
+// InitApp 应用初始化函数类型
+type InitApp func(logger kratosLog.Logger, registrar kratosRegistry.Registrar, bootstrap *conf.Bootstrap) (app *kratos.App, cleanup func(), err error)
+
+// Context 引导上下文
+type Context struct {
+	Config    *conf.Bootstrap          // 引导配置
+	Logger    kratosLog.Logger         // 日志记录器
+	Registrar kratosRegistry.Registrar // 服务注册器
+}
+
 // NewApp 创建应用程序
-func NewApp(ll log.Logger, rr kratosRegistry.Registrar, srv ...transport.Server) *kratos.App {
-	return kratos.New(
-		kratos.Context(context.Background()),
-		kratos.ID(AppInfo.GetInstanceId()),
-		kratos.Name(AppInfo.Name),
-		kratos.Version(AppInfo.Version),
-		kratos.Metadata(AppInfo.Metadata),
-		kratos.Logger(ll),
-		kratos.Server(
-			srv...,
-		),
-		kratos.Registrar(rr),
-	)
+func NewApp(ll kratosLog.Logger, rr kratosRegistry.Registrar, srv ...transport.Server) *kratos.App {
+	if AppInfo.InstanceId != "" {
+		SetInstanceId(AppInfo, AppInfo.GetAppId(), AppInfo.GetName())
+	}
+
+	var opts []kratos.Option
+	if ll != nil {
+		opts = append(opts, kratos.Logger(ll))
+	}
+	if rr != nil {
+		opts = append(opts, kratos.Registrar(rr))
+	}
+	if len(srv) > 0 {
+		opts = append(opts, kratos.Server(srv...))
+	}
+
+	if AppInfo.Metadata != nil {
+		opts = append(opts, kratos.Metadata(AppInfo.Metadata))
+	}
+	if AppInfo.Name != "" {
+		opts = append(opts, kratos.Name(AppInfo.Name))
+	}
+	if AppInfo.Version != "" {
+		opts = append(opts, kratos.Version(AppInfo.Version))
+	}
+	if AppInfo.InstanceId != "" {
+		opts = append(opts, kratos.ID(AppInfo.InstanceId))
+	}
+
+	return kratos.New(opts...)
 }
-
-// DoBootstrap 执行引导
-func DoBootstrap(appInfo *conf.AppInfo) (*conf.Bootstrap, log.Logger, kratosRegistry.Registrar) {
-	// inject command flags
-	Flags := NewCommandFlags()
-	Flags.Init()
-
-	var err error
-
-	// load configs
-	if err = bConfig.LoadBootstrapConfig(Flags.Conf); err != nil {
-		panic(fmt.Sprintf("load config failed: %v", err))
-	}
-
-	bootstrapCfg := bConfig.GetBootstrapConfig()
-	if bootstrapCfg == nil {
-		panic("bootstrap config is nil")
-	}
-
-	// init logger
-	ll := bLogger.NewLoggerProvider(bootstrapCfg.Logger, appInfo)
-
-	// init registrar
-	reg, err := bRegistry.NewRegistrar(bootstrapCfg.Registry)
-	if err != nil {
-		panic(fmt.Sprintf("init registrar failed: %v", err))
-		return nil, nil, nil
-	}
-
-	// init tracer
-	if err = tracer.NewTracerProvider(context.Background(), bootstrapCfg.Trace, appInfo); err != nil {
-		panic(fmt.Sprintf("init tracer failed: %v", err))
-	}
-
-	return bootstrapCfg, ll, reg
-}
-
-type InitApp func(logger log.Logger, registrar kratosRegistry.Registrar, bootstrap *conf.Bootstrap) (*kratos.App, func(), error)
 
 // Bootstrap 应用引导启动
-func Bootstrap(initApp InitApp, serviceName, version *string) {
+func Bootstrap(initApp InitApp, serviceName, version *string) error {
 	if serviceName != nil && len(*serviceName) != 0 {
 		AppInfo.Name = *serviceName
 	}
@@ -90,19 +79,62 @@ func Bootstrap(initApp InitApp, serviceName, version *string) {
 	}
 
 	// bootstrap
-	cfg, ll, reg := DoBootstrap(AppInfo)
+	bctx, err := initBootstrap(context.Background(), AppInfo)
+	if err != nil {
+		return err
+	}
 
 	// init app
-	app, cleanup, err := initApp(ll, reg, cfg)
+	app, cleanup, err := initApp(bctx.Logger, bctx.Registrar, bctx.Config)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer cleanup()
 
 	// run the app.
 	if err = app.Run(); err != nil {
-		buf := make([]byte, 1024)
-		n := runtime.Stack(buf, false)
-		panic(fmt.Sprintf("Panic: %v\nStack trace:\n%s", err, string(buf[:n])))
+		return err
 	}
+
+	return nil
+}
+
+// initBootstrap 初始化引导程序
+func initBootstrap(ctx context.Context, appInfo *conf.AppInfo) (*Context, error) {
+	// inject command flags
+	Flags := NewCommandFlags()
+	Flags.Init()
+
+	var err error
+	var bctx Context
+
+	// load configs
+	if err = bConfig.LoadBootstrapConfig(Flags.Conf); err != nil {
+		return &bctx, err
+	}
+
+	// get bootstrap config
+	bctx.Config = bConfig.GetBootstrapConfig()
+	if bctx.Config == nil {
+		return &bctx, fmt.Errorf("bootstrap config is nil")
+	}
+
+	// init logger
+	bctx.Logger = bLogger.NewLoggerProvider(bctx.Config.Logger, appInfo)
+	if bctx.Logger == nil {
+		return &bctx, fmt.Errorf("init logger failed")
+	}
+
+	// init registrar
+	bctx.Registrar, err = bRegistry.NewRegistrar(bctx.Config.Registry)
+	if err != nil {
+		return &bctx, err
+	}
+
+	// init tracer
+	if err = tracer.NewTracerProvider(ctx, bctx.Config.Trace, appInfo); err != nil {
+		return &bctx, err
+	}
+
+	return &bctx, nil
 }
