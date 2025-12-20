@@ -1,0 +1,8 @@
+github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
+github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
+github.com/tx7do/go-scripts v0.0.2 h1:Ne4fyfJKL+Z2ENrcJYOJgP8uVrKUGdAkP4WI1y/hoUQ=
+github.com/tx7do/go-scripts v0.0.2/go.mod h1:DuhiNT1Nxn+DjHWSHFyQ9/h/PKL5az1B2oP93bdBTwc=
+github.com/tx7do/kratos-bootstrap/api v0.0.32 h1:zOXiErsg6GAxdQdktcGlVOQsNwEpzA/cHtSTKX5Wxa4=
+github.com/tx7do/kratos-bootstrap/api v0.0.32/go.mod h1:zQC3px7QH4Bb/7J8x5hjJtoUFZIGMV1dF/Lu6uA10OQ=
+google.golang.org/protobuf v1.36.11 h1:fV6ZwhNocDyBLK0dj+fg8ektcVegBBuEolpbTQyBNVE=
+google.golang.org/protobuf v1.36.11/go.mod h1:HTf+CrKn2C3g5S8VImy6tdcUvCska2kB7j23XfzDpco=

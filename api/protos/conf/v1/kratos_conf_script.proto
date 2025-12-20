@@ -4,27 +4,69 @@ package conf;
 
 option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
 
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
+
 // 脚本引擎配置
 message Script {
+  // 脚本引擎类型枚举
+  enum EngineType {
+    ENGINE_TYPE_UNSPECIFIED = 0;
+
+    LUA = 1;  // Lua脚本引擎
+    JAVASCRIPT = 2;  // JavaScript脚本引擎
+    PYTHON = 3;  // Python脚本引擎
+  }
+
+  EngineType engine = 1; // 选择的脚本引擎类型
+
+  // 一次只配置一种引擎的具体配置
+  oneof engine_config {
+    Lua lua = 2;
+    JavaScript javascript = 3;
+    Python python = 4;
+  }
+
+  // 全局元数据，可用于运营/调试信息
+  google.protobuf.Struct metadata = 90;
+  // 兼容性或备注说明
+  google.protobuf.StringValue notes = 91;
+  // 池配置
+  Pool pool = 92;
+
+  // 池配置：初始实例数与最大实例数（presence 可区分未设置与显式设置）
+  message Pool {
+    google.protobuf.Int32Value initial = 1; // 初始实例数
+    google.protobuf.Int32Value max = 2;     // 最大实例数
+  }
+
+  // Lua 引擎配置
   message Lua {
-    bool enabled = 1;  // 是否启用Lua脚本引擎
-    string path = 2;  // 脚本路径
-    repeated string pre_load_scripts = 3;  // 预加载脚本列表
+    google.protobuf.BoolValue enabled = 1;              // presence 可区分未设置和显式 false
+    repeated string paths = 2;                          // 搜索路径或工作目录列表
+    google.protobuf.StringValue entry = 3;              // 入口脚本文件名/函数
+    repeated string pre_load_scripts = 4;               // 预加载脚本列表
+    google.protobuf.BoolValue hot_reload = 5;           // 是否支持热加载
+    google.protobuf.Struct options = 6;                 // 任意引擎特有配置（结构化）
   }
 
+  // JavaScript 引擎配置
   message JavaScript {
-    bool enabled = 1; // 是否启用JavaScript脚本引擎
-    string path = 2;  // 脚本路径
-    repeated string pre_load_scripts = 3;  // 预加载脚本列表
+    google.protobuf.BoolValue enabled = 1;
+    repeated string paths = 2;
+    google.protobuf.StringValue entry = 3;
+    repeated string pre_load_scripts = 4;
+    google.protobuf.BoolValue hot_reload = 5;
+    google.protobuf.Struct options = 6;
   }
 
+  // Python 引擎配置
   message Python {
-    bool enabled = 1; // 是否启用Python脚本引擎
-    string path = 2;  // 脚本路径
-    repeated string pre_load_scripts = 3;  // 预加载脚本列表
+    google.protobuf.BoolValue enabled = 1;
+    repeated string paths = 2;
+    google.protobuf.StringValue entry = 3;
+    repeated string pre_load_scripts = 4;
+    google.protobuf.BoolValue hot_reload = 5;
+    google.protobuf.Struct options = 6;
   }
-
-  Lua lua = 1;  // Lua脚本引擎配置
-  JavaScript javascript = 2;  // JavaScript脚本引擎配置
-  Python python = 3;  // Python脚本引擎配置
 }

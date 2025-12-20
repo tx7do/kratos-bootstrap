@@ -29,6 +29,7 @@ var (
 // NewApp 创建应用程序
 func NewApp(ll log.Logger, rr kratosRegistry.Registrar, srv ...transport.Server) *kratos.App {
 	return kratos.New(
+		kratos.Context(context.Background()),
 		kratos.ID(AppInfo.GetInstanceId()),
 		kratos.Name(AppInfo.Name),
 		kratos.Version(AppInfo.Version),
