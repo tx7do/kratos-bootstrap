@@ -15,15 +15,16 @@ replace (
 require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/google/subcommands v1.2.0
+	github.com/google/uuid v1.6.0
 	github.com/olekukonko/tablewriter v1.1.2
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
 	github.com/tx7do/go-utils v1.1.34
 	github.com/tx7do/kratos-bootstrap/api v0.0.32
 	github.com/tx7do/kratos-bootstrap/config v0.2.0
-	github.com/tx7do/kratos-bootstrap/logger v0.1.0
+	github.com/tx7do/kratos-bootstrap/logger v0.1.1
 	github.com/tx7do/kratos-bootstrap/registry v0.2.0
-	github.com/tx7do/kratos-bootstrap/tracer v0.1.0
+	github.com/tx7do/kratos-bootstrap/tracer v0.1.1
 	golang.org/x/tools v0.40.0
 )
 
@@ -41,7 +42,6 @@ require (
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/form/v4 v4.3.0 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.3 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
