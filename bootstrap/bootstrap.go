@@ -35,7 +35,12 @@ func NewApp(ll kratosLog.Logger, rr kratosRegistry.Registrar, srv ...transport.S
 		opts = append(opts, kratos.Metadata(appInfo.Metadata))
 	}
 	if appInfo.AppId != "" {
-		opts = append(opts, kratos.Name(appInfo.AppId))
+		registerName := appInfo.Project + "/" + appInfo.AppId
+		// 根据注册中心类型规范化 AppId
+		if bConfig.GetBootstrapConfig().Registry != nil && bConfig.GetBootstrapConfig().Registry.GetType() != "" {
+			registerName = bRegistry.NormalizeForRegistry(registerName, bConfig.GetBootstrapConfig().Registry.GetType())
+		}
+		opts = append(opts, kratos.Name(registerName))
 	}
 	if appInfo.Version != "" {
 		opts = append(opts, kratos.Version(appInfo.Version))
@@ -77,11 +82,6 @@ func RunApp(initApp InitAppFunc, ai *conf.AppInfo, opts ...func(root *cobra.Comm
 func Bootstrap(initApp InitAppFunc, ai *conf.AppInfo) error {
 	// 设置应用信息
 	copyAppInfo(ai)
-
-	// 根据注册中心类型规范化 AppId
-	if bConfig.GetBootstrapConfig().Registry != nil && bConfig.GetBootstrapConfig().Registry.GetType() != "" {
-		appInfo.AppId = bRegistry.NormalizeForRegistry(appInfo.AppId, bConfig.GetBootstrapConfig().Registry.GetType())
-	}
 
 	// 打印应用信息
 	printAppInfo()

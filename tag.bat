@@ -3,7 +3,7 @@ git tag api/v0.0.33 --force
 git tag cache/redis/v0.1.1 --force
 git tag oss/minio/v0.1.1 --force
 git tag rpc/v0.1.1 --force
-git tag tracer/v0.1.2 --force
+git tag tracer/v0.1.3 --force
 git tag script_engine/v0.0.2 --force
 
 git tag database/ent/v0.1.2 --force
@@ -40,7 +40,7 @@ git tag config/kubernetes/v0.2.2 --force
 git tag config/nacos/v0.2.2 --force
 git tag config/polaris/v0.2.2 --force
 
-git tag bootstrap/v0.1.11 --force
+git tag bootstrap/v0.1.12 --force
 
 git tag v0.7.0
 
