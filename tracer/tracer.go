@@ -78,6 +78,7 @@ func NewTracerProviderWithShutdown(ctx context.Context, cfg *conf.Tracer, appInf
 	opts := []traceSdk.TracerProviderOption{
 		traceSdk.WithSampler(traceSdk.ParentBased(traceSdk.TraceIDRatioBased(sampler))),
 		traceSdk.WithResource(resource.NewSchemaless(
+			semConv.ServiceNamespaceKey.String(appInfo.GetProject()),
 			semConv.ServiceNameKey.String(appInfo.GetAppId()),
 			semConv.ServiceVersionKey.String(appInfo.GetVersion()),
 			semConv.ServiceInstanceIDKey.String(appInfo.GetInstanceId()),
