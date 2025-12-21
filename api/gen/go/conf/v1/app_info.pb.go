@@ -31,7 +31,7 @@ type AppInfo struct {
 	AppId string `protobuf:"bytes,2,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
 	// 实例 ID，比如：gowind-user-service@172.16.0.12:8080@ajk2n8d3789z
 	InstanceId string `protobuf:"bytes,3,opt,name=instance_id,json=instanceId,proto3" json:"instance_id,omitempty"`
-	// 「项目名 + 服务名」的自然语言描述
+	// 「项目名 + 服务名」的自然语言描述，比如：Gowind用户服务、Gowind管理服务
 	Name string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
 	// 语义化版本号（SemVer），：v1.2.3、2.0.0-beta
 	Version string `protobuf:"bytes,5,opt,name=version,proto3" json:"version,omitempty"`
