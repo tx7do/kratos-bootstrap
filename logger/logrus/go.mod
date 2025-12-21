@@ -11,7 +11,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/sirupsen/logrus v1.9.3
 	github.com/tx7do/kratos-bootstrap/api v0.0.33
-	github.com/tx7do/kratos-bootstrap/logger v0.1.1
+	github.com/tx7do/kratos-bootstrap/logger v0.1.2
 )
 
 require (
