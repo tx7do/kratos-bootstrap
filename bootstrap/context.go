@@ -54,6 +54,28 @@ func NewContext(parent context.Context, ai *conf.AppInfo) *Context {
 	return c
 }
 
+func NewContextWithParam(parent context.Context, ai *conf.AppInfo, cfg *conf.Bootstrap, log kratosLog.Logger) *Context {
+	if parent == nil {
+		parent = context.Background()
+	}
+	ctx, cancel := context.WithCancel(parent)
+
+	c := &Context{
+		appInfo: &conf.AppInfo{},
+		config:  cfg,
+		logger:  log,
+	}
+	// 初始化默认信息
+	AdjustAppInfo(c.appInfo)
+
+	c.copyAppInfo(ai)
+
+	// 其余初始化例如 RootCtx/Cancel/Logger 可在这里设置
+	_ = cancel // 保留 cancel 给调用者或另行设置
+	_ = ctx
+	return c
+}
+
 // Context 返回应用级根 context（保证非 nil）
 func (c *Context) Context() context.Context {
 	if c == nil || c.rootCtx == nil {
