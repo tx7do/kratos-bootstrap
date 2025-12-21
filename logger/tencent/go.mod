@@ -10,7 +10,7 @@ replace (
 require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/tencentcloud/tencentcloud-cls-sdk-go v1.0.14
-	github.com/tx7do/kratos-bootstrap/api v0.0.32
+	github.com/tx7do/kratos-bootstrap/api v0.0.33
 	github.com/tx7do/kratos-bootstrap/logger v0.1.1
 	google.golang.org/protobuf v1.36.11
 )

@@ -10,7 +10,7 @@ replace (
 require (
 	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20251217105121-fb8e43efb207
 	github.com/go-kratos/kratos/v2 v2.9.2
-	github.com/tx7do/kratos-bootstrap/api v0.0.32
+	github.com/tx7do/kratos-bootstrap/api v0.0.33
 	github.com/tx7do/kratos-bootstrap/logger v0.1.1
 	go.uber.org/zap v1.27.1
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
