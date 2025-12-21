@@ -1,15 +1,15 @@
 package bootstrap
 
 import (
-	"context"
 	"fmt"
+
+	"github.com/spf13/cobra"
 
 	"github.com/go-kratos/kratos/v2"
 	kratosLog "github.com/go-kratos/kratos/v2/log"
 	kratosRegistry "github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport"
 
-	"github.com/spf13/cobra"
 	bConfig "github.com/tx7do/kratos-bootstrap/config"
 	bLogger "github.com/tx7do/kratos-bootstrap/logger"
 	bRegistry "github.com/tx7do/kratos-bootstrap/registry"
@@ -54,10 +54,14 @@ func NewApp(ll kratosLog.Logger, rr kratosRegistry.Registrar, srv ...transport.S
 
 // RunApp 运行应用程序并允许在执行前对 root 命令做定制。
 // opts 可用于注册子命令、对 root 添加 flag 或其他修改。
-func RunApp(initApp InitAppFunc, ai *conf.AppInfo, opts ...func(root *cobra.Command)) error {
+func RunApp(ctx *Context, initApp InitAppFunc, ai *conf.AppInfo, opts ...func(root *cobra.Command)) error {
+	if ctx == nil {
+		return fmt.Errorf("bootstrap context is nil")
+	}
+
 	// 注入命令行参数
 	root := NewRootCmd(flags, func(cmd *cobra.Command, args []string) error {
-		return Bootstrap(initApp, ai)
+		return Bootstrap(ctx, initApp, ai)
 	})
 
 	// 允许调用方定制 root（如添加子命令、注册额外 flag 等）
@@ -79,7 +83,7 @@ func RunApp(initApp InitAppFunc, ai *conf.AppInfo, opts ...func(root *cobra.Comm
 }
 
 // Bootstrap 应用引导启动
-func Bootstrap(initApp InitAppFunc, ai *conf.AppInfo) error {
+func Bootstrap(ctx *Context, initApp InitAppFunc, ai *conf.AppInfo) error {
 	// 设置应用信息
 	copyAppInfo(ai)
 
@@ -87,13 +91,13 @@ func Bootstrap(initApp InitAppFunc, ai *conf.AppInfo) error {
 	printAppInfo()
 
 	// bootstrap
-	bctx, err := initBootstrap(context.Background(), appInfo)
+	ctx, err := initBootstrap(ctx, appInfo)
 	if err != nil {
 		return err
 	}
 
 	// init app
-	app, cleanup, err := initApp(bctx)
+	app, cleanup, err := initApp(ctx)
 	if err != nil {
 		return err
 	}
@@ -108,37 +112,40 @@ func Bootstrap(initApp InitAppFunc, ai *conf.AppInfo) error {
 }
 
 // initBootstrap 初始化引导程序
-func initBootstrap(ctx context.Context, ai *conf.AppInfo) (*Context, error) {
+func initBootstrap(ctx *Context, ai *conf.AppInfo) (*Context, error) {
+	if ctx == nil {
+		ctx = NewContext(nil)
+	}
+
 	var err error
-	var bctx Context
 
 	// load configs
 	if err = bConfig.LoadBootstrapConfig(flags.Conf); err != nil {
-		return &bctx, err
+		return ctx, err
 	}
 
 	// get bootstrap config
-	bctx.Config = bConfig.GetBootstrapConfig()
-	if bctx.Config == nil {
-		return &bctx, fmt.Errorf("bootstrap config is nil")
+	ctx.Config = bConfig.GetBootstrapConfig()
+	if ctx.Config == nil {
+		return ctx, fmt.Errorf("bootstrap config is nil")
 	}
 
 	// init logger
-	bctx.Logger = bLogger.NewLoggerProvider(bctx.Config.Logger, ai)
-	if bctx.Logger == nil {
-		return &bctx, fmt.Errorf("init logger failed")
+	ctx.Logger = bLogger.NewLoggerProvider(ctx.Config.Logger, ai)
+	if ctx.Logger == nil {
+		return ctx, fmt.Errorf("init logger failed")
 	}
 
 	// init registrar
-	bctx.Registrar, err = bRegistry.NewRegistrar(bctx.Config.Registry)
+	ctx.Registrar, err = bRegistry.NewRegistrar(ctx.Config.Registry)
 	if err != nil {
-		return &bctx, err
+		return ctx, err
 	}
 
 	// init tracer
-	if err = tracer.NewTracerProvider(ctx, bctx.Config.Trace, ai); err != nil {
-		return &bctx, err
+	if err = tracer.NewTracerProvider(ctx.Context(), ctx.Config.Trace, ai); err != nil {
+		return ctx, err
 	}
 
-	return &bctx, nil
+	return ctx, nil
 }
