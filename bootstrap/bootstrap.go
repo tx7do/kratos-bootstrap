@@ -4,15 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/uuid"
-	"github.com/spf13/cobra"
-	"github.com/tx7do/go-utils/stringcase"
-
 	"github.com/go-kratos/kratos/v2"
 	kratosLog "github.com/go-kratos/kratos/v2/log"
 	kratosRegistry "github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport"
 
+	"github.com/spf13/cobra"
 	bConfig "github.com/tx7do/kratos-bootstrap/config"
 	bLogger "github.com/tx7do/kratos-bootstrap/logger"
 	bRegistry "github.com/tx7do/kratos-bootstrap/registry"
@@ -23,10 +20,6 @@ import (
 
 // NewApp 创建应用程序
 func NewApp(ll kratosLog.Logger, rr kratosRegistry.Registrar, srv ...transport.Server) *kratos.App {
-	if appInfo.InstanceId == "" {
-		appInfo.InstanceId = uuid.NewString()
-	}
-
 	var opts []kratos.Option
 	if ll != nil {
 		opts = append(opts, kratos.Logger(ll))
@@ -54,12 +47,12 @@ func NewApp(ll kratosLog.Logger, rr kratosRegistry.Registrar, srv ...transport.S
 	return kratos.New(opts...)
 }
 
-// RunAppWithOptions 运行应用程序并允许在执行前对 root 命令做定制。
+// RunApp 运行应用程序并允许在执行前对 root 命令做定制。
 // opts 可用于注册子命令、对 root 添加 flag 或其他修改。
-func RunAppWithOptions(initApp InitAppFunc, ai *conf.AppInfo, opts ...func(root *cobra.Command)) error {
+func RunApp(initApp InitAppFunc, ai *conf.AppInfo, opts ...func(root *cobra.Command)) error {
 	// 注入命令行参数
 	root := NewRootCmd(flags, func(cmd *cobra.Command, args []string) error {
-		return BootstrapWithAppInfo(initApp, ai)
+		return Bootstrap(initApp, ai)
 	})
 
 	// 允许调用方定制 root（如添加子命令、注册额外 flag 等）
@@ -80,45 +73,10 @@ func RunAppWithOptions(initApp InitAppFunc, ai *conf.AppInfo, opts ...func(root 
 	return nil
 }
 
-// RunApp 运行应用程序
-func RunApp(initApp InitAppFunc, appId, version *string) error {
-	var appName string
-	if appId != nil && *appId != "" {
-		appName = stringcase.UpperCamelCase(*appId)
-	}
-	ai := NewAppInfo(appId, version, &appName)
-	return RunAppWithOptions(initApp, ai)
-}
-
-// Bootstrap 使用服务名称和版本引导启动应用
-func Bootstrap(initApp InitAppFunc, appId, version *string) error {
-	var appName string
-	if appId != nil && *appId != "" {
-		appName = stringcase.UpperCamelCase(*appId)
-	}
-	ai := NewAppInfo(appId, version, &appName)
-	return BootstrapWithAppInfo(initApp, ai)
-}
-
-// BootstrapWithAppInfo 应用引导启动
-func BootstrapWithAppInfo(initApp InitAppFunc, ai *conf.AppInfo) error {
-	if ai != nil {
-		if ai.Name != "" {
-			appInfo.Name = ai.Name
-		}
-		if ai.AppId != "" {
-			appInfo.AppId = ai.AppId
-		}
-		if ai.Version != "" {
-			appInfo.Version = ai.Version
-		}
-		if ai.InstanceId != "" {
-			appInfo.InstanceId = ai.InstanceId
-		}
-		if ai.Metadata != nil {
-			appInfo.Metadata = ai.Metadata
-		}
-	}
+// Bootstrap 应用引导启动
+func Bootstrap(initApp InitAppFunc, ai *conf.AppInfo) error {
+	// 设置应用信息
+	copyAppInfo(ai)
 
 	// 根据注册中心类型规范化 AppId
 	if bConfig.GetBootstrapConfig().Registry != nil && bConfig.GetBootstrapConfig().Registry.GetType() != "" {

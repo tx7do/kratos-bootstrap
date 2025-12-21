@@ -14,7 +14,7 @@ message AppInfo {
   string app_id = 2;
   // 实例 ID，比如：gowind-user-service@172.16.0.12:8080@ajk2n8d3789z
   string instance_id = 3;
-  // 「项目名 + 服务名」的自然语言描述
+  // 「项目名 + 服务名」的自然语言描述，比如：Gowind用户服务、Gowind管理服务
   string name = 4;
   // 语义化版本号（SemVer），：v1.2.3、2.0.0-beta
   string version = 5;

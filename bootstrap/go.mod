@@ -23,7 +23,7 @@ require (
 	github.com/tx7do/kratos-bootstrap/config v0.2.2
 	github.com/tx7do/kratos-bootstrap/logger v0.1.2
 	github.com/tx7do/kratos-bootstrap/registry v0.2.2
-	github.com/tx7do/kratos-bootstrap/tracer v0.1.1
+	github.com/tx7do/kratos-bootstrap/tracer v0.1.2
 	golang.org/x/tools v0.40.0
 )
 
