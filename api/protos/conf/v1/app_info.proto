@@ -8,14 +8,16 @@ import "google/protobuf/timestamp.proto";
 
 // 应用/实例信息
 message AppInfo {
-  // 逻辑应用 ID（服务名）
-  string app_id = 1;
-  // 实例 ID（单个运行实例）
-  string instance_id = 2;
-  // 人类可读的名称
-  string name = 3;
-  // 语义化版本号
-  string version = 4;
+  // 项目唯一标识（小写 + 连字符，如 gowind、finance）
+  string project = 1;
+  // 纯微服务名（小写 + 连字符，如：user-service、admin-service）
+  string app_id = 2;
+  // 实例 ID，比如：gowind-user-service@172.16.0.12:8080@ajk2n8d3789z
+  string instance_id = 3;
+  // 「项目名 + 服务名」的自然语言描述
+  string name = 4;
+  // 语义化版本号（SemVer），：v1.2.3、2.0.0-beta
+  string version = 5;
 
   // 运行时信息
   string hostname = 10;

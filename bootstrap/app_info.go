@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/tx7do/go-utils/id"
 	"github.com/tx7do/go-utils/trans"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
@@ -145,4 +146,9 @@ func printAppInfo() {
 			fmt.Printf("    %s=%s\n", k, ai.Metadata[k])
 		}
 	}
+}
+
+// NewInstanceId 生成实例ID 格式：appId-version@host:port@xid
+func NewInstanceId(appId, version, host, port string) string {
+	return fmt.Sprintf("%s-%s@%s:%s@%s", appId, version, host, port, id.NewXID())
 }

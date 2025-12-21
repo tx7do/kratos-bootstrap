@@ -25,14 +25,16 @@ const (
 // 应用/实例信息
 type AppInfo struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// 逻辑应用 ID（服务名）
-	AppId string `protobuf:"bytes,1,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
-	// 实例 ID（单个运行实例）
-	InstanceId string `protobuf:"bytes,2,opt,name=instance_id,json=instanceId,proto3" json:"instance_id,omitempty"`
-	// 人类可读的名称
-	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	// 语义化版本号
-	Version string `protobuf:"bytes,4,opt,name=version,proto3" json:"version,omitempty"`
+	// 项目唯一标识（小写 + 连字符，如 gowind、finance）
+	Project string `protobuf:"bytes,1,opt,name=project,proto3" json:"project,omitempty"`
+	// 纯微服务名（小写 + 连字符，如：user-service、admin-service）
+	AppId string `protobuf:"bytes,2,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
+	// 实例 ID，比如：gowind-user-service@172.16.0.12:8080@ajk2n8d3789z
+	InstanceId string `protobuf:"bytes,3,opt,name=instance_id,json=instanceId,proto3" json:"instance_id,omitempty"`
+	// 「项目名 + 服务名」的自然语言描述
+	Name string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	// 语义化版本号（SemVer），：v1.2.3、2.0.0-beta
+	Version string `protobuf:"bytes,5,opt,name=version,proto3" json:"version,omitempty"`
 	// 运行时信息
 	Hostname  string                 `protobuf:"bytes,10,opt,name=hostname,proto3" json:"hostname,omitempty"`
 	Endpoints []*Endpoint            `protobuf:"bytes,11,rep,name=endpoints,proto3" json:"endpoints,omitempty"`
@@ -79,6 +81,13 @@ func (x *AppInfo) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AppInfo.ProtoReflect.Descriptor instead.
 func (*AppInfo) Descriptor() ([]byte, []int) {
 	return file_conf_v1_app_info_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AppInfo) GetProject() string {
+	if x != nil {
+		return x.Project
+	}
+	return ""
 }
 
 func (x *AppInfo) GetAppId() string {
@@ -236,13 +245,14 @@ var File_conf_v1_app_info_proto protoreflect.FileDescriptor
 
 const file_conf_v1_app_info_proto_rawDesc = "" +
 	"\n" +
-	"\x16conf/v1/app_info.proto\x12\x04conf\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe0\x04\n" +
-	"\aAppInfo\x12\x15\n" +
-	"\x06app_id\x18\x01 \x01(\tR\x05appId\x12\x1f\n" +
-	"\vinstance_id\x18\x02 \x01(\tR\n" +
+	"\x16conf/v1/app_info.proto\x12\x04conf\x1a\x1fgoogle/protobuf/timestamp.proto\"\xfa\x04\n" +
+	"\aAppInfo\x12\x18\n" +
+	"\aproject\x18\x01 \x01(\tR\aproject\x12\x15\n" +
+	"\x06app_id\x18\x02 \x01(\tR\x05appId\x12\x1f\n" +
+	"\vinstance_id\x18\x03 \x01(\tR\n" +
 	"instanceId\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04name\x12\x18\n" +
-	"\aversion\x18\x04 \x01(\tR\aversion\x12\x1a\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12\x18\n" +
+	"\aversion\x18\x05 \x01(\tR\aversion\x12\x1a\n" +
 	"\bhostname\x18\n" +
 	" \x01(\tR\bhostname\x12,\n" +
 	"\tendpoints\x18\v \x03(\v2\x0e.conf.EndpointR\tendpoints\x129\n" +
