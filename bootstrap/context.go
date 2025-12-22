@@ -275,3 +275,12 @@ func (c *Context) SetValue(key string, val interface{}) {
 func (c *Context) GetValue(key string) (interface{}, bool) {
 	return c.values.Load(key)
 }
+
+// UpTime 返回应用已运行时间
+func (c *Context) UpTime() time.Duration {
+	if c == nil || c.appInfo == nil {
+		return 0
+	}
+	start := time.Unix(c.appInfo.StartTime.AsTime().Unix(), 0)
+	return time.Since(start)
+}
