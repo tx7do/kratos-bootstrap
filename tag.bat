@@ -4,7 +4,7 @@ git tag cache/redis/v0.1.1 --force
 git tag oss/minio/v0.1.1 --force
 git tag rpc/v0.1.1 --force
 git tag tracer/v0.1.3 --force
-git tag script_engine/v0.0.2 --force
+git tag script_engine/v0.0.3 --force
 
 git tag database/ent/v0.1.2 --force
 git tag database/gorm/v0.1.2 --force
