@@ -1,4 +1,4 @@
-package asynq
+package sse
 
 import (
 	"github.com/tx7do/kratos-transport/transport/sse"
@@ -7,38 +7,38 @@ import (
 )
 
 // NewSseServer creates a new SSE server.
-func NewSseServer(cfg *conf.Server, opts ...sse.ServerOption) *sse.Server {
-	if cfg == nil || cfg.Asynq == nil {
+func NewSseServer(cfg *conf.Server_SSE, opts ...sse.ServerOption) *sse.Server {
+	if cfg == nil {
 		return nil
 	}
 
 	var o []sse.ServerOption
 
-	if cfg.Sse.GetNetwork() != "" {
-		o = append(o, sse.WithNetwork(cfg.Sse.GetNetwork()))
+	if cfg.GetNetwork() != "" {
+		o = append(o, sse.WithNetwork(cfg.GetNetwork()))
 	}
-	if cfg.Sse.GetAddr() != "" {
-		o = append(o, sse.WithAddress(cfg.Sse.GetAddr()))
+	if cfg.GetAddr() != "" {
+		o = append(o, sse.WithAddress(cfg.GetAddr()))
 	}
-	if cfg.Sse.GetPath() != "" {
-		o = append(o, sse.WithPath(cfg.Sse.GetPath()))
+	if cfg.GetPath() != "" {
+		o = append(o, sse.WithPath(cfg.GetPath()))
 	}
-	if cfg.Sse.GetCodec() != "" {
-		o = append(o, sse.WithCodec(cfg.Sse.GetCodec()))
+	if cfg.GetCodec() != "" {
+		o = append(o, sse.WithCodec(cfg.GetCodec()))
 	}
 
-	if cfg.Sse.Timeout != nil {
-		o = append(o, sse.WithTimeout(cfg.Sse.GetTimeout().AsDuration()))
+	if cfg.Timeout != nil {
+		o = append(o, sse.WithTimeout(cfg.GetTimeout().AsDuration()))
 	}
-	if cfg.Sse.EventTtl != nil {
-		o = append(o, sse.WithEventTTL(cfg.Sse.GetEventTtl().AsDuration()))
+	if cfg.EventTtl != nil {
+		o = append(o, sse.WithEventTTL(cfg.GetEventTtl().AsDuration()))
 	}
 
 	o = append(o,
-		sse.WithAutoStream(cfg.Sse.GetAutoStream()),
-		sse.WithAutoReply(cfg.Sse.GetAutoReply()),
-		sse.WithSplitData(cfg.Sse.GetSplitData()),
-		sse.WithEncodeBase64(cfg.Sse.GetEncodeBase64()),
+		sse.WithAutoStream(cfg.GetAutoStream()),
+		sse.WithAutoReply(cfg.GetAutoReply()),
+		sse.WithSplitData(cfg.GetSplitData()),
+		sse.WithEncodeBase64(cfg.GetEncodeBase64()),
 	)
 
 	if opts != nil {

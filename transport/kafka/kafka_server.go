@@ -1,4 +1,4 @@
-package asynq
+package kafka
 
 import (
 	"github.com/tx7do/kratos-transport/transport/kafka"
@@ -7,19 +7,19 @@ import (
 )
 
 // NewKafkaServer creates a new Kafka server.
-func NewKafkaServer(cfg *conf.Server, opts ...kafka.ServerOption) *kafka.Server {
-	if cfg == nil || cfg.Kafka == nil {
+func NewKafkaServer(cfg *conf.Server_Kafka, opts ...kafka.ServerOption) *kafka.Server {
+	if cfg == nil {
 		return nil
 	}
 
 	var o []kafka.ServerOption
 
-	if len(cfg.Kafka.GetEndpoints()) != 0 {
-		o = append(o, kafka.WithAddress(cfg.Kafka.GetEndpoints()))
+	if len(cfg.GetEndpoints()) != 0 {
+		o = append(o, kafka.WithAddress(cfg.GetEndpoints()))
 	}
 
-	if cfg.Kafka.GetCodec() != "" {
-		o = append(o, kafka.WithCodec(cfg.Kafka.GetCodec()))
+	if cfg.GetCodec() != "" {
+		o = append(o, kafka.WithCodec(cfg.GetCodec()))
 	}
 
 	if opts != nil {
