@@ -1,5 +1,10 @@
 package nacos
 
+const (
+	DefaultGroup  = "DEFAULT_GROUP"
+	DefaultDataID = "bootstrap.yaml"
+)
+
 type Option func(*options)
 
 type options struct {

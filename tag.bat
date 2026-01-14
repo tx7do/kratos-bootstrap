@@ -37,7 +37,7 @@ git tag config/apollo/v0.2.2 --force
 git tag config/consul/v0.2.2 --force
 git tag config/etcd/v0.2.3 --force
 git tag config/kubernetes/v0.2.2 --force
-git tag config/nacos/v0.2.2 --force
+git tag config/nacos/v0.2.3 --force
 git tag config/polaris/v0.2.2 --force
 
 git tag transport/asynq/v0.0.2 --force

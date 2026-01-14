@@ -27,17 +27,20 @@ func NewConfigSource(c *conf.RemoteConfig) (config.Source, error) {
 	}
 
 	cliConf := nacosConstant.ClientConfig{
-		TimeoutMs:            c.Nacos.TimeoutMs,            // http请求超时时间，单位毫秒
-		BeatInterval:         c.Nacos.BeatInterval,         // 心跳间隔时间，单位毫秒
-		UpdateThreadNum:      int(c.Nacos.UpdateThreadNum), // 更新服务的线程数
-		LogLevel:             c.Nacos.LogLevel,
-		CacheDir:             c.Nacos.CacheDir,             // 缓存目录
-		LogDir:               c.Nacos.LogDir,               // 日志目录
+		TimeoutMs:       c.Nacos.TimeoutMs,            // http请求超时时间，单位毫秒
+		BeatInterval:    c.Nacos.BeatInterval,         // 心跳间隔时间，单位毫秒
+		UpdateThreadNum: int(c.Nacos.UpdateThreadNum), // 更新服务的线程数
+
 		NotLoadCacheAtStart:  c.Nacos.NotLoadCacheAtStart,  // 在启动时不读取本地缓存数据，true--不读取，false--读取
 		UpdateCacheWhenEmpty: c.Nacos.UpdateCacheWhenEmpty, // 当服务列表为空时是否更新本地缓存，true--更新,false--不更新
 
-		Username:    c.Nacos.Username,    // 用户名
-		Password:    c.Nacos.Password,    // 密码
+		LogLevel: c.Nacos.LogLevel, // 日志级别
+		CacheDir: c.Nacos.CacheDir, // 缓存目录
+		LogDir:   c.Nacos.LogDir,   // 日志目录
+
+		Username: c.Nacos.Username, // 用户名
+		Password: c.Nacos.Password, // 密码
+
 		NamespaceId: c.Nacos.NamespaceId, // 命名空间ID
 	}
 
@@ -52,8 +55,22 @@ func NewConfigSource(c *conf.RemoteConfig) (config.Source, error) {
 		return nil, err
 	}
 
+	var group string
+	if c.Nacos.GetGroup() != "" {
+		group = c.Nacos.GetGroup()
+	} else {
+		group = DefaultGroup
+	}
+
+	var dataID string
+	if c.Nacos.GetDataId() != "" {
+		dataID = c.Nacos.GetDataId()
+	} else {
+		dataID = DefaultDataID
+	}
+
 	return New(nacosClient,
-		WithGroup(getConfigKey(c.Nacos.Key, false)),
-		WithDataID("bootstrap.yaml"),
+		WithGroup(group),
+		WithDataID(dataID),
 	), nil
 }
