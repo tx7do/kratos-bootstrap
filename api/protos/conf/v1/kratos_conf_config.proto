@@ -24,18 +24,24 @@ message RemoteConfig {
   message Nacos {
     string address = 1; // 服务端地址
     uint64 port = 2; // 服务端端口
-    string key = 3; // 配置键
-    string username = 4; // 用户名
-    string password = 5; // 密码
-    string namespace_id = 6; // 命名空间ID
-    string log_level = 7; // 日志级别
-    string cache_dir = 8; // 缓存目录
-    string log_dir = 9; // 日志目录
-    bool not_load_cache_at_start = 10; // 启动时不加载缓存
-    bool update_cache_when_empty = 11; // 当配置为空时更新缓存
-    int32 update_thread_num = 12; // 更新服务的线程数
-    uint64 timeout_ms = 13; // http请求超时时间，单位毫秒
-    int64 beat_interval = 14; // 心跳间隔时间，单位毫秒
+
+    string username = 3; // 用户名
+    string password = 4; // 密码
+
+    string namespace_id = 10; // 命名空间ID
+    string group = 11; // 配置分组
+    string data_id = 12; // 配置数据ID
+
+    string log_level = 20; // 日志级别
+    string cache_dir = 21; // 缓存目录
+    string log_dir = 22; // 日志目录
+
+    bool not_load_cache_at_start = 30; // 启动时不加载缓存
+    bool update_cache_when_empty = 31; // 当配置为空时更新缓存
+
+    int32 update_thread_num = 40; // 更新服务的线程数
+    uint64 timeout_ms = 41; // http请求超时时间，单位毫秒
+    int64 beat_interval = 42; // 心跳间隔时间，单位毫秒
   }
 
   // Etcd 配置
