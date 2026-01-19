@@ -6,12 +6,12 @@ git tag rpc/v0.1.1 --force
 git tag tracer/v0.1.3 --force
 git tag script_engine/v0.0.5 --force
 
-git tag database/ent/v0.1.2 --force
-git tag database/gorm/v0.1.2 --force
-git tag database/mongodb/v0.1.2 --force
-git tag database/influxdb/v0.1.2 --force
-git tag database/clickhouse/v0.1.2 --force
-git tag database/elasticsearch/v0.1.2 --force
+git tag database/ent/v0.1.3 --force
+git tag database/gorm/v0.1.3 --force
+git tag database/mongodb/v0.1.3 --force
+git tag database/influxdb/v0.1.3 --force
+git tag database/clickhouse/v0.1.3 --force
+git tag database/elasticsearch/v0.1.3 --force
 git tag database/cassandra/v0.1.2 --force
 
 git tag logger/v0.1.2 --force
