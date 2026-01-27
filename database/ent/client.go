@@ -16,12 +16,12 @@ type DbCreator[T entCrud.EntClientInterface] func(drv *sql.Driver) T
 // NewEntClient 创建Ent ORM数据库客户端
 func NewEntClient[T entCrud.EntClientInterface](cfg *conf.Bootstrap, dbCreator DbCreator[T]) *entCrud.EntClient[T] {
 	if cfg.Data == nil || cfg.Data.Database == nil {
-		log.Warn("database config is nil")
+		log.Warn("[ENT] database config is nil")
 		return nil
 	}
 
 	if dbCreator == nil {
-		log.Warn("dbCreator is nil")
+		log.Warn("[ENT] dbCreator is nil")
 		return nil
 	}
 
@@ -32,7 +32,7 @@ func NewEntClient[T entCrud.EntClientInterface](cfg *conf.Bootstrap, dbCreator D
 		cfg.Data.Database.GetEnableMetrics(),
 	)
 	if err != nil {
-		log.Fatalf("failed opening connection to db: %v", err)
+		log.Fatalf("[ENT] failed opening connection to db: %v", err)
 		return nil
 	}
 
@@ -40,7 +40,7 @@ func NewEntClient[T entCrud.EntClientInterface](cfg *conf.Bootstrap, dbCreator D
 
 	wrapperClient := entCrud.NewEntClient(db, drv)
 	if wrapperClient == nil {
-		log.Fatalf("failed creating ent client")
+		log.Fatalf("[ENT] failed creating ent client")
 		return nil
 	}
 

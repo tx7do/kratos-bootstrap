@@ -9,10 +9,10 @@ import (
 )
 
 // NewGormClient 创建GORM数据库客户端
-func NewGormClient(cfg *conf.Bootstrap, l *log.Helper, migrates []interface{}) *gormCrud.Client {
+func NewGormClient(cfg *conf.Bootstrap, l *log.Helper, migrates []interface{}) (*gormCrud.Client, error) {
 	if cfg.Data == nil || cfg.Data.Database == nil {
-		l.Warn("database config is nil")
-		return nil
+		log.Warn("[GORM] database config is nil")
+		return nil, nil
 	}
 
 	var options []gormCrud.Option
@@ -49,9 +49,9 @@ func NewGormClient(cfg *conf.Bootstrap, l *log.Helper, migrates []interface{}) *
 
 	db, err := gormCrud.NewClient(options...)
 	if err != nil {
-		l.Fatalf("failed opening connection to db: %v", err)
-		return nil
+		log.Fatalf("[GORM] failed opening connection to db: %v", err)
+		return nil, err
 	}
 
-	return db
+	return db, nil
 }
