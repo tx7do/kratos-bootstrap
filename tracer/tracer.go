@@ -8,6 +8,7 @@ import (
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	traceSdk "go.opentelemetry.io/otel/sdk/trace"
 	semConv "go.opentelemetry.io/otel/semconv/v1.4.0"
@@ -112,7 +113,16 @@ func NewTracerProviderWithShutdown(ctx context.Context, cfg *conf.Tracer, appInf
 	tpInstance = tp
 	tpMu.Unlock()
 
+	// set global tracer provider
 	otel.SetTracerProvider(tp)
+
+	// set global propagator
+	otel.SetTextMapPropagator(
+		NewCompositePropagator(
+			cfg.GetEnableTraceContext(),
+			cfg.GetEnableBaggage(),
+		),
+	)
 
 	shutdown := func(c context.Context) error {
 		// shutdown global provider if it's still the same one
@@ -120,4 +130,27 @@ func NewTracerProviderWithShutdown(ctx context.Context, cfg *conf.Tracer, appInf
 	}
 
 	return tp, shutdown, nil
+}
+
+// NewCompositePropagator 构建一个复合 propagator。
+// - enableTraceContext: 是否包含 W3C TraceContext
+// - enableBaggage: 是否包含 Baggage
+// 返回值保证非 nil，默认回退为 TraceContext。
+func NewCompositePropagator(enableTraceContext, enableBaggage bool) propagation.TextMapPropagator {
+	var parts []propagation.TextMapPropagator
+	if enableTraceContext {
+		parts = append(parts, propagation.TraceContext{})
+	}
+	if enableBaggage {
+		parts = append(parts, propagation.Baggage{})
+	}
+
+	switch len(parts) {
+	case 0:
+		return propagation.TraceContext{}
+	case 1:
+		return parts[0]
+	default:
+		return propagation.NewCompositeTextMapPropagator(parts...)
+	}
 }
