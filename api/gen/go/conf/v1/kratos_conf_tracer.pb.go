@@ -33,8 +33,12 @@ type Tracer struct {
 	Insecure bool    `protobuf:"varint,5,opt,name=insecure,proto3" json:"insecure,omitempty"`
 	// 批处理/Span processor 配置（可选）
 	BatcherOptions *BatcherOptions `protobuf:"bytes,6,opt,name=batcher_options,json=batcherOptions,proto3,oneof" json:"batcher_options,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// 是否包含 W3C TraceContext 传播（nil 表示未配置）
+	EnableTraceContext *bool `protobuf:"varint,7,opt,name=enable_trace_context,json=enableTraceContext,proto3,oneof" json:"enable_trace_context,omitempty"`
+	// 是否包含 Baggage 传播（nil 表示未配置）
+	EnableBaggage *bool `protobuf:"varint,8,opt,name=enable_baggage,json=enableBaggage,proto3,oneof" json:"enable_baggage,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Tracer) Reset() {
@@ -107,6 +111,20 @@ func (x *Tracer) GetBatcherOptions() *BatcherOptions {
 		return x.BatcherOptions
 	}
 	return nil
+}
+
+func (x *Tracer) GetEnableTraceContext() bool {
+	if x != nil && x.EnableTraceContext != nil {
+		return *x.EnableTraceContext
+	}
+	return false
+}
+
+func (x *Tracer) GetEnableBaggage() bool {
+	if x != nil && x.EnableBaggage != nil {
+		return *x.EnableBaggage
+	}
+	return false
 }
 
 type BatcherOptions struct {
@@ -189,15 +207,19 @@ var File_conf_v1_kratos_conf_tracer_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_tracer_proto_rawDesc = "" +
 	"\n" +
-	" conf/v1/kratos_conf_tracer.proto\x12\x04conf\"\xe0\x01\n" +
+	" conf/v1/kratos_conf_tracer.proto\x12\x04conf\"\xef\x02\n" +
 	"\x06Tracer\x12\x1a\n" +
 	"\bexporter\x18\x01 \x01(\tR\bexporter\x12\x1a\n" +
 	"\bendpoint\x18\x02 \x01(\tR\bendpoint\x12\x18\n" +
 	"\asampler\x18\x03 \x01(\x01R\asampler\x12\x10\n" +
 	"\x03env\x18\x04 \x01(\tR\x03env\x12\x1a\n" +
 	"\binsecure\x18\x05 \x01(\bR\binsecure\x12B\n" +
-	"\x0fbatcher_options\x18\x06 \x01(\v2\x14.conf.BatcherOptionsH\x00R\x0ebatcherOptions\x88\x01\x01B\x12\n" +
-	"\x10_batcher_options\"\xeb\x01\n" +
+	"\x0fbatcher_options\x18\x06 \x01(\v2\x14.conf.BatcherOptionsH\x00R\x0ebatcherOptions\x88\x01\x01\x125\n" +
+	"\x14enable_trace_context\x18\a \x01(\bH\x01R\x12enableTraceContext\x88\x01\x01\x12*\n" +
+	"\x0eenable_baggage\x18\b \x01(\bH\x02R\renableBaggage\x88\x01\x01B\x12\n" +
+	"\x10_batcher_optionsB\x17\n" +
+	"\x15_enable_trace_contextB\x11\n" +
+	"\x0f_enable_baggage\"\xeb\x01\n" +
 	"\x0eBatcherOptions\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12$\n" +
 	"\x0emax_queue_size\x18\x02 \x01(\rR\fmaxQueueSize\x121\n" +

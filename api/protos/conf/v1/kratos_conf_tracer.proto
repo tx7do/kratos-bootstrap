@@ -18,6 +18,12 @@ message Tracer {
 
   // 批处理/Span processor 配置（可选）
   optional BatcherOptions batcher_options = 6;
+
+  // 是否包含 W3C TraceContext 传播（nil 表示未配置）
+  optional bool enable_trace_context = 7;
+
+  // 是否包含 Baggage 传播（nil 表示未配置）
+  optional bool enable_baggage = 8;
 }
 
 message BatcherOptions {
