@@ -2,23 +2,14 @@ package clickhouse
 
 import (
 	"crypto/tls"
-	"database/sql"
 	"errors"
 
-	clickhouseV2 "github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	clickhouseCrud "github.com/tx7do/go-crud/clickhouse"
 	tlsUtils "github.com/tx7do/go-utils/tls"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
-
-type Client struct {
-	log *log.Helper
-
-	conn clickhouseV2.Conn
-	db   *sql.DB
-}
 
 func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*clickhouseCrud.Client, error) {
 	if cfg.Data == nil || cfg.Data.Clickhouse == nil {
