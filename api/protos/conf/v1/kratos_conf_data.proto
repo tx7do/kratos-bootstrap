@@ -2,18 +2,17 @@ syntax = "proto3";
 
 package conf;
 
-option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
-
+import "conf/v1/kratos_conf_tls.proto";
 import "google/protobuf/duration.proto";
 
-import "conf/v1/kratos_conf_tls.proto";
+option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
 
 // 数据
 message Data {
   // 数据库
   message Database {
-    string driver = 1;  // 驱动名：mysql、postgresql、mongodb、sqlite……
-    string source = 2;  // 数据源（DSN字符串）
+    string driver = 1; // 驱动名：mysql、postgresql、mongodb、sqlite……
+    string source = 2; // 数据源（DSN字符串）
 
     bool migrate = 10; // 数据迁移开关
     bool debug = 11; // 调试开关
@@ -24,20 +23,20 @@ message Data {
     optional int32 max_open_connections = 21; // 连接池最大打开连接数
     optional google.protobuf.Duration connection_max_lifetime = 22; // 连接可重用的最大时间长度
 
-    optional string prometheus_push_addr = 30;
-    optional string prometheus_db_name = 31;
-    optional uint32 prometheus_http_port = 32;
+    optional string prometheus_push_addr = 30; // Prometheus Pushgateway地址，例如 "http://localhost:9091"
+    optional string prometheus_db_name = 31; // Prometheus数据库名称，通常用于区分不同的数据源，例如 "myapp_db"
+    optional uint32 prometheus_http_port = 32; // Prometheus HTTP服务器端口，默认8080，例如 8080
   }
 
   // redis
   message Redis {
     string network = 1; // 网络
-    string addr = 2;  // 服务端地址
-    string password = 3;  // 密码
+    string addr = 2; // 服务端地址
+    string password = 3; // 密码
     int32 db = 4; // 数据库索引
 
-    google.protobuf.Duration dial_timeout = 50;  // 连接超时时间
-    google.protobuf.Duration read_timeout = 51;  // 读取超时时间
+    google.protobuf.Duration dial_timeout = 50; // 连接超时时间
+    google.protobuf.Duration read_timeout = 51; // 读取超时时间
     google.protobuf.Duration write_timeout = 52; // 写入超时时间
 
     bool enable_tracing = 100; // 打开链路追踪
@@ -46,7 +45,7 @@ message Data {
 
   // MongoDB
   message MongoDB {
-    optional string uri = 1;
+    optional string uri = 1; // MongoDB连接URI，例如 "mongodb://localhost:27017" 或 "mongodb+srv://cluster0.mongodb.net"
 
     optional string database = 2;
 
@@ -69,7 +68,7 @@ message Data {
     optional bool enable_tracing = 100; // 打开链路追踪
     optional bool enable_metrics = 101; // 打开性能度量
 
-    optional TLS tls = 70;  // TLS配置
+    optional TLS tls = 70; // TLS配置
   }
 
   // ClickHouse
@@ -80,15 +79,15 @@ message Data {
     optional string username = 3; // 用户名
     optional string password = 4; // 密码
 
-    optional bool debug = 5; // 调试开关
-    optional string scheme = 6; // 协议：http、https、native
+    optional bool debug = 5; // 调试模式
+    optional string scheme = 6; // 连接协议：http、https、native
 
-    optional TLS tls = 7;  // TLS配置
+    optional TLS tls = 7; // TLS配置
 
     optional int32 block_buffer_size = 8; // 数据块缓冲区大小
 
     optional string compression_method = 10; // 压缩方法：zstd、lz4、lz4hc、gzip、deflate、br、none
-    optional int32 compression_level = 11; // 压缩级别：0-9
+    optional int32 compression_level = 11; // 压缩级别，范围从0（最快）到9（最慢但压缩率最高）
     optional int32 max_compression_buffer = 12; // 最大压缩缓冲区大小
 
     optional string connection_open_strategy = 20; // 连接打开策略：in_order、round_robin、random
@@ -123,40 +122,59 @@ message Data {
     optional google.protobuf.Duration idle_connection_timeout = 22; // 空闲连接超时时间
     optional int32 max_idle_connections = 23; // 连接池最大空闲连接数
 
-    optional TLS tls = 70;  // TLS配置
+    optional TLS tls = 70; // TLS配置
   }
 
+  // Doris
   message Doris {
-    string address = 1;
+    string dsn = 1; // 数据源名称（DSN字符串）
+
+    optional int32 max_idle_connections = 10; // 连接池最大空闲连接数
+    optional int32 max_open_connections = 11; // 连接池最大打开连接数
+    optional google.protobuf.Duration connection_max_lifetime = 12; // 连接可重用的最大时间长度
+
+    message StreamLoad {
+      string endpoint = 1; // Stream Load接口地址，例如 "http://localhost:8030/api/{db}/{table}/_stream_load"
+
+      optional string username = 2; // Stream Load接口用户名
+      optional string password = 3; // Stream Load接口密码
+
+      optional string method = 10; // Stream Load接口HTTP方法，默认POST
+      optional google.protobuf.Duration timeout = 11; // Stream Load接口超时时间
+    }
+    optional StreamLoad stream_load = 15; // Stream Load配置
+
+    optional TLS tls = 70; // TLS配置
   }
 
+  // ElasticSearch
   message ElasticSearch {
-    repeated string addresses = 1;
+    repeated string addresses = 1; // 对端网络地址
 
     optional string username = 10;
     optional string password = 11;
 
-    optional string cloud_id = 20;
-    optional string api_key = 21;
-    optional string service_token = 22;
-    optional string certificate_fingerprint = 23;
+    optional string cloud_id = 20; // Elastic Cloud ID
+    optional string api_key = 21; // Elastic API Key
+    optional string service_token = 22; // Elastic Service Token
+    optional string certificate_fingerprint = 23; // 证书指纹
 
-    optional bool disable_retry = 30;
-    optional int32 max_retries = 31;
+    optional bool disable_retry = 30; // 禁用重试
+    optional int32 max_retries = 31; // 最大重试次数
 
-    optional bool compress_request_body = 40;
-    optional int32 compress_request_body_level = 41;
-    optional bool pool_compressor = 42;
+    optional bool compress_request_body = 40; // 是否压缩请求体
+    optional int32 compress_request_body_level = 41; // 压缩级别，范围从0（最快）到9（最慢但压缩率最高）
+    optional bool pool_compressor = 42; // 是否使用连接池压缩器（默认 false）
 
-    optional bool discover_nodes_on_start = 50;
-    optional google.protobuf.Duration discover_nodes_interval = 51;
+    optional bool discover_nodes_on_start = 50; // 启动时发现节点
+    optional google.protobuf.Duration discover_nodes_interval = 51; // 发现节点间隔时间
 
-    optional bool enable_metrics = 60;
-    optional bool enable_debug_logger = 61;
-    optional bool enable_compatibility_mode = 62;
-    optional bool disable_meta_header = 63;
+    optional bool enable_metrics = 60; // 打开性能度量
+    optional bool enable_debug_logger = 61; // 打开调试日志记录器
+    optional bool enable_compatibility_mode = 62; // 启用兼容模式（默认 false）
+    optional bool disable_meta_header = 63; // 禁用元信息头（默认 false）
 
-    optional TLS tls = 70;  // TLS配置
+    optional TLS tls = 70; // TLS配置
   }
 
   message Cassandra {
@@ -165,31 +183,47 @@ message Data {
     optional string password = 3;
     optional string keyspace = 5;
 
-    optional google.protobuf.Duration connect_timeout = 6;
-    optional google.protobuf.Duration timeout = 7;
-    optional uint32 consistency = 8;
+    optional google.protobuf.Duration connect_timeout = 6; // 连接超时时间
+    optional google.protobuf.Duration timeout = 7; // 总超时时间
+    optional uint32 consistency = 8; // 一致性级别：0=ANY, 1=ONE, 2=TWO, 3=THREE, 4=QUORUM, 5=ALL, 6=LOCAL_QUORUM, 7=EACH_QUORUM, 8=SERIAL, 9=LOCAL_SERIAL, 10=LOCAL_ONE
 
-    optional bool disable_initial_host_lookup = 9;
-    optional bool ignore_peer_addr = 10;
+    optional bool disable_initial_host_lookup = 9; // 禁用初始主机查找（默认 false）
+    optional bool ignore_peer_addr = 10; // 忽略对等地址（默认 false）
 
-    optional TLS tls = 11;  // TLS配置
+    optional TLS tls = 11; // TLS配置
   }
 
   message Snowflake {
+    string endpoint = 1; // 对端网络地址
 
+    optional string account = 2; // 账号
+    optional string username = 3; // 用户名
+    optional string password = 4; // 密码
+
+    optional TLS tls = 70; // TLS配置
+  }
+
+  message DuckDB {
+    string dsn = 1; // 数据源名称（DSN字符串）
+
+    optional int32 max_idle_connections = 10; // 连接池最大空闲连接数
+    optional int32 max_open_connections = 11; // 连接池最大打开连接数
+    optional google.protobuf.Duration connection_max_lifetime = 12; // 连接可重用的最大时间长度
+
+    optional TLS tls = 70; // TLS配置
   }
 
   // Kafka
   message Kafka {
-    repeated string endpoints = 1;  // 对端网络地址
+    repeated string endpoints = 1; // 对端网络地址
 
-    string codec = 2;  // 编解码器
+    string codec = 2; // 编解码器
 
     bool async = 3; // 异步发送
     bool allow_auto_topic_creation = 4; // 允许发送的时候自动创建主题
 
     int32 batch_size = 5; // 批量发送量
-    int64 batch_bytes = 6;// 批量发送字节数
+    int64 batch_bytes = 6; // 批量发送字节数
 
     google.protobuf.Duration batch_timeout = 7; // 批量发送超时时间
     google.protobuf.Duration read_timeout = 8; // 读取超时时间
@@ -198,70 +232,72 @@ message Data {
 
   // RabbitMQ
   message RabbitMQ {
-    repeated string endpoints = 1;  // 对端网络地址
+    repeated string endpoints = 1; // 对端网络地址
   }
 
   // MQTT
   message Mqtt {
-    string endpoint = 1;  // 对端网络地址
-    string codec = 2;  // 编解码器: json,xml,yaml...
+    string endpoint = 1; // 对端网络地址
+    string codec = 2; // 编解码器: json,xml,yaml...
   }
 
   message ActiveMQ {
-    string endpoint = 1;  // 对端网络地址
-    string codec = 2;  // 编解码器: json,xml,yaml...
+    string endpoint = 1; // 对端网络地址
+    string codec = 2; // 编解码器: json,xml,yaml...
   }
 
   message NATS {
-    string endpoint = 1;  // 对端网络地址
-    string codec = 2;  // 编解码器: json,xml,yaml...
+    string endpoint = 1; // 对端网络地址
+    string codec = 2; // 编解码器: json,xml,yaml...
   }
 
   message NSQ {
-    string endpoint = 1;  // 对端网络地址
-    string codec = 2;  // 编解码器: json,xml,yaml...
+    string endpoint = 1; // 对端网络地址
+    string codec = 2; // 编解码器: json,xml,yaml...
   }
 
   message Pulsar {
-    string endpoint = 1;  // 对端网络地址
-    string codec = 2;  // 编解码器: json,xml,yaml...
+    string endpoint = 1; // 对端网络地址
+    string codec = 2; // 编解码器: json,xml,yaml...
   }
 
   message RocketMQ {
     string version = 1; // 驱动版本：aliyun、v2、v5
-    string codec = 2;  // 编解码器: json,xml,yaml...
-    bool enable_trace = 3;
+    string codec = 2; // 编解码器: json,xml,yaml...
 
-    repeated string name_servers = 4;
-    string name_server_domain = 5;
+    bool enable_trace = 3; // 打开链路追踪
 
-    string access_key = 6;
-    string secret_key = 7;
-    string security_token = 8;
+    repeated string name_servers = 4; // NameServer地址列表，例如 ["localhost:9876", "localhost:9877"]
+    string name_server_domain = 5; // NameServer域名，例如 "rocketmq.example.com"，当name_servers为空时使用该域名进行DNS解析获取NameServer地址列表
 
-    string namespace = 9;
-    string instance_name = 10;
-    string group_name = 11;
+    string access_key = 6; // 访问密钥
+    string secret_key = 7; // 密钥
+    string security_token = 8; // 安全令牌，针对使用STS临时授权的场景
+
+    string namespace = 9; // 命名空间，针对使用阿里云RocketMQ的场景
+    string instance_name = 10; // 实例名称，针对使用阿里云RocketMQ的场景
+    string group_name = 11; // 生产者分组名称，针对使用阿里云RocketMQ的场景
   }
 
-  optional Database database = 1;  // 数据库DSN
+  optional Database database = 1; // 数据库DSN
 
-  optional Redis redis = 10;  // Redis
-  optional MongoDB mongodb = 11;  // MongoDB数据库
-  optional ElasticSearch elastic_search = 12;  // ElasticSearch数据库
-  optional Cassandra cassandra = 13;  // Cassandra数据库
-
-  optional ClickHouse clickhouse = 20;  // ClickHouse数据库
-  optional InfluxDB influxdb = 21;  // InfluxDB数据库
-  optional Doris doris = 22;  // Doris数据库
+  optional Redis redis = 10; // Redis
+  optional MongoDB mongodb = 11; // MongoDB数据库
+  optional ElasticSearch elastic_search = 12; // ElasticSearch数据库
+  optional Cassandra cassandra = 13; // Cassandra数据库
+  optional ClickHouse clickhouse = 14; // ClickHouse数据库
+  optional InfluxDB influxdb = 15; // InfluxDB数据库
+  optional Doris doris = 16; // Doris数据库
+  optional Snowflake snowflake = 17; // Snowflake数据库
+  optional DuckDB duckdb = 18; // DuckDB数据库
 
   // Message Queue
 
-  optional Kafka kafka = 30;  // Kafka服务
-  optional RabbitMQ rabbitmq = 31;  // RabbitMQ服务
-  optional Mqtt mqtt = 32;  // MQTT服务
+  optional Kafka kafka = 30; // Kafka服务
+  optional RabbitMQ rabbitmq = 31; // RabbitMQ服务
+  optional Mqtt mqtt = 32; // MQTT服务
   optional ActiveMQ activemq = 33; // ActiveMQ
-  optional  NATS nats = 34; // NATS
+  optional NATS nats = 34; // NATS
   optional NSQ nsq = 35; // NATS
   optional Pulsar pulsar = 36; // Pulsar
   optional RocketMQ rocketmq = 38; // RocketMQ

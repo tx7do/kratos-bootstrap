@@ -30,9 +30,11 @@ type Data struct {
 	Mongodb       *Data_MongoDB          `protobuf:"bytes,11,opt,name=mongodb,proto3,oneof" json:"mongodb,omitempty"`                                  // MongoDB数据库
 	ElasticSearch *Data_ElasticSearch    `protobuf:"bytes,12,opt,name=elastic_search,json=elasticSearch,proto3,oneof" json:"elastic_search,omitempty"` // ElasticSearch数据库
 	Cassandra     *Data_Cassandra        `protobuf:"bytes,13,opt,name=cassandra,proto3,oneof" json:"cassandra,omitempty"`                              // Cassandra数据库
-	Clickhouse    *Data_ClickHouse       `protobuf:"bytes,20,opt,name=clickhouse,proto3,oneof" json:"clickhouse,omitempty"`                            // ClickHouse数据库
-	Influxdb      *Data_InfluxDB         `protobuf:"bytes,21,opt,name=influxdb,proto3,oneof" json:"influxdb,omitempty"`                                // InfluxDB数据库
-	Doris         *Data_Doris            `protobuf:"bytes,22,opt,name=doris,proto3,oneof" json:"doris,omitempty"`                                      // Doris数据库
+	Clickhouse    *Data_ClickHouse       `protobuf:"bytes,14,opt,name=clickhouse,proto3,oneof" json:"clickhouse,omitempty"`                            // ClickHouse数据库
+	Influxdb      *Data_InfluxDB         `protobuf:"bytes,15,opt,name=influxdb,proto3,oneof" json:"influxdb,omitempty"`                                // InfluxDB数据库
+	Doris         *Data_Doris            `protobuf:"bytes,16,opt,name=doris,proto3,oneof" json:"doris,omitempty"`                                      // Doris数据库
+	Snowflake     *Data_Snowflake        `protobuf:"bytes,17,opt,name=snowflake,proto3,oneof" json:"snowflake,omitempty"`                              // Snowflake数据库
+	Duckdb        *Data_DuckDB           `protobuf:"bytes,18,opt,name=duckdb,proto3,oneof" json:"duckdb,omitempty"`                                    // DuckDB数据库
 	Kafka         *Data_Kafka            `protobuf:"bytes,30,opt,name=kafka,proto3,oneof" json:"kafka,omitempty"`                                      // Kafka服务
 	Rabbitmq      *Data_RabbitMQ         `protobuf:"bytes,31,opt,name=rabbitmq,proto3,oneof" json:"rabbitmq,omitempty"`                                // RabbitMQ服务
 	Mqtt          *Data_Mqtt             `protobuf:"bytes,32,opt,name=mqtt,proto3,oneof" json:"mqtt,omitempty"`                                        // MQTT服务
@@ -131,6 +133,20 @@ func (x *Data) GetDoris() *Data_Doris {
 	return nil
 }
 
+func (x *Data) GetSnowflake() *Data_Snowflake {
+	if x != nil {
+		return x.Snowflake
+	}
+	return nil
+}
+
+func (x *Data) GetDuckdb() *Data_DuckDB {
+	if x != nil {
+		return x.Duckdb
+	}
+	return nil
+}
+
 func (x *Data) GetKafka() *Data_Kafka {
 	if x != nil {
 		return x.Kafka
@@ -199,9 +215,9 @@ type Data_Database struct {
 	MaxIdleConnections    *int32                 `protobuf:"varint,20,opt,name=max_idle_connections,json=maxIdleConnections,proto3,oneof" json:"max_idle_connections,omitempty"`         // 连接池最大空闲连接数
 	MaxOpenConnections    *int32                 `protobuf:"varint,21,opt,name=max_open_connections,json=maxOpenConnections,proto3,oneof" json:"max_open_connections,omitempty"`         // 连接池最大打开连接数
 	ConnectionMaxLifetime *durationpb.Duration   `protobuf:"bytes,22,opt,name=connection_max_lifetime,json=connectionMaxLifetime,proto3,oneof" json:"connection_max_lifetime,omitempty"` // 连接可重用的最大时间长度
-	PrometheusPushAddr    *string                `protobuf:"bytes,30,opt,name=prometheus_push_addr,json=prometheusPushAddr,proto3,oneof" json:"prometheus_push_addr,omitempty"`
-	PrometheusDbName      *string                `protobuf:"bytes,31,opt,name=prometheus_db_name,json=prometheusDbName,proto3,oneof" json:"prometheus_db_name,omitempty"`
-	PrometheusHttpPort    *uint32                `protobuf:"varint,32,opt,name=prometheus_http_port,json=prometheusHttpPort,proto3,oneof" json:"prometheus_http_port,omitempty"`
+	PrometheusPushAddr    *string                `protobuf:"bytes,30,opt,name=prometheus_push_addr,json=prometheusPushAddr,proto3,oneof" json:"prometheus_push_addr,omitempty"`          // Prometheus Pushgateway地址，例如 "http://localhost:9091"
+	PrometheusDbName      *string                `protobuf:"bytes,31,opt,name=prometheus_db_name,json=prometheusDbName,proto3,oneof" json:"prometheus_db_name,omitempty"`                // Prometheus数据库名称，通常用于区分不同的数据源，例如 "myapp_db"
+	PrometheusHttpPort    *uint32                `protobuf:"varint,32,opt,name=prometheus_http_port,json=prometheusHttpPort,proto3,oneof" json:"prometheus_http_port,omitempty"`         // Prometheus HTTP服务器端口，默认8080，例如 8080
 	unknownFields         protoimpl.UnknownFields
 	sizeCache             protoimpl.SizeCache
 }
@@ -432,7 +448,7 @@ func (x *Data_Redis) GetEnableMetrics() bool {
 // MongoDB
 type Data_MongoDB struct {
 	state                   protoimpl.MessageState `protogen:"open.v1"`
-	Uri                     *string                `protobuf:"bytes,1,opt,name=uri,proto3,oneof" json:"uri,omitempty"`
+	Uri                     *string                `protobuf:"bytes,1,opt,name=uri,proto3,oneof" json:"uri,omitempty"` // MongoDB连接URI，例如 "mongodb://localhost:27017" 或 "mongodb+srv://cluster0.mongodb.net"
 	Database                *string                `protobuf:"bytes,2,opt,name=database,proto3,oneof" json:"database,omitempty"`
 	Username                *string                `protobuf:"bytes,10,opt,name=username,proto3,oneof" json:"username,omitempty"`
 	Password                *string                `protobuf:"bytes,11,opt,name=password,proto3,oneof" json:"password,omitempty"`
@@ -617,12 +633,12 @@ type Data_ClickHouse struct {
 	Database               *string                `protobuf:"bytes,2,opt,name=database,proto3,oneof" json:"database,omitempty"`                                                              // 数据库名
 	Username               *string                `protobuf:"bytes,3,opt,name=username,proto3,oneof" json:"username,omitempty"`                                                              // 用户名
 	Password               *string                `protobuf:"bytes,4,opt,name=password,proto3,oneof" json:"password,omitempty"`                                                              // 密码
-	Debug                  *bool                  `protobuf:"varint,5,opt,name=debug,proto3,oneof" json:"debug,omitempty"`                                                                   // 调试开关
-	Scheme                 *string                `protobuf:"bytes,6,opt,name=scheme,proto3,oneof" json:"scheme,omitempty"`                                                                  // 协议：http、https、native
+	Debug                  *bool                  `protobuf:"varint,5,opt,name=debug,proto3,oneof" json:"debug,omitempty"`                                                                   // 调试模式
+	Scheme                 *string                `protobuf:"bytes,6,opt,name=scheme,proto3,oneof" json:"scheme,omitempty"`                                                                  // 连接协议：http、https、native
 	Tls                    *TLS                   `protobuf:"bytes,7,opt,name=tls,proto3,oneof" json:"tls,omitempty"`                                                                        // TLS配置
 	BlockBufferSize        *int32                 `protobuf:"varint,8,opt,name=block_buffer_size,json=blockBufferSize,proto3,oneof" json:"block_buffer_size,omitempty"`                      // 数据块缓冲区大小
 	CompressionMethod      *string                `protobuf:"bytes,10,opt,name=compression_method,json=compressionMethod,proto3,oneof" json:"compression_method,omitempty"`                  // 压缩方法：zstd、lz4、lz4hc、gzip、deflate、br、none
-	CompressionLevel       *int32                 `protobuf:"varint,11,opt,name=compression_level,json=compressionLevel,proto3,oneof" json:"compression_level,omitempty"`                    // 压缩级别：0-9
+	CompressionLevel       *int32                 `protobuf:"varint,11,opt,name=compression_level,json=compressionLevel,proto3,oneof" json:"compression_level,omitempty"`                    // 压缩级别，范围从0（最快）到9（最慢但压缩率最高）
 	MaxCompressionBuffer   *int32                 `protobuf:"varint,12,opt,name=max_compression_buffer,json=maxCompressionBuffer,proto3,oneof" json:"max_compression_buffer,omitempty"`      // 最大压缩缓冲区大小
 	ConnectionOpenStrategy *string                `protobuf:"bytes,20,opt,name=connection_open_strategy,json=connectionOpenStrategy,proto3,oneof" json:"connection_open_strategy,omitempty"` // 连接打开策略：in_order、round_robin、random
 	DialTimeout            *durationpb.Duration   `protobuf:"bytes,30,opt,name=dial_timeout,json=dialTimeout,proto3,oneof" json:"dial_timeout,omitempty"`                                    // 连接超时时间
@@ -940,11 +956,17 @@ func (x *Data_InfluxDB) GetTls() *TLS {
 	return nil
 }
 
+// Doris
 type Data_Doris struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Address       string                 `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                 protoimpl.MessageState `protogen:"open.v1"`
+	Dsn                   string                 `protobuf:"bytes,1,opt,name=dsn,proto3" json:"dsn,omitempty"`                                                                           // 数据源名称（DSN字符串）
+	MaxIdleConnections    *int32                 `protobuf:"varint,10,opt,name=max_idle_connections,json=maxIdleConnections,proto3,oneof" json:"max_idle_connections,omitempty"`         // 连接池最大空闲连接数
+	MaxOpenConnections    *int32                 `protobuf:"varint,11,opt,name=max_open_connections,json=maxOpenConnections,proto3,oneof" json:"max_open_connections,omitempty"`         // 连接池最大打开连接数
+	ConnectionMaxLifetime *durationpb.Duration   `protobuf:"bytes,12,opt,name=connection_max_lifetime,json=connectionMaxLifetime,proto3,oneof" json:"connection_max_lifetime,omitempty"` // 连接可重用的最大时间长度
+	StreamLoad            *Data_Doris_StreamLoad `protobuf:"bytes,15,opt,name=stream_load,json=streamLoad,proto3,oneof" json:"stream_load,omitempty"`                                    // Stream Load配置
+	Tls                   *TLS                   `protobuf:"bytes,70,opt,name=tls,proto3,oneof" json:"tls,omitempty"`                                                                    // TLS配置
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
 }
 
 func (x *Data_Doris) Reset() {
@@ -977,34 +999,70 @@ func (*Data_Doris) Descriptor() ([]byte, []int) {
 	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 5}
 }
 
-func (x *Data_Doris) GetAddress() string {
+func (x *Data_Doris) GetDsn() string {
 	if x != nil {
-		return x.Address
+		return x.Dsn
 	}
 	return ""
 }
 
+func (x *Data_Doris) GetMaxIdleConnections() int32 {
+	if x != nil && x.MaxIdleConnections != nil {
+		return *x.MaxIdleConnections
+	}
+	return 0
+}
+
+func (x *Data_Doris) GetMaxOpenConnections() int32 {
+	if x != nil && x.MaxOpenConnections != nil {
+		return *x.MaxOpenConnections
+	}
+	return 0
+}
+
+func (x *Data_Doris) GetConnectionMaxLifetime() *durationpb.Duration {
+	if x != nil {
+		return x.ConnectionMaxLifetime
+	}
+	return nil
+}
+
+func (x *Data_Doris) GetStreamLoad() *Data_Doris_StreamLoad {
+	if x != nil {
+		return x.StreamLoad
+	}
+	return nil
+}
+
+func (x *Data_Doris) GetTls() *TLS {
+	if x != nil {
+		return x.Tls
+	}
+	return nil
+}
+
+// ElasticSearch
 type Data_ElasticSearch struct {
 	state                    protoimpl.MessageState `protogen:"open.v1"`
-	Addresses                []string               `protobuf:"bytes,1,rep,name=addresses,proto3" json:"addresses,omitempty"`
+	Addresses                []string               `protobuf:"bytes,1,rep,name=addresses,proto3" json:"addresses,omitempty"` // 对端网络地址
 	Username                 *string                `protobuf:"bytes,10,opt,name=username,proto3,oneof" json:"username,omitempty"`
 	Password                 *string                `protobuf:"bytes,11,opt,name=password,proto3,oneof" json:"password,omitempty"`
-	CloudId                  *string                `protobuf:"bytes,20,opt,name=cloud_id,json=cloudId,proto3,oneof" json:"cloud_id,omitempty"`
-	ApiKey                   *string                `protobuf:"bytes,21,opt,name=api_key,json=apiKey,proto3,oneof" json:"api_key,omitempty"`
-	ServiceToken             *string                `protobuf:"bytes,22,opt,name=service_token,json=serviceToken,proto3,oneof" json:"service_token,omitempty"`
-	CertificateFingerprint   *string                `protobuf:"bytes,23,opt,name=certificate_fingerprint,json=certificateFingerprint,proto3,oneof" json:"certificate_fingerprint,omitempty"`
-	DisableRetry             *bool                  `protobuf:"varint,30,opt,name=disable_retry,json=disableRetry,proto3,oneof" json:"disable_retry,omitempty"`
-	MaxRetries               *int32                 `protobuf:"varint,31,opt,name=max_retries,json=maxRetries,proto3,oneof" json:"max_retries,omitempty"`
-	CompressRequestBody      *bool                  `protobuf:"varint,40,opt,name=compress_request_body,json=compressRequestBody,proto3,oneof" json:"compress_request_body,omitempty"`
-	CompressRequestBodyLevel *int32                 `protobuf:"varint,41,opt,name=compress_request_body_level,json=compressRequestBodyLevel,proto3,oneof" json:"compress_request_body_level,omitempty"`
-	PoolCompressor           *bool                  `protobuf:"varint,42,opt,name=pool_compressor,json=poolCompressor,proto3,oneof" json:"pool_compressor,omitempty"`
-	DiscoverNodesOnStart     *bool                  `protobuf:"varint,50,opt,name=discover_nodes_on_start,json=discoverNodesOnStart,proto3,oneof" json:"discover_nodes_on_start,omitempty"`
-	DiscoverNodesInterval    *durationpb.Duration   `protobuf:"bytes,51,opt,name=discover_nodes_interval,json=discoverNodesInterval,proto3,oneof" json:"discover_nodes_interval,omitempty"`
-	EnableMetrics            *bool                  `protobuf:"varint,60,opt,name=enable_metrics,json=enableMetrics,proto3,oneof" json:"enable_metrics,omitempty"`
-	EnableDebugLogger        *bool                  `protobuf:"varint,61,opt,name=enable_debug_logger,json=enableDebugLogger,proto3,oneof" json:"enable_debug_logger,omitempty"`
-	EnableCompatibilityMode  *bool                  `protobuf:"varint,62,opt,name=enable_compatibility_mode,json=enableCompatibilityMode,proto3,oneof" json:"enable_compatibility_mode,omitempty"`
-	DisableMetaHeader        *bool                  `protobuf:"varint,63,opt,name=disable_meta_header,json=disableMetaHeader,proto3,oneof" json:"disable_meta_header,omitempty"`
-	Tls                      *TLS                   `protobuf:"bytes,70,opt,name=tls,proto3,oneof" json:"tls,omitempty"` // TLS配置
+	CloudId                  *string                `protobuf:"bytes,20,opt,name=cloud_id,json=cloudId,proto3,oneof" json:"cloud_id,omitempty"`                                                         // Elastic Cloud ID
+	ApiKey                   *string                `protobuf:"bytes,21,opt,name=api_key,json=apiKey,proto3,oneof" json:"api_key,omitempty"`                                                            // Elastic API Key
+	ServiceToken             *string                `protobuf:"bytes,22,opt,name=service_token,json=serviceToken,proto3,oneof" json:"service_token,omitempty"`                                          // Elastic Service Token
+	CertificateFingerprint   *string                `protobuf:"bytes,23,opt,name=certificate_fingerprint,json=certificateFingerprint,proto3,oneof" json:"certificate_fingerprint,omitempty"`            // 证书指纹
+	DisableRetry             *bool                  `protobuf:"varint,30,opt,name=disable_retry,json=disableRetry,proto3,oneof" json:"disable_retry,omitempty"`                                         // 禁用重试
+	MaxRetries               *int32                 `protobuf:"varint,31,opt,name=max_retries,json=maxRetries,proto3,oneof" json:"max_retries,omitempty"`                                               // 最大重试次数
+	CompressRequestBody      *bool                  `protobuf:"varint,40,opt,name=compress_request_body,json=compressRequestBody,proto3,oneof" json:"compress_request_body,omitempty"`                  // 是否压缩请求体
+	CompressRequestBodyLevel *int32                 `protobuf:"varint,41,opt,name=compress_request_body_level,json=compressRequestBodyLevel,proto3,oneof" json:"compress_request_body_level,omitempty"` // 压缩级别，范围从0（最快）到9（最慢但压缩率最高）
+	PoolCompressor           *bool                  `protobuf:"varint,42,opt,name=pool_compressor,json=poolCompressor,proto3,oneof" json:"pool_compressor,omitempty"`                                   // 是否使用连接池压缩器（默认 false）
+	DiscoverNodesOnStart     *bool                  `protobuf:"varint,50,opt,name=discover_nodes_on_start,json=discoverNodesOnStart,proto3,oneof" json:"discover_nodes_on_start,omitempty"`             // 启动时发现节点
+	DiscoverNodesInterval    *durationpb.Duration   `protobuf:"bytes,51,opt,name=discover_nodes_interval,json=discoverNodesInterval,proto3,oneof" json:"discover_nodes_interval,omitempty"`             // 发现节点间隔时间
+	EnableMetrics            *bool                  `protobuf:"varint,60,opt,name=enable_metrics,json=enableMetrics,proto3,oneof" json:"enable_metrics,omitempty"`                                      // 打开性能度量
+	EnableDebugLogger        *bool                  `protobuf:"varint,61,opt,name=enable_debug_logger,json=enableDebugLogger,proto3,oneof" json:"enable_debug_logger,omitempty"`                        // 打开调试日志记录器
+	EnableCompatibilityMode  *bool                  `protobuf:"varint,62,opt,name=enable_compatibility_mode,json=enableCompatibilityMode,proto3,oneof" json:"enable_compatibility_mode,omitempty"`      // 启用兼容模式（默认 false）
+	DisableMetaHeader        *bool                  `protobuf:"varint,63,opt,name=disable_meta_header,json=disableMetaHeader,proto3,oneof" json:"disable_meta_header,omitempty"`                        // 禁用元信息头（默认 false）
+	Tls                      *TLS                   `protobuf:"bytes,70,opt,name=tls,proto3,oneof" json:"tls,omitempty"`                                                                                // TLS配置
 	unknownFields            protoimpl.UnknownFields
 	sizeCache                protoimpl.SizeCache
 }
@@ -1178,12 +1236,12 @@ type Data_Cassandra struct {
 	Username                 *string                `protobuf:"bytes,2,opt,name=username,proto3,oneof" json:"username,omitempty"`
 	Password                 *string                `protobuf:"bytes,3,opt,name=password,proto3,oneof" json:"password,omitempty"`
 	Keyspace                 *string                `protobuf:"bytes,5,opt,name=keyspace,proto3,oneof" json:"keyspace,omitempty"`
-	ConnectTimeout           *durationpb.Duration   `protobuf:"bytes,6,opt,name=connect_timeout,json=connectTimeout,proto3,oneof" json:"connect_timeout,omitempty"`
-	Timeout                  *durationpb.Duration   `protobuf:"bytes,7,opt,name=timeout,proto3,oneof" json:"timeout,omitempty"`
-	Consistency              *uint32                `protobuf:"varint,8,opt,name=consistency,proto3,oneof" json:"consistency,omitempty"`
-	DisableInitialHostLookup *bool                  `protobuf:"varint,9,opt,name=disable_initial_host_lookup,json=disableInitialHostLookup,proto3,oneof" json:"disable_initial_host_lookup,omitempty"`
-	IgnorePeerAddr           *bool                  `protobuf:"varint,10,opt,name=ignore_peer_addr,json=ignorePeerAddr,proto3,oneof" json:"ignore_peer_addr,omitempty"`
-	Tls                      *TLS                   `protobuf:"bytes,11,opt,name=tls,proto3,oneof" json:"tls,omitempty"` // TLS配置
+	ConnectTimeout           *durationpb.Duration   `protobuf:"bytes,6,opt,name=connect_timeout,json=connectTimeout,proto3,oneof" json:"connect_timeout,omitempty"`                                    // 连接超时时间
+	Timeout                  *durationpb.Duration   `protobuf:"bytes,7,opt,name=timeout,proto3,oneof" json:"timeout,omitempty"`                                                                        // 总超时时间
+	Consistency              *uint32                `protobuf:"varint,8,opt,name=consistency,proto3,oneof" json:"consistency,omitempty"`                                                               // 一致性级别：0=ANY, 1=ONE, 2=TWO, 3=THREE, 4=QUORUM, 5=ALL, 6=LOCAL_QUORUM, 7=EACH_QUORUM, 8=SERIAL, 9=LOCAL_SERIAL, 10=LOCAL_ONE
+	DisableInitialHostLookup *bool                  `protobuf:"varint,9,opt,name=disable_initial_host_lookup,json=disableInitialHostLookup,proto3,oneof" json:"disable_initial_host_lookup,omitempty"` // 禁用初始主机查找（默认 false）
+	IgnorePeerAddr           *bool                  `protobuf:"varint,10,opt,name=ignore_peer_addr,json=ignorePeerAddr,proto3,oneof" json:"ignore_peer_addr,omitempty"`                                // 忽略对等地址（默认 false）
+	Tls                      *TLS                   `protobuf:"bytes,11,opt,name=tls,proto3,oneof" json:"tls,omitempty"`                                                                               // TLS配置
 	unknownFields            protoimpl.UnknownFields
 	sizeCache                protoimpl.SizeCache
 }
@@ -1290,6 +1348,11 @@ func (x *Data_Cassandra) GetTls() *TLS {
 
 type Data_Snowflake struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Endpoint      string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"`       // 对端网络地址
+	Account       *string                `protobuf:"bytes,2,opt,name=account,proto3,oneof" json:"account,omitempty"`   // 账号
+	Username      *string                `protobuf:"bytes,3,opt,name=username,proto3,oneof" json:"username,omitempty"` // 用户名
+	Password      *string                `protobuf:"bytes,4,opt,name=password,proto3,oneof" json:"password,omitempty"` // 密码
+	Tls           *TLS                   `protobuf:"bytes,70,opt,name=tls,proto3,oneof" json:"tls,omitempty"`          // TLS配置
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1324,6 +1387,117 @@ func (*Data_Snowflake) Descriptor() ([]byte, []int) {
 	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 8}
 }
 
+func (x *Data_Snowflake) GetEndpoint() string {
+	if x != nil {
+		return x.Endpoint
+	}
+	return ""
+}
+
+func (x *Data_Snowflake) GetAccount() string {
+	if x != nil && x.Account != nil {
+		return *x.Account
+	}
+	return ""
+}
+
+func (x *Data_Snowflake) GetUsername() string {
+	if x != nil && x.Username != nil {
+		return *x.Username
+	}
+	return ""
+}
+
+func (x *Data_Snowflake) GetPassword() string {
+	if x != nil && x.Password != nil {
+		return *x.Password
+	}
+	return ""
+}
+
+func (x *Data_Snowflake) GetTls() *TLS {
+	if x != nil {
+		return x.Tls
+	}
+	return nil
+}
+
+type Data_DuckDB struct {
+	state                 protoimpl.MessageState `protogen:"open.v1"`
+	Dsn                   string                 `protobuf:"bytes,1,opt,name=dsn,proto3" json:"dsn,omitempty"`                                                                           // 数据源名称（DSN字符串）
+	MaxIdleConnections    *int32                 `protobuf:"varint,10,opt,name=max_idle_connections,json=maxIdleConnections,proto3,oneof" json:"max_idle_connections,omitempty"`         // 连接池最大空闲连接数
+	MaxOpenConnections    *int32                 `protobuf:"varint,11,opt,name=max_open_connections,json=maxOpenConnections,proto3,oneof" json:"max_open_connections,omitempty"`         // 连接池最大打开连接数
+	ConnectionMaxLifetime *durationpb.Duration   `protobuf:"bytes,12,opt,name=connection_max_lifetime,json=connectionMaxLifetime,proto3,oneof" json:"connection_max_lifetime,omitempty"` // 连接可重用的最大时间长度
+	Tls                   *TLS                   `protobuf:"bytes,70,opt,name=tls,proto3,oneof" json:"tls,omitempty"`                                                                    // TLS配置
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
+}
+
+func (x *Data_DuckDB) Reset() {
+	*x = Data_DuckDB{}
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Data_DuckDB) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Data_DuckDB) ProtoMessage() {}
+
+func (x *Data_DuckDB) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Data_DuckDB.ProtoReflect.Descriptor instead.
+func (*Data_DuckDB) Descriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 9}
+}
+
+func (x *Data_DuckDB) GetDsn() string {
+	if x != nil {
+		return x.Dsn
+	}
+	return ""
+}
+
+func (x *Data_DuckDB) GetMaxIdleConnections() int32 {
+	if x != nil && x.MaxIdleConnections != nil {
+		return *x.MaxIdleConnections
+	}
+	return 0
+}
+
+func (x *Data_DuckDB) GetMaxOpenConnections() int32 {
+	if x != nil && x.MaxOpenConnections != nil {
+		return *x.MaxOpenConnections
+	}
+	return 0
+}
+
+func (x *Data_DuckDB) GetConnectionMaxLifetime() *durationpb.Duration {
+	if x != nil {
+		return x.ConnectionMaxLifetime
+	}
+	return nil
+}
+
+func (x *Data_DuckDB) GetTls() *TLS {
+	if x != nil {
+		return x.Tls
+	}
+	return nil
+}
+
 // Kafka
 type Data_Kafka struct {
 	state                  protoimpl.MessageState `protogen:"open.v1"`
@@ -1342,7 +1516,7 @@ type Data_Kafka struct {
 
 func (x *Data_Kafka) Reset() {
 	*x = Data_Kafka{}
-	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[10]
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1354,7 +1528,7 @@ func (x *Data_Kafka) String() string {
 func (*Data_Kafka) ProtoMessage() {}
 
 func (x *Data_Kafka) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[10]
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1367,7 +1541,7 @@ func (x *Data_Kafka) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Data_Kafka.ProtoReflect.Descriptor instead.
 func (*Data_Kafka) Descriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 9}
+	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 10}
 }
 
 func (x *Data_Kafka) GetEndpoints() []string {
@@ -1443,7 +1617,7 @@ type Data_RabbitMQ struct {
 
 func (x *Data_RabbitMQ) Reset() {
 	*x = Data_RabbitMQ{}
-	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[11]
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1455,7 +1629,7 @@ func (x *Data_RabbitMQ) String() string {
 func (*Data_RabbitMQ) ProtoMessage() {}
 
 func (x *Data_RabbitMQ) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[11]
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1468,7 +1642,7 @@ func (x *Data_RabbitMQ) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Data_RabbitMQ.ProtoReflect.Descriptor instead.
 func (*Data_RabbitMQ) Descriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 10}
+	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 11}
 }
 
 func (x *Data_RabbitMQ) GetEndpoints() []string {
@@ -1489,7 +1663,7 @@ type Data_Mqtt struct {
 
 func (x *Data_Mqtt) Reset() {
 	*x = Data_Mqtt{}
-	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[12]
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1501,7 +1675,7 @@ func (x *Data_Mqtt) String() string {
 func (*Data_Mqtt) ProtoMessage() {}
 
 func (x *Data_Mqtt) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[12]
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1514,7 +1688,7 @@ func (x *Data_Mqtt) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Data_Mqtt.ProtoReflect.Descriptor instead.
 func (*Data_Mqtt) Descriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 11}
+	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 12}
 }
 
 func (x *Data_Mqtt) GetEndpoint() string {
@@ -1541,7 +1715,7 @@ type Data_ActiveMQ struct {
 
 func (x *Data_ActiveMQ) Reset() {
 	*x = Data_ActiveMQ{}
-	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[13]
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1553,7 +1727,7 @@ func (x *Data_ActiveMQ) String() string {
 func (*Data_ActiveMQ) ProtoMessage() {}
 
 func (x *Data_ActiveMQ) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[13]
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1566,7 +1740,7 @@ func (x *Data_ActiveMQ) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Data_ActiveMQ.ProtoReflect.Descriptor instead.
 func (*Data_ActiveMQ) Descriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 12}
+	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 13}
 }
 
 func (x *Data_ActiveMQ) GetEndpoint() string {
@@ -1593,7 +1767,7 @@ type Data_NATS struct {
 
 func (x *Data_NATS) Reset() {
 	*x = Data_NATS{}
-	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[14]
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1605,7 +1779,7 @@ func (x *Data_NATS) String() string {
 func (*Data_NATS) ProtoMessage() {}
 
 func (x *Data_NATS) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[14]
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1618,7 +1792,7 @@ func (x *Data_NATS) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Data_NATS.ProtoReflect.Descriptor instead.
 func (*Data_NATS) Descriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 13}
+	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 14}
 }
 
 func (x *Data_NATS) GetEndpoint() string {
@@ -1645,7 +1819,7 @@ type Data_NSQ struct {
 
 func (x *Data_NSQ) Reset() {
 	*x = Data_NSQ{}
-	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[15]
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1657,7 +1831,7 @@ func (x *Data_NSQ) String() string {
 func (*Data_NSQ) ProtoMessage() {}
 
 func (x *Data_NSQ) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[15]
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1670,7 +1844,7 @@ func (x *Data_NSQ) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Data_NSQ.ProtoReflect.Descriptor instead.
 func (*Data_NSQ) Descriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 14}
+	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 15}
 }
 
 func (x *Data_NSQ) GetEndpoint() string {
@@ -1697,7 +1871,7 @@ type Data_Pulsar struct {
 
 func (x *Data_Pulsar) Reset() {
 	*x = Data_Pulsar{}
-	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[16]
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1709,7 +1883,7 @@ func (x *Data_Pulsar) String() string {
 func (*Data_Pulsar) ProtoMessage() {}
 
 func (x *Data_Pulsar) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[16]
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1722,7 +1896,7 @@ func (x *Data_Pulsar) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Data_Pulsar.ProtoReflect.Descriptor instead.
 func (*Data_Pulsar) Descriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 15}
+	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 16}
 }
 
 func (x *Data_Pulsar) GetEndpoint() string {
@@ -1741,24 +1915,24 @@ func (x *Data_Pulsar) GetCodec() string {
 
 type Data_RocketMQ struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
-	Version          string                 `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"` // 驱动版本：aliyun、v2、v5
-	Codec            string                 `protobuf:"bytes,2,opt,name=codec,proto3" json:"codec,omitempty"`     // 编解码器: json,xml,yaml...
-	EnableTrace      bool                   `protobuf:"varint,3,opt,name=enable_trace,json=enableTrace,proto3" json:"enable_trace,omitempty"`
-	NameServers      []string               `protobuf:"bytes,4,rep,name=name_servers,json=nameServers,proto3" json:"name_servers,omitempty"`
-	NameServerDomain string                 `protobuf:"bytes,5,opt,name=name_server_domain,json=nameServerDomain,proto3" json:"name_server_domain,omitempty"`
-	AccessKey        string                 `protobuf:"bytes,6,opt,name=access_key,json=accessKey,proto3" json:"access_key,omitempty"`
-	SecretKey        string                 `protobuf:"bytes,7,opt,name=secret_key,json=secretKey,proto3" json:"secret_key,omitempty"`
-	SecurityToken    string                 `protobuf:"bytes,8,opt,name=security_token,json=securityToken,proto3" json:"security_token,omitempty"`
-	Namespace        string                 `protobuf:"bytes,9,opt,name=namespace,proto3" json:"namespace,omitempty"`
-	InstanceName     string                 `protobuf:"bytes,10,opt,name=instance_name,json=instanceName,proto3" json:"instance_name,omitempty"`
-	GroupName        string                 `protobuf:"bytes,11,opt,name=group_name,json=groupName,proto3" json:"group_name,omitempty"`
+	Version          string                 `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`                                             // 驱动版本：aliyun、v2、v5
+	Codec            string                 `protobuf:"bytes,2,opt,name=codec,proto3" json:"codec,omitempty"`                                                 // 编解码器: json,xml,yaml...
+	EnableTrace      bool                   `protobuf:"varint,3,opt,name=enable_trace,json=enableTrace,proto3" json:"enable_trace,omitempty"`                 // 打开链路追踪
+	NameServers      []string               `protobuf:"bytes,4,rep,name=name_servers,json=nameServers,proto3" json:"name_servers,omitempty"`                  // NameServer地址列表，例如 ["localhost:9876", "localhost:9877"]
+	NameServerDomain string                 `protobuf:"bytes,5,opt,name=name_server_domain,json=nameServerDomain,proto3" json:"name_server_domain,omitempty"` // NameServer域名，例如 "rocketmq.example.com"，当name_servers为空时使用该域名进行DNS解析获取NameServer地址列表
+	AccessKey        string                 `protobuf:"bytes,6,opt,name=access_key,json=accessKey,proto3" json:"access_key,omitempty"`                        // 访问密钥
+	SecretKey        string                 `protobuf:"bytes,7,opt,name=secret_key,json=secretKey,proto3" json:"secret_key,omitempty"`                        // 密钥
+	SecurityToken    string                 `protobuf:"bytes,8,opt,name=security_token,json=securityToken,proto3" json:"security_token,omitempty"`            // 安全令牌，针对使用STS临时授权的场景
+	Namespace        string                 `protobuf:"bytes,9,opt,name=namespace,proto3" json:"namespace,omitempty"`                                         // 命名空间，针对使用阿里云RocketMQ的场景
+	InstanceName     string                 `protobuf:"bytes,10,opt,name=instance_name,json=instanceName,proto3" json:"instance_name,omitempty"`              // 实例名称，针对使用阿里云RocketMQ的场景
+	GroupName        string                 `protobuf:"bytes,11,opt,name=group_name,json=groupName,proto3" json:"group_name,omitempty"`                       // 生产者分组名称，针对使用阿里云RocketMQ的场景
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
 
 func (x *Data_RocketMQ) Reset() {
 	*x = Data_RocketMQ{}
-	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[17]
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1770,7 +1944,7 @@ func (x *Data_RocketMQ) String() string {
 func (*Data_RocketMQ) ProtoMessage() {}
 
 func (x *Data_RocketMQ) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[17]
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1783,7 +1957,7 @@ func (x *Data_RocketMQ) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Data_RocketMQ.ProtoReflect.Descriptor instead.
 func (*Data_RocketMQ) Descriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 16}
+	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 17}
 }
 
 func (x *Data_RocketMQ) GetVersion() string {
@@ -1863,11 +2037,87 @@ func (x *Data_RocketMQ) GetGroupName() string {
 	return ""
 }
 
+type Data_Doris_StreamLoad struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Endpoint      string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"`       // Stream Load接口地址，例如 "http://localhost:8030/api/{db}/{table}/_stream_load"
+	Username      *string                `protobuf:"bytes,2,opt,name=username,proto3,oneof" json:"username,omitempty"` // Stream Load接口用户名
+	Password      *string                `protobuf:"bytes,3,opt,name=password,proto3,oneof" json:"password,omitempty"` // Stream Load接口密码
+	Method        *string                `protobuf:"bytes,10,opt,name=method,proto3,oneof" json:"method,omitempty"`    // Stream Load接口HTTP方法，默认POST
+	Timeout       *durationpb.Duration   `protobuf:"bytes,11,opt,name=timeout,proto3,oneof" json:"timeout,omitempty"`  // Stream Load接口超时时间
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Data_Doris_StreamLoad) Reset() {
+	*x = Data_Doris_StreamLoad{}
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Data_Doris_StreamLoad) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Data_Doris_StreamLoad) ProtoMessage() {}
+
+func (x *Data_Doris_StreamLoad) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_v1_kratos_conf_data_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Data_Doris_StreamLoad.ProtoReflect.Descriptor instead.
+func (*Data_Doris_StreamLoad) Descriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_data_proto_rawDescGZIP(), []int{0, 5, 0}
+}
+
+func (x *Data_Doris_StreamLoad) GetEndpoint() string {
+	if x != nil {
+		return x.Endpoint
+	}
+	return ""
+}
+
+func (x *Data_Doris_StreamLoad) GetUsername() string {
+	if x != nil && x.Username != nil {
+		return *x.Username
+	}
+	return ""
+}
+
+func (x *Data_Doris_StreamLoad) GetPassword() string {
+	if x != nil && x.Password != nil {
+		return *x.Password
+	}
+	return ""
+}
+
+func (x *Data_Doris_StreamLoad) GetMethod() string {
+	if x != nil && x.Method != nil {
+		return *x.Method
+	}
+	return ""
+}
+
+func (x *Data_Doris_StreamLoad) GetTimeout() *durationpb.Duration {
+	if x != nil {
+		return x.Timeout
+	}
+	return nil
+}
+
 var File_conf_v1_kratos_conf_data_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_data_proto_rawDesc = "" +
 	"\n" +
-	"\x1econf/v1/kratos_conf_data.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\x1a\x1dconf/v1/kratos_conf_tls.proto\"\xdfB\n" +
+	"\x1econf/v1/kratos_conf_data.proto\x12\x04conf\x1a\x1dconf/v1/kratos_conf_tls.proto\x1a\x1egoogle/protobuf/duration.proto\"\x89M\n" +
 	"\x04Data\x124\n" +
 	"\bdatabase\x18\x01 \x01(\v2\x13.conf.Data.DatabaseH\x00R\bdatabase\x88\x01\x01\x12+\n" +
 	"\x05redis\x18\n" +
@@ -1876,19 +2126,21 @@ const file_conf_v1_kratos_conf_data_proto_rawDesc = "" +
 	"\x0eelastic_search\x18\f \x01(\v2\x18.conf.Data.ElasticSearchH\x03R\relasticSearch\x88\x01\x01\x127\n" +
 	"\tcassandra\x18\r \x01(\v2\x14.conf.Data.CassandraH\x04R\tcassandra\x88\x01\x01\x12:\n" +
 	"\n" +
-	"clickhouse\x18\x14 \x01(\v2\x15.conf.Data.ClickHouseH\x05R\n" +
+	"clickhouse\x18\x0e \x01(\v2\x15.conf.Data.ClickHouseH\x05R\n" +
 	"clickhouse\x88\x01\x01\x124\n" +
-	"\binfluxdb\x18\x15 \x01(\v2\x13.conf.Data.InfluxDBH\x06R\binfluxdb\x88\x01\x01\x12+\n" +
-	"\x05doris\x18\x16 \x01(\v2\x10.conf.Data.DorisH\aR\x05doris\x88\x01\x01\x12+\n" +
-	"\x05kafka\x18\x1e \x01(\v2\x10.conf.Data.KafkaH\bR\x05kafka\x88\x01\x01\x124\n" +
-	"\brabbitmq\x18\x1f \x01(\v2\x13.conf.Data.RabbitMQH\tR\brabbitmq\x88\x01\x01\x12(\n" +
-	"\x04mqtt\x18  \x01(\v2\x0f.conf.Data.MqttH\n" +
-	"R\x04mqtt\x88\x01\x01\x124\n" +
-	"\bactivemq\x18! \x01(\v2\x13.conf.Data.ActiveMQH\vR\bactivemq\x88\x01\x01\x12(\n" +
-	"\x04nats\x18\" \x01(\v2\x0f.conf.Data.NATSH\fR\x04nats\x88\x01\x01\x12%\n" +
-	"\x03nsq\x18# \x01(\v2\x0e.conf.Data.NSQH\rR\x03nsq\x88\x01\x01\x12.\n" +
-	"\x06pulsar\x18$ \x01(\v2\x11.conf.Data.PulsarH\x0eR\x06pulsar\x88\x01\x01\x124\n" +
-	"\brocketmq\x18& \x01(\v2\x13.conf.Data.RocketMQH\x0fR\brocketmq\x88\x01\x01\x1a\xb2\x05\n" +
+	"\binfluxdb\x18\x0f \x01(\v2\x13.conf.Data.InfluxDBH\x06R\binfluxdb\x88\x01\x01\x12+\n" +
+	"\x05doris\x18\x10 \x01(\v2\x10.conf.Data.DorisH\aR\x05doris\x88\x01\x01\x127\n" +
+	"\tsnowflake\x18\x11 \x01(\v2\x14.conf.Data.SnowflakeH\bR\tsnowflake\x88\x01\x01\x12.\n" +
+	"\x06duckdb\x18\x12 \x01(\v2\x11.conf.Data.DuckDBH\tR\x06duckdb\x88\x01\x01\x12+\n" +
+	"\x05kafka\x18\x1e \x01(\v2\x10.conf.Data.KafkaH\n" +
+	"R\x05kafka\x88\x01\x01\x124\n" +
+	"\brabbitmq\x18\x1f \x01(\v2\x13.conf.Data.RabbitMQH\vR\brabbitmq\x88\x01\x01\x12(\n" +
+	"\x04mqtt\x18  \x01(\v2\x0f.conf.Data.MqttH\fR\x04mqtt\x88\x01\x01\x124\n" +
+	"\bactivemq\x18! \x01(\v2\x13.conf.Data.ActiveMQH\rR\bactivemq\x88\x01\x01\x12(\n" +
+	"\x04nats\x18\" \x01(\v2\x0f.conf.Data.NATSH\x0eR\x04nats\x88\x01\x01\x12%\n" +
+	"\x03nsq\x18# \x01(\v2\x0e.conf.Data.NSQH\x0fR\x03nsq\x88\x01\x01\x12.\n" +
+	"\x06pulsar\x18$ \x01(\v2\x11.conf.Data.PulsarH\x10R\x06pulsar\x88\x01\x01\x124\n" +
+	"\brocketmq\x18& \x01(\v2\x13.conf.Data.RocketMQH\x11R\brocketmq\x88\x01\x01\x1a\xb2\x05\n" +
 	"\bDatabase\x12\x16\n" +
 	"\x06driver\x18\x01 \x01(\tR\x06driver\x12\x16\n" +
 	"\x06source\x18\x02 \x01(\tR\x06source\x12\x18\n" +
@@ -2035,9 +2287,34 @@ const file_conf_v1_kratos_conf_data_proto_rawDesc = "" +
 	"\x0e_query_timeoutB\x1a\n" +
 	"\x18_idle_connection_timeoutB\x17\n" +
 	"\x15_max_idle_connectionsB\x06\n" +
-	"\x04_tls\x1a!\n" +
-	"\x05Doris\x12\x18\n" +
-	"\aaddress\x18\x01 \x01(\tR\aaddress\x1a\x8f\n" +
+	"\x04_tls\x1a\x9f\x05\n" +
+	"\x05Doris\x12\x10\n" +
+	"\x03dsn\x18\x01 \x01(\tR\x03dsn\x125\n" +
+	"\x14max_idle_connections\x18\n" +
+	" \x01(\x05H\x00R\x12maxIdleConnections\x88\x01\x01\x125\n" +
+	"\x14max_open_connections\x18\v \x01(\x05H\x01R\x12maxOpenConnections\x88\x01\x01\x12V\n" +
+	"\x17connection_max_lifetime\x18\f \x01(\v2\x19.google.protobuf.DurationH\x02R\x15connectionMaxLifetime\x88\x01\x01\x12A\n" +
+	"\vstream_load\x18\x0f \x01(\v2\x1b.conf.Data.Doris.StreamLoadH\x03R\n" +
+	"streamLoad\x88\x01\x01\x12 \n" +
+	"\x03tls\x18F \x01(\v2\t.conf.TLSH\x04R\x03tls\x88\x01\x01\x1a\xf2\x01\n" +
+	"\n" +
+	"StreamLoad\x12\x1a\n" +
+	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x1f\n" +
+	"\busername\x18\x02 \x01(\tH\x00R\busername\x88\x01\x01\x12\x1f\n" +
+	"\bpassword\x18\x03 \x01(\tH\x01R\bpassword\x88\x01\x01\x12\x1b\n" +
+	"\x06method\x18\n" +
+	" \x01(\tH\x02R\x06method\x88\x01\x01\x128\n" +
+	"\atimeout\x18\v \x01(\v2\x19.google.protobuf.DurationH\x03R\atimeout\x88\x01\x01B\v\n" +
+	"\t_usernameB\v\n" +
+	"\t_passwordB\t\n" +
+	"\a_methodB\n" +
+	"\n" +
+	"\b_timeoutB\x17\n" +
+	"\x15_max_idle_connectionsB\x17\n" +
+	"\x15_max_open_connectionsB\x1a\n" +
+	"\x18_connection_max_lifetimeB\x0e\n" +
+	"\f_stream_loadB\x06\n" +
+	"\x04_tls\x1a\x8f\n" +
 	"\n" +
 	"\rElasticSearch\x12\x1c\n" +
 	"\taddresses\x18\x01 \x03(\tR\taddresses\x12\x1f\n" +
@@ -2104,8 +2381,29 @@ const file_conf_v1_kratos_conf_data_proto_rawDesc = "" +
 	"\f_consistencyB\x1e\n" +
 	"\x1c_disable_initial_host_lookupB\x13\n" +
 	"\x11_ignore_peer_addrB\x06\n" +
-	"\x04_tls\x1a\v\n" +
-	"\tSnowflake\x1a\x8a\x03\n" +
+	"\x04_tls\x1a\xd8\x01\n" +
+	"\tSnowflake\x12\x1a\n" +
+	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x1d\n" +
+	"\aaccount\x18\x02 \x01(\tH\x00R\aaccount\x88\x01\x01\x12\x1f\n" +
+	"\busername\x18\x03 \x01(\tH\x01R\busername\x88\x01\x01\x12\x1f\n" +
+	"\bpassword\x18\x04 \x01(\tH\x02R\bpassword\x88\x01\x01\x12 \n" +
+	"\x03tls\x18F \x01(\v2\t.conf.TLSH\x03R\x03tls\x88\x01\x01B\n" +
+	"\n" +
+	"\b_accountB\v\n" +
+	"\t_usernameB\v\n" +
+	"\t_passwordB\x06\n" +
+	"\x04_tls\x1a\xd8\x02\n" +
+	"\x06DuckDB\x12\x10\n" +
+	"\x03dsn\x18\x01 \x01(\tR\x03dsn\x125\n" +
+	"\x14max_idle_connections\x18\n" +
+	" \x01(\x05H\x00R\x12maxIdleConnections\x88\x01\x01\x125\n" +
+	"\x14max_open_connections\x18\v \x01(\x05H\x01R\x12maxOpenConnections\x88\x01\x01\x12V\n" +
+	"\x17connection_max_lifetime\x18\f \x01(\v2\x19.google.protobuf.DurationH\x02R\x15connectionMaxLifetime\x88\x01\x01\x12 \n" +
+	"\x03tls\x18F \x01(\v2\t.conf.TLSH\x03R\x03tls\x88\x01\x01B\x17\n" +
+	"\x15_max_idle_connectionsB\x17\n" +
+	"\x15_max_open_connectionsB\x1a\n" +
+	"\x18_connection_max_lifetimeB\x06\n" +
+	"\x04_tls\x1a\x8a\x03\n" +
 	"\x05Kafka\x12\x1c\n" +
 	"\tendpoints\x18\x01 \x03(\tR\tendpoints\x12\x14\n" +
 	"\x05codec\x18\x02 \x01(\tR\x05codec\x12\x14\n" +
@@ -2160,7 +2458,10 @@ const file_conf_v1_kratos_conf_data_proto_rawDesc = "" +
 	"_cassandraB\r\n" +
 	"\v_clickhouseB\v\n" +
 	"\t_influxdbB\b\n" +
-	"\x06_dorisB\b\n" +
+	"\x06_dorisB\f\n" +
+	"\n" +
+	"_snowflakeB\t\n" +
+	"\a_duckdbB\b\n" +
 	"\x06_kafkaB\v\n" +
 	"\t_rabbitmqB\a\n" +
 	"\x05_mqttB\v\n" +
@@ -2183,29 +2484,31 @@ func file_conf_v1_kratos_conf_data_proto_rawDescGZIP() []byte {
 	return file_conf_v1_kratos_conf_data_proto_rawDescData
 }
 
-var file_conf_v1_kratos_conf_data_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
+var file_conf_v1_kratos_conf_data_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
 var file_conf_v1_kratos_conf_data_proto_goTypes = []any{
-	(*Data)(nil),                // 0: conf.Data
-	(*Data_Database)(nil),       // 1: conf.Data.Database
-	(*Data_Redis)(nil),          // 2: conf.Data.Redis
-	(*Data_MongoDB)(nil),        // 3: conf.Data.MongoDB
-	(*Data_ClickHouse)(nil),     // 4: conf.Data.ClickHouse
-	(*Data_InfluxDB)(nil),       // 5: conf.Data.InfluxDB
-	(*Data_Doris)(nil),          // 6: conf.Data.Doris
-	(*Data_ElasticSearch)(nil),  // 7: conf.Data.ElasticSearch
-	(*Data_Cassandra)(nil),      // 8: conf.Data.Cassandra
-	(*Data_Snowflake)(nil),      // 9: conf.Data.Snowflake
-	(*Data_Kafka)(nil),          // 10: conf.Data.Kafka
-	(*Data_RabbitMQ)(nil),       // 11: conf.Data.RabbitMQ
-	(*Data_Mqtt)(nil),           // 12: conf.Data.Mqtt
-	(*Data_ActiveMQ)(nil),       // 13: conf.Data.ActiveMQ
-	(*Data_NATS)(nil),           // 14: conf.Data.NATS
-	(*Data_NSQ)(nil),            // 15: conf.Data.NSQ
-	(*Data_Pulsar)(nil),         // 16: conf.Data.Pulsar
-	(*Data_RocketMQ)(nil),       // 17: conf.Data.RocketMQ
-	nil,                         // 18: conf.Data.MongoDB.AuthMechanismPropertiesEntry
-	(*durationpb.Duration)(nil), // 19: google.protobuf.Duration
-	(*TLS)(nil),                 // 20: conf.TLS
+	(*Data)(nil),                  // 0: conf.Data
+	(*Data_Database)(nil),         // 1: conf.Data.Database
+	(*Data_Redis)(nil),            // 2: conf.Data.Redis
+	(*Data_MongoDB)(nil),          // 3: conf.Data.MongoDB
+	(*Data_ClickHouse)(nil),       // 4: conf.Data.ClickHouse
+	(*Data_InfluxDB)(nil),         // 5: conf.Data.InfluxDB
+	(*Data_Doris)(nil),            // 6: conf.Data.Doris
+	(*Data_ElasticSearch)(nil),    // 7: conf.Data.ElasticSearch
+	(*Data_Cassandra)(nil),        // 8: conf.Data.Cassandra
+	(*Data_Snowflake)(nil),        // 9: conf.Data.Snowflake
+	(*Data_DuckDB)(nil),           // 10: conf.Data.DuckDB
+	(*Data_Kafka)(nil),            // 11: conf.Data.Kafka
+	(*Data_RabbitMQ)(nil),         // 12: conf.Data.RabbitMQ
+	(*Data_Mqtt)(nil),             // 13: conf.Data.Mqtt
+	(*Data_ActiveMQ)(nil),         // 14: conf.Data.ActiveMQ
+	(*Data_NATS)(nil),             // 15: conf.Data.NATS
+	(*Data_NSQ)(nil),              // 16: conf.Data.NSQ
+	(*Data_Pulsar)(nil),           // 17: conf.Data.Pulsar
+	(*Data_RocketMQ)(nil),         // 18: conf.Data.RocketMQ
+	nil,                           // 19: conf.Data.MongoDB.AuthMechanismPropertiesEntry
+	(*Data_Doris_StreamLoad)(nil), // 20: conf.Data.Doris.StreamLoad
+	(*durationpb.Duration)(nil),   // 21: google.protobuf.Duration
+	(*TLS)(nil),                   // 22: conf.TLS
 }
 var file_conf_v1_kratos_conf_data_proto_depIdxs = []int32{
 	1,  // 0: conf.Data.database:type_name -> conf.Data.Database
@@ -2216,49 +2519,58 @@ var file_conf_v1_kratos_conf_data_proto_depIdxs = []int32{
 	4,  // 5: conf.Data.clickhouse:type_name -> conf.Data.ClickHouse
 	5,  // 6: conf.Data.influxdb:type_name -> conf.Data.InfluxDB
 	6,  // 7: conf.Data.doris:type_name -> conf.Data.Doris
-	10, // 8: conf.Data.kafka:type_name -> conf.Data.Kafka
-	11, // 9: conf.Data.rabbitmq:type_name -> conf.Data.RabbitMQ
-	12, // 10: conf.Data.mqtt:type_name -> conf.Data.Mqtt
-	13, // 11: conf.Data.activemq:type_name -> conf.Data.ActiveMQ
-	14, // 12: conf.Data.nats:type_name -> conf.Data.NATS
-	15, // 13: conf.Data.nsq:type_name -> conf.Data.NSQ
-	16, // 14: conf.Data.pulsar:type_name -> conf.Data.Pulsar
-	17, // 15: conf.Data.rocketmq:type_name -> conf.Data.RocketMQ
-	19, // 16: conf.Data.Database.connection_max_lifetime:type_name -> google.protobuf.Duration
-	19, // 17: conf.Data.Redis.dial_timeout:type_name -> google.protobuf.Duration
-	19, // 18: conf.Data.Redis.read_timeout:type_name -> google.protobuf.Duration
-	19, // 19: conf.Data.Redis.write_timeout:type_name -> google.protobuf.Duration
-	18, // 20: conf.Data.MongoDB.auth_mechanism_properties:type_name -> conf.Data.MongoDB.AuthMechanismPropertiesEntry
-	19, // 21: conf.Data.MongoDB.connect_timeout:type_name -> google.protobuf.Duration
-	19, // 22: conf.Data.MongoDB.heartbeat_interval:type_name -> google.protobuf.Duration
-	19, // 23: conf.Data.MongoDB.local_threshold:type_name -> google.protobuf.Duration
-	19, // 24: conf.Data.MongoDB.max_conn_idle_time:type_name -> google.protobuf.Duration
-	19, // 25: conf.Data.MongoDB.max_staleness:type_name -> google.protobuf.Duration
-	19, // 26: conf.Data.MongoDB.server_selection_timeout:type_name -> google.protobuf.Duration
-	19, // 27: conf.Data.MongoDB.socket_timeout:type_name -> google.protobuf.Duration
-	19, // 28: conf.Data.MongoDB.timeout:type_name -> google.protobuf.Duration
-	20, // 29: conf.Data.MongoDB.tls:type_name -> conf.TLS
-	20, // 30: conf.Data.ClickHouse.tls:type_name -> conf.TLS
-	19, // 31: conf.Data.ClickHouse.dial_timeout:type_name -> google.protobuf.Duration
-	19, // 32: conf.Data.ClickHouse.read_timeout:type_name -> google.protobuf.Duration
-	19, // 33: conf.Data.ClickHouse.conn_max_lifetime:type_name -> google.protobuf.Duration
-	19, // 34: conf.Data.InfluxDB.write_timeout:type_name -> google.protobuf.Duration
-	19, // 35: conf.Data.InfluxDB.query_timeout:type_name -> google.protobuf.Duration
-	19, // 36: conf.Data.InfluxDB.idle_connection_timeout:type_name -> google.protobuf.Duration
-	20, // 37: conf.Data.InfluxDB.tls:type_name -> conf.TLS
-	19, // 38: conf.Data.ElasticSearch.discover_nodes_interval:type_name -> google.protobuf.Duration
-	20, // 39: conf.Data.ElasticSearch.tls:type_name -> conf.TLS
-	19, // 40: conf.Data.Cassandra.connect_timeout:type_name -> google.protobuf.Duration
-	19, // 41: conf.Data.Cassandra.timeout:type_name -> google.protobuf.Duration
-	20, // 42: conf.Data.Cassandra.tls:type_name -> conf.TLS
-	19, // 43: conf.Data.Kafka.batch_timeout:type_name -> google.protobuf.Duration
-	19, // 44: conf.Data.Kafka.read_timeout:type_name -> google.protobuf.Duration
-	19, // 45: conf.Data.Kafka.write_timeout:type_name -> google.protobuf.Duration
-	46, // [46:46] is the sub-list for method output_type
-	46, // [46:46] is the sub-list for method input_type
-	46, // [46:46] is the sub-list for extension type_name
-	46, // [46:46] is the sub-list for extension extendee
-	0,  // [0:46] is the sub-list for field type_name
+	9,  // 8: conf.Data.snowflake:type_name -> conf.Data.Snowflake
+	10, // 9: conf.Data.duckdb:type_name -> conf.Data.DuckDB
+	11, // 10: conf.Data.kafka:type_name -> conf.Data.Kafka
+	12, // 11: conf.Data.rabbitmq:type_name -> conf.Data.RabbitMQ
+	13, // 12: conf.Data.mqtt:type_name -> conf.Data.Mqtt
+	14, // 13: conf.Data.activemq:type_name -> conf.Data.ActiveMQ
+	15, // 14: conf.Data.nats:type_name -> conf.Data.NATS
+	16, // 15: conf.Data.nsq:type_name -> conf.Data.NSQ
+	17, // 16: conf.Data.pulsar:type_name -> conf.Data.Pulsar
+	18, // 17: conf.Data.rocketmq:type_name -> conf.Data.RocketMQ
+	21, // 18: conf.Data.Database.connection_max_lifetime:type_name -> google.protobuf.Duration
+	21, // 19: conf.Data.Redis.dial_timeout:type_name -> google.protobuf.Duration
+	21, // 20: conf.Data.Redis.read_timeout:type_name -> google.protobuf.Duration
+	21, // 21: conf.Data.Redis.write_timeout:type_name -> google.protobuf.Duration
+	19, // 22: conf.Data.MongoDB.auth_mechanism_properties:type_name -> conf.Data.MongoDB.AuthMechanismPropertiesEntry
+	21, // 23: conf.Data.MongoDB.connect_timeout:type_name -> google.protobuf.Duration
+	21, // 24: conf.Data.MongoDB.heartbeat_interval:type_name -> google.protobuf.Duration
+	21, // 25: conf.Data.MongoDB.local_threshold:type_name -> google.protobuf.Duration
+	21, // 26: conf.Data.MongoDB.max_conn_idle_time:type_name -> google.protobuf.Duration
+	21, // 27: conf.Data.MongoDB.max_staleness:type_name -> google.protobuf.Duration
+	21, // 28: conf.Data.MongoDB.server_selection_timeout:type_name -> google.protobuf.Duration
+	21, // 29: conf.Data.MongoDB.socket_timeout:type_name -> google.protobuf.Duration
+	21, // 30: conf.Data.MongoDB.timeout:type_name -> google.protobuf.Duration
+	22, // 31: conf.Data.MongoDB.tls:type_name -> conf.TLS
+	22, // 32: conf.Data.ClickHouse.tls:type_name -> conf.TLS
+	21, // 33: conf.Data.ClickHouse.dial_timeout:type_name -> google.protobuf.Duration
+	21, // 34: conf.Data.ClickHouse.read_timeout:type_name -> google.protobuf.Duration
+	21, // 35: conf.Data.ClickHouse.conn_max_lifetime:type_name -> google.protobuf.Duration
+	21, // 36: conf.Data.InfluxDB.write_timeout:type_name -> google.protobuf.Duration
+	21, // 37: conf.Data.InfluxDB.query_timeout:type_name -> google.protobuf.Duration
+	21, // 38: conf.Data.InfluxDB.idle_connection_timeout:type_name -> google.protobuf.Duration
+	22, // 39: conf.Data.InfluxDB.tls:type_name -> conf.TLS
+	21, // 40: conf.Data.Doris.connection_max_lifetime:type_name -> google.protobuf.Duration
+	20, // 41: conf.Data.Doris.stream_load:type_name -> conf.Data.Doris.StreamLoad
+	22, // 42: conf.Data.Doris.tls:type_name -> conf.TLS
+	21, // 43: conf.Data.ElasticSearch.discover_nodes_interval:type_name -> google.protobuf.Duration
+	22, // 44: conf.Data.ElasticSearch.tls:type_name -> conf.TLS
+	21, // 45: conf.Data.Cassandra.connect_timeout:type_name -> google.protobuf.Duration
+	21, // 46: conf.Data.Cassandra.timeout:type_name -> google.protobuf.Duration
+	22, // 47: conf.Data.Cassandra.tls:type_name -> conf.TLS
+	22, // 48: conf.Data.Snowflake.tls:type_name -> conf.TLS
+	21, // 49: conf.Data.DuckDB.connection_max_lifetime:type_name -> google.protobuf.Duration
+	22, // 50: conf.Data.DuckDB.tls:type_name -> conf.TLS
+	21, // 51: conf.Data.Kafka.batch_timeout:type_name -> google.protobuf.Duration
+	21, // 52: conf.Data.Kafka.read_timeout:type_name -> google.protobuf.Duration
+	21, // 53: conf.Data.Kafka.write_timeout:type_name -> google.protobuf.Duration
+	21, // 54: conf.Data.Doris.StreamLoad.timeout:type_name -> google.protobuf.Duration
+	55, // [55:55] is the sub-list for method output_type
+	55, // [55:55] is the sub-list for method input_type
+	55, // [55:55] is the sub-list for extension type_name
+	55, // [55:55] is the sub-list for extension extendee
+	0,  // [0:55] is the sub-list for field type_name
 }
 
 func init() { file_conf_v1_kratos_conf_data_proto_init() }
@@ -2272,15 +2584,19 @@ func file_conf_v1_kratos_conf_data_proto_init() {
 	file_conf_v1_kratos_conf_data_proto_msgTypes[3].OneofWrappers = []any{}
 	file_conf_v1_kratos_conf_data_proto_msgTypes[4].OneofWrappers = []any{}
 	file_conf_v1_kratos_conf_data_proto_msgTypes[5].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_data_proto_msgTypes[6].OneofWrappers = []any{}
 	file_conf_v1_kratos_conf_data_proto_msgTypes[7].OneofWrappers = []any{}
 	file_conf_v1_kratos_conf_data_proto_msgTypes[8].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_data_proto_msgTypes[9].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_data_proto_msgTypes[10].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_data_proto_msgTypes[20].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_v1_kratos_conf_data_proto_rawDesc), len(file_conf_v1_kratos_conf_data_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   19,
+			NumMessages:   21,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
