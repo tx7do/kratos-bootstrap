@@ -69,6 +69,39 @@ message Server {
     repeated string endpoints = 1;  // 对端网络地址
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
+
+    int32 max_attempts = 4; // 最大尝试次数
+    int32 batch_size = 5; // 批量大小
+    int64 batch_bytes = 6; // 批量字节数
+    int32 publish_max_attempts = 7; // 发布最大尝试次数
+
+    google.protobuf.Duration batch_timeout = 10; // 批量超时时间
+    google.protobuf.Duration read_timeout = 11; // 读取超时时间
+    google.protobuf.Duration write_timeout = 12; // 写入超时时间
+
+    bool enable_one_topic_one_writer = 20; // 启用一主题一写入器
+    bool allow_publish_auto_topic_creation = 21; // 允许发布自动创建主题
+    bool async = 22; // 异步发送
+    bool enable_logger = 23; // 启用日志记录
+    bool enable_error_logger = 24; // 启用错误日志记录
+
+    message PlainMechanism {
+      string username = 1;  // 用户名
+      string password = 2;  // 密码
+    }
+    message ScramMechanism {
+      enum Algorithm {
+        SHA256 = 0;
+        SHA512 = 1;
+      }
+      string algorithm = 1; // 算法
+      string username = 2;  // 用户名
+      string password = 3;  // 密码
+    }
+    oneof auth_mechanism {
+      PlainMechanism plain = 30; // PLAIN认证机制
+      ScramMechanism scram = 31; // SCRAM认证机制
+    }
   }
 
   // RabbitMQ
