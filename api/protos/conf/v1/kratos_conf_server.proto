@@ -70,20 +70,20 @@ message Server {
     string codec = 2;  // 编解码器: json,xml,yaml...
     TLS tls = 3;  // TLS配置
 
-    int32 max_attempts = 4; // 最大尝试次数
-    int32 batch_size = 5; // 批量大小
-    int64 batch_bytes = 6; // 批量字节数
-    int32 publish_max_attempts = 7; // 发布最大尝试次数
+    optional int32 max_attempts = 4; // 最大尝试次数
+    optional int32 batch_size = 5; // 批量大小
+    optional int64 batch_bytes = 6; // 批量字节数
+    optional int32 publish_max_attempts = 7; // 发布最大尝试次数
 
-    google.protobuf.Duration batch_timeout = 10; // 批量超时时间
-    google.protobuf.Duration read_timeout = 11; // 读取超时时间
-    google.protobuf.Duration write_timeout = 12; // 写入超时时间
+    optional google.protobuf.Duration batch_timeout = 10; // 批量超时时间
+    optional google.protobuf.Duration read_timeout = 11; // 读取超时时间
+    optional google.protobuf.Duration write_timeout = 12; // 写入超时时间
 
-    bool enable_one_topic_one_writer = 20; // 启用一主题一写入器
-    bool allow_publish_auto_topic_creation = 21; // 允许发布自动创建主题
-    bool async = 22; // 异步发送
-    bool enable_logger = 23; // 启用日志记录
-    bool enable_error_logger = 24; // 启用错误日志记录
+    optional bool enable_one_topic_one_writer = 20; // 启用一主题一写入器
+    optional bool allow_publish_auto_topic_creation = 21; // 允许发布自动创建主题
+    optional bool async = 22; // 异步发送
+    optional bool enable_logger = 23; // 启用日志记录
+    optional bool enable_error_logger = 24; // 启用错误日志记录
 
     message PlainMechanism {
       string username = 1;  // 用户名
@@ -169,33 +169,60 @@ message Server {
 
   // Asynq
   message Asynq {
-    string network = 1;  // Redis对端网络地址
-    string endpoint = 2;  // Redis对端网络地址
-    string password = 3;  // Redis登录密码
-    int32 db = 4;  // Redis数据库索引
-    string uri = 5;  // Redis URI
-    int32 pool_size = 6; // Redis连接池大小
+    message RedisClientOpt {
+      string network = 1;  // Redis对端网络地址样式：tcp、unix
+      string addr = 2;  // Redis对端网络地址
+      string username = 3;  // Redis登录用户名
+      string password = 4;  // Redis登录密码
+      int32 db = 5;  // Redis数据库索引
+      int32 pool_size = 9; // Redis连接池大小
+    }
+    message RedisClusterClientOpt {
+      repeated string addrs = 1;  // Redis对端网络地址
+      optional int32 max_redirects = 2; // Redis最大重定向次数
+      string username = 3;  // Redis登录用户名
+      string password = 4;  // Redis登录密码
+    }
+    message RedisFailoverClientOpt {
+      string master_name = 1; // Redis主节点名称
+      repeated string sentinel_addrs = 2;  // Redis对端网络地址
+       string sentinel_username = 3;  // Redis Sentinel登录用户名
+      string sentinel_password = 4;  // Redis Sentinel登录密码
+      string username = 5;  // Redis登录用户名
+      string password = 6;  // Redis登录密码
+      int32 pool_size = 10; // Redis连接池大小
+    }
 
-    TLS tls = 7;  // TLS配置
-    string codec = 8;  // 编解码器: json,xml,yaml...
+    oneof redis_client_opts {
+      RedisClientOpt redis_opt = 1;
+      RedisClusterClientOpt redis_cluster_opt = 2;
+      RedisFailoverClientOpt redis_failover_opt = 3;
+      string uri = 4;  // Redis URI
+    }
 
-    string location = 10; // 时区
-    int32 concurrency = 11; // 并发数
-    int32 group_max_size = 12; // 组最大大小
+    optional string codec = 5;  // 编解码器: json,xml,yaml...
+    optional TLS tls = 6;  // TLS配置
+
+    optional google.protobuf.Duration dial_timeout = 7; // 拨号超时时间
+    optional google.protobuf.Duration read_timeout = 8; // 读取超时时间
+    optional google.protobuf.Duration write_timeout = 9; // 写入超时时间
+
+    optional string location = 10; // 时区
+    optional int32 concurrency = 11; // 并发数
+    optional int32 group_max_size = 12; // 组最大大小
     map<string, int32> queues = 13; // 队列
 
-    bool enable_gracefully_shutdown = 20; // 优雅关闭
-    bool enable_strict_priority = 21; // 严格优先级
+    optional bool enable_gracefully_shutdown = 20; // 优雅关闭
+    optional bool enable_strict_priority = 21; // 严格优先级
 
-    google.protobuf.Duration shutdown_timeout = 30; // 关闭超时时间
-    google.protobuf.Duration dial_timeout = 31; // 拨号超时时间
-    google.protobuf.Duration read_timeout = 32; // 读取超时时间
-    google.protobuf.Duration write_timeout = 33; // 写入超时时间
-
-    google.protobuf.Duration health_check_interval = 34; // 健康检查时间间隔
-    google.protobuf.Duration delayed_task_check_interval = 35; // 延迟任务检查时间间隔
-    google.protobuf.Duration group_grace_period = 36; // 组宽限期
-    google.protobuf.Duration group_max_delay = 37; // 组最大延迟
+    optional google.protobuf.Duration shutdown_timeout = 30; // 关闭超时时间
+    optional google.protobuf.Duration task_check_interval = 31; // 任务检查时间间隔
+    optional google.protobuf.Duration health_check_interval = 32; // 健康检查时间间隔
+    optional google.protobuf.Duration delayed_task_check_interval = 33; // 延迟任务检查时间间隔
+    optional google.protobuf.Duration group_grace_period = 34; // 组宽限期
+    optional google.protobuf.Duration group_max_delay = 35; // 组最大延迟
+    optional google.protobuf.Duration janitor_interval = 36; // 清扫器时间间隔
+    optional int32 janitor_batch_size = 37; // 清扫器批量大小
   }
 
   // Machinery
