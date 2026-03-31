@@ -21,27 +21,23 @@ func NewAsynqServer(cfg *conf.Server_Asynq, opts ...asynq.ServerOption) *asynq.S
 		o = append(o, asynq.WithRedisURI(cfg.GetUri()))
 	}
 	if cfg.Db != 0 {
-		o = append(o, asynq.WithRedisDB(int(cfg.GetDb())))
+		o = append(o, asynq.WithRedisDB(cfg.GetDb()))
 	}
 	if cfg.PoolSize != 0 {
-		o = append(o, asynq.WithRedisPoolSize(int(cfg.GetPoolSize())))
+		o = append(o, asynq.WithRedisPoolSize(cfg.GetPoolSize()))
 	}
 
 	if cfg.GetLocation() != "" {
 		o = append(o, asynq.WithLocation(cfg.GetLocation()))
 	}
 	if cfg.Concurrency != 0 {
-		o = append(o, asynq.WithConcurrency(int(cfg.GetConcurrency())))
+		o = append(o, asynq.WithConcurrency(cfg.GetConcurrency()))
 	}
 	if cfg.GroupMaxSize != 0 {
-		o = append(o, asynq.WithGroupMaxSize(int(cfg.GetGroupMaxSize())))
+		o = append(o, asynq.WithGroupMaxSize(cfg.GetGroupMaxSize()))
 	}
 	if len(cfg.Queues) != 0 {
-		var queues = make(map[string]int)
-		for k, v := range cfg.GetQueues() {
-			queues[k] = int(v)
-		}
-		o = append(o, asynq.WithQueues(queues))
+		asynq.WithQueues(cfg.GetQueues())
 	}
 
 	if cfg.ShutdownTimeout != nil {
