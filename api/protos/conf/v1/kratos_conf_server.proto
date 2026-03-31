@@ -186,7 +186,7 @@ message Server {
     message RedisFailoverClientOpt {
       string master_name = 1; // Redis主节点名称
       repeated string sentinel_addrs = 2;  // Redis对端网络地址
-       string sentinel_username = 3;  // Redis Sentinel登录用户名
+      string sentinel_username = 3;  // Redis Sentinel登录用户名
       string sentinel_password = 4;  // Redis Sentinel登录密码
       string username = 5;  // Redis登录用户名
       string password = 6;  // Redis登录密码

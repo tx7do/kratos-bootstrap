@@ -5,8 +5,10 @@ go 1.25.3
 replace github.com/tx7do/kratos-bootstrap/api => ../../api
 
 require (
-	github.com/tx7do/kratos-bootstrap/api v0.0.36
-	github.com/tx7do/kratos-transport/transport/asynq v1.3.3
+	github.com/hibiken/asynq v0.26.0
+	github.com/tx7do/go-utils v1.1.35
+	github.com/tx7do/kratos-bootstrap/api v0.0.38
+	github.com/tx7do/kratos-transport/transport/asynq v1.3.4
 )
 
 require (
@@ -20,7 +22,6 @@ require (
 	github.com/go-playground/form/v4 v4.3.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.28.0 // indirect
-	github.com/hibiken/asynq v0.26.0 // indirect
 	github.com/openzipkin/zipkin-go v0.4.3 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/redis/go-redis/v9 v9.18.0 // indirect

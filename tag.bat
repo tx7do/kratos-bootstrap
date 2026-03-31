@@ -41,8 +41,8 @@ git tag config/kubernetes/v0.2.2 --force
 git tag config/nacos/v0.2.3 --force
 git tag config/polaris/v0.2.2 --force
 
-git tag transport/asynq/v0.0.4 --force
-git tag transport/kafka/v0.0.3 --force
+git tag transport/asynq/v0.0.5 --force
+git tag transport/kafka/v0.0.4 --force
 git tag transport/mcp/v0.0.3 --force
 git tag transport/mqtt/v0.0.3 --force
 git tag transport/sse/v0.0.4 --force
