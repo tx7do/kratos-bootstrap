@@ -58,7 +58,7 @@ func NewAsynqServer(cfg *conf.Server_Asynq, opts ...asynqTransport.ServerOption)
 			}
 		}
 
-		asynqTransport.WithRedisConnOpt(opt)
+		o = append(o, asynqTransport.WithRedisConnOpt(opt))
 
 	case *conf.Server_Asynq_RedisClusterOpt:
 		redisClusterOpt := cfg.GetRedisClusterOpt()
@@ -87,7 +87,7 @@ func NewAsynqServer(cfg *conf.Server_Asynq, opts ...asynqTransport.ServerOption)
 			}
 		}
 
-		asynqTransport.WithRedisConnOpt(opt)
+		o = append(o, asynqTransport.WithRedisConnOpt(opt))
 
 	case *conf.Server_Asynq_RedisFailoverOpt:
 		redisFailoverOpt := cfg.GetRedisFailoverOpt()
@@ -121,7 +121,7 @@ func NewAsynqServer(cfg *conf.Server_Asynq, opts ...asynqTransport.ServerOption)
 			}
 		}
 
-		asynqTransport.WithRedisConnOpt(opt)
+		o = append(o, asynqTransport.WithRedisConnOpt(opt))
 
 	case *conf.Server_Asynq_Uri:
 		if cfg.GetUri() != "" {
@@ -142,7 +142,7 @@ func NewAsynqServer(cfg *conf.Server_Asynq, opts ...asynqTransport.ServerOption)
 		o = append(o, asynqTransport.WithGroupMaxSize(cfg.GetGroupMaxSize()))
 	}
 	if len(cfg.Queues) != 0 {
-		asynqTransport.WithQueues(cfg.GetQueues())
+		o = append(o, asynqTransport.WithQueues(cfg.GetQueues()))
 	}
 
 	if cfg.EnableGracefullyShutdown != nil {
