@@ -11,7 +11,7 @@ import (
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
 
-func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*clickhouseCrud.Client, error) {
+func NewClient(logger log.Logger, cfg *conf.Bootstrap, opts ...clickhouseCrud.Option) (*clickhouseCrud.Client, error) {
 	if cfg.Data == nil || cfg.Data.Clickhouse == nil {
 		return nil, errors.New("clickhouse config is nil")
 	}
@@ -94,6 +94,10 @@ func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*clickhouseCrud.Client, 
 
 	if cfg.Data.Clickhouse.BlockBufferSize != nil {
 		options = append(options, clickhouseCrud.WithBlockBufferSize(uint8(cfg.Data.Clickhouse.GetBlockBufferSize())))
+	}
+
+	if opts != nil {
+		options = append(options, opts...)
 	}
 
 	c, err := clickhouseCrud.NewClient(options...)

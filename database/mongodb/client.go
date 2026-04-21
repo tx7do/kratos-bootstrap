@@ -23,7 +23,7 @@ type Client struct {
 	timeout  time.Duration
 }
 
-func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*mongodbCrud.Client, error) {
+func NewClient(logger log.Logger, cfg *conf.Bootstrap, opts ...mongodbCrud.Option) (*mongodbCrud.Client, error) {
 	if cfg.Data == nil || cfg.Data.Mongodb == nil {
 		return nil, errors.New("mongodb config is nil")
 	}
@@ -65,6 +65,10 @@ func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*mongodbCrud.Client, err
 	options = append(options, mongodbCrud.WithBSONOptions(&optionsV2.BSONOptions{
 		UseJSONStructTags: true, // 使用JSON结构标签
 	}))
+
+	if opts != nil {
+		options = append(options, opts...)
+	}
 
 	return mongodbCrud.NewClient(options...)
 }

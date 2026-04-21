@@ -9,7 +9,7 @@ import (
 )
 
 // NewGormClient 创建GORM数据库客户端
-func NewGormClient(cfg *conf.Bootstrap, l *log.Helper, migrates []interface{}) (*gormCrud.Client, error) {
+func NewGormClient(cfg *conf.Bootstrap, l *log.Helper, migrates []any) (*gormCrud.Client, error) {
 	if cfg == nil || cfg.Data == nil || cfg.Data.Database == nil {
 		log.Warn("[GORM] database config is nil")
 		return nil, nil

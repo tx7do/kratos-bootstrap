@@ -9,7 +9,7 @@ import (
 	influxdbCrud "github.com/tx7do/go-crud/influxdb"
 )
 
-func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*influxdbCrud.Client, error) {
+func NewClient(logger log.Logger, cfg *conf.Bootstrap, opts ...influxdbCrud.Option) (*influxdbCrud.Client, error) {
 	if cfg.Data == nil || cfg.Data.Influxdb == nil {
 		return nil, errors.New("influxdb config is nil")
 	}
@@ -46,6 +46,10 @@ func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*influxdbCrud.Client, er
 	}
 	if cfg.Data.Influxdb.AuthScheme != nil {
 		options = append(options, influxdbCrud.WithAuthScheme(cfg.Data.Influxdb.GetAuthScheme()))
+	}
+
+	if opts != nil {
+		options = append(options, opts...)
 	}
 
 	return influxdbCrud.NewClient(options...)

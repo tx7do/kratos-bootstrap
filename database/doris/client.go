@@ -8,7 +8,7 @@ import (
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
 
-func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*dorisCrud.Client, error) {
+func NewClient(logger log.Logger, cfg *conf.Bootstrap, opts ...dorisCrud.Option) (*dorisCrud.Client, error) {
 	if cfg.Data == nil || cfg.Data.Doris == nil {
 		return nil, errors.New("doris config is nil")
 	}
@@ -46,6 +46,10 @@ func NewClient(logger log.Logger, cfg *conf.Bootstrap) (*dorisCrud.Client, error
 		if cfg.Data.Doris.StreamLoad.Method != nil {
 			options = append(options, dorisCrud.WithStreamLoadMethod(cfg.Data.Doris.StreamLoad.GetMethod()))
 		}
+	}
+
+	if opts != nil {
+		options = append(options, opts...)
 	}
 
 	c, err := dorisCrud.NewClient(options...)
