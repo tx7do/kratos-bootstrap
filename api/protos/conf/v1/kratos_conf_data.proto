@@ -177,6 +177,29 @@ message Data {
     optional TLS tls = 70; // TLS配置
   }
 
+  // OpenSearch
+  message OpenSearch {
+    repeated string addresses = 1; // 对端网络地址
+
+    optional string username = 2;
+    optional string password = 3;
+
+    repeated int32 retry_on_status = 4; // 触发重试的HTTP状态码列表，例如 [502, 503, 504]
+    optional bool disable_retry = 5; // 禁用重试
+    optional bool enable_retry_on_timeout = 6; // 是否在请求超时时触发重试
+    optional int32 max_retries = 7; // 最大重试次数
+
+    optional bool compress_request_body = 8; // 是否压缩请求体
+
+    optional bool discover_nodes_on_start = 9; // 启动时发现节点
+    optional google.protobuf.Duration discover_nodes_interval = 10; // 发现节点间隔时间
+
+    optional bool enable_metrics = 60; // 打开性能度量
+    optional bool enable_debug_logger = 61; // 打开调试日志记录器
+
+    optional TLS tls = 70; // TLS配置
+  }
+
   message Cassandra {
     optional string address = 1;
     optional string username = 2;
@@ -283,13 +306,14 @@ message Data {
 
   optional Redis redis = 10; // Redis
   optional MongoDB mongodb = 11; // MongoDB数据库
-  optional ElasticSearch elastic_search = 12; // ElasticSearch数据库
+  optional ElasticSearch elasticsearch = 12; // ElasticSearch数据库
   optional Cassandra cassandra = 13; // Cassandra数据库
   optional ClickHouse clickhouse = 14; // ClickHouse数据库
   optional InfluxDB influxdb = 15; // InfluxDB数据库
   optional Doris doris = 16; // Doris数据库
   optional Snowflake snowflake = 17; // Snowflake数据库
   optional DuckDB duckdb = 18; // DuckDB数据库
+  optional OpenSearch opensearch = 19; // OpenSearch数据库
 
   // Message Queue
 
