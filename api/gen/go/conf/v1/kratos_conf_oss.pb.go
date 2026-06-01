@@ -25,6 +25,7 @@ const (
 type OSS struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Minio         *OSS_MinIO             `protobuf:"bytes,1,opt,name=minio,proto3,oneof" json:"minio,omitempty"`
+	S3            *OSS_S3                `protobuf:"bytes,2,opt,name=s3,proto3,oneof" json:"s3,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -62,6 +63,13 @@ func (*OSS) Descriptor() ([]byte, []int) {
 func (x *OSS) GetMinio() *OSS_MinIO {
 	if x != nil {
 		return x.Minio
+	}
+	return nil
+}
+
+func (x *OSS) GetS3() *OSS_S3 {
+	if x != nil {
+		return x.S3
 	}
 	return nil
 }
@@ -167,13 +175,139 @@ func (x *OSS_MinIO) GetDownloadHost() string {
 	return ""
 }
 
+// AWS S3 / S3 Compatible
+type OSS_S3 struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Endpoint       string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"`                                       // S3 endpoint, 例如 s3.amazonaws.com
+	Region         string                 `protobuf:"bytes,2,opt,name=region,proto3" json:"region,omitempty"`                                           // 区域，如 ap-southeast-1
+	Bucket         string                 `protobuf:"bytes,3,opt,name=bucket,proto3" json:"bucket,omitempty"`                                           // 默认 bucket
+	AccessKey      string                 `protobuf:"bytes,4,opt,name=access_key,json=accessKey,proto3" json:"access_key,omitempty"`                    // 访问密钥
+	SecretKey      string                 `protobuf:"bytes,5,opt,name=secret_key,json=secretKey,proto3" json:"secret_key,omitempty"`                    // 密钥
+	Token          string                 `protobuf:"bytes,6,opt,name=token,proto3" json:"token,omitempty"`                                             // STS 临时令牌
+	UseSsl         bool                   `protobuf:"varint,10,opt,name=use_ssl,json=useSsl,proto3" json:"use_ssl,omitempty"`                           // 使用SSL
+	Tls            *TLS                   `protobuf:"bytes,11,opt,name=tls,proto3" json:"tls,omitempty"`                                                // TLS配置
+	ForcePathStyle bool                   `protobuf:"varint,12,opt,name=force_path_style,json=forcePathStyle,proto3" json:"force_path_style,omitempty"` // 强制 path-style（兼容部分 S3 实现）
+	UploadHost     string                 `protobuf:"bytes,20,opt,name=upload_host,json=uploadHost,proto3" json:"upload_host,omitempty"`                // 上传链接主机名（可选）
+	DownloadHost   string                 `protobuf:"bytes,21,opt,name=download_host,json=downloadHost,proto3" json:"download_host,omitempty"`          // 下载链接主机名（可选）
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *OSS_S3) Reset() {
+	*x = OSS_S3{}
+	mi := &file_conf_v1_kratos_conf_oss_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OSS_S3) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OSS_S3) ProtoMessage() {}
+
+func (x *OSS_S3) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_v1_kratos_conf_oss_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OSS_S3.ProtoReflect.Descriptor instead.
+func (*OSS_S3) Descriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_oss_proto_rawDescGZIP(), []int{0, 1}
+}
+
+func (x *OSS_S3) GetEndpoint() string {
+	if x != nil {
+		return x.Endpoint
+	}
+	return ""
+}
+
+func (x *OSS_S3) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
+func (x *OSS_S3) GetBucket() string {
+	if x != nil {
+		return x.Bucket
+	}
+	return ""
+}
+
+func (x *OSS_S3) GetAccessKey() string {
+	if x != nil {
+		return x.AccessKey
+	}
+	return ""
+}
+
+func (x *OSS_S3) GetSecretKey() string {
+	if x != nil {
+		return x.SecretKey
+	}
+	return ""
+}
+
+func (x *OSS_S3) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+func (x *OSS_S3) GetUseSsl() bool {
+	if x != nil {
+		return x.UseSsl
+	}
+	return false
+}
+
+func (x *OSS_S3) GetTls() *TLS {
+	if x != nil {
+		return x.Tls
+	}
+	return nil
+}
+
+func (x *OSS_S3) GetForcePathStyle() bool {
+	if x != nil {
+		return x.ForcePathStyle
+	}
+	return false
+}
+
+func (x *OSS_S3) GetUploadHost() string {
+	if x != nil {
+		return x.UploadHost
+	}
+	return ""
+}
+
+func (x *OSS_S3) GetDownloadHost() string {
+	if x != nil {
+		return x.DownloadHost
+	}
+	return ""
+}
+
 var File_conf_v1_kratos_conf_oss_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_oss_proto_rawDesc = "" +
 	"\n" +
-	"\x1dconf/v1/kratos_conf_oss.proto\x12\x04conf\x1a\x1dconf/v1/kratos_conf_tls.proto\"\xb1\x02\n" +
+	"\x1dconf/v1/kratos_conf_oss.proto\x12\x04conf\x1a\x1dconf/v1/kratos_conf_tls.proto\"\xa8\x05\n" +
 	"\x03OSS\x12*\n" +
-	"\x05minio\x18\x01 \x01(\v2\x0f.conf.OSS.MinIOH\x00R\x05minio\x88\x01\x01\x1a\xf3\x01\n" +
+	"\x05minio\x18\x01 \x01(\v2\x0f.conf.OSS.MinIOH\x00R\x05minio\x88\x01\x01\x12!\n" +
+	"\x02s3\x18\x02 \x01(\v2\f.conf.OSS.S3H\x01R\x02s3\x88\x01\x01\x1a\xf3\x01\n" +
 	"\x05MinIO\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x1d\n" +
 	"\n" +
@@ -186,8 +320,25 @@ const file_conf_v1_kratos_conf_oss_proto_rawDesc = "" +
 	"\x03tls\x18\v \x01(\v2\t.conf.TLSR\x03tls\x12\x1f\n" +
 	"\vupload_host\x18\x14 \x01(\tR\n" +
 	"uploadHost\x12#\n" +
+	"\rdownload_host\x18\x15 \x01(\tR\fdownloadHost\x1a\xca\x02\n" +
+	"\x02S3\x12\x1a\n" +
+	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x16\n" +
+	"\x06region\x18\x02 \x01(\tR\x06region\x12\x16\n" +
+	"\x06bucket\x18\x03 \x01(\tR\x06bucket\x12\x1d\n" +
+	"\n" +
+	"access_key\x18\x04 \x01(\tR\taccessKey\x12\x1d\n" +
+	"\n" +
+	"secret_key\x18\x05 \x01(\tR\tsecretKey\x12\x14\n" +
+	"\x05token\x18\x06 \x01(\tR\x05token\x12\x17\n" +
+	"\ause_ssl\x18\n" +
+	" \x01(\bR\x06useSsl\x12\x1b\n" +
+	"\x03tls\x18\v \x01(\v2\t.conf.TLSR\x03tls\x12(\n" +
+	"\x10force_path_style\x18\f \x01(\bR\x0eforcePathStyle\x12\x1f\n" +
+	"\vupload_host\x18\x14 \x01(\tR\n" +
+	"uploadHost\x12#\n" +
 	"\rdownload_host\x18\x15 \x01(\tR\fdownloadHostB\b\n" +
-	"\x06_minioB\x84\x01\n" +
+	"\x06_minioB\x05\n" +
+	"\x03_s3B\x84\x01\n" +
 	"\bcom.confB\x12KratosConfOssProtoP\x01Z4github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1\xa2\x02\x03CXX\xaa\x02\x04Conf\xca\x02\x04Conf\xe2\x02\x10Conf\\GPBMetadata\xea\x02\x04Confb\x06proto3"
 
 var (
@@ -202,20 +353,23 @@ func file_conf_v1_kratos_conf_oss_proto_rawDescGZIP() []byte {
 	return file_conf_v1_kratos_conf_oss_proto_rawDescData
 }
 
-var file_conf_v1_kratos_conf_oss_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_conf_v1_kratos_conf_oss_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_conf_v1_kratos_conf_oss_proto_goTypes = []any{
 	(*OSS)(nil),       // 0: conf.OSS
 	(*OSS_MinIO)(nil), // 1: conf.OSS.MinIO
-	(*TLS)(nil),       // 2: conf.TLS
+	(*OSS_S3)(nil),    // 2: conf.OSS.S3
+	(*TLS)(nil),       // 3: conf.TLS
 }
 var file_conf_v1_kratos_conf_oss_proto_depIdxs = []int32{
 	1, // 0: conf.OSS.minio:type_name -> conf.OSS.MinIO
-	2, // 1: conf.OSS.MinIO.tls:type_name -> conf.TLS
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	2, // 1: conf.OSS.s3:type_name -> conf.OSS.S3
+	3, // 2: conf.OSS.MinIO.tls:type_name -> conf.TLS
+	3, // 3: conf.OSS.S3.tls:type_name -> conf.TLS
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_conf_v1_kratos_conf_oss_proto_init() }
@@ -231,7 +385,7 @@ func file_conf_v1_kratos_conf_oss_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_v1_kratos_conf_oss_proto_rawDesc), len(file_conf_v1_kratos_conf_oss_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

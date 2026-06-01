@@ -22,5 +22,25 @@ message OSS {
     string download_host = 21;  // 下载链接的主机名
   }
 
+  // AWS S3 / S3 Compatible
+  message S3 {
+    string endpoint = 1;      // S3 endpoint, 例如 s3.amazonaws.com
+    string region = 2;        // 区域，如 ap-southeast-1
+    string bucket = 3;        // 默认 bucket
+
+    string access_key = 4;    // 访问密钥
+    string secret_key = 5;    // 密钥
+    string token = 6;         // STS 临时令牌
+
+    bool use_ssl = 10;        // 使用SSL
+    TLS tls = 11;             // TLS配置
+
+    bool force_path_style = 12; // 强制 path-style（兼容部分 S3 实现）
+
+    string upload_host = 20;   // 上传链接主机名（可选）
+    string download_host = 21; // 下载链接主机名（可选）
+  }
+
   optional MinIO minio = 1;
+  optional S3 s3 = 2;
 }
