@@ -50,6 +50,10 @@ git tag transport/mcp/v0.0.3 --force
 git tag transport/mqtt/v0.0.4 --force
 git tag transport/sse/v0.0.4 --force
 
+git tag ai/model/v0.0.1 --force
+git tag ai/eino/v0.0.1 --force
+git tag ai/eino/v0.0.1 --force
+
 git tag bootstrap/v0.1.16 --force
 
 git tag v0.7.0
