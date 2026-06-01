@@ -5,44 +5,48 @@ package conf;
 option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
 
 // AI 配置
-message AIConfig {
-  // 模型类型枚举
-  enum ModelType {
-    MODEL_TYPE_UNSPECIFIED = 0;
+message AI {
+  message Model {
+    // 模型类型枚举
+    enum ModelType {
+      MODEL_TYPE_UNSPECIFIED = 0;
 
-    CLOUD_MODEL = 1;     // 云端API
-    LOCAL_MODEL = 2;     // 本地Ollama
+      CLOUD_MODEL = 1;     // 云端API
+      LOCAL_MODEL = 2;     // 本地Ollama
+    }
+
+    // 云端大模型配置（所有平台通用）
+    message CloudConfig {
+      string api_key = 1;         // API Key
+      string base_url = 2;        // 接口地址：https://xxx/v1
+      string organization = 3;    // 可选：组织ID
+    }
+
+    // 本地大模型配置（Ollama）
+    message LocalConfig {
+      string host = 1;            // 默认 localhost
+      int32 port = 2;             // 默认 11434
+      bool use_gpu = 3;           // 是否启用GPU
+    }
+
+    // 模型类型：云端 / 本地
+    ModelType type = 1;
+
+    // 通用基础配置
+    string model_name = 2;    // 模型名：gpt-4o / qwen-turbo / llama3
+    float temperature = 3;    // 温度：0~1，默认0.7
+    int32 max_tokens = 4;     // 最大生成长度
+
+    // 云端模型配置
+    CloudConfig cloud = 5;
+
+    // 本地模型配置（Ollama）
+    LocalConfig local = 6;
+
+    // 超时、重试
+    int32 timeout_seconds = 7;    // 默认30秒
+    int32 max_retries = 8;        // 默认3次
   }
 
-  // 云端大模型配置（所有平台通用）
-  message CloudConfig {
-    string api_key = 1;         // API Key
-    string base_url = 2;        // 接口地址：https://xxx/v1
-    string organization = 3;    // 可选：组织ID
-  }
-
-  // 本地大模型配置（Ollama）
-  message LocalConfig {
-    string host = 1;            // 默认 localhost
-    int32 port = 2;             // 默认 11434
-    bool use_gpu = 3;           // 是否启用GPU
-  }
-
-  // 模型类型：云端 / 本地
-  ModelType type = 1;
-
-  // 通用基础配置
-  string model_name = 2;    // 模型名：gpt-4o / qwen-turbo / llama3
-  float temperature = 3;    // 温度：0~1，默认0.7
-  int32 max_tokens = 4;     // 最大生成长度
-
-  // 云端模型配置
-  CloudConfig cloud = 5;
-
-  // 本地模型配置（Ollama）
-  LocalConfig local = 6;
-
-  // 超时、重试
-  int32 timeout_seconds = 7;    // 默认30秒
-  int32 max_retries = 8;        // 默认3次
+  Model model = 1; // 大模型配置
 }

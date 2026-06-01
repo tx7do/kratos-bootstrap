@@ -22,89 +22,77 @@ const (
 )
 
 // 模型类型枚举
-type AIConfig_ModelType int32
+type AI_Model_ModelType int32
 
 const (
-	AIConfig_MODEL_TYPE_UNSPECIFIED AIConfig_ModelType = 0
-	AIConfig_CLOUD_MODEL            AIConfig_ModelType = 1 // 云端API
-	AIConfig_LOCAL_MODEL            AIConfig_ModelType = 2 // 本地Ollama
+	AI_Model_MODEL_TYPE_UNSPECIFIED AI_Model_ModelType = 0
+	AI_Model_CLOUD_MODEL            AI_Model_ModelType = 1 // 云端API
+	AI_Model_LOCAL_MODEL            AI_Model_ModelType = 2 // 本地Ollama
 )
 
-// Enum value maps for AIConfig_ModelType.
+// Enum value maps for AI_Model_ModelType.
 var (
-	AIConfig_ModelType_name = map[int32]string{
+	AI_Model_ModelType_name = map[int32]string{
 		0: "MODEL_TYPE_UNSPECIFIED",
 		1: "CLOUD_MODEL",
 		2: "LOCAL_MODEL",
 	}
-	AIConfig_ModelType_value = map[string]int32{
+	AI_Model_ModelType_value = map[string]int32{
 		"MODEL_TYPE_UNSPECIFIED": 0,
 		"CLOUD_MODEL":            1,
 		"LOCAL_MODEL":            2,
 	}
 )
 
-func (x AIConfig_ModelType) Enum() *AIConfig_ModelType {
-	p := new(AIConfig_ModelType)
+func (x AI_Model_ModelType) Enum() *AI_Model_ModelType {
+	p := new(AI_Model_ModelType)
 	*p = x
 	return p
 }
 
-func (x AIConfig_ModelType) String() string {
+func (x AI_Model_ModelType) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (AIConfig_ModelType) Descriptor() protoreflect.EnumDescriptor {
+func (AI_Model_ModelType) Descriptor() protoreflect.EnumDescriptor {
 	return file_conf_v1_kratos_conf_ai_proto_enumTypes[0].Descriptor()
 }
 
-func (AIConfig_ModelType) Type() protoreflect.EnumType {
+func (AI_Model_ModelType) Type() protoreflect.EnumType {
 	return &file_conf_v1_kratos_conf_ai_proto_enumTypes[0]
 }
 
-func (x AIConfig_ModelType) Number() protoreflect.EnumNumber {
+func (x AI_Model_ModelType) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use AIConfig_ModelType.Descriptor instead.
-func (AIConfig_ModelType) EnumDescriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_ai_proto_rawDescGZIP(), []int{0, 0}
+// Deprecated: Use AI_Model_ModelType.Descriptor instead.
+func (AI_Model_ModelType) EnumDescriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_ai_proto_rawDescGZIP(), []int{0, 0, 0}
 }
 
 // AI 配置
-type AIConfig struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// 模型类型：云端 / 本地
-	Type AIConfig_ModelType `protobuf:"varint,1,opt,name=type,proto3,enum=conf.AIConfig_ModelType" json:"type,omitempty"`
-	// 通用基础配置
-	ModelName   string  `protobuf:"bytes,2,opt,name=model_name,json=modelName,proto3" json:"model_name,omitempty"`  // 模型名：gpt-4o / qwen-turbo / llama3
-	Temperature float32 `protobuf:"fixed32,3,opt,name=temperature,proto3" json:"temperature,omitempty"`             // 温度：0~1，默认0.7
-	MaxTokens   int32   `protobuf:"varint,4,opt,name=max_tokens,json=maxTokens,proto3" json:"max_tokens,omitempty"` // 最大生成长度
-	// 云端模型配置
-	Cloud *AIConfig_CloudConfig `protobuf:"bytes,5,opt,name=cloud,proto3" json:"cloud,omitempty"`
-	// 本地模型配置（Ollama）
-	Local *AIConfig_LocalConfig `protobuf:"bytes,6,opt,name=local,proto3" json:"local,omitempty"`
-	// 超时、重试
-	TimeoutSeconds int32 `protobuf:"varint,7,opt,name=timeout_seconds,json=timeoutSeconds,proto3" json:"timeout_seconds,omitempty"` // 默认30秒
-	MaxRetries     int32 `protobuf:"varint,8,opt,name=max_retries,json=maxRetries,proto3" json:"max_retries,omitempty"`             // 默认3次
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+type AI struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Model         *AI_Model              `protobuf:"bytes,1,opt,name=model,proto3" json:"model,omitempty"` // 大模型配置
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AIConfig) Reset() {
-	*x = AIConfig{}
+func (x *AI) Reset() {
+	*x = AI{}
 	mi := &file_conf_v1_kratos_conf_ai_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AIConfig) String() string {
+func (x *AI) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AIConfig) ProtoMessage() {}
+func (*AI) ProtoMessage() {}
 
-func (x *AIConfig) ProtoReflect() protoreflect.Message {
+func (x *AI) ProtoReflect() protoreflect.Message {
 	mi := &file_conf_v1_kratos_conf_ai_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -116,61 +104,117 @@ func (x *AIConfig) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AIConfig.ProtoReflect.Descriptor instead.
-func (*AIConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use AI.ProtoReflect.Descriptor instead.
+func (*AI) Descriptor() ([]byte, []int) {
 	return file_conf_v1_kratos_conf_ai_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AIConfig) GetType() AIConfig_ModelType {
+func (x *AI) GetModel() *AI_Model {
+	if x != nil {
+		return x.Model
+	}
+	return nil
+}
+
+type AI_Model struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 模型类型：云端 / 本地
+	Type AI_Model_ModelType `protobuf:"varint,1,opt,name=type,proto3,enum=conf.AI_Model_ModelType" json:"type,omitempty"`
+	// 通用基础配置
+	ModelName   string  `protobuf:"bytes,2,opt,name=model_name,json=modelName,proto3" json:"model_name,omitempty"`  // 模型名：gpt-4o / qwen-turbo / llama3
+	Temperature float32 `protobuf:"fixed32,3,opt,name=temperature,proto3" json:"temperature,omitempty"`             // 温度：0~1，默认0.7
+	MaxTokens   int32   `protobuf:"varint,4,opt,name=max_tokens,json=maxTokens,proto3" json:"max_tokens,omitempty"` // 最大生成长度
+	// 云端模型配置
+	Cloud *AI_Model_CloudConfig `protobuf:"bytes,5,opt,name=cloud,proto3" json:"cloud,omitempty"`
+	// 本地模型配置（Ollama）
+	Local *AI_Model_LocalConfig `protobuf:"bytes,6,opt,name=local,proto3" json:"local,omitempty"`
+	// 超时、重试
+	TimeoutSeconds int32 `protobuf:"varint,7,opt,name=timeout_seconds,json=timeoutSeconds,proto3" json:"timeout_seconds,omitempty"` // 默认30秒
+	MaxRetries     int32 `protobuf:"varint,8,opt,name=max_retries,json=maxRetries,proto3" json:"max_retries,omitempty"`             // 默认3次
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *AI_Model) Reset() {
+	*x = AI_Model{}
+	mi := &file_conf_v1_kratos_conf_ai_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AI_Model) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AI_Model) ProtoMessage() {}
+
+func (x *AI_Model) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_v1_kratos_conf_ai_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AI_Model.ProtoReflect.Descriptor instead.
+func (*AI_Model) Descriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_ai_proto_rawDescGZIP(), []int{0, 0}
+}
+
+func (x *AI_Model) GetType() AI_Model_ModelType {
 	if x != nil {
 		return x.Type
 	}
-	return AIConfig_MODEL_TYPE_UNSPECIFIED
+	return AI_Model_MODEL_TYPE_UNSPECIFIED
 }
 
-func (x *AIConfig) GetModelName() string {
+func (x *AI_Model) GetModelName() string {
 	if x != nil {
 		return x.ModelName
 	}
 	return ""
 }
 
-func (x *AIConfig) GetTemperature() float32 {
+func (x *AI_Model) GetTemperature() float32 {
 	if x != nil {
 		return x.Temperature
 	}
 	return 0
 }
 
-func (x *AIConfig) GetMaxTokens() int32 {
+func (x *AI_Model) GetMaxTokens() int32 {
 	if x != nil {
 		return x.MaxTokens
 	}
 	return 0
 }
 
-func (x *AIConfig) GetCloud() *AIConfig_CloudConfig {
+func (x *AI_Model) GetCloud() *AI_Model_CloudConfig {
 	if x != nil {
 		return x.Cloud
 	}
 	return nil
 }
 
-func (x *AIConfig) GetLocal() *AIConfig_LocalConfig {
+func (x *AI_Model) GetLocal() *AI_Model_LocalConfig {
 	if x != nil {
 		return x.Local
 	}
 	return nil
 }
 
-func (x *AIConfig) GetTimeoutSeconds() int32 {
+func (x *AI_Model) GetTimeoutSeconds() int32 {
 	if x != nil {
 		return x.TimeoutSeconds
 	}
 	return 0
 }
 
-func (x *AIConfig) GetMaxRetries() int32 {
+func (x *AI_Model) GetMaxRetries() int32 {
 	if x != nil {
 		return x.MaxRetries
 	}
@@ -178,7 +222,7 @@ func (x *AIConfig) GetMaxRetries() int32 {
 }
 
 // 云端大模型配置（所有平台通用）
-type AIConfig_CloudConfig struct {
+type AI_Model_CloudConfig struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ApiKey        string                 `protobuf:"bytes,1,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`    // API Key
 	BaseUrl       string                 `protobuf:"bytes,2,opt,name=base_url,json=baseUrl,proto3" json:"base_url,omitempty"` // 接口地址：https://xxx/v1
@@ -187,21 +231,21 @@ type AIConfig_CloudConfig struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AIConfig_CloudConfig) Reset() {
-	*x = AIConfig_CloudConfig{}
-	mi := &file_conf_v1_kratos_conf_ai_proto_msgTypes[1]
+func (x *AI_Model_CloudConfig) Reset() {
+	*x = AI_Model_CloudConfig{}
+	mi := &file_conf_v1_kratos_conf_ai_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AIConfig_CloudConfig) String() string {
+func (x *AI_Model_CloudConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AIConfig_CloudConfig) ProtoMessage() {}
+func (*AI_Model_CloudConfig) ProtoMessage() {}
 
-func (x *AIConfig_CloudConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_ai_proto_msgTypes[1]
+func (x *AI_Model_CloudConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_v1_kratos_conf_ai_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -212,26 +256,26 @@ func (x *AIConfig_CloudConfig) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AIConfig_CloudConfig.ProtoReflect.Descriptor instead.
-func (*AIConfig_CloudConfig) Descriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_ai_proto_rawDescGZIP(), []int{0, 0}
+// Deprecated: Use AI_Model_CloudConfig.ProtoReflect.Descriptor instead.
+func (*AI_Model_CloudConfig) Descriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_ai_proto_rawDescGZIP(), []int{0, 0, 0}
 }
 
-func (x *AIConfig_CloudConfig) GetApiKey() string {
+func (x *AI_Model_CloudConfig) GetApiKey() string {
 	if x != nil {
 		return x.ApiKey
 	}
 	return ""
 }
 
-func (x *AIConfig_CloudConfig) GetBaseUrl() string {
+func (x *AI_Model_CloudConfig) GetBaseUrl() string {
 	if x != nil {
 		return x.BaseUrl
 	}
 	return ""
 }
 
-func (x *AIConfig_CloudConfig) GetOrganization() string {
+func (x *AI_Model_CloudConfig) GetOrganization() string {
 	if x != nil {
 		return x.Organization
 	}
@@ -239,7 +283,7 @@ func (x *AIConfig_CloudConfig) GetOrganization() string {
 }
 
 // 本地大模型配置（Ollama）
-type AIConfig_LocalConfig struct {
+type AI_Model_LocalConfig struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Host          string                 `protobuf:"bytes,1,opt,name=host,proto3" json:"host,omitempty"`                    // 默认 localhost
 	Port          int32                  `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`                   // 默认 11434
@@ -248,21 +292,21 @@ type AIConfig_LocalConfig struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AIConfig_LocalConfig) Reset() {
-	*x = AIConfig_LocalConfig{}
-	mi := &file_conf_v1_kratos_conf_ai_proto_msgTypes[2]
+func (x *AI_Model_LocalConfig) Reset() {
+	*x = AI_Model_LocalConfig{}
+	mi := &file_conf_v1_kratos_conf_ai_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AIConfig_LocalConfig) String() string {
+func (x *AI_Model_LocalConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AIConfig_LocalConfig) ProtoMessage() {}
+func (*AI_Model_LocalConfig) ProtoMessage() {}
 
-func (x *AIConfig_LocalConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_ai_proto_msgTypes[2]
+func (x *AI_Model_LocalConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_v1_kratos_conf_ai_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -273,26 +317,26 @@ func (x *AIConfig_LocalConfig) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AIConfig_LocalConfig.ProtoReflect.Descriptor instead.
-func (*AIConfig_LocalConfig) Descriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_ai_proto_rawDescGZIP(), []int{0, 1}
+// Deprecated: Use AI_Model_LocalConfig.ProtoReflect.Descriptor instead.
+func (*AI_Model_LocalConfig) Descriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_ai_proto_rawDescGZIP(), []int{0, 0, 1}
 }
 
-func (x *AIConfig_LocalConfig) GetHost() string {
+func (x *AI_Model_LocalConfig) GetHost() string {
 	if x != nil {
 		return x.Host
 	}
 	return ""
 }
 
-func (x *AIConfig_LocalConfig) GetPort() int32 {
+func (x *AI_Model_LocalConfig) GetPort() int32 {
 	if x != nil {
 		return x.Port
 	}
 	return 0
 }
 
-func (x *AIConfig_LocalConfig) GetUseGpu() bool {
+func (x *AI_Model_LocalConfig) GetUseGpu() bool {
 	if x != nil {
 		return x.UseGpu
 	}
@@ -303,16 +347,18 @@ var File_conf_v1_kratos_conf_ai_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_ai_proto_rawDesc = "" +
 	"\n" +
-	"\x1cconf/v1/kratos_conf_ai.proto\x12\x04conf\"\xc8\x04\n" +
-	"\bAIConfig\x12,\n" +
-	"\x04type\x18\x01 \x01(\x0e2\x18.conf.AIConfig.ModelTypeR\x04type\x12\x1d\n" +
+	"\x1cconf/v1/kratos_conf_ai.proto\x12\x04conf\"\xf2\x04\n" +
+	"\x02AI\x12$\n" +
+	"\x05model\x18\x01 \x01(\v2\x0e.conf.AI.ModelR\x05model\x1a\xc5\x04\n" +
+	"\x05Model\x12,\n" +
+	"\x04type\x18\x01 \x01(\x0e2\x18.conf.AI.Model.ModelTypeR\x04type\x12\x1d\n" +
 	"\n" +
 	"model_name\x18\x02 \x01(\tR\tmodelName\x12 \n" +
 	"\vtemperature\x18\x03 \x01(\x02R\vtemperature\x12\x1d\n" +
 	"\n" +
 	"max_tokens\x18\x04 \x01(\x05R\tmaxTokens\x120\n" +
-	"\x05cloud\x18\x05 \x01(\v2\x1a.conf.AIConfig.CloudConfigR\x05cloud\x120\n" +
-	"\x05local\x18\x06 \x01(\v2\x1a.conf.AIConfig.LocalConfigR\x05local\x12'\n" +
+	"\x05cloud\x18\x05 \x01(\v2\x1a.conf.AI.Model.CloudConfigR\x05cloud\x120\n" +
+	"\x05local\x18\x06 \x01(\v2\x1a.conf.AI.Model.LocalConfigR\x05local\x12'\n" +
 	"\x0ftimeout_seconds\x18\a \x01(\x05R\x0etimeoutSeconds\x12\x1f\n" +
 	"\vmax_retries\x18\b \x01(\x05R\n" +
 	"maxRetries\x1ae\n" +
@@ -343,22 +389,24 @@ func file_conf_v1_kratos_conf_ai_proto_rawDescGZIP() []byte {
 }
 
 var file_conf_v1_kratos_conf_ai_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_conf_v1_kratos_conf_ai_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_conf_v1_kratos_conf_ai_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_conf_v1_kratos_conf_ai_proto_goTypes = []any{
-	(AIConfig_ModelType)(0),      // 0: conf.AIConfig.ModelType
-	(*AIConfig)(nil),             // 1: conf.AIConfig
-	(*AIConfig_CloudConfig)(nil), // 2: conf.AIConfig.CloudConfig
-	(*AIConfig_LocalConfig)(nil), // 3: conf.AIConfig.LocalConfig
+	(AI_Model_ModelType)(0),      // 0: conf.AI.Model.ModelType
+	(*AI)(nil),                   // 1: conf.AI
+	(*AI_Model)(nil),             // 2: conf.AI.Model
+	(*AI_Model_CloudConfig)(nil), // 3: conf.AI.Model.CloudConfig
+	(*AI_Model_LocalConfig)(nil), // 4: conf.AI.Model.LocalConfig
 }
 var file_conf_v1_kratos_conf_ai_proto_depIdxs = []int32{
-	0, // 0: conf.AIConfig.type:type_name -> conf.AIConfig.ModelType
-	2, // 1: conf.AIConfig.cloud:type_name -> conf.AIConfig.CloudConfig
-	3, // 2: conf.AIConfig.local:type_name -> conf.AIConfig.LocalConfig
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	2, // 0: conf.AI.model:type_name -> conf.AI.Model
+	0, // 1: conf.AI.Model.type:type_name -> conf.AI.Model.ModelType
+	3, // 2: conf.AI.Model.cloud:type_name -> conf.AI.Model.CloudConfig
+	4, // 3: conf.AI.Model.local:type_name -> conf.AI.Model.LocalConfig
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_conf_v1_kratos_conf_ai_proto_init() }
@@ -372,7 +420,7 @@ func file_conf_v1_kratos_conf_ai_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_v1_kratos_conf_ai_proto_rawDesc), len(file_conf_v1_kratos_conf_ai_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

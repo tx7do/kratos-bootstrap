@@ -36,7 +36,7 @@ type Bootstrap struct {
 	Authn         *Authentication        `protobuf:"bytes,10,opt,name=authn,proto3,oneof" json:"authn,omitempty"`
 	Authz         *Authorization         `protobuf:"bytes,11,opt,name=authz,proto3,oneof" json:"authz,omitempty"`
 	Script        *Script                `protobuf:"bytes,12,opt,name=script,proto3,oneof" json:"script,omitempty"`
-	Ai            *AIConfig              `protobuf:"bytes,13,opt,name=ai,proto3,oneof" json:"ai,omitempty"`
+	Ai            *AI                    `protobuf:"bytes,13,opt,name=ai,proto3,oneof" json:"ai,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -155,7 +155,7 @@ func (x *Bootstrap) GetScript() *Script {
 	return nil
 }
 
-func (x *Bootstrap) GetAi() *AIConfig {
+func (x *Bootstrap) GetAi() *AI {
 	if x != nil {
 		return x.Ai
 	}
@@ -166,7 +166,7 @@ var File_conf_v1_kratos_conf_bootstrap_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_bootstrap_proto_rawDesc = "" +
 	"\n" +
-	"#conf/v1/kratos_conf_bootstrap.proto\x12\x04conf\x1a conf/v1/kratos_conf_tracer.proto\x1a\x1econf/v1/kratos_conf_data.proto\x1a conf/v1/kratos_conf_server.proto\x1a conf/v1/kratos_conf_client.proto\x1a conf/v1/kratos_conf_logger.proto\x1a\"conf/v1/kratos_conf_registry.proto\x1a\x1dconf/v1/kratos_conf_oss.proto\x1a conf/v1/kratos_conf_config.proto\x1a conf/v1/kratos_conf_notify.proto\x1a\x1fconf/v1/kratos_conf_authn.proto\x1a\x1fconf/v1/kratos_conf_authz.proto\x1a conf/v1/kratos_conf_script.proto\x1a\x1cconf/v1/kratos_conf_ai.proto\"\xc5\x05\n" +
+	"#conf/v1/kratos_conf_bootstrap.proto\x12\x04conf\x1a conf/v1/kratos_conf_tracer.proto\x1a\x1econf/v1/kratos_conf_data.proto\x1a conf/v1/kratos_conf_server.proto\x1a conf/v1/kratos_conf_client.proto\x1a conf/v1/kratos_conf_logger.proto\x1a\"conf/v1/kratos_conf_registry.proto\x1a\x1dconf/v1/kratos_conf_oss.proto\x1a conf/v1/kratos_conf_config.proto\x1a conf/v1/kratos_conf_notify.proto\x1a\x1fconf/v1/kratos_conf_authn.proto\x1a\x1fconf/v1/kratos_conf_authz.proto\x1a conf/v1/kratos_conf_script.proto\x1a\x1cconf/v1/kratos_conf_ai.proto\"\xbf\x05\n" +
 	"\tBootstrap\x12)\n" +
 	"\x06server\x18\x01 \x01(\v2\f.conf.ServerH\x00R\x06server\x88\x01\x01\x12)\n" +
 	"\x06client\x18\x02 \x01(\v2\f.conf.ClientH\x01R\x06client\x88\x01\x01\x12#\n" +
@@ -182,8 +182,8 @@ const file_conf_v1_kratos_conf_bootstrap_proto_rawDesc = "" +
 	" \x01(\v2\x14.conf.AuthenticationH\tR\x05authn\x88\x01\x01\x12.\n" +
 	"\x05authz\x18\v \x01(\v2\x13.conf.AuthorizationH\n" +
 	"R\x05authz\x88\x01\x01\x12)\n" +
-	"\x06script\x18\f \x01(\v2\f.conf.ScriptH\vR\x06script\x88\x01\x01\x12#\n" +
-	"\x02ai\x18\r \x01(\v2\x0e.conf.AIConfigH\fR\x02ai\x88\x01\x01B\t\n" +
+	"\x06script\x18\f \x01(\v2\f.conf.ScriptH\vR\x06script\x88\x01\x01\x12\x1d\n" +
+	"\x02ai\x18\r \x01(\v2\b.conf.AIH\fR\x02ai\x88\x01\x01B\t\n" +
 	"\a_serverB\t\n" +
 	"\a_clientB\a\n" +
 	"\x05_dataB\b\n" +
@@ -226,7 +226,7 @@ var file_conf_v1_kratos_conf_bootstrap_proto_goTypes = []any{
 	(*Authentication)(nil), // 10: conf.Authentication
 	(*Authorization)(nil),  // 11: conf.Authorization
 	(*Script)(nil),         // 12: conf.Script
-	(*AIConfig)(nil),       // 13: conf.AIConfig
+	(*AI)(nil),             // 13: conf.AI
 }
 var file_conf_v1_kratos_conf_bootstrap_proto_depIdxs = []int32{
 	1,  // 0: conf.Bootstrap.server:type_name -> conf.Server
@@ -241,7 +241,7 @@ var file_conf_v1_kratos_conf_bootstrap_proto_depIdxs = []int32{
 	10, // 9: conf.Bootstrap.authn:type_name -> conf.Authentication
 	11, // 10: conf.Bootstrap.authz:type_name -> conf.Authorization
 	12, // 11: conf.Bootstrap.script:type_name -> conf.Script
-	13, // 12: conf.Bootstrap.ai:type_name -> conf.AIConfig
+	13, // 12: conf.Bootstrap.ai:type_name -> conf.AI
 	13, // [13:13] is the sub-list for method output_type
 	13, // [13:13] is the sub-list for method input_type
 	13, // [13:13] is the sub-list for extension type_name
