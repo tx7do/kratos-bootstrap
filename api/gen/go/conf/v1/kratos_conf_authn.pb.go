@@ -9,7 +9,6 @@ package v1
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	_ "google.golang.org/protobuf/types/known/durationpb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -25,7 +24,7 @@ const (
 // 认证
 type Authentication struct {
 	state         protoimpl.MessageState       `protogen:"open.v1"`
-	Type          string                       `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
+	Type          string                       `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`                                           // 认证方式，支持的认证方式包括：jwt、oidc、preshared_key
 	Jwt           *Authentication_Jwt          `protobuf:"bytes,2,opt,name=jwt,proto3,oneof" json:"jwt,omitempty"`                                       // JWT 认证
 	Oidc          *Authentication_OIDC         `protobuf:"bytes,3,opt,name=oidc,proto3,oneof" json:"oidc,omitempty"`                                     // OIDC
 	PresharedKey  *Authentication_PresharedKey `protobuf:"bytes,4,opt,name=preshared_key,json=presharedKey,proto3,oneof" json:"preshared_key,omitempty"` // 预共享密钥
@@ -146,9 +145,9 @@ func (x *Authentication_Jwt) GetKey() string {
 
 type Authentication_OIDC struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	IssuerUrl     string                 `protobuf:"bytes,1,opt,name=issuer_url,json=issuerUrl,proto3" json:"issuer_url,omitempty"`
-	Audience      string                 `protobuf:"bytes,2,opt,name=audience,proto3" json:"audience,omitempty"`
-	Method        string                 `protobuf:"bytes,3,opt,name=method,proto3" json:"method,omitempty"` // JWT签名的算法，支持算法：HS256
+	IssuerUrl     string                 `protobuf:"bytes,1,opt,name=issuer_url,json=issuerUrl,proto3" json:"issuer_url,omitempty"` // OIDC的issuer URL
+	Audience      string                 `protobuf:"bytes,2,opt,name=audience,proto3" json:"audience,omitempty"`                    // OIDC的Audience
+	Method        string                 `protobuf:"bytes,3,opt,name=method,proto3" json:"method,omitempty"`                        // JWT签名的算法，支持算法：HS256
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -206,7 +205,7 @@ func (x *Authentication_OIDC) GetMethod() string {
 
 type Authentication_PresharedKey struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	ValidKeys     []string               `protobuf:"bytes,1,rep,name=valid_keys,json=validKeys,proto3" json:"valid_keys,omitempty"`
+	ValidKeys     []string               `protobuf:"bytes,1,rep,name=valid_keys,json=validKeys,proto3" json:"valid_keys,omitempty"` // 预共享密钥列表，支持多个有效密钥
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -252,7 +251,7 @@ var File_conf_v1_kratos_conf_authn_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_authn_proto_rawDesc = "" +
 	"\n" +
-	"\x1fconf/v1/kratos_conf_authn.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\"\xb4\x03\n" +
+	"\x1fconf/v1/kratos_conf_authn.proto\x12\x04conf\"\xb4\x03\n" +
 	"\x0eAuthentication\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12/\n" +
 	"\x03jwt\x18\x02 \x01(\v2\x18.conf.Authentication.JwtH\x00R\x03jwt\x88\x01\x01\x122\n" +

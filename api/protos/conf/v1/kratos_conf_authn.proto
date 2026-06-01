@@ -4,8 +4,6 @@ package conf;
 
 option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
 
-import "google/protobuf/duration.proto";
-
 // 认证
 message Authentication {
   // JWT
@@ -15,16 +13,16 @@ message Authentication {
   }
 
   message OIDC {
-    string issuer_url = 1;
-    string audience = 2;
+    string issuer_url = 1; // OIDC的issuer URL
+    string audience = 2; // OIDC的Audience
     string method = 3; // JWT签名的算法，支持算法：HS256
   }
 
   message PresharedKey {
-    repeated string valid_keys = 1;
+    repeated string valid_keys = 1; // 预共享密钥列表，支持多个有效密钥
   }
 
-  string type = 1;
+  string type = 1; // 认证方式，支持的认证方式包括：jwt、oidc、preshared_key
 
   optional Jwt jwt = 2; // JWT 认证
   optional OIDC oidc = 3; // OIDC

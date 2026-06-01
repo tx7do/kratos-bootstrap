@@ -25,7 +25,7 @@ const (
 // 授权
 type Authorization struct {
 	state         protoimpl.MessageState  `protogen:"open.v1"`
-	Type          string                  `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
+	Type          string                  `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`         // 授权方式，支持的授权方式包括：casbin、opa、zanzibar
 	Casbin        *Authorization_Casbin   `protobuf:"bytes,2,opt,name=casbin,proto3" json:"casbin,omitempty"`     // casbin
 	Opa           *Authorization_OPA      `protobuf:"bytes,3,opt,name=opa,proto3" json:"opa,omitempty"`           // OPA
 	Zanzibar      *Authorization_Zanzibar `protobuf:"bytes,4,opt,name=zanzibar,proto3" json:"zanzibar,omitempty"` // zanzibar

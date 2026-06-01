@@ -45,7 +45,7 @@ message Authorization {
     optional OpenFga open_fga = 3; // OpenFGA 配置
   }
 
-  string type = 1;
+  string type = 1; // 授权方式，支持的授权方式包括：casbin、opa、zanzibar
 
   Casbin casbin = 2; // casbin
   OPA opa = 3; // OPA
