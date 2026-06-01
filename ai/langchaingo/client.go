@@ -3,8 +3,11 @@ package langchaingo
 import (
 	"errors"
 	"fmt"
+	"net/http"
+	"time"
 
 	"github.com/tmc/langchaingo/llms"
+	lcOllama "github.com/tmc/langchaingo/llms/ollama"
 	lcOpenai "github.com/tmc/langchaingo/llms/openai"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
@@ -44,6 +47,17 @@ func newCloudModel(cfg *conf.AI_Model, o *options) (llms.Model, error) {
 		opts = append(opts, lcOpenai.WithBaseURL(cfg.Cloud.BaseUrl))
 	}
 
+	// 设置 HTTP 客户端
+	httpClient := o.httpClient
+	if httpClient == nil {
+		timeout := 30 * time.Second
+		if cfg.TimeoutSeconds > 0 {
+			timeout = time.Duration(cfg.TimeoutSeconds) * time.Second
+		}
+		httpClient = &http.Client{Timeout: timeout}
+	}
+	opts = append(opts, lcOpenai.WithHTTPClient(httpClient))
+
 	// 追加用户自定义的 OpenAI 选项
 	opts = append(opts, o.openaiOpts...)
 
@@ -52,7 +66,33 @@ func newCloudModel(cfg *conf.AI_Model, o *options) (llms.Model, error) {
 
 // newOllamaModel 创建本地模型（基于 LangChainGo Ollama 实现）。
 func newOllamaModel(cfg *conf.AI_Model, o *options) (llms.Model, error) {
-	return nil, errors.New("langchaingo ollama: not yet implemented")
+	if cfg.Local == nil {
+		return nil, errors.New("local config is nil")
+	}
+
+	host := cfg.Local.Host
+	if host == "" {
+		host = "localhost"
+	}
+	port := cfg.Local.Port
+	if port == 0 {
+		port = 11434
+	}
+
+	opts := []lcOllama.Option{
+		lcOllama.WithModel(cfg.GetModelName()),
+		lcOllama.WithServerURL(fmt.Sprintf("http://%s:%d", host, port)),
+	}
+
+	// 设置 HTTP 客户端
+	if o.httpClient != nil {
+		opts = append(opts, lcOllama.WithHTTPClient(o.httpClient))
+	}
+
+	// 追加用户自定义的 Ollama 选项
+	opts = append(opts, o.ollamaOpts...)
+
+	return lcOllama.New(opts...)
 }
 
 // applyOptions 应用可选配置项。

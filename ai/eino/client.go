@@ -14,23 +14,25 @@ import (
 
 // NewChatModel 根据配置创建 Eino ChatModel。
 // 支持云端模型（OpenAI 兼容 API）和本地模型（Ollama）。
-func NewChatModel(ctx context.Context, cfg *conf.AI_Model) (model.ChatModel, error) {
+func NewChatModel(ctx context.Context, cfg *conf.AI_Model, opts ...Option) (model.ChatModel, error) {
 	if cfg == nil {
 		return nil, errors.New("ai model config is nil")
 	}
 
+	o := applyOptions(opts)
+
 	switch cfg.Type {
 	case conf.AI_Model_LOCAL_MODEL:
-		return newOllamaChatModel(ctx, cfg)
+		return newOllamaChatModel(ctx, cfg, o)
 	case conf.AI_Model_CLOUD_MODEL:
-		return newCloudChatModel(ctx, cfg)
+		return newCloudChatModel(ctx, cfg, o)
 	default:
 		return nil, fmt.Errorf("unsupported ai model type: %v", cfg.Type)
 	}
 }
 
 // newCloudChatModel 创建云端模型（基于 Eino OpenAI 实现）。
-func newCloudChatModel(ctx context.Context, cfg *conf.AI_Model) (model.ChatModel, error) {
+func newCloudChatModel(ctx context.Context, cfg *conf.AI_Model, o *options) (model.ChatModel, error) {
 	if cfg.Cloud == nil {
 		return nil, errors.New("cloud config is nil")
 	}
@@ -47,11 +49,11 @@ func newCloudChatModel(ctx context.Context, cfg *conf.AI_Model) (model.ChatModel
 		config.Timeout = time.Duration(cfg.GetTimeoutSeconds()) * time.Second
 	}
 
-	return einoOpenai.NewChatModel(ctx, config)
+	return einoOpenai.NewChatModel(ctx, applyConfigModifier(config, o))
 }
 
 // newOllamaChatModel 创建本地模型（基于 Eino OpenAI 实现，兼容 Ollama）。
-func newOllamaChatModel(ctx context.Context, cfg *conf.AI_Model) (model.ChatModel, error) {
+func newOllamaChatModel(ctx context.Context, cfg *conf.AI_Model, o *options) (model.ChatModel, error) {
 	if cfg.Local == nil {
 		return nil, errors.New("local config is nil")
 	}
@@ -74,5 +76,13 @@ func newOllamaChatModel(ctx context.Context, cfg *conf.AI_Model) (model.ChatMode
 		config.Timeout = time.Duration(cfg.GetTimeoutSeconds()) * time.Second
 	}
 
-	return einoOpenai.NewChatModel(ctx, config)
+	return einoOpenai.NewChatModel(ctx, applyConfigModifier(config, o))
+}
+
+// applyConfigModifier 应用配置修饰器。
+func applyConfigModifier(config *einoOpenai.ChatModelConfig, o *options) *einoOpenai.ChatModelConfig {
+	if o.configModifier != nil {
+		o.configModifier(config)
+	}
+	return config
 }
