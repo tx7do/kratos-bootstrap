@@ -1,10 +1,12 @@
-git tag api/v0.0.39 --force
+git tag api/v0.0.40 --force
 
 git tag cache/redis/v0.1.1 --force
-git tag oss/minio/v0.1.1 --force
 git tag rpc/v0.1.1 --force
 git tag tracer/v0.1.4 --force
 git tag script_engine/v0.0.5 --force
+
+git tag oss/minio/v0.1.2 --force
+git tag oss/s3/v0.1.2 --force
 
 git tag database/ent/v0.1.5 --force
 git tag database/gorm/v0.1.5 --force
