@@ -1,82 +1,275 @@
-# kratos-bootstrap
+<p align="center">
+  <h1 align="center">kratos-bootstrap</h1>
+  <p align="center">
+    基于 go-kratos 的微服务应用引导框架
+  </p>
+  <p align="center">
+    <em>一站式基础设施引导，让微服务开发从此告别重复搭建</em>
+  </p>
+</p>
 
-## 项目概述
+<p align="center">
+  <a href="README.md">中文</a> · <a href="README_en.md">English</a> · <a href="README_ja.md">日本語</a>
+</p>
 
-kratos-bootstrap 是一个基于 Go 语言的Kratos微服务框架应用引导框架，旨在为微服务或独立应用提供标准化的初始化、配置管理、组件集成能力，简化应用开发中的基础设施搭建工作。该项目集成了多种常用中间件、数据库客户端、服务注册发现机制及脚本引擎，帮助开发者快速构建稳定、可扩展的应用程序。
+<p align="center">
+  <img src="https://img.shields.io/badge/Go-1.23+-00ADD8?style=flat-square&logo=Go" alt="Go Version" />
+  <img src="https://img.shields.io/badge/Kratos-v2-00ADD8?style=flat-square" alt="Kratos" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License" />
+  <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square" alt="PRs Welcome" />
+</p>
 
-## 核心功能模块
+---
 
-### 1. 应用引导（Bootstrap）
+## 项目亮点
 
-- **核心能力**：提供统一的应用启动入口，封装配置加载、日志初始化、服务注册等流程。
-- **关键实现**：通过 bootstrap/bootstrap.go 中的 Bootstrap 函数，接收应用初始化逻辑，自动完成配置解析、日志组件初始化、服务注册中心连接等前置操作，最终启动应用并处理优雅退出。
-- **优势**：简化应用启动流程，减少重复代码，确保初始化逻辑的一致性。
+- **统一引导入口**：封装配置加载、日志初始化、服务注册、链路追踪等全流程，一行代码启动微服务
+- **九大数据库引擎**：原生支持 ClickHouse、Doris、Elasticsearch、OpenSearch、MongoDB、InfluxDB、Cassandra、Ent、GORM 等主流数据库
+- **七大注册中心**：集成 Consul、Etcd、Nacos、Zookeeper、Eureka、Polaris、ServiceComb 等主流服务发现组件
+- **六大远程配置中心**：支持 Apollo、Consul、Etcd、Nacos、Polaris、Kubernetes ConfigMap 远程配置管理
+- **五大传输层**：内置 Kafka、Asynq、MCP、MQTT、SSE 等消息与流式传输组件
+- **三大 AI 框架**：集成 go-openai、LangChainGo、Eino，支持云端模型与本地模型（Ollama）无缝切换
+- **多语言脚本引擎**：支持 JavaScript（ES6+）与 Lua 脚本动态扩展业务逻辑
+- **全链路可观测**：基于 OpenTelemetry 的分布式链路追踪，支持 Jaeger 等多种 Exporter
+- **六种日志框架**：支持 Zap、Zerolog、Logrus、Fluent、阿里云 SLS、腾讯云 CLS 日志输出
+- **配置契约优先**：全部配置通过 Protobuf 定义，类型安全、强约束、自动生成
 
-### 2. 多数据库支持
+---
 
-项目集成了主流的ORM，提供了基础的CURD封装：
+## 技术栈
 
-- Ent
-- GORM
+| 层级 | 技术 | 说明 |
+| --- | --- | --- |
+| 语言 | Go 1.23+ | 高性能编译型语言 |
+| 框架 | go-kratos v2 | B站开源微服务框架 |
+| 配置定义 | Protobuf + buf.build | 接口契约优先，类型安全 |
+| 链路追踪 | OpenTelemetry | 分布式可观测标准 |
+| 对象存储 | MinIO / S3 | S3 兼容对象存储 |
+| 缓存 | Redis | go-redis v9，支持链路追踪与指标采集 |
+| AI 框架 | go-openai / LangChainGo / Eino | 多框架 LLM 接入，支持云端与本地模型 |
+| 消息队列 | Kafka | 高吞吐事件流处理 |
+| 异步任务 | Asynq | 基于 Redis 的异步任务队列 |
+| AI 工具协议 | MCP (Model Context Protocol) | AI Agent 工具调用标准协议 |
+| 实时推送 | SSE | 服务端事件推送 |
+| 物联网 | MQTT | 轻量级消息传输协议 |
+| 脚本引擎 | goja（JS）/ gopher-lua | 多语言动态脚本执行 |
 
-项目集成了多种主流数据库的客户端封装，提供简洁的操作接口：
+---
 
-- **ElasticSearch**：支持文档插入（`InsertDocument`）等操作，封装索引、文档的核心交互逻辑。
-- **MongoDB**：提供查询（`Find`）、字段投影（`SetProjection`）等方法，类比关系型数据库的表、行结构，降低使用门槛。
-- **ClickHouse**：通过查询构建器（`QueryBuilder`）简化 SQL 构建，支持 `SELECT` 语句的条件、排序、分页等操作。
-- **InfluxDB**：支持时序数据插入（`Insert`），提供数据映射（`Mapper`）机制，方便结构化数据与时序点的转换。
+## 项目结构
 
-各数据库客户端均包含错误处理和日志记录，提升调试效率。
+```
+kratos-bootstrap/
+├── api/                                # Protobuf API 定义与生成代码
+│   ├── protos/conf/v1/                 # .proto 源文件（配置结构定义）
+│   └── gen/go/conf/v1/                 # buf 生成的 Go 代码
+├── bootstrap/                          # 应用引导核心
+│   ├── bootstrap.go                    # 引导入口（配置加载/日志/注册/追踪）
+│   ├── cli.go                          # CLI 命令行框架（Cobra）
+│   ├── context.go                      # 引导上下文
+│   └── daemon.go                       # 守护进程支持
+├── ai/                                 # AI 大模型集成
+│   ├── model/                          # go-openai 原生客户端
+│   ├── langchaingo/                    # LangChainGo 框架封装
+│   └── eino/                           # 字节跳动 Eino 框架封装
+├── config/                             # 远程配置中心
+│   ├── apollo/                         # Apollo 配置中心
+│   ├── consul/                         # Consul KV 配置
+│   ├── etcd/                           # Etcd 配置
+│   ├── nacos/                          # Nacos 配置
+│   ├── polaris/                        # Polaris 配置
+│   └── kubernetes/                     # Kubernetes ConfigMap
+├── registry/                           # 服务注册与发现
+│   ├── consul/                         # Consul 注册中心
+│   ├── etcd/                           # Etcd 注册中心
+│   ├── nacos/                          # Nacos 注册中心
+│   ├── zookeeper/                      # Zookeeper 注册中心
+│   ├── eureka/                         # Eureka 注册中心
+│   ├── polaris/                        # Polaris 注册中心
+│   ├── servicecomb/                    # ServiceComb 注册中心
+│   └── kubernetes/                     # Kubernetes 注册中心
+├── database/                           # 数据库客户端
+│   ├── clickhouse/                     # ClickHouse（OLAP）
+│   ├── doris/                          # Apache Doris（OLAP）
+│   ├── elasticsearch/                  # Elasticsearch（搜索引擎）
+│   ├── opensearch/                     # OpenSearch（搜索引擎）
+│   ├── mongodb/                        # MongoDB（文档数据库）
+│   ├── influxdb/                       # InfluxDB（时序数据库）
+│   ├── cassandra/                      # Cassandra（宽列数据库）
+│   ├── ent/                            # Ent ORM
+│   └── gorm/                           # GORM ORM
+├── transport/                          # 传输层组件
+│   ├── kafka/                          # Kafka 消息队列
+│   ├── asynq/                          # Asynq 异步任务
+│   ├── mcp/                            # MCP AI 工具协议
+│   ├── mqtt/                           # MQTT 物联网协议
+│   └── sse/                            # SSE 服务端推送
+├── logger/                             # 日志框架集成
+│   ├── zap/                            # Zap 高性能日志
+│   ├── zerolog/                        # Zerolog 零分配日志
+│   ├── logrus/                         # Logrus 结构化日志
+│   ├── fluent/                         # Fluentd 日志收集
+│   ├── aliyun/                         # 阿里云 SLS 日志服务
+│   └── tencent/                        # 腾讯云 CLS 日志服务
+├── cache/                              # 缓存
+│   └── redis/                          # Redis 客户端
+├── tracer/                             # 链路追踪
+│   └── exporter.go                     # OpenTelemetry Exporter 工厂
+├── rpc/                                # RPC 通信
+│   ├── grpc.go                         # gRPC 客户端/服务端
+│   ├── rest.go                         # REST (HTTP) 客户端/服务端
+│   └── middleware/                     # RPC 中间件
+│       ├── validate/                   # Protobuf 参数校验
+│       └── requestid/                  # 请求 ID 中间件
+├── oss/                                # 对象存储
+│   ├── minio/                          # MinIO 客户端
+│   └── s3/                             # S3 兼容客户端
+└── script_engine/                      # 脚本引擎
+    └── script_engine.go                # JavaScript / Lua 脚本执行引擎
+```
 
-### 3. 服务注册与发现
+---
 
-- **支持组件**：集成 `Kubernetes`、`Consul`、`Etcd`、`Eureka` 等主流服务注册中心（`registry/` 目录）。
-- **核心逻辑**：通过 `bootstrap/registry.go` 中的 `NewDiscovery` 函数，根据配置动态创建对应类型的服务发现客户端，实现服务节点的自动发现与管理。
-- **注意**：Kubernetes 注册中心目前处于参考阶段，未经过生产环境验证。
+## 核心功能
 
-### 4. 脚本引擎
+### 应用引导
 
-提供多语言脚本执行能力，支持动态扩展业务逻辑：
+| 功能 | 说明 |
+| --- | --- |
+| 统一启动入口 | 通过 `Bootstrap` 函数封装配置加载、日志初始化、服务注册、链路追踪全流程 |
+| CLI 框架 | 基于 Cobra 的命令行框架，支持子命令定制与 Flag 注入 |
+| 守护进程 | 原生守护进程模式，支持后台运行与 PID 管理 |
+| 应用元信息 | 统一管理应用名称、版本号、实例 ID、项目空间等元数据 |
+| 优雅退出 | 内置信号捕获与优雅关停机制，确保服务安全下线 |
 
-- **支持语言**：`Lua`、`JavaScript`（基于 `goja` 实现，支持部分 ES6 语法），配置中预留 Python 支持。
-- **核心接口**：`EngineInterface` 定义了脚本引擎的通用能力，包括初始化（`Init`）、加载脚本（`LoadString`/`LoadFile`）、执行（`Execute`）、注册全局变量 / 函数等。
-- **优势**：允许通过脚本动态调整业务规则，无需重新编译应用，提升灵活性。
+### 服务注册与发现
 
-### 5. 配置管理
+| 注册中心 | 说明 |
+| --- | --- |
+| Consul | HashiCorp 服务发现与 KV 存储 |
+| Etcd | 高可用分布式 KV，Kubernetes 底层存储 |
+| Nacos | 阿里云微服务注册与配置中心 |
+| Zookeeper | Apache 分布式协调服务 |
+| Eureka | Netflix 服务发现组件 |
+| Polaris | 腾讯云北极星服务治理平台 |
+| ServiceComb | 华为云微服务引擎 |
+| Kubernetes | 原生 Kubernetes 服务发现 |
 
-通过 Protobuf 定义统一的配置结构（`api/gen/go/conf/v1/`），涵盖：
+### 远程配置中心
 
-- 服务器配置（REST、gRPC、Kafka 等多种服务类型）
-- 日志、追踪、认证授权配置
-- 脚本引擎、对象存储（OSS）、通知（短信等）配置
-- 支持远程配置（`Apollo`、`Consul`、`Etcd` 等，`config/` 目录）
+| 配置中心 | 说明 |
+| --- | --- |
+| Apollo | 携程分布式配置管理中心 |
+| Consul | Consul KV 配置存储 |
+| Etcd | Etcd 分布式配置 |
+| Nacos | Nacos 配置管理 |
+| Polaris | Polaris 配置管理 |
+| Kubernetes | Kubernetes ConfigMap |
 
-配置结构清晰，便于扩展和维护。
+### 数据库支持
 
-### 6. 其他组件
+| 数据库 | 类型 | 说明 |
+| --- | --- | --- |
+| ClickHouse | OLAP | 列式存储，极致分析性能 |
+| Apache Doris | OLAP | 高性能实时分析引擎 |
+| Elasticsearch | 搜索引擎 | 全文检索与日志分析 |
+| OpenSearch | 搜索引擎 | Elasticsearch 开源分支 |
+| MongoDB | 文档数据库 | 灵活的文档模型 |
+| InfluxDB | 时序数据库 | 时序数据存储与查询 |
+| Cassandra | 宽列数据库 | 高可用分布式存储 |
+| Ent | ORM | Go 实体框架 |
+| GORM | ORM | Go 最流行的 ORM |
 
-- **中间件**：支持限流、监控、链路追踪、参数校验等常用中间件（`middleware/` 目录）。
-- **对象存储**：集成 `MinIO` 客户端（`oss/minio/`），提供对象存储操作能力。
-- **工具链**：通过 `Makefile` 提供 API 生成（基于 Protobuf）等自动化命令，简化开发流程。
+### AI 大模型
 
-## 技术特点
+| 模块 | 框架 | 说明 |
+| --- | --- | --- |
+| model | go-openai | OpenAI 兼容 API 原生客户端 |
+| langchaingo | LangChainGo | Chain / Agent / Embedding / VectorStore / Memory |
+| eino | 字节跳动 Eino | Chain / Tool / Prompt / Compose |
 
-- **高集成度**：一站式集成数据库、服务注册、脚本引擎等常用组件，减少第三方依赖的整合成本。
-- **可扩展性**：通过接口定义（如 EngineInterface、注册中心 Creator）支持自定义实现，方便替换或扩展组件。
-- **易用性**：封装底层细节，提供简洁的 API 接口，降低开发者使用门槛（如数据库查询构建器、脚本执行接口）。
-- **标准化**：统一配置格式、启动流程和错误处理，提升项目规范性和可维护性。
+所有 AI 模块均支持：
+- **云端模型**：OpenAI、通义千问、DeepSeek 等兼容 OpenAI API 的模型服务
+- **本地模型**：Ollama 本地部署，零依赖云端
+
+### 传输层
+
+| 传输组件 | 说明 |
+| --- | --- |
+| Kafka | 高吞吐消息队列，支持 SASL/SCRAM 认证与 TLS 加密 |
+| Asynq | 基于 Redis 的异步任务队列，支持单机/集群/Sentinel 模式 |
+| MCP | Model Context Protocol，AI Agent 工具调用标准协议（HTTP/SSE/Stdio） |
+| MQTT | 轻量级物联网消息传输协议 |
+| SSE | Server-Sent Events 实时服务端推送 |
+
+### 日志框架
+
+| 日志框架 | 说明 |
+| --- | --- |
+| Zap | Uber 开源高性能日志库 |
+| Zerolog | 零分配高性能 JSON 日志 |
+| Logrus | 结构化日志库 |
+| Fluent | Fluentd 日志收集 |
+| 阿里云 SLS | 阿里云日志服务 |
+| 腾讯云 CLS | 腾讯云日志服务 |
+
+### 链路追踪
+
+基于 OpenTelemetry 标准实现，支持：
+- 采样率配置（TraceIDRatioBased 采样）
+- W3C TraceContext 与 Baggage 传播
+- 可插拔 Exporter 工厂模式
+- 服务元信息自动注入（服务名、版本、实例 ID、环境）
+
+### RPC 通信
+
+| 功能 | 说明 |
+| --- | --- |
+| gRPC 服务端/客户端 | 原生 gRPC 支持，内置 TLS、超时、中间件链 |
+| REST (HTTP) 服务端 | HTTP/RESTful API 服务，支持 CORS、pprof 调试 |
+| 中间件链 | Recovery / Tracing / Validate / RateLimit / Metadata |
+| 限流 | BBR（Google BBR 算法）自适应限流 |
+| 白名单 | 基于方法名的中间件白名单机制 |
+
+### 脚本引擎
+
+| 语言 | 引擎 | 说明 |
+| --- | --- | --- |
+| JavaScript | goja | 支持 ES6+ 语法，适用于规则引擎与动态计算 |
+| Lua | gopher-lua | 轻量级嵌入式脚本语言 |
+
+支持脚本池管理（固定大小 / 自动伸缩），预加载脚本与入口脚本。
+
+### 对象存储
+
+| 存储 | 说明 |
+| --- | --- |
+| MinIO | 自托管 S3 兼容对象存储 |
+| S3 | Amazon S3 / 兼容存储 |
+
+---
+
+## 设计原则
+
+- **配置驱动**：全部组件通过 Protobuf 配置定义初始化，类型安全，避免硬编码
+- **非侵入封装**：封装层仅做配置转译与实例创建，不侵入框架原生 API，保留框架原生使用方式
+- **工厂模式**：注册中心、日志、追踪等组件均采用工厂注册模式，按需加载，松耦合
+- **模块化设计**：每个功能模块独立 Go Module，按需引入，不产生冗余依赖
+- **防御性编程**：全面的空指针检查与错误处理，确保组件缺失时不影响主流程
+
+---
 
 ## 适用场景
 
-- 微服务架构下的服务初始化与基础设施管理
-- 需要集成多种数据库的复杂应用
-- 需通过脚本动态扩展业务逻辑的场景（如规则引擎、动态计算）
-- 追求开发效率，希望减少重复搭建基础设施的项目
+- 微服务架构下的标准化应用引导与基础设施管理
+- 需要集成多种数据库与中间件的复杂业务系统
+- AI 应用开发，需对接多种大模型与 Agent 框架
+- 物联网场景，需要 MQTT 消息传输与边缘计算
+- 实时数据处理，需要 Kafka / Asynq 异步任务调度
+- 需要动态脚本扩展业务规则的场景（如规则引擎、动态计算）
+
+---
 
 ## 许可证
 
-项目基于 MIT 许可证开源（详见 LICENSE 文件），允许自由使用、修改和分发，需保留原版权信息。
-
-
-
-
+项目基于 MIT 许可证开源，允许自由使用、修改和分发，需保留原版权信息。
