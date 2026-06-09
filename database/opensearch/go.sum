@@ -42,8 +42,8 @@ github.com/tx7do/go-utils v1.1.40 h1:PA6ZpBRbYZNUc3xiSP6oRhMGa9iCXLzF5pwvZHJmpZQ
 github.com/tx7do/go-utils v1.1.40/go.mod h1:A5zjhW0UTM6veYuCbq7/mcwDXaBw8UhBnvaLSwURBRg=
 github.com/wI2L/jsondiff v0.7.0 h1:1lH1G37GhBPqCfp/lrs91rf/2j3DktX6qYAKZkLuCQQ=
 github.com/wI2L/jsondiff v0.7.0/go.mod h1:KAEIojdQq66oJiHhDyQez2x+sRit0vIzC9KeK0yizxM=
-go.einride.tech/aip v0.85.0 h1:fhQEfLV76tOFis2ZglWh7NdAzQ+HJ1Rmss+ctEpNnUQ=
-go.einride.tech/aip v0.85.0/go.mod h1:dZuN/0sXeoscfWqsW8QLcLrGZdvsCC1B2R2CZ4kHmao=
+go.einride.tech/aip v0.86.3 h1:jg80Ec4XBPYg1i7avzrl3MJol/dUwmMMLHtcmEMyxgM=
+go.einride.tech/aip v0.86.3/go.mod h1:dZuN/0sXeoscfWqsW8QLcLrGZdvsCC1B2R2CZ4kHmao=
 go.yaml.in/yaml/v3 v3.0.4 h1:tfq32ie2Jv2UxXFdLJdh3jXuOzWiL1fo0bu/FbuKpbc=
 go.yaml.in/yaml/v3 v3.0.4/go.mod h1:DhzuOOF2ATzADvBadXxruRBLzYTpT36CKvDb3+aBEFg=
 golang.org/x/net v0.49.0 h1:eeHFmOGUTtaaPSGNmjBKpbng9MulQsJURQUAfUwY++o=

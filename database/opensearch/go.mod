@@ -17,7 +17,7 @@ require (
 	github.com/tx7do/go-crud/api v0.0.7 // indirect
 	github.com/tx7do/go-crud/pagination v0.0.14 // indirect
 	github.com/tx7do/go-utils v1.1.40 // indirect
-	go.einride.tech/aip v0.85.0 // indirect
+	go.einride.tech/aip v0.86.3 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/sys v0.43.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20260420184626-e10c466a9529 // indirect

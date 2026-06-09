@@ -58,8 +58,8 @@ github.com/tx7do/go-utils/mapper v0.0.3 h1:Z7YoPVsa6I3lfWGSUoa9atujHWeF3kP+yKfS6
 github.com/tx7do/go-utils/mapper v0.0.3/go.mod h1:zziBbtoqCt8pRw+jmK9Ic9sRD7a2yCLWG40Hy2UCSCs=
 github.com/xyproto/randomstring v1.0.5 h1:YtlWPoRdgMu3NZtP45drfy1GKoojuR7hmRcnhZqKjWU=
 github.com/xyproto/randomstring v1.0.5/go.mod h1:rgmS5DeNXLivK7YprL0pY+lTuhNQW3iGxZ18UQApw/E=
-go.einride.tech/aip v0.85.0 h1:fhQEfLV76tOFis2ZglWh7NdAzQ+HJ1Rmss+ctEpNnUQ=
-go.einride.tech/aip v0.85.0/go.mod h1:dZuN/0sXeoscfWqsW8QLcLrGZdvsCC1B2R2CZ4kHmao=
+go.einride.tech/aip v0.86.3 h1:jg80Ec4XBPYg1i7avzrl3MJol/dUwmMMLHtcmEMyxgM=
+go.einride.tech/aip v0.86.3/go.mod h1:dZuN/0sXeoscfWqsW8QLcLrGZdvsCC1B2R2CZ4kHmao=
 go.opentelemetry.io/otel v1.43.0 h1:mYIM03dnh5zfN7HautFE4ieIig9amkNANT+xcVxAj9I=
 go.opentelemetry.io/otel v1.43.0/go.mod h1:JuG+u74mvjvcm8vj8pI5XiHy1zDeoCS2LB1spIq7Ay0=
 go.opentelemetry.io/otel/trace v1.43.0 h1:BkNrHpup+4k4w+ZZ86CZoHHEkohws8AY+WTX09nk+3A=

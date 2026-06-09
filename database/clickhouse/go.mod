@@ -30,7 +30,7 @@ require (
 	github.com/tx7do/go-crud/api v0.0.7 // indirect
 	github.com/tx7do/go-crud/pagination v0.0.14 // indirect
 	github.com/tx7do/go-utils/mapper v0.0.3 // indirect
-	go.einride.tech/aip v0.85.0 // indirect
+	go.einride.tech/aip v0.86.3 // indirect
 	go.opentelemetry.io/otel v1.43.0 // indirect
 	go.opentelemetry.io/otel/trace v1.43.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect

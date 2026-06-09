@@ -75,7 +75,7 @@ require (
 	github.com/tx7do/go-utils v1.1.40 // indirect
 	github.com/tx7do/go-utils/mapper v0.0.3 // indirect
 	github.com/zeebo/xxh3 v1.1.0 // indirect
-	go.einride.tech/aip v0.85.0 // indirect
+	go.einride.tech/aip v0.86.3 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.68.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.68.0 // indirect

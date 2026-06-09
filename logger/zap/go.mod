@@ -10,7 +10,7 @@ replace (
 require (
 	github.com/tx7do/kratos-bootstrap/api v0.0.33
 	github.com/tx7do/kratos-bootstrap/logger v0.1.2
-	go.uber.org/zap v1.27.1
+	go.uber.org/zap v1.28.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
