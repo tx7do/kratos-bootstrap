@@ -3,7 +3,6 @@ git tag api/v0.0.41 --force
 git tag cache/redis/v0.1.1 --force
 git tag rpc/v0.1.1 --force
 git tag tracer/v0.1.4 --force
-git tag script_engine/v0.0.5 --force
 
 git tag oss/minio/v0.1.2 --force
 git tag oss/s3/v0.1.2 --force
@@ -53,6 +52,16 @@ git tag transport/sse/v0.0.4 --force
 git tag ai/model/v0.0.1 --force
 git tag ai/eino/v0.0.1 --force
 git tag ai/langchaingo/v0.0.1 --force
+
+git tag script_engine/v0.0.6 --force
+git tag script_engine/source/consul/v0.0.1 --force
+git tag script_engine/source/database/v0.0.1 --force
+git tag script_engine/source/etcd/v0.0.1 --force
+git tag script_engine/source/git/v0.0.1 --force
+git tag script_engine/source/http/v0.0.1 --force
+git tag script_engine/source/redis/v0.0.1 --force
+git tag script_engine/source/s3/v0.0.1 --force
+
 
 git tag bootstrap/v0.1.16 --force
 
