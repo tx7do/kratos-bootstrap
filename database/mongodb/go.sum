@@ -28,10 +28,10 @@ github.com/tx7do/go-crud/api v0.0.7 h1:SDMo1rkQ+Ey9T9vDljaO/Q6Ty3UFiDi3PFJXqKUpc
 github.com/tx7do/go-crud/api v0.0.7/go.mod h1:++hrhWo1vnieqD7vn8Ft1Sg67PzM4lu9KDbeg+X6Cdc=
 github.com/tx7do/go-crud/mongodb v0.0.13 h1:0pgsVzBxvK9A3YkFOdIpTYgoYZXjUsEfXtLLYRtyATA=
 github.com/tx7do/go-crud/mongodb v0.0.13/go.mod h1:tx81fwG/mp5m9D8Egv8YBkwoNX/D8/QffdJxezxXm10=
-github.com/tx7do/go-crud/pagination v0.0.13 h1:LPUkBPAj0WC9VzFKcTWHzk7ozl1gZVAN3tq5Oj8uBbQ=
-github.com/tx7do/go-crud/pagination v0.0.13/go.mod h1:LT3Cwgqoav7rMGCMzrIxp0Iux22+XzHIYzvo3patte8=
-github.com/tx7do/go-utils v1.1.36 h1:8HzVfgRSyLOaPQUvC87FcRxNHVb6bKHyap+klnLYYbQ=
-github.com/tx7do/go-utils v1.1.36/go.mod h1:A5zjhW0UTM6veYuCbq7/mcwDXaBw8UhBnvaLSwURBRg=
+github.com/tx7do/go-crud/pagination v0.0.14 h1:1k/EuyD0zmy2gMX3CAxmhpJ7Nd8aoxGydtkd2iYwOKA=
+github.com/tx7do/go-crud/pagination v0.0.14/go.mod h1:LT3Cwgqoav7rMGCMzrIxp0Iux22+XzHIYzvo3patte8=
+github.com/tx7do/go-utils v1.1.40 h1:PA6ZpBRbYZNUc3xiSP6oRhMGa9iCXLzF5pwvZHJmpZQ=
+github.com/tx7do/go-utils v1.1.40/go.mod h1:A5zjhW0UTM6veYuCbq7/mcwDXaBw8UhBnvaLSwURBRg=
 github.com/tx7do/go-utils/mapper v0.0.3 h1:Z7YoPVsa6I3lfWGSUoa9atujHWeF3kP+yKfS6Rkx5SM=
 github.com/tx7do/go-utils/mapper v0.0.3/go.mod h1:zziBbtoqCt8pRw+jmK9Ic9sRD7a2yCLWG40Hy2UCSCs=
 github.com/xdg-go/pbkdf2 v1.0.0 h1:Su7DPu48wXMwC3bs7MCNG+z4FhcyEuz5dlvchbq0B0c=

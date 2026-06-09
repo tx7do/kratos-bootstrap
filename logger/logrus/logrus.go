@@ -1,72 +1,76 @@
 package logrus
 
 import (
+	"context"
+	"fmt"
+
 	"github.com/sirupsen/logrus"
 
-	"github.com/go-kratos/kratos/v2/log"
+	bLogger "github.com/tx7do/kratos-bootstrap/logger"
 )
 
-var _ log.Logger = (*Logger)(nil)
+// Compile-time assertion: Logger implements bLogger.Logger.
+var _ bLogger.Logger = (*Logger)(nil)
 
 type Logger struct {
-	log *logrus.Logger
+	log    *logrus.Logger
+	fields logrus.Fields
 }
 
-func NewLogrusLogger(logger *logrus.Logger) log.Logger {
-	return &Logger{
-		log: logger,
-	}
+func NewLogrusLogger(logger *logrus.Logger) *Logger {
+	return &Logger{log: logger, fields: make(logrus.Fields)}
 }
 
-func (l *Logger) Log(level log.Level, keyvals ...any) (err error) {
-	var (
-		logrusLevel logrus.Level
-		fields      logrus.Fields = make(map[string]any)
-		msg         string
-	)
+// Debug 输出 DEBUG 级别日志。
+func (l *Logger) Debug(_ context.Context, msg string, keyvals ...any) {
+	l.logEntry(logrus.DebugLevel, msg, keyvals)
+}
 
-	switch level {
-	case log.LevelDebug:
-		logrusLevel = logrus.DebugLevel
-	case log.LevelInfo:
-		logrusLevel = logrus.InfoLevel
-	case log.LevelWarn:
-		logrusLevel = logrus.WarnLevel
-	case log.LevelError:
-		logrusLevel = logrus.ErrorLevel
-	case log.LevelFatal:
-		logrusLevel = logrus.FatalLevel
-	default:
-		logrusLevel = logrus.DebugLevel
+// Info 输出 INFO 级别日志。
+func (l *Logger) Info(_ context.Context, msg string, keyvals ...any) {
+	l.logEntry(logrus.InfoLevel, msg, keyvals)
+}
+
+// Warn 输出 WARN 级别日志。
+func (l *Logger) Warn(_ context.Context, msg string, keyvals ...any) {
+	l.logEntry(logrus.WarnLevel, msg, keyvals)
+}
+
+// Error 输出 ERROR 级别日志。
+func (l *Logger) Error(_ context.Context, msg string, keyvals ...any) {
+	l.logEntry(logrus.ErrorLevel, msg, keyvals)
+}
+
+// With 返回附加了指定 key-value 对的新 Logger 实例。
+func (l *Logger) With(keyvals ...any) bLogger.Logger {
+	newFields := make(logrus.Fields)
+	for k, v := range l.fields {
+		newFields[k] = v
 	}
+	for k, v := range toFields(keyvals) {
+		newFields[k] = v
+	}
+	return &Logger{log: l.log, fields: newFields}
+}
 
-	if logrusLevel > l.log.Level {
+// logEntry 统一处理 logrus 日志输出。
+func (l *Logger) logEntry(level logrus.Level, msg string, keyvals []any) {
+	if level > l.log.Level {
 		return
 	}
+	entry := l.log.WithFields(l.fields)
+	extra := toFields(keyvals)
+	if len(extra) > 0 {
+		entry = entry.WithFields(extra)
+	}
+	entry.Log(level, msg)
+}
 
-	if len(keyvals) == 0 {
-		return nil
+// toFields 将交替的 key-value 对转换为 logrus.Fields。
+func toFields(keyvals []any) logrus.Fields {
+	fields := make(logrus.Fields)
+	for i := 0; i+1 < len(keyvals); i += 2 {
+		fields[fmt.Sprint(keyvals[i])] = keyvals[i+1]
 	}
-	if len(keyvals)%2 != 0 {
-		keyvals = append(keyvals, "")
-	}
-	for i := 0; i < len(keyvals); i += 2 {
-		key, ok := keyvals[i].(string)
-		if !ok {
-			continue
-		}
-		if key == logrus.FieldKeyMsg {
-			msg, _ = keyvals[i+1].(string)
-			continue
-		}
-		fields[key] = keyvals[i+1]
-	}
-
-	if len(fields) > 0 {
-		l.log.WithFields(fields).Log(logrusLevel, msg)
-	} else {
-		l.log.Log(logrusLevel, msg)
-	}
-
-	return
+	return fields
 }

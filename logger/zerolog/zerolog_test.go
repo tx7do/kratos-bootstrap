@@ -1,11 +1,10 @@
 package zerolog
 
 import (
+	"context"
 	"testing"
 
 	"github.com/rs/zerolog"
-
-	"github.com/go-kratos/kratos/v2/log"
 )
 
 type testWriteSyncer struct {
@@ -23,12 +22,10 @@ func TestLogger(t *testing.T) {
 	zlogger := zerolog.New(syncer)
 	logger := NewZerologLogger(&zlogger)
 
-	klog := log.NewHelper(logger)
-
-	klog.Debugw("log", "debug")
-	klog.Infow("log", "info")
-	klog.Warnw("log", "warn")
-	klog.Errorw("log", "error")
+	logger.Debug(context.Background(), "", "log", "debug")
+	logger.Info(context.Background(), "", "log", "info")
+	logger.Warn(context.Background(), "", "log", "warn")
+	logger.Error(context.Background(), "", "log", "error")
 
 	except := []string{
 		"{\"level\":\"debug\",\"log\":\"debug\"}\n",

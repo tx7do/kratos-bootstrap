@@ -1,26 +1,23 @@
 package zap
 
 import (
-	zapLogger "github.com/go-kratos/kratos/contrib/log/zap/v2"
-	"github.com/go-kratos/kratos/v2/log"
-
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
 	"gopkg.in/natefinch/lumberjack.v2"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"github.com/tx7do/kratos-bootstrap/logger"
+	bLogger "github.com/tx7do/kratos-bootstrap/logger"
 )
 
 func init() {
-	_ = logger.Register(logger.Zap, func(cfg *conf.Logger) (log.Logger, error) {
+	_ = bLogger.Register(bLogger.Zap, func(cfg *conf.Logger) (bLogger.Logger, error) {
 		return NewLogger(cfg)
 	})
 }
 
 // NewLogger 创建一个新的日志记录器 - Zap
-func NewLogger(cfg *conf.Logger) (log.Logger, error) {
+func NewLogger(cfg *conf.Logger) (bLogger.Logger, error) {
 	if cfg == nil || cfg.Zap == nil {
 		return nil, nil
 	}
@@ -49,7 +46,7 @@ func NewLogger(cfg *conf.Logger) (log.Logger, error) {
 	core := zapcore.NewCore(jsonEncoder, writeSyncer, lvl)
 	l := zap.New(core).WithOptions()
 
-	wrapped := zapLogger.NewLogger(l)
+	wrapped := NewZapLogger(l)
 
 	return wrapped, nil
 }

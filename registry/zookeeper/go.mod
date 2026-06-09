@@ -1,6 +1,6 @@
 module github.com/tx7do/kratos-bootstrap/registry/zookeeper
 
-go 1.24.6
+go 1.25.0
 
 replace (
 	github.com/armon/go-metrics => github.com/hashicorp/go-metrics v0.4.1
@@ -15,7 +15,7 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/tx7do/kratos-bootstrap/api v0.0.33
 	github.com/tx7do/kratos-bootstrap/registry v0.2.2
-	golang.org/x/sync v0.19.0
+	golang.org/x/sync v0.20.0
 )
 
 require (

@@ -1,13 +1,12 @@
 package fluent
 
 import (
+	"context"
 	"io"
 	"net"
 	"os"
 	"testing"
 	"time"
-
-	"github.com/go-kratos/kratos/v2/log"
 )
 
 func TestMain(m *testing.M) {
@@ -131,12 +130,11 @@ func TestLogger(t *testing.T) {
 		t.Error(err)
 	}
 	defer logger.Close()
-	flog := log.NewHelper(logger)
 
-	flog.Debug("log", "test")
-	flog.Info("log", "test")
-	flog.Warn("log", "test")
-	flog.Error("log", "test")
+	logger.Debug(context.Background(), "test")
+	logger.Info(context.Background(), "test")
+	logger.Warn(context.Background(), "test")
+	logger.Error(context.Background(), "test")
 }
 
 func TestLoggerWithOpt(t *testing.T) {
@@ -146,12 +144,11 @@ func TestLoggerWithOpt(t *testing.T) {
 		t.Error(err)
 	}
 	defer logger.Close()
-	flog := log.NewHelper(logger)
 
-	flog.Debug("log", "test")
-	flog.Info("log", "test")
-	flog.Warn("log", "test")
-	flog.Error("log", "test")
+	logger.Debug(context.Background(), "test")
+	logger.Info(context.Background(), "test")
+	logger.Warn(context.Background(), "test")
+	logger.Error(context.Background(), "test")
 }
 
 func TestLoggerError(t *testing.T) {
@@ -174,73 +171,69 @@ func TestLoggerError(t *testing.T) {
 func BenchmarkLoggerPrint(b *testing.B) {
 	b.SetParallelism(100)
 	logger, err := NewFluentLogger("tcp://127.0.0.1:24224")
-	flog := log.NewHelper(logger)
 	if err != nil {
 		b.Error(err)
 	}
 	defer logger.Close()
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			flog.Info("log", "test")
+			logger.Info(context.Background(), "test")
 		}
 	})
 }
 
-func BenchmarkLoggerHelperV(b *testing.B) {
-	b.SetParallelism(100)
-	logger, err := NewFluentLogger("tcp://127.0.0.1:24224")
-	if err != nil {
-		b.Error(err)
-	}
-	h := log.NewHelper(logger)
-	b.RunParallel(func(pb *testing.PB) {
-		for pb.Next() {
-			h.Info("log", "test")
-		}
-	})
-}
-
-func BenchmarkLoggerHelperInfo(b *testing.B) {
+func BenchmarkLoggerDirect(b *testing.B) {
 	b.SetParallelism(100)
 	logger, err := NewFluentLogger("tcp://127.0.0.1:24224")
 	if err != nil {
 		b.Error(err)
 	}
 	defer logger.Close()
-	h := log.NewHelper(logger)
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			h.Info("test")
+			logger.Info(context.Background(), "", "log", "test")
 		}
 	})
 }
 
-func BenchmarkLoggerHelperInfof(b *testing.B) {
+func BenchmarkLoggerInfo(b *testing.B) {
 	b.SetParallelism(100)
 	logger, err := NewFluentLogger("tcp://127.0.0.1:24224")
 	if err != nil {
 		b.Error(err)
 	}
 	defer logger.Close()
-	h := log.NewHelper(logger)
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			h.Infof("log %s", "test")
+			logger.Info(context.Background(), "test")
 		}
 	})
 }
 
-func BenchmarkLoggerHelperInfow(b *testing.B) {
+func BenchmarkLoggerInfof(b *testing.B) {
 	b.SetParallelism(100)
 	logger, err := NewFluentLogger("tcp://127.0.0.1:24224")
 	if err != nil {
 		b.Error(err)
 	}
 	defer logger.Close()
-	h := log.NewHelper(logger)
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			h.Infow("log", "test")
+			logger.Info(context.Background(), "log test")
+		}
+	})
+}
+
+func BenchmarkLoggerInfow(b *testing.B) {
+	b.SetParallelism(100)
+	logger, err := NewFluentLogger("tcp://127.0.0.1:24224")
+	if err != nil {
+		b.Error(err)
+	}
+	defer logger.Close()
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			logger.Info(context.Background(), "", "log", "test")
 		}
 	})
 }

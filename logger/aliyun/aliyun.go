@@ -1,6 +1,7 @@
 package aliyun
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -10,12 +11,12 @@ import (
 	"github.com/aliyun/aliyun-log-go-sdk/producer"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/go-kratos/kratos/v2/log"
+	bLogger "github.com/tx7do/kratos-bootstrap/logger"
 )
 
-// Logger see more detail https://github.com/aliyun/aliyun-log-go-sdk
+// Logger 扩展了项目 Logger 接口，增加 Aliyun SLS 特有的方法。
 type Logger interface {
-	log.Logger
+	bLogger.Logger
 
 	GetProducer() *producer.Producer
 	Close() error
@@ -24,6 +25,7 @@ type Logger interface {
 type aliyunLog struct {
 	producer *producer.Producer
 	opts     *options
+	extra    []any
 }
 
 func (a *aliyunLog) GetProducer() *producer.Producer {
@@ -34,17 +36,53 @@ func (a *aliyunLog) Close() error {
 	return a.producer.Close(5000)
 }
 
-func (a *aliyunLog) Log(level log.Level, keyvals ...any) error {
-	contents := make([]*sls.LogContent, 0, len(keyvals)/2+1)
+// Debug 输出 DEBUG 级别日志。
+func (a *aliyunLog) Debug(_ context.Context, msg string, keyvals ...any) {
+	a.post("DEBUG", msg, keyvals)
+}
 
+// Info 输出 INFO 级别日志。
+func (a *aliyunLog) Info(_ context.Context, msg string, keyvals ...any) {
+	a.post("INFO", msg, keyvals)
+}
+
+// Warn 输出 WARN 级别日志。
+func (a *aliyunLog) Warn(_ context.Context, msg string, keyvals ...any) {
+	a.post("WARN", msg, keyvals)
+}
+
+// Error 输出 ERROR 级别日志。
+func (a *aliyunLog) Error(_ context.Context, msg string, keyvals ...any) {
+	a.post("ERROR", msg, keyvals)
+}
+
+// With 返回附加了指定 key-value 对的新 Logger 实例。
+func (a *aliyunLog) With(keyvals ...any) bLogger.Logger {
+	return &aliyunLog{
+		producer: a.producer,
+		opts:     a.opts,
+		extra:    append(append([]any{}, a.extra...), keyvals...),
+	}
+}
+
+// post 发送日志到 Aliyun SLS。
+func (a *aliyunLog) post(level, msg string, keyvals []any) {
+	contents := make([]*sls.LogContent, 0, 3+len(a.extra)/2+len(keyvals)/2)
 	contents = append(contents, &sls.LogContent{
-		Key:   newString(level.Key()),
-		Value: newString(level.String()),
+		Key:   newString("level"),
+		Value: newString(level),
 	})
-	for i := 0; i < len(keyvals); i += 2 {
+	if msg != "" {
 		contents = append(contents, &sls.LogContent{
-			Key:   newString(toString(keyvals[i])),
-			Value: newString(toString(keyvals[i+1])),
+			Key:   newString("msg"),
+			Value: newString(msg),
+		})
+	}
+	all := append(append([]any{}, a.extra...), keyvals...)
+	for i := 0; i+1 < len(all); i += 2 {
+		contents = append(contents, &sls.LogContent{
+			Key:   newString(toString(all[i])),
+			Value: newString(toString(all[i+1])),
 		})
 	}
 
@@ -52,11 +90,11 @@ func (a *aliyunLog) Log(level log.Level, keyvals ...any) error {
 		Time:     proto.Uint32(uint32(time.Now().Unix())),
 		Contents: contents,
 	}
-	return a.producer.SendLog(a.opts.project, a.opts.logstore, "", "", logInst)
+	_ = a.producer.SendLog(a.opts.project, a.opts.logstore, "", "", logInst)
 }
 
-// NewAliyunLog new aliyun logger with options.
-func NewAliyunLog(options ...Option) (Logger, error) {
+// NewAliyunLogger 创建 Aliyun SLS 日志记录器。
+func NewAliyunLogger(options ...Option) (Logger, error) {
 	opts := defaultOptions()
 	for _, o := range options {
 		o(opts)

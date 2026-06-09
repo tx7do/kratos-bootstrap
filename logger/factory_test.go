@@ -4,14 +4,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/go-kratos/kratos/v2/log"
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
 
 func TestRegisterAndNewLogger(t *testing.T) {
 	// ensure clean state: register a mock factory and then unregister at the end
 	typ := Type("mock")
-	_ = Register(typ, func(cfg *conf.Logger) (log.Logger, error) {
+	_ = Register(typ, func(cfg *conf.Logger) (Logger, error) {
 		return NewStdLogger(), nil
 	})
 	defer Unregister(typ)
@@ -41,7 +40,7 @@ func TestRegisterAndNewLogger(t *testing.T) {
 
 func TestUnregisterAndUnsupported(t *testing.T) {
 	typ := Type("temp")
-	_ = Register(typ, func(cfg *conf.Logger) (log.Logger, error) { return NewStdLogger(), nil })
+	_ = Register(typ, func(cfg *conf.Logger) (Logger, error) { return NewStdLogger(), nil })
 	// Unregister and verify NewLogger returns unsupported
 	ok := Unregister(typ)
 	if !ok {
@@ -56,7 +55,7 @@ func TestUnregisterAndUnsupported(t *testing.T) {
 
 func TestFactoryReturnsNilLogger(t *testing.T) {
 	typ := Type("badfactory")
-	_ = Register(typ, func(cfg *conf.Logger) (log.Logger, error) { return nil, nil })
+	_ = Register(typ, func(cfg *conf.Logger) (Logger, error) { return nil, nil })
 	defer Unregister(typ)
 
 	cfg := &conf.Logger{Type: string(typ)}

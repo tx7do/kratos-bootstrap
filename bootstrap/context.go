@@ -11,11 +11,11 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	kratosLog "github.com/go-kratos/kratos/v2/log"
 	kratosRegistry "github.com/go-kratos/kratos/v2/registry"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 	bConfig "github.com/tx7do/kratos-bootstrap/config"
+	bLogger "github.com/tx7do/kratos-bootstrap/logger"
 )
 
 // Context 引导上下文
@@ -23,7 +23,7 @@ type Context struct {
 	config  *conf.Bootstrap // 引导配置
 	appInfo *conf.AppInfo   // 应用信息
 
-	logger    kratosLog.Logger         // 日志记录器
+	logger    bLogger.Logger           // 日志记录器（项目统一接口）
 	registrar kratosRegistry.Registrar // 服务注册器
 
 	customConfig sync.Map // 自定义配置项
@@ -54,7 +54,7 @@ func NewContext(parent context.Context, ai *conf.AppInfo) *Context {
 	return c
 }
 
-func NewContextWithParam(parent context.Context, ai *conf.AppInfo, cfg *conf.Bootstrap, log kratosLog.Logger) *Context {
+func NewContextWithParam(parent context.Context, ai *conf.AppInfo, cfg *conf.Bootstrap, l bLogger.Logger) *Context {
 	if parent == nil {
 		parent = context.Background()
 	}
@@ -63,7 +63,7 @@ func NewContextWithParam(parent context.Context, ai *conf.AppInfo, cfg *conf.Boo
 	c := &Context{
 		appInfo: &conf.AppInfo{},
 		config:  cfg,
-		logger:  log,
+		logger:  l,
 	}
 	// 初始化默认信息
 	AdjustAppInfo(c.appInfo)
@@ -94,11 +94,13 @@ func (c *Context) CancelContext() {
 	}
 }
 
-func (c *Context) NewLoggerHelper(moduleName string) *kratosLog.Helper {
-	return kratosLog.NewHelper(kratosLog.With(c.logger, "module", moduleName))
+// NewLoggerHelper 创建日志助手，自动附加 module 字段。
+func (c *Context) NewLoggerHelper(moduleName string) *bLogger.Helper {
+	return bLogger.NewHelper(c.logger.With("module", moduleName))
 }
 
-func (c *Context) GetLogger() kratosLog.Logger {
+// GetLogger 返回项目 Logger 实例。
+func (c *Context) GetLogger() bLogger.Logger {
 	return c.logger
 }
 

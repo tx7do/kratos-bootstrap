@@ -3,21 +3,20 @@ package zerolog
 import (
 	"strings"
 
-	"github.com/go-kratos/kratos/v2/log"
 	"github.com/rs/zerolog"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"github.com/tx7do/kratos-bootstrap/logger"
+	bLogger "github.com/tx7do/kratos-bootstrap/logger"
 )
 
 func init() {
-	_ = logger.Register(logger.Zerelog, func(cfg *conf.Logger) (log.Logger, error) {
+	_ = bLogger.Register(bLogger.Zerolog, func(cfg *conf.Logger) (bLogger.Logger, error) {
 		return NewLogger(cfg)
 	})
 }
 
 // NewLogger 创建一个新的日志记录器 - Zerolog
-func NewLogger(cfg *conf.Logger) (log.Logger, error) {
+func NewLogger(cfg *conf.Logger) (bLogger.Logger, error) {
 	if cfg == nil || cfg.Zerolog == nil {
 		return nil, nil
 	}

@@ -7,44 +7,35 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/go-kratos/kratos/v2/log"
+	bLogger "github.com/tx7do/kratos-bootstrap/logger"
 )
 
 func TestLoggerLog(t *testing.T) {
 	tests := map[string]struct {
-		level     logrus.Level
-		formatter logrus.Formatter
-		logLevel  log.Level
-		kvs       []any
-		want      string
+		loggerLevel logrus.Level
+		call        func(l bLogger.Logger)
+		want        string
 	}{
-		"json format": {
-			level:     logrus.InfoLevel,
-			formatter: &logrus.JSONFormatter{},
-			logLevel:  log.LevelInfo,
-			kvs:       []any{"case", "json format", "msg", "1"},
-			want:      `{"case":"json format","level":"info","msg":"1"`,
+		"info with fields": {
+			loggerLevel: logrus.InfoLevel,
+			call: func(l bLogger.Logger) {
+				l.Info(nil, "1", "case", "json format")
+			},
+			want: `{"case":"json format","level":"info","msg":"1"`,
 		},
 		"level unmatch": {
-			level:     logrus.InfoLevel,
-			formatter: &logrus.JSONFormatter{},
-			logLevel:  log.LevelDebug,
-			kvs:       []any{"case", "level unmatch", "msg", "1"},
-			want:      "",
-		},
-		"fatal level": {
-			level:     logrus.InfoLevel,
-			formatter: &logrus.JSONFormatter{},
-			logLevel:  log.LevelFatal,
-			kvs:       []any{"case", "json format", "msg", "1"},
-			want:      `{"case":"json format","level":"fatal","msg":"1"`,
+			loggerLevel: logrus.InfoLevel,
+			call: func(l bLogger.Logger) {
+				l.Debug(nil, "1", "case", "level unmatch")
+			},
+			want: "",
 		},
 		"no tags": {
-			level:     logrus.InfoLevel,
-			formatter: &logrus.JSONFormatter{},
-			logLevel:  log.LevelInfo,
-			kvs:       []any{"msg", "1"},
-			want:      `{"level":"info","msg":"1"`,
+			loggerLevel: logrus.InfoLevel,
+			call: func(l bLogger.Logger) {
+				l.Info(nil, "1")
+			},
+			want: `{"level":"info","msg":"1"`,
 		},
 	}
 
@@ -52,14 +43,14 @@ func TestLoggerLog(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			output := new(bytes.Buffer)
 			logger := logrus.New()
-			logger.Level = test.level
+			logger.Level = test.loggerLevel
 			logger.Out = output
-			logger.Formatter = test.formatter
+			logger.Formatter = &logrus.JSONFormatter{}
 			wrapped := NewLogrusLogger(logger)
-			_ = wrapped.Log(test.logLevel, test.kvs...)
+			test.call(wrapped)
 
 			if !strings.HasPrefix(output.String(), test.want) {
-				t.Errorf("TestName(%s): %s has not prefix %s", name, output.String(), test.want)
+				t.Errorf("TestName(%s): %q has not prefix %q", name, output.String(), test.want)
 			}
 		})
 	}

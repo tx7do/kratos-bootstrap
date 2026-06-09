@@ -50,10 +50,10 @@ github.com/tx7do/go-crud/api v0.0.7 h1:SDMo1rkQ+Ey9T9vDljaO/Q6Ty3UFiDi3PFJXqKUpc
 github.com/tx7do/go-crud/api v0.0.7/go.mod h1:++hrhWo1vnieqD7vn8Ft1Sg67PzM4lu9KDbeg+X6Cdc=
 github.com/tx7do/go-crud/clickhouse v0.0.18 h1:S9f6FrVf47o2u/B4O4k7Fv1krZSdiNiJwpVLeqWHxEI=
 github.com/tx7do/go-crud/clickhouse v0.0.18/go.mod h1:zahAttDKIn2wLHS9AzyLDVuzlJwb6A1xh2GpJ1ihlUQ=
-github.com/tx7do/go-crud/pagination v0.0.13 h1:LPUkBPAj0WC9VzFKcTWHzk7ozl1gZVAN3tq5Oj8uBbQ=
-github.com/tx7do/go-crud/pagination v0.0.13/go.mod h1:LT3Cwgqoav7rMGCMzrIxp0Iux22+XzHIYzvo3patte8=
-github.com/tx7do/go-utils v1.1.36 h1:8HzVfgRSyLOaPQUvC87FcRxNHVb6bKHyap+klnLYYbQ=
-github.com/tx7do/go-utils v1.1.36/go.mod h1:A5zjhW0UTM6veYuCbq7/mcwDXaBw8UhBnvaLSwURBRg=
+github.com/tx7do/go-crud/pagination v0.0.14 h1:1k/EuyD0zmy2gMX3CAxmhpJ7Nd8aoxGydtkd2iYwOKA=
+github.com/tx7do/go-crud/pagination v0.0.14/go.mod h1:LT3Cwgqoav7rMGCMzrIxp0Iux22+XzHIYzvo3patte8=
+github.com/tx7do/go-utils v1.1.40 h1:PA6ZpBRbYZNUc3xiSP6oRhMGa9iCXLzF5pwvZHJmpZQ=
+github.com/tx7do/go-utils v1.1.40/go.mod h1:A5zjhW0UTM6veYuCbq7/mcwDXaBw8UhBnvaLSwURBRg=
 github.com/tx7do/go-utils/mapper v0.0.3 h1:Z7YoPVsa6I3lfWGSUoa9atujHWeF3kP+yKfS6Rkx5SM=
 github.com/tx7do/go-utils/mapper v0.0.3/go.mod h1:zziBbtoqCt8pRw+jmK9Ic9sRD7a2yCLWG40Hy2UCSCs=
 github.com/xyproto/randomstring v1.0.5 h1:YtlWPoRdgMu3NZtP45drfy1GKoojuR7hmRcnhZqKjWU=

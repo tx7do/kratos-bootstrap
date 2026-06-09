@@ -4,8 +4,6 @@ import (
 	"math"
 	"reflect"
 	"testing"
-
-	"github.com/go-kratos/kratos/v2/log"
 )
 
 func TestWithEndpoint(t *testing.T) {
@@ -60,52 +58,32 @@ func TestWithAccessSecret(t *testing.T) {
 
 func TestLogger(t *testing.T) {
 	project := "foo"
-	logger, err := NewAliyunLog(WithProject(project))
+	logger, err := NewAliyunLogger(WithProject(project))
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	defer logger.Close()
 	logger.GetProducer()
-	flog := log.NewHelper(logger)
-	flog.Debug("log", "test")
-	flog.Info("log", "test")
-	flog.Warn("log", "test")
-	flog.Error("log", "test")
+	logger.Debug(nil, "test")
+	logger.Info(nil, "test")
+	logger.Warn(nil, "test")
+	logger.Error(nil, "test")
 }
 
 func TestLog(t *testing.T) {
 	project := "foo"
-	logger, err := NewAliyunLog(WithProject(project))
+	logger, err := NewAliyunLogger(WithProject(project))
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	defer logger.Close()
-	err = logger.Log(log.LevelDebug, 0, int8(1), int16(2), int32(3))
-	if err != nil {
-		t.Errorf("Log() returns error:%v", err)
-	}
-	err = logger.Log(log.LevelDebug, uint(0), uint8(1), uint16(2), uint32(3))
-	if err != nil {
-		t.Errorf("Log() returns error:%v", err)
-	}
-	err = logger.Log(log.LevelDebug, uint(0), uint8(1), uint16(2), uint32(3))
-	if err != nil {
-		t.Errorf("Log() returns error:%v", err)
-	}
-	err = logger.Log(log.LevelDebug, int64(0), uint64(1), float32(2), float64(3))
-	if err != nil {
-		t.Errorf("Log() returns error:%v", err)
-	}
-	err = logger.Log(log.LevelDebug, []byte{0, 1, 2, 3}, "foo")
-	if err != nil {
-		t.Errorf("Log() returns error:%v", err)
-	}
-	err = logger.Log(log.LevelDebug, true, 0)
-	if err != nil {
-		t.Errorf("Log() returns error:%v", err)
-	}
+	logger.Debug(nil, "test", "a", 0, "b", int8(1), "c", int16(2), "d", int32(3))
+	logger.Debug(nil, "test", "a", uint(0), "b", uint8(1), "c", uint16(2), "d", uint32(3))
+	logger.Debug(nil, "test", "a", int64(0), "b", uint64(1), "c", float32(2), "d", float64(3))
+	logger.Debug(nil, "test", "a", []byte{0, 1, 2, 3}, "b", "foo")
+	logger.Debug(nil, "test", "a", true, "b", 0)
 }
 
 func TestNewString(t *testing.T) {

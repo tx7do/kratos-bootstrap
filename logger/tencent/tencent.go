@@ -1,6 +1,7 @@
 package tencent
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -9,11 +10,11 @@ import (
 	cls "github.com/tencentcloud/tencentcloud-cls-sdk-go"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/go-kratos/kratos/v2/log"
+	bLogger "github.com/tx7do/kratos-bootstrap/logger"
 )
 
 type Logger interface {
-	log.Logger
+	bLogger.Logger
 
 	GetProducer() *cls.AsyncProducerClient
 	Close() error
@@ -22,27 +23,66 @@ type Logger interface {
 type tencentLog struct {
 	producer *cls.AsyncProducerClient
 	opts     *options
+	extra    []any
 }
 
-func (log *tencentLog) GetProducer() *cls.AsyncProducerClient {
-	return log.producer
+var _ bLogger.Logger = (*tencentLog)(nil)
+
+func (l *tencentLog) GetProducer() *cls.AsyncProducerClient {
+	return l.producer
 }
 
-func (log *tencentLog) Close() error {
-	return log.producer.Close(5000)
+func (l *tencentLog) Close() error {
+	return l.producer.Close(5000)
 }
 
-func (log *tencentLog) Log(level log.Level, keyvals ...any) error {
-	contents := make([]*cls.Log_Content, 0, len(keyvals)/2+1)
+// Debug 输出 DEBUG 级别日志。
+func (l *tencentLog) Debug(_ context.Context, msg string, keyvals ...any) {
+	l.post("DEBUG", msg, keyvals)
+}
 
+// Info 输出 INFO 级别日志。
+func (l *tencentLog) Info(_ context.Context, msg string, keyvals ...any) {
+	l.post("INFO", msg, keyvals)
+}
+
+// Warn 输出 WARN 级别日志。
+func (l *tencentLog) Warn(_ context.Context, msg string, keyvals ...any) {
+	l.post("WARN", msg, keyvals)
+}
+
+// Error 输出 ERROR 级别日志。
+func (l *tencentLog) Error(_ context.Context, msg string, keyvals ...any) {
+	l.post("ERROR", msg, keyvals)
+}
+
+// With 返回附加了指定 key-value 对的新 Logger 实例。
+func (l *tencentLog) With(keyvals ...any) bLogger.Logger {
+	return &tencentLog{
+		producer: l.producer,
+		opts:     l.opts,
+		extra:    append(append([]any{}, l.extra...), keyvals...),
+	}
+}
+
+// post 发送日志到 Tencent CLS。
+func (l *tencentLog) post(level, msg string, keyvals []any) {
+	contents := make([]*cls.Log_Content, 0, 3+len(l.extra)/2+len(keyvals)/2)
 	contents = append(contents, &cls.Log_Content{
-		Key:   newString(level.Key()),
-		Value: newString(level.String()),
+		Key:   newString("level"),
+		Value: newString(level),
 	})
-	for i := 0; i < len(keyvals); i += 2 {
+	if msg != "" {
 		contents = append(contents, &cls.Log_Content{
-			Key:   newString(toString(keyvals[i])),
-			Value: newString(toString(keyvals[i+1])),
+			Key:   newString("msg"),
+			Value: newString(msg),
+		})
+	}
+	all := append(append([]any{}, l.extra...), keyvals...)
+	for i := 0; i+1 < len(all); i += 2 {
+		contents = append(contents, &cls.Log_Content{
+			Key:   newString(toString(all[i])),
+			Value: newString(toString(all[i+1])),
 		})
 	}
 
@@ -50,7 +90,7 @@ func (log *tencentLog) Log(level log.Level, keyvals ...any) error {
 		Time:     proto.Int64(time.Now().Unix()),
 		Contents: contents,
 	}
-	return log.producer.SendLog(log.opts.topicID, logInst, nil)
+	_ = l.producer.SendLog(l.opts.topicID, logInst, nil)
 }
 
 func NewTencentLogger(options ...Option) (Logger, error) {

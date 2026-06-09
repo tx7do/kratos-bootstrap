@@ -1,21 +1,20 @@
 package logrus
 
 import (
-	"github.com/go-kratos/kratos/v2/log"
 	"github.com/sirupsen/logrus"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"github.com/tx7do/kratos-bootstrap/logger"
+	bLogger "github.com/tx7do/kratos-bootstrap/logger"
 )
 
 func init() {
-	_ = logger.Register(logger.Logrus, func(cfg *conf.Logger) (log.Logger, error) {
+	_ = bLogger.Register(bLogger.Logrus, func(cfg *conf.Logger) (bLogger.Logger, error) {
 		return NewLogger(cfg)
 	})
 }
 
 // NewLogger 创建一个新的日志记录器 - Logrus
-func NewLogger(cfg *conf.Logger) (log.Logger, error) {
+func NewLogger(cfg *conf.Logger) (bLogger.Logger, error) {
 	if cfg == nil || cfg.Logrus == nil {
 		return nil, nil
 	}
@@ -35,13 +34,11 @@ func NewLogger(cfg *conf.Logger) (log.Logger, error) {
 			DisableTimestamp: cfg.Logrus.DisableTimestamp,
 			TimestampFormat:  cfg.Logrus.TimestampFormat,
 		}
-		break
 	case "json":
 		loggerFormatter = &logrus.JSONFormatter{
 			DisableTimestamp: cfg.Logrus.DisableTimestamp,
 			TimestampFormat:  cfg.Logrus.TimestampFormat,
 		}
-		break
 	}
 
 	l := logrus.New()

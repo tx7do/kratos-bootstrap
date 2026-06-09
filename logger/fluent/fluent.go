@@ -1,22 +1,26 @@
 package fluent
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"net/url"
+	"os"
 	"strconv"
 
 	"github.com/fluent/fluent-logger-golang/fluent"
 
-	"github.com/go-kratos/kratos/v2/log"
+	bLogger "github.com/tx7do/kratos-bootstrap/logger"
 )
 
-var _ log.Logger = (*Logger)(nil)
+// Compile-time assertion: Logger implements bLogger.Logger.
+var _ bLogger.Logger = (*Logger)(nil)
 
 // Logger is fluent logger sdk.
 type Logger struct {
-	opts options
-	log  *fluent.Fluent
+	opts  options
+	log   *fluent.Fluent
+	extra []any
 }
 
 // NewFluentLogger new a std logger with options.
@@ -71,25 +75,47 @@ func NewFluentLogger(addr string, opts ...Option) (*Logger, error) {
 	}, nil
 }
 
-// Log print the kv pairs log.
-func (l *Logger) Log(level log.Level, keyvals ...any) error {
-	if len(keyvals) == 0 {
-		return nil
-	}
-	if len(keyvals)%2 != 0 {
-		keyvals = append(keyvals, "KEYVALS UNPAIRED")
-	}
+// Debug 输出 DEBUG 级别日志。
+func (l *Logger) Debug(_ context.Context, msg string, keyvals ...any) {
+	l.post("DEBUG", msg, keyvals)
+}
 
-	data := make(map[string]string, len(keyvals)/2+1)
+// Info 输出 INFO 级别日志。
+func (l *Logger) Info(_ context.Context, msg string, keyvals ...any) {
+	l.post("INFO", msg, keyvals)
+}
 
-	for i := 0; i < len(keyvals); i += 2 {
-		data[fmt.Sprint(keyvals[i])] = fmt.Sprint(keyvals[i+1])
-	}
+// Warn 输出 WARN 级别日志。
+func (l *Logger) Warn(_ context.Context, msg string, keyvals ...any) {
+	l.post("WARN", msg, keyvals)
+}
 
-	if err := l.log.Post(level.String(), data); err != nil {
-		println(err)
+// Error 输出 ERROR 级别日志。
+func (l *Logger) Error(_ context.Context, msg string, keyvals ...any) {
+	l.post("ERROR", msg, keyvals)
+}
+
+// With 返回附加了指定 key-value 对的新 Logger 实例。
+func (l *Logger) With(keyvals ...any) bLogger.Logger {
+	return &Logger{
+		opts:  l.opts,
+		log:   l.log,
+		extra: append(append([]any{}, l.extra...), keyvals...),
 	}
-	return nil
+}
+
+// post 发送日志到 fluentd 服务。
+func (l *Logger) post(tag, msg string, keyvals []any) {
+	data := make(map[string]string, 3+len(l.extra)/2+len(keyvals)/2)
+	data["level"] = tag
+	data["msg"] = msg
+	all := append(append([]any{}, l.extra...), keyvals...)
+	for i := 0; i+1 < len(all); i += 2 {
+		data[fmt.Sprint(all[i])] = fmt.Sprint(all[i+1])
+	}
+	if err := l.log.Post(tag, data); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
 }
 
 // Close the logger.

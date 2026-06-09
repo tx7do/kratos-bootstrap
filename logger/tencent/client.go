@@ -1,20 +1,18 @@
 package tencent
 
 import (
-	"github.com/go-kratos/kratos/v2/log"
-
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"github.com/tx7do/kratos-bootstrap/logger"
+	bLogger "github.com/tx7do/kratos-bootstrap/logger"
 )
 
 func init() {
-	_ = logger.Register(logger.Tencent, func(cfg *conf.Logger) (log.Logger, error) {
+	_ = bLogger.Register(bLogger.Tencent, func(cfg *conf.Logger) (bLogger.Logger, error) {
 		return NewLogger(cfg)
 	})
 }
 
 // NewLogger 创建一个新的日志记录器 - Tencent
-func NewLogger(cfg *conf.Logger) (log.Logger, error) {
+func NewLogger(cfg *conf.Logger) (bLogger.Logger, error) {
 	if cfg == nil || cfg.Tencent == nil {
 		return nil, nil
 	}

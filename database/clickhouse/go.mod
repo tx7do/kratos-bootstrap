@@ -7,7 +7,7 @@ replace github.com/tx7do/kratos-bootstrap/api => ../../api
 require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/tx7do/go-crud/clickhouse v0.0.18
-	github.com/tx7do/go-utils v1.1.36
+	github.com/tx7do/go-utils v1.1.40
 	github.com/tx7do/kratos-bootstrap/api v0.0.39
 )
 
@@ -28,7 +28,7 @@ require (
 	github.com/segmentio/asm v1.2.1 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/tx7do/go-crud/api v0.0.7 // indirect
-	github.com/tx7do/go-crud/pagination v0.0.13 // indirect
+	github.com/tx7do/go-crud/pagination v0.0.14 // indirect
 	github.com/tx7do/go-utils/mapper v0.0.3 // indirect
 	go.einride.tech/aip v0.85.0 // indirect
 	go.opentelemetry.io/otel v1.43.0 // indirect

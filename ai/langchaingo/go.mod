@@ -1,8 +1,11 @@
 module github.com/tx7do/kratos-bootstrap/ai/langchaingo
 
-go 1.24.6
+go 1.25.0
 
-replace github.com/tx7do/kratos-bootstrap/api => ../../api
+replace (
+	github.com/tx7do/kratos-bootstrap/api => ../../api
+	nhooyr.io/websocket => github.com/coder/websocket v1.8.13
+)
 
 require (
 	github.com/tmc/langchaingo v0.1.14
@@ -13,7 +16,8 @@ require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.2.0 // indirect
 	github.com/Masterminds/sprig/v3 v3.2.3 // indirect
-	github.com/dlclark/regexp2 v1.12.0 // indirect
+	github.com/coder/websocket v1.8.14 // indirect
+	github.com/dlclark/regexp2 v1.10.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/goph/emperror v0.17.2 // indirect
@@ -27,7 +31,7 @@ require (
 	github.com/nikolalohinski/gonja v1.5.3 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.9 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/pkoukk/tiktoken-go v0.1.8 // indirect
+	github.com/pkoukk/tiktoken-go v0.1.6 // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
