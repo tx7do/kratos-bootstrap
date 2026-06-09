@@ -13,60 +13,83 @@ message Script {
   enum EngineType {
     ENGINE_TYPE_UNSPECIFIED = 0;
 
-    LUA = 1;  // Lua脚本引擎
-    JAVASCRIPT = 2;  // JavaScript脚本引擎
-    PYTHON = 3;  // Python脚本引擎
+    LUA        = 1;  // Lua (gopher-lua)        — 游戏脚本 / 配置逻辑 / 嵌入式扩展
+    JAVASCRIPT = 2;  // JavaScript (goja)       — 前端复用 / 规则引擎 / 快速原型
+    GPYTHON    = 3;  // Python (gpython)        — 数据处理 / 运维脚本 / 算法验证
+    YAEGI      = 4;  // Go (Yaegi)              — 动态插件 / DevOps 工具链
+    WAZERO     = 5;  // WebAssembly (wazero)    — 高性能沙箱 / 跨语言模块复用
+    CEL        = 6;  // CEL (cel-go)            — 策略引擎 / 权限规则 / 条件判断
+    EXPR       = 7;  // Expr (expr-lang)        — 业务表达式 / 模板引擎 / 数据筛选
+    STARLARK   = 8;  // Starlark (starlark-go)  — 构建工具 / 安全脚本 / Bazel 规则
+    TCL        = 9;  // TCL (modernc/tcl)       — 传统系统兼容 / 网络设备脚本
   }
 
-  EngineType engine = 1; // 选择的脚本引擎类型
+  EngineType engine = 1;                    // 选择的脚本引擎类型
+  EngineOptions options = 2;                // 引擎配置（统一，替代旧 oneof）
+  Source source = 3;                        // 脚本来源配置
+  google.protobuf.Struct metadata = 90;     // 全局元数据，可用于运营/调试信息
+  google.protobuf.StringValue notes = 91;   // 兼容性或备注说明
+  Pool pool = 92;                           // 池配置
 
-  // 一次只配置一种引擎的具体配置
-  oneof engine_config {
-    Lua lua = 2;
-    JavaScript javascript = 3;
-    Python python = 4;
+  // 统一的引擎选项 —— 所有引擎共用同一组配置字段
+  // 各引擎特有配置通过 options (Struct) 传递，避免 message 重复
+  message EngineOptions {
+    google.protobuf.BoolValue enabled = 1;              // 是否启用（presence 可区分未设置和显式 false）
+    repeated string paths = 2;                          // 搜索路径或工作目录列表（用于脚本路径解析）
+    google.protobuf.StringValue entry = 3;              // 入口脚本 key / 文件名
+    repeated string pre_load_scripts = 4;               // 预加载脚本列表（按顺序加载）
+    google.protobuf.BoolValue hot_reload = 5;           // 是否启用热加载（需要 Source 支持 Watcher）
+    google.protobuf.Struct options = 6;                 // 引擎特有配置（结构化，如内存限制、超时等）
   }
 
-  // 全局元数据，可用于运营/调试信息
-  google.protobuf.Struct metadata = 90;
-  // 兼容性或备注说明
-  google.protobuf.StringValue notes = 91;
-  // 池配置
-  Pool pool = 92;
+  // 脚本来源配置 —— 决定脚本从哪里加载
+  message Source {
+    enum Type {
+      TYPE_UNSPECIFIED = 0;
+
+      // ---- 内置来源（go-scripts v0.0.6 已发布）----
+      FILE   = 1;  // 本地文件系统（默认，开发/调试用）
+      MEMORY = 2;  // 内存（动态脚本 / 单元测试 / RPC 推送）
+      EMBED  = 3;  // go:embed 嵌入（编译时打包，零运行时依赖）
+      MULTI  = 4;  // 多源聚合（Fallback 顺序回退 / FirstOK 并发择快）
+
+      // ---- 扩展来源（go-scripts 计划发布 / 自定义注册）----
+      S3       = 10;  // Amazon S3 / 兼容对象存储（ETag 比对轮询）
+      ETCD     = 11;  // etcd KV（原生 Watch API）
+      CONSUL   = 12;  // Consul KV（ModifyIndex 轮询）
+      REDIS    = 13;  // Redis（值比对轮询）
+      HTTP     = 14;  // HTTP 远程拉取（CRC32 校验和比对）
+      GIT      = 15;  // Git 仓库（commit hash 比对轮询）
+      DATABASE = 16;  // SQL 数据库（checksum 列比对轮询）
+    }
+
+    Type type = 1;                            // 来源类型
+    repeated string paths = 2;                // 搜索路径 / 前缀列表（File 搜索目录、Embed FS 前缀、Multi 子源列表）
+    MultiStrategy strategy = 3;               // 聚合策略（仅 MULTI 类型有效）
+    google.protobuf.Struct options = 4;       // 来源特有配置（见下方说明）
+
+    // 多源聚合策略
+    enum MultiStrategy {
+      MULTI_STRATEGY_UNSPECIFIED = 0;
+      FALLBACK  = 1;  // 顺序尝试，首个成功者胜出（S3 主 + 本地备）
+      FIRST_OK  = 2;  // 并发拉取，取最快返回（镜像源低延迟读取）
+    }
+
+    // options 字段各来源的典型配置键：
+    //
+    //   S3:       { "bucket": "my-scripts", "region": "us-east-1", "prefix": "scripts/" }
+    //   ETCD:     { "endpoints": ["localhost:2379"], "prefix": "/scripts/" }
+    //   CONSUL:   { "address": "localhost:8500", "prefix": "scripts/" }
+    //   REDIS:    { "addr": "localhost:6379", "db": 0, "prefix": "script:" }
+    //   HTTP:     { "base_url": "https://example.com/scripts/" }
+    //   GIT:      { "url": "https://github.com/org/scripts.git", "branch": "main", "subdir": "lua" }
+    //   DATABASE: { "dsn": "postgres://...", "table": "scripts", "key_column": "name", "content_column": "code" }
+    //   MULTI:    { "sources": [{"type": "S3", "options": {...}}, {"type": "FILE"}] }
+  }
 
   // 池配置：初始实例数与最大实例数（presence 可区分未设置与显式设置）
   message Pool {
     google.protobuf.Int32Value initial = 1; // 初始实例数
     google.protobuf.Int32Value max = 2;     // 最大实例数
-  }
-
-  // Lua 引擎配置
-  message Lua {
-    google.protobuf.BoolValue enabled = 1;              // presence 可区分未设置和显式 false
-    repeated string paths = 2;                          // 搜索路径或工作目录列表
-    google.protobuf.StringValue entry = 3;              // 入口脚本文件名/函数
-    repeated string pre_load_scripts = 4;               // 预加载脚本列表
-    google.protobuf.BoolValue hot_reload = 5;           // 是否支持热加载
-    google.protobuf.Struct options = 6;                 // 任意引擎特有配置（结构化）
-  }
-
-  // JavaScript 引擎配置
-  message JavaScript {
-    google.protobuf.BoolValue enabled = 1;
-    repeated string paths = 2;
-    google.protobuf.StringValue entry = 3;
-    repeated string pre_load_scripts = 4;
-    google.protobuf.BoolValue hot_reload = 5;
-    google.protobuf.Struct options = 6;
-  }
-
-  // Python 引擎配置
-  message Python {
-    google.protobuf.BoolValue enabled = 1;
-    repeated string paths = 2;
-    google.protobuf.StringValue entry = 3;
-    repeated string pre_load_scripts = 4;
-    google.protobuf.BoolValue hot_reload = 5;
-    google.protobuf.Struct options = 6;
   }
 }

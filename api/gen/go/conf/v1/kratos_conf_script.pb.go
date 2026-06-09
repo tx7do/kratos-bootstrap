@@ -28,9 +28,15 @@ type Script_EngineType int32
 
 const (
 	Script_ENGINE_TYPE_UNSPECIFIED Script_EngineType = 0
-	Script_LUA                     Script_EngineType = 1 // Lua脚本引擎
-	Script_JAVASCRIPT              Script_EngineType = 2 // JavaScript脚本引擎
-	Script_PYTHON                  Script_EngineType = 3 // Python脚本引擎
+	Script_LUA                     Script_EngineType = 1 // Lua (gopher-lua)        — 游戏脚本 / 配置逻辑 / 嵌入式扩展
+	Script_JAVASCRIPT              Script_EngineType = 2 // JavaScript (goja)       — 前端复用 / 规则引擎 / 快速原型
+	Script_GPYTHON                 Script_EngineType = 3 // Python (gpython)        — 数据处理 / 运维脚本 / 算法验证
+	Script_YAEGI                   Script_EngineType = 4 // Go (Yaegi)              — 动态插件 / DevOps 工具链
+	Script_WAZERO                  Script_EngineType = 5 // WebAssembly (wazero)    — 高性能沙箱 / 跨语言模块复用
+	Script_CEL                     Script_EngineType = 6 // CEL (cel-go)            — 策略引擎 / 权限规则 / 条件判断
+	Script_EXPR                    Script_EngineType = 7 // Expr (expr-lang)        — 业务表达式 / 模板引擎 / 数据筛选
+	Script_STARLARK                Script_EngineType = 8 // Starlark (starlark-go)  — 构建工具 / 安全脚本 / Bazel 规则
+	Script_TCL                     Script_EngineType = 9 // TCL (modernc/tcl)       — 传统系统兼容 / 网络设备脚本
 )
 
 // Enum value maps for Script_EngineType.
@@ -39,13 +45,25 @@ var (
 		0: "ENGINE_TYPE_UNSPECIFIED",
 		1: "LUA",
 		2: "JAVASCRIPT",
-		3: "PYTHON",
+		3: "GPYTHON",
+		4: "YAEGI",
+		5: "WAZERO",
+		6: "CEL",
+		7: "EXPR",
+		8: "STARLARK",
+		9: "TCL",
 	}
 	Script_EngineType_value = map[string]int32{
 		"ENGINE_TYPE_UNSPECIFIED": 0,
 		"LUA":                     1,
 		"JAVASCRIPT":              2,
-		"PYTHON":                  3,
+		"GPYTHON":                 3,
+		"YAEGI":                   4,
+		"WAZERO":                  5,
+		"CEL":                     6,
+		"EXPR":                    7,
+		"STARLARK":                8,
+		"TCL":                     9,
 	}
 )
 
@@ -76,24 +94,143 @@ func (Script_EngineType) EnumDescriptor() ([]byte, []int) {
 	return file_conf_v1_kratos_conf_script_proto_rawDescGZIP(), []int{0, 0}
 }
 
+type Script_Source_Type int32
+
+const (
+	Script_Source_TYPE_UNSPECIFIED Script_Source_Type = 0
+	// ---- 内置来源（go-scripts v0.0.6 已发布）----
+	Script_Source_FILE   Script_Source_Type = 1 // 本地文件系统（默认，开发/调试用）
+	Script_Source_MEMORY Script_Source_Type = 2 // 内存（动态脚本 / 单元测试 / RPC 推送）
+	Script_Source_EMBED  Script_Source_Type = 3 // go:embed 嵌入（编译时打包，零运行时依赖）
+	Script_Source_MULTI  Script_Source_Type = 4 // 多源聚合（Fallback 顺序回退 / FirstOK 并发择快）
+	// ---- 扩展来源（go-scripts 计划发布 / 自定义注册）----
+	Script_Source_S3       Script_Source_Type = 10 // Amazon S3 / 兼容对象存储（ETag 比对轮询）
+	Script_Source_ETCD     Script_Source_Type = 11 // etcd KV（原生 Watch API）
+	Script_Source_CONSUL   Script_Source_Type = 12 // Consul KV（ModifyIndex 轮询）
+	Script_Source_REDIS    Script_Source_Type = 13 // Redis（值比对轮询）
+	Script_Source_HTTP     Script_Source_Type = 14 // HTTP 远程拉取（CRC32 校验和比对）
+	Script_Source_GIT      Script_Source_Type = 15 // Git 仓库（commit hash 比对轮询）
+	Script_Source_DATABASE Script_Source_Type = 16 // SQL 数据库（checksum 列比对轮询）
+)
+
+// Enum value maps for Script_Source_Type.
+var (
+	Script_Source_Type_name = map[int32]string{
+		0:  "TYPE_UNSPECIFIED",
+		1:  "FILE",
+		2:  "MEMORY",
+		3:  "EMBED",
+		4:  "MULTI",
+		10: "S3",
+		11: "ETCD",
+		12: "CONSUL",
+		13: "REDIS",
+		14: "HTTP",
+		15: "GIT",
+		16: "DATABASE",
+	}
+	Script_Source_Type_value = map[string]int32{
+		"TYPE_UNSPECIFIED": 0,
+		"FILE":             1,
+		"MEMORY":           2,
+		"EMBED":            3,
+		"MULTI":            4,
+		"S3":               10,
+		"ETCD":             11,
+		"CONSUL":           12,
+		"REDIS":            13,
+		"HTTP":             14,
+		"GIT":              15,
+		"DATABASE":         16,
+	}
+)
+
+func (x Script_Source_Type) Enum() *Script_Source_Type {
+	p := new(Script_Source_Type)
+	*p = x
+	return p
+}
+
+func (x Script_Source_Type) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Script_Source_Type) Descriptor() protoreflect.EnumDescriptor {
+	return file_conf_v1_kratos_conf_script_proto_enumTypes[1].Descriptor()
+}
+
+func (Script_Source_Type) Type() protoreflect.EnumType {
+	return &file_conf_v1_kratos_conf_script_proto_enumTypes[1]
+}
+
+func (x Script_Source_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Script_Source_Type.Descriptor instead.
+func (Script_Source_Type) EnumDescriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_script_proto_rawDescGZIP(), []int{0, 1, 0}
+}
+
+// 多源聚合策略
+type Script_Source_MultiStrategy int32
+
+const (
+	Script_Source_MULTI_STRATEGY_UNSPECIFIED Script_Source_MultiStrategy = 0
+	Script_Source_FALLBACK                   Script_Source_MultiStrategy = 1 // 顺序尝试，首个成功者胜出（S3 主 + 本地备）
+	Script_Source_FIRST_OK                   Script_Source_MultiStrategy = 2 // 并发拉取，取最快返回（镜像源低延迟读取）
+)
+
+// Enum value maps for Script_Source_MultiStrategy.
+var (
+	Script_Source_MultiStrategy_name = map[int32]string{
+		0: "MULTI_STRATEGY_UNSPECIFIED",
+		1: "FALLBACK",
+		2: "FIRST_OK",
+	}
+	Script_Source_MultiStrategy_value = map[string]int32{
+		"MULTI_STRATEGY_UNSPECIFIED": 0,
+		"FALLBACK":                   1,
+		"FIRST_OK":                   2,
+	}
+)
+
+func (x Script_Source_MultiStrategy) Enum() *Script_Source_MultiStrategy {
+	p := new(Script_Source_MultiStrategy)
+	*p = x
+	return p
+}
+
+func (x Script_Source_MultiStrategy) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Script_Source_MultiStrategy) Descriptor() protoreflect.EnumDescriptor {
+	return file_conf_v1_kratos_conf_script_proto_enumTypes[2].Descriptor()
+}
+
+func (Script_Source_MultiStrategy) Type() protoreflect.EnumType {
+	return &file_conf_v1_kratos_conf_script_proto_enumTypes[2]
+}
+
+func (x Script_Source_MultiStrategy) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Script_Source_MultiStrategy.Descriptor instead.
+func (Script_Source_MultiStrategy) EnumDescriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_script_proto_rawDescGZIP(), []int{0, 1, 1}
+}
+
 // 脚本引擎配置
 type Script struct {
-	state  protoimpl.MessageState `protogen:"open.v1"`
-	Engine Script_EngineType      `protobuf:"varint,1,opt,name=engine,proto3,enum=conf.Script_EngineType" json:"engine,omitempty"` // 选择的脚本引擎类型
-	// 一次只配置一种引擎的具体配置
-	//
-	// Types that are valid to be assigned to EngineConfig:
-	//
-	//	*Script_Lua_
-	//	*Script_Javascript
-	//	*Script_Python_
-	EngineConfig isScript_EngineConfig `protobuf_oneof:"engine_config"`
-	// 全局元数据，可用于运营/调试信息
-	Metadata *structpb.Struct `protobuf:"bytes,90,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	// 兼容性或备注说明
-	Notes *wrapperspb.StringValue `protobuf:"bytes,91,opt,name=notes,proto3" json:"notes,omitempty"`
-	// 池配置
-	Pool          *Script_Pool `protobuf:"bytes,92,opt,name=pool,proto3" json:"pool,omitempty"`
+	state         protoimpl.MessageState  `protogen:"open.v1"`
+	Engine        Script_EngineType       `protobuf:"varint,1,opt,name=engine,proto3,enum=conf.Script_EngineType" json:"engine,omitempty"` // 选择的脚本引擎类型
+	Options       *Script_EngineOptions   `protobuf:"bytes,2,opt,name=options,proto3" json:"options,omitempty"`                            // 引擎配置（统一，替代旧 oneof）
+	Source        *Script_Source          `protobuf:"bytes,3,opt,name=source,proto3" json:"source,omitempty"`                              // 脚本来源配置
+	Metadata      *structpb.Struct        `protobuf:"bytes,90,opt,name=metadata,proto3" json:"metadata,omitempty"`                         // 全局元数据，可用于运营/调试信息
+	Notes         *wrapperspb.StringValue `protobuf:"bytes,91,opt,name=notes,proto3" json:"notes,omitempty"`                               // 兼容性或备注说明
+	Pool          *Script_Pool            `protobuf:"bytes,92,opt,name=pool,proto3" json:"pool,omitempty"`                                 // 池配置
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -135,36 +272,16 @@ func (x *Script) GetEngine() Script_EngineType {
 	return Script_ENGINE_TYPE_UNSPECIFIED
 }
 
-func (x *Script) GetEngineConfig() isScript_EngineConfig {
+func (x *Script) GetOptions() *Script_EngineOptions {
 	if x != nil {
-		return x.EngineConfig
+		return x.Options
 	}
 	return nil
 }
 
-func (x *Script) GetLua() *Script_Lua {
+func (x *Script) GetSource() *Script_Source {
 	if x != nil {
-		if x, ok := x.EngineConfig.(*Script_Lua_); ok {
-			return x.Lua
-		}
-	}
-	return nil
-}
-
-func (x *Script) GetJavascript() *Script_JavaScript {
-	if x != nil {
-		if x, ok := x.EngineConfig.(*Script_Javascript); ok {
-			return x.Javascript
-		}
-	}
-	return nil
-}
-
-func (x *Script) GetPython() *Script_Python {
-	if x != nil {
-		if x, ok := x.EngineConfig.(*Script_Python_); ok {
-			return x.Python
-		}
+		return x.Source
 	}
 	return nil
 }
@@ -190,27 +307,160 @@ func (x *Script) GetPool() *Script_Pool {
 	return nil
 }
 
-type isScript_EngineConfig interface {
-	isScript_EngineConfig()
+// 统一的引擎选项 —— 所有引擎共用同一组配置字段
+// 各引擎特有配置通过 options (Struct) 传递，避免 message 重复
+type Script_EngineOptions struct {
+	state          protoimpl.MessageState  `protogen:"open.v1"`
+	Enabled        *wrapperspb.BoolValue   `protobuf:"bytes,1,opt,name=enabled,proto3" json:"enabled,omitempty"`                                       // 是否启用（presence 可区分未设置和显式 false）
+	Paths          []string                `protobuf:"bytes,2,rep,name=paths,proto3" json:"paths,omitempty"`                                           // 搜索路径或工作目录列表（用于脚本路径解析）
+	Entry          *wrapperspb.StringValue `protobuf:"bytes,3,opt,name=entry,proto3" json:"entry,omitempty"`                                           // 入口脚本 key / 文件名
+	PreLoadScripts []string                `protobuf:"bytes,4,rep,name=pre_load_scripts,json=preLoadScripts,proto3" json:"pre_load_scripts,omitempty"` // 预加载脚本列表（按顺序加载）
+	HotReload      *wrapperspb.BoolValue   `protobuf:"bytes,5,opt,name=hot_reload,json=hotReload,proto3" json:"hot_reload,omitempty"`                  // 是否启用热加载（需要 Source 支持 Watcher）
+	Options        *structpb.Struct        `protobuf:"bytes,6,opt,name=options,proto3" json:"options,omitempty"`                                       // 引擎特有配置（结构化，如内存限制、超时等）
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
-type Script_Lua_ struct {
-	Lua *Script_Lua `protobuf:"bytes,2,opt,name=lua,proto3,oneof"`
+func (x *Script_EngineOptions) Reset() {
+	*x = Script_EngineOptions{}
+	mi := &file_conf_v1_kratos_conf_script_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
 }
 
-type Script_Javascript struct {
-	Javascript *Script_JavaScript `protobuf:"bytes,3,opt,name=javascript,proto3,oneof"`
+func (x *Script_EngineOptions) String() string {
+	return protoimpl.X.MessageStringOf(x)
 }
 
-type Script_Python_ struct {
-	Python *Script_Python `protobuf:"bytes,4,opt,name=python,proto3,oneof"`
+func (*Script_EngineOptions) ProtoMessage() {}
+
+func (x *Script_EngineOptions) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_v1_kratos_conf_script_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
 }
 
-func (*Script_Lua_) isScript_EngineConfig() {}
+// Deprecated: Use Script_EngineOptions.ProtoReflect.Descriptor instead.
+func (*Script_EngineOptions) Descriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_script_proto_rawDescGZIP(), []int{0, 0}
+}
 
-func (*Script_Javascript) isScript_EngineConfig() {}
+func (x *Script_EngineOptions) GetEnabled() *wrapperspb.BoolValue {
+	if x != nil {
+		return x.Enabled
+	}
+	return nil
+}
 
-func (*Script_Python_) isScript_EngineConfig() {}
+func (x *Script_EngineOptions) GetPaths() []string {
+	if x != nil {
+		return x.Paths
+	}
+	return nil
+}
+
+func (x *Script_EngineOptions) GetEntry() *wrapperspb.StringValue {
+	if x != nil {
+		return x.Entry
+	}
+	return nil
+}
+
+func (x *Script_EngineOptions) GetPreLoadScripts() []string {
+	if x != nil {
+		return x.PreLoadScripts
+	}
+	return nil
+}
+
+func (x *Script_EngineOptions) GetHotReload() *wrapperspb.BoolValue {
+	if x != nil {
+		return x.HotReload
+	}
+	return nil
+}
+
+func (x *Script_EngineOptions) GetOptions() *structpb.Struct {
+	if x != nil {
+		return x.Options
+	}
+	return nil
+}
+
+// 脚本来源配置 —— 决定脚本从哪里加载
+type Script_Source struct {
+	state         protoimpl.MessageState      `protogen:"open.v1"`
+	Type          Script_Source_Type          `protobuf:"varint,1,opt,name=type,proto3,enum=conf.Script_Source_Type" json:"type,omitempty"`                  // 来源类型
+	Paths         []string                    `protobuf:"bytes,2,rep,name=paths,proto3" json:"paths,omitempty"`                                              // 搜索路径 / 前缀列表（File 搜索目录、Embed FS 前缀、Multi 子源列表）
+	Strategy      Script_Source_MultiStrategy `protobuf:"varint,3,opt,name=strategy,proto3,enum=conf.Script_Source_MultiStrategy" json:"strategy,omitempty"` // 聚合策略（仅 MULTI 类型有效）
+	Options       *structpb.Struct            `protobuf:"bytes,4,opt,name=options,proto3" json:"options,omitempty"`                                          // 来源特有配置（见下方说明）
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Script_Source) Reset() {
+	*x = Script_Source{}
+	mi := &file_conf_v1_kratos_conf_script_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Script_Source) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Script_Source) ProtoMessage() {}
+
+func (x *Script_Source) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_v1_kratos_conf_script_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Script_Source.ProtoReflect.Descriptor instead.
+func (*Script_Source) Descriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_script_proto_rawDescGZIP(), []int{0, 1}
+}
+
+func (x *Script_Source) GetType() Script_Source_Type {
+	if x != nil {
+		return x.Type
+	}
+	return Script_Source_TYPE_UNSPECIFIED
+}
+
+func (x *Script_Source) GetPaths() []string {
+	if x != nil {
+		return x.Paths
+	}
+	return nil
+}
+
+func (x *Script_Source) GetStrategy() Script_Source_MultiStrategy {
+	if x != nil {
+		return x.Strategy
+	}
+	return Script_Source_MULTI_STRATEGY_UNSPECIFIED
+}
+
+func (x *Script_Source) GetOptions() *structpb.Struct {
+	if x != nil {
+		return x.Options
+	}
+	return nil
+}
 
 // 池配置：初始实例数与最大实例数（presence 可区分未设置与显式设置）
 type Script_Pool struct {
@@ -223,7 +473,7 @@ type Script_Pool struct {
 
 func (x *Script_Pool) Reset() {
 	*x = Script_Pool{}
-	mi := &file_conf_v1_kratos_conf_script_proto_msgTypes[1]
+	mi := &file_conf_v1_kratos_conf_script_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -235,7 +485,7 @@ func (x *Script_Pool) String() string {
 func (*Script_Pool) ProtoMessage() {}
 
 func (x *Script_Pool) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_script_proto_msgTypes[1]
+	mi := &file_conf_v1_kratos_conf_script_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -248,7 +498,7 @@ func (x *Script_Pool) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Script_Pool.ProtoReflect.Descriptor instead.
 func (*Script_Pool) Descriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_script_proto_rawDescGZIP(), []int{0, 0}
+	return file_conf_v1_kratos_conf_script_proto_rawDescGZIP(), []int{0, 2}
 }
 
 func (x *Script_Pool) GetInitial() *wrapperspb.Int32Value {
@@ -265,313 +515,68 @@ func (x *Script_Pool) GetMax() *wrapperspb.Int32Value {
 	return nil
 }
 
-// Lua 引擎配置
-type Script_Lua struct {
-	state          protoimpl.MessageState  `protogen:"open.v1"`
-	Enabled        *wrapperspb.BoolValue   `protobuf:"bytes,1,opt,name=enabled,proto3" json:"enabled,omitempty"`                                       // presence 可区分未设置和显式 false
-	Paths          []string                `protobuf:"bytes,2,rep,name=paths,proto3" json:"paths,omitempty"`                                           // 搜索路径或工作目录列表
-	Entry          *wrapperspb.StringValue `protobuf:"bytes,3,opt,name=entry,proto3" json:"entry,omitempty"`                                           // 入口脚本文件名/函数
-	PreLoadScripts []string                `protobuf:"bytes,4,rep,name=pre_load_scripts,json=preLoadScripts,proto3" json:"pre_load_scripts,omitempty"` // 预加载脚本列表
-	HotReload      *wrapperspb.BoolValue   `protobuf:"bytes,5,opt,name=hot_reload,json=hotReload,proto3" json:"hot_reload,omitempty"`                  // 是否支持热加载
-	Options        *structpb.Struct        `protobuf:"bytes,6,opt,name=options,proto3" json:"options,omitempty"`                                       // 任意引擎特有配置（结构化）
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
-}
-
-func (x *Script_Lua) Reset() {
-	*x = Script_Lua{}
-	mi := &file_conf_v1_kratos_conf_script_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Script_Lua) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Script_Lua) ProtoMessage() {}
-
-func (x *Script_Lua) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_script_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Script_Lua.ProtoReflect.Descriptor instead.
-func (*Script_Lua) Descriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_script_proto_rawDescGZIP(), []int{0, 1}
-}
-
-func (x *Script_Lua) GetEnabled() *wrapperspb.BoolValue {
-	if x != nil {
-		return x.Enabled
-	}
-	return nil
-}
-
-func (x *Script_Lua) GetPaths() []string {
-	if x != nil {
-		return x.Paths
-	}
-	return nil
-}
-
-func (x *Script_Lua) GetEntry() *wrapperspb.StringValue {
-	if x != nil {
-		return x.Entry
-	}
-	return nil
-}
-
-func (x *Script_Lua) GetPreLoadScripts() []string {
-	if x != nil {
-		return x.PreLoadScripts
-	}
-	return nil
-}
-
-func (x *Script_Lua) GetHotReload() *wrapperspb.BoolValue {
-	if x != nil {
-		return x.HotReload
-	}
-	return nil
-}
-
-func (x *Script_Lua) GetOptions() *structpb.Struct {
-	if x != nil {
-		return x.Options
-	}
-	return nil
-}
-
-// JavaScript 引擎配置
-type Script_JavaScript struct {
-	state          protoimpl.MessageState  `protogen:"open.v1"`
-	Enabled        *wrapperspb.BoolValue   `protobuf:"bytes,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	Paths          []string                `protobuf:"bytes,2,rep,name=paths,proto3" json:"paths,omitempty"`
-	Entry          *wrapperspb.StringValue `protobuf:"bytes,3,opt,name=entry,proto3" json:"entry,omitempty"`
-	PreLoadScripts []string                `protobuf:"bytes,4,rep,name=pre_load_scripts,json=preLoadScripts,proto3" json:"pre_load_scripts,omitempty"`
-	HotReload      *wrapperspb.BoolValue   `protobuf:"bytes,5,opt,name=hot_reload,json=hotReload,proto3" json:"hot_reload,omitempty"`
-	Options        *structpb.Struct        `protobuf:"bytes,6,opt,name=options,proto3" json:"options,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
-}
-
-func (x *Script_JavaScript) Reset() {
-	*x = Script_JavaScript{}
-	mi := &file_conf_v1_kratos_conf_script_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Script_JavaScript) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Script_JavaScript) ProtoMessage() {}
-
-func (x *Script_JavaScript) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_script_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Script_JavaScript.ProtoReflect.Descriptor instead.
-func (*Script_JavaScript) Descriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_script_proto_rawDescGZIP(), []int{0, 2}
-}
-
-func (x *Script_JavaScript) GetEnabled() *wrapperspb.BoolValue {
-	if x != nil {
-		return x.Enabled
-	}
-	return nil
-}
-
-func (x *Script_JavaScript) GetPaths() []string {
-	if x != nil {
-		return x.Paths
-	}
-	return nil
-}
-
-func (x *Script_JavaScript) GetEntry() *wrapperspb.StringValue {
-	if x != nil {
-		return x.Entry
-	}
-	return nil
-}
-
-func (x *Script_JavaScript) GetPreLoadScripts() []string {
-	if x != nil {
-		return x.PreLoadScripts
-	}
-	return nil
-}
-
-func (x *Script_JavaScript) GetHotReload() *wrapperspb.BoolValue {
-	if x != nil {
-		return x.HotReload
-	}
-	return nil
-}
-
-func (x *Script_JavaScript) GetOptions() *structpb.Struct {
-	if x != nil {
-		return x.Options
-	}
-	return nil
-}
-
-// Python 引擎配置
-type Script_Python struct {
-	state          protoimpl.MessageState  `protogen:"open.v1"`
-	Enabled        *wrapperspb.BoolValue   `protobuf:"bytes,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	Paths          []string                `protobuf:"bytes,2,rep,name=paths,proto3" json:"paths,omitempty"`
-	Entry          *wrapperspb.StringValue `protobuf:"bytes,3,opt,name=entry,proto3" json:"entry,omitempty"`
-	PreLoadScripts []string                `protobuf:"bytes,4,rep,name=pre_load_scripts,json=preLoadScripts,proto3" json:"pre_load_scripts,omitempty"`
-	HotReload      *wrapperspb.BoolValue   `protobuf:"bytes,5,opt,name=hot_reload,json=hotReload,proto3" json:"hot_reload,omitempty"`
-	Options        *structpb.Struct        `protobuf:"bytes,6,opt,name=options,proto3" json:"options,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
-}
-
-func (x *Script_Python) Reset() {
-	*x = Script_Python{}
-	mi := &file_conf_v1_kratos_conf_script_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Script_Python) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Script_Python) ProtoMessage() {}
-
-func (x *Script_Python) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_v1_kratos_conf_script_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Script_Python.ProtoReflect.Descriptor instead.
-func (*Script_Python) Descriptor() ([]byte, []int) {
-	return file_conf_v1_kratos_conf_script_proto_rawDescGZIP(), []int{0, 3}
-}
-
-func (x *Script_Python) GetEnabled() *wrapperspb.BoolValue {
-	if x != nil {
-		return x.Enabled
-	}
-	return nil
-}
-
-func (x *Script_Python) GetPaths() []string {
-	if x != nil {
-		return x.Paths
-	}
-	return nil
-}
-
-func (x *Script_Python) GetEntry() *wrapperspb.StringValue {
-	if x != nil {
-		return x.Entry
-	}
-	return nil
-}
-
-func (x *Script_Python) GetPreLoadScripts() []string {
-	if x != nil {
-		return x.PreLoadScripts
-	}
-	return nil
-}
-
-func (x *Script_Python) GetHotReload() *wrapperspb.BoolValue {
-	if x != nil {
-		return x.HotReload
-	}
-	return nil
-}
-
-func (x *Script_Python) GetOptions() *structpb.Struct {
-	if x != nil {
-		return x.Options
-	}
-	return nil
-}
-
 var File_conf_v1_kratos_conf_script_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_script_proto_rawDesc = "" +
 	"\n" +
-	" conf/v1/kratos_conf_script.proto\x12\x04conf\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x1cgoogle/protobuf/struct.proto\"\x92\v\n" +
+	" conf/v1/kratos_conf_script.proto\x12\x04conf\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x1cgoogle/protobuf/struct.proto\"\xfa\t\n" +
 	"\x06Script\x12/\n" +
-	"\x06engine\x18\x01 \x01(\x0e2\x17.conf.Script.EngineTypeR\x06engine\x12$\n" +
-	"\x03lua\x18\x02 \x01(\v2\x10.conf.Script.LuaH\x00R\x03lua\x129\n" +
-	"\n" +
-	"javascript\x18\x03 \x01(\v2\x17.conf.Script.JavaScriptH\x00R\n" +
-	"javascript\x12-\n" +
-	"\x06python\x18\x04 \x01(\v2\x13.conf.Script.PythonH\x00R\x06python\x123\n" +
+	"\x06engine\x18\x01 \x01(\x0e2\x17.conf.Script.EngineTypeR\x06engine\x124\n" +
+	"\aoptions\x18\x02 \x01(\v2\x1a.conf.Script.EngineOptionsR\aoptions\x12+\n" +
+	"\x06source\x18\x03 \x01(\v2\x13.conf.Script.SourceR\x06source\x123\n" +
 	"\bmetadata\x18Z \x01(\v2\x17.google.protobuf.StructR\bmetadata\x122\n" +
 	"\x05notes\x18[ \x01(\v2\x1c.google.protobuf.StringValueR\x05notes\x12%\n" +
-	"\x04pool\x18\\ \x01(\v2\x11.conf.Script.PoolR\x04pool\x1al\n" +
+	"\x04pool\x18\\ \x01(\v2\x11.conf.Script.PoolR\x04pool\x1a\xa7\x02\n" +
+	"\rEngineOptions\x124\n" +
+	"\aenabled\x18\x01 \x01(\v2\x1a.google.protobuf.BoolValueR\aenabled\x12\x14\n" +
+	"\x05paths\x18\x02 \x03(\tR\x05paths\x122\n" +
+	"\x05entry\x18\x03 \x01(\v2\x1c.google.protobuf.StringValueR\x05entry\x12(\n" +
+	"\x10pre_load_scripts\x18\x04 \x03(\tR\x0epreLoadScripts\x129\n" +
+	"\n" +
+	"hot_reload\x18\x05 \x01(\v2\x1a.google.protobuf.BoolValueR\thotReload\x121\n" +
+	"\aoptions\x18\x06 \x01(\v2\x17.google.protobuf.StructR\aoptions\x1a\xa0\x03\n" +
+	"\x06Source\x12,\n" +
+	"\x04type\x18\x01 \x01(\x0e2\x18.conf.Script.Source.TypeR\x04type\x12\x14\n" +
+	"\x05paths\x18\x02 \x03(\tR\x05paths\x12=\n" +
+	"\bstrategy\x18\x03 \x01(\x0e2!.conf.Script.Source.MultiStrategyR\bstrategy\x121\n" +
+	"\aoptions\x18\x04 \x01(\v2\x17.google.protobuf.StructR\aoptions\"\x92\x01\n" +
+	"\x04Type\x12\x14\n" +
+	"\x10TYPE_UNSPECIFIED\x10\x00\x12\b\n" +
+	"\x04FILE\x10\x01\x12\n" +
+	"\n" +
+	"\x06MEMORY\x10\x02\x12\t\n" +
+	"\x05EMBED\x10\x03\x12\t\n" +
+	"\x05MULTI\x10\x04\x12\x06\n" +
+	"\x02S3\x10\n" +
+	"\x12\b\n" +
+	"\x04ETCD\x10\v\x12\n" +
+	"\n" +
+	"\x06CONSUL\x10\f\x12\t\n" +
+	"\x05REDIS\x10\r\x12\b\n" +
+	"\x04HTTP\x10\x0e\x12\a\n" +
+	"\x03GIT\x10\x0f\x12\f\n" +
+	"\bDATABASE\x10\x10\"K\n" +
+	"\rMultiStrategy\x12\x1e\n" +
+	"\x1aMULTI_STRATEGY_UNSPECIFIED\x10\x00\x12\f\n" +
+	"\bFALLBACK\x10\x01\x12\f\n" +
+	"\bFIRST_OK\x10\x02\x1al\n" +
 	"\x04Pool\x125\n" +
 	"\ainitial\x18\x01 \x01(\v2\x1b.google.protobuf.Int32ValueR\ainitial\x12-\n" +
-	"\x03max\x18\x02 \x01(\v2\x1b.google.protobuf.Int32ValueR\x03max\x1a\x9d\x02\n" +
-	"\x03Lua\x124\n" +
-	"\aenabled\x18\x01 \x01(\v2\x1a.google.protobuf.BoolValueR\aenabled\x12\x14\n" +
-	"\x05paths\x18\x02 \x03(\tR\x05paths\x122\n" +
-	"\x05entry\x18\x03 \x01(\v2\x1c.google.protobuf.StringValueR\x05entry\x12(\n" +
-	"\x10pre_load_scripts\x18\x04 \x03(\tR\x0epreLoadScripts\x129\n" +
-	"\n" +
-	"hot_reload\x18\x05 \x01(\v2\x1a.google.protobuf.BoolValueR\thotReload\x121\n" +
-	"\aoptions\x18\x06 \x01(\v2\x17.google.protobuf.StructR\aoptions\x1a\xa4\x02\n" +
-	"\n" +
-	"JavaScript\x124\n" +
-	"\aenabled\x18\x01 \x01(\v2\x1a.google.protobuf.BoolValueR\aenabled\x12\x14\n" +
-	"\x05paths\x18\x02 \x03(\tR\x05paths\x122\n" +
-	"\x05entry\x18\x03 \x01(\v2\x1c.google.protobuf.StringValueR\x05entry\x12(\n" +
-	"\x10pre_load_scripts\x18\x04 \x03(\tR\x0epreLoadScripts\x129\n" +
-	"\n" +
-	"hot_reload\x18\x05 \x01(\v2\x1a.google.protobuf.BoolValueR\thotReload\x121\n" +
-	"\aoptions\x18\x06 \x01(\v2\x17.google.protobuf.StructR\aoptions\x1a\xa0\x02\n" +
-	"\x06Python\x124\n" +
-	"\aenabled\x18\x01 \x01(\v2\x1a.google.protobuf.BoolValueR\aenabled\x12\x14\n" +
-	"\x05paths\x18\x02 \x03(\tR\x05paths\x122\n" +
-	"\x05entry\x18\x03 \x01(\v2\x1c.google.protobuf.StringValueR\x05entry\x12(\n" +
-	"\x10pre_load_scripts\x18\x04 \x03(\tR\x0epreLoadScripts\x129\n" +
-	"\n" +
-	"hot_reload\x18\x05 \x01(\v2\x1a.google.protobuf.BoolValueR\thotReload\x121\n" +
-	"\aoptions\x18\x06 \x01(\v2\x17.google.protobuf.StructR\aoptions\"N\n" +
+	"\x03max\x18\x02 \x01(\v2\x1b.google.protobuf.Int32ValueR\x03max\"\x90\x01\n" +
 	"\n" +
 	"EngineType\x12\x1b\n" +
 	"\x17ENGINE_TYPE_UNSPECIFIED\x10\x00\x12\a\n" +
 	"\x03LUA\x10\x01\x12\x0e\n" +
 	"\n" +
-	"JAVASCRIPT\x10\x02\x12\n" +
+	"JAVASCRIPT\x10\x02\x12\v\n" +
+	"\aGPYTHON\x10\x03\x12\t\n" +
+	"\x05YAEGI\x10\x04\x12\n" +
 	"\n" +
-	"\x06PYTHON\x10\x03B\x0f\n" +
-	"\rengine_configB\x87\x01\n" +
+	"\x06WAZERO\x10\x05\x12\a\n" +
+	"\x03CEL\x10\x06\x12\b\n" +
+	"\x04EXPR\x10\a\x12\f\n" +
+	"\bSTARLARK\x10\b\x12\a\n" +
+	"\x03TCL\x10\tB\x87\x01\n" +
 	"\bcom.confB\x15KratosConfScriptProtoP\x01Z4github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1\xa2\x02\x03CXX\xaa\x02\x04Conf\xca\x02\x04Conf\xe2\x02\x10Conf\\GPBMetadata\xea\x02\x04Confb\x06proto3"
 
 var (
@@ -586,47 +591,42 @@ func file_conf_v1_kratos_conf_script_proto_rawDescGZIP() []byte {
 	return file_conf_v1_kratos_conf_script_proto_rawDescData
 }
 
-var file_conf_v1_kratos_conf_script_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_conf_v1_kratos_conf_script_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_conf_v1_kratos_conf_script_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_conf_v1_kratos_conf_script_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_conf_v1_kratos_conf_script_proto_goTypes = []any{
-	(Script_EngineType)(0),         // 0: conf.Script.EngineType
-	(*Script)(nil),                 // 1: conf.Script
-	(*Script_Pool)(nil),            // 2: conf.Script.Pool
-	(*Script_Lua)(nil),             // 3: conf.Script.Lua
-	(*Script_JavaScript)(nil),      // 4: conf.Script.JavaScript
-	(*Script_Python)(nil),          // 5: conf.Script.Python
-	(*structpb.Struct)(nil),        // 6: google.protobuf.Struct
-	(*wrapperspb.StringValue)(nil), // 7: google.protobuf.StringValue
-	(*wrapperspb.Int32Value)(nil),  // 8: google.protobuf.Int32Value
-	(*wrapperspb.BoolValue)(nil),   // 9: google.protobuf.BoolValue
+	(Script_EngineType)(0),           // 0: conf.Script.EngineType
+	(Script_Source_Type)(0),          // 1: conf.Script.Source.Type
+	(Script_Source_MultiStrategy)(0), // 2: conf.Script.Source.MultiStrategy
+	(*Script)(nil),                   // 3: conf.Script
+	(*Script_EngineOptions)(nil),     // 4: conf.Script.EngineOptions
+	(*Script_Source)(nil),            // 5: conf.Script.Source
+	(*Script_Pool)(nil),              // 6: conf.Script.Pool
+	(*structpb.Struct)(nil),          // 7: google.protobuf.Struct
+	(*wrapperspb.StringValue)(nil),   // 8: google.protobuf.StringValue
+	(*wrapperspb.BoolValue)(nil),     // 9: google.protobuf.BoolValue
+	(*wrapperspb.Int32Value)(nil),    // 10: google.protobuf.Int32Value
 }
 var file_conf_v1_kratos_conf_script_proto_depIdxs = []int32{
 	0,  // 0: conf.Script.engine:type_name -> conf.Script.EngineType
-	3,  // 1: conf.Script.lua:type_name -> conf.Script.Lua
-	4,  // 2: conf.Script.javascript:type_name -> conf.Script.JavaScript
-	5,  // 3: conf.Script.python:type_name -> conf.Script.Python
-	6,  // 4: conf.Script.metadata:type_name -> google.protobuf.Struct
-	7,  // 5: conf.Script.notes:type_name -> google.protobuf.StringValue
-	2,  // 6: conf.Script.pool:type_name -> conf.Script.Pool
-	8,  // 7: conf.Script.Pool.initial:type_name -> google.protobuf.Int32Value
-	8,  // 8: conf.Script.Pool.max:type_name -> google.protobuf.Int32Value
-	9,  // 9: conf.Script.Lua.enabled:type_name -> google.protobuf.BoolValue
-	7,  // 10: conf.Script.Lua.entry:type_name -> google.protobuf.StringValue
-	9,  // 11: conf.Script.Lua.hot_reload:type_name -> google.protobuf.BoolValue
-	6,  // 12: conf.Script.Lua.options:type_name -> google.protobuf.Struct
-	9,  // 13: conf.Script.JavaScript.enabled:type_name -> google.protobuf.BoolValue
-	7,  // 14: conf.Script.JavaScript.entry:type_name -> google.protobuf.StringValue
-	9,  // 15: conf.Script.JavaScript.hot_reload:type_name -> google.protobuf.BoolValue
-	6,  // 16: conf.Script.JavaScript.options:type_name -> google.protobuf.Struct
-	9,  // 17: conf.Script.Python.enabled:type_name -> google.protobuf.BoolValue
-	7,  // 18: conf.Script.Python.entry:type_name -> google.protobuf.StringValue
-	9,  // 19: conf.Script.Python.hot_reload:type_name -> google.protobuf.BoolValue
-	6,  // 20: conf.Script.Python.options:type_name -> google.protobuf.Struct
-	21, // [21:21] is the sub-list for method output_type
-	21, // [21:21] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	4,  // 1: conf.Script.options:type_name -> conf.Script.EngineOptions
+	5,  // 2: conf.Script.source:type_name -> conf.Script.Source
+	7,  // 3: conf.Script.metadata:type_name -> google.protobuf.Struct
+	8,  // 4: conf.Script.notes:type_name -> google.protobuf.StringValue
+	6,  // 5: conf.Script.pool:type_name -> conf.Script.Pool
+	9,  // 6: conf.Script.EngineOptions.enabled:type_name -> google.protobuf.BoolValue
+	8,  // 7: conf.Script.EngineOptions.entry:type_name -> google.protobuf.StringValue
+	9,  // 8: conf.Script.EngineOptions.hot_reload:type_name -> google.protobuf.BoolValue
+	7,  // 9: conf.Script.EngineOptions.options:type_name -> google.protobuf.Struct
+	1,  // 10: conf.Script.Source.type:type_name -> conf.Script.Source.Type
+	2,  // 11: conf.Script.Source.strategy:type_name -> conf.Script.Source.MultiStrategy
+	7,  // 12: conf.Script.Source.options:type_name -> google.protobuf.Struct
+	10, // 13: conf.Script.Pool.initial:type_name -> google.protobuf.Int32Value
+	10, // 14: conf.Script.Pool.max:type_name -> google.protobuf.Int32Value
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_conf_v1_kratos_conf_script_proto_init() }
@@ -634,18 +634,13 @@ func file_conf_v1_kratos_conf_script_proto_init() {
 	if File_conf_v1_kratos_conf_script_proto != nil {
 		return
 	}
-	file_conf_v1_kratos_conf_script_proto_msgTypes[0].OneofWrappers = []any{
-		(*Script_Lua_)(nil),
-		(*Script_Javascript)(nil),
-		(*Script_Python_)(nil),
-	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_v1_kratos_conf_script_proto_rawDesc), len(file_conf_v1_kratos_conf_script_proto_rawDesc)),
-			NumEnums:      1,
-			NumMessages:   5,
+			NumEnums:      3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
