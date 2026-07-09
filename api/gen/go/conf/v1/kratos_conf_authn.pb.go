@@ -9,6 +9,7 @@ package v1
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -92,11 +93,18 @@ func (x *Authentication) GetPresharedKey() *Authentication_PresharedKey {
 
 // JWT
 type Authentication_Jwt struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Method        string                 `protobuf:"bytes,1,opt,name=method,proto3" json:"method,omitempty"` // JWT签名的算法，支持算法：HS256
-	Key           string                 `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`       // JWT 秘钥
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state  protoimpl.MessageState `protogen:"open.v1"`
+	Method string                 `protobuf:"bytes,1,opt,name=method,proto3" json:"method,omitempty"` // JWT签名的算法，支持算法：HS256
+	Key    string                 `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`       // JWT 秘钥
+	// RS256 非对称签名密钥（PEM 格式）
+	// private_key 用于签发令牌，仅在 Authentication Service 配置
+	PrivateKey *string `protobuf:"bytes,3,opt,name=private_key,json=privateKey,proto3,oneof" json:"private_key,omitempty"` // RSA/ECDSA 私钥（PEM 编码），用于签发 JWT
+	// public_key 用于验证令牌，可在任何需要本地验证的服务中配置
+	PublicKey           *string              `protobuf:"bytes,4,opt,name=public_key,json=publicKey,proto3,oneof" json:"public_key,omitempty"`                                 // RSA/ECDSA 公钥（PEM 编码），用于验证 JWT
+	AccessTokenExpires  *durationpb.Duration `protobuf:"bytes,5,opt,name=access_token_expires,json=accessTokenExpires,proto3,oneof" json:"access_token_expires,omitempty"`    // access token expiration duration
+	RefreshTokenExpires *durationpb.Duration `protobuf:"bytes,6,opt,name=refresh_token_expires,json=refreshTokenExpires,proto3,oneof" json:"refresh_token_expires,omitempty"` // refresh token expiration duration
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *Authentication_Jwt) Reset() {
@@ -141,6 +149,34 @@ func (x *Authentication_Jwt) GetKey() string {
 		return x.Key
 	}
 	return ""
+}
+
+func (x *Authentication_Jwt) GetPrivateKey() string {
+	if x != nil && x.PrivateKey != nil {
+		return *x.PrivateKey
+	}
+	return ""
+}
+
+func (x *Authentication_Jwt) GetPublicKey() string {
+	if x != nil && x.PublicKey != nil {
+		return *x.PublicKey
+	}
+	return ""
+}
+
+func (x *Authentication_Jwt) GetAccessTokenExpires() *durationpb.Duration {
+	if x != nil {
+		return x.AccessTokenExpires
+	}
+	return nil
+}
+
+func (x *Authentication_Jwt) GetRefreshTokenExpires() *durationpb.Duration {
+	if x != nil {
+		return x.RefreshTokenExpires
+	}
+	return nil
 }
 
 type Authentication_OIDC struct {
@@ -251,15 +287,25 @@ var File_conf_v1_kratos_conf_authn_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_authn_proto_rawDesc = "" +
 	"\n" +
-	"\x1fconf/v1/kratos_conf_authn.proto\x12\x04conf\"\xb4\x03\n" +
+	"\x1fconf/v1/kratos_conf_authn.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\"\xf7\x05\n" +
 	"\x0eAuthentication\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12/\n" +
 	"\x03jwt\x18\x02 \x01(\v2\x18.conf.Authentication.JwtH\x00R\x03jwt\x88\x01\x01\x122\n" +
 	"\x04oidc\x18\x03 \x01(\v2\x19.conf.Authentication.OIDCH\x01R\x04oidc\x88\x01\x01\x12K\n" +
-	"\rpreshared_key\x18\x04 \x01(\v2!.conf.Authentication.PresharedKeyH\x02R\fpresharedKey\x88\x01\x01\x1a/\n" +
+	"\rpreshared_key\x18\x04 \x01(\v2!.conf.Authentication.PresharedKeyH\x02R\fpresharedKey\x88\x01\x01\x1a\xf1\x02\n" +
 	"\x03Jwt\x12\x16\n" +
 	"\x06method\x18\x01 \x01(\tR\x06method\x12\x10\n" +
-	"\x03key\x18\x02 \x01(\tR\x03key\x1aY\n" +
+	"\x03key\x18\x02 \x01(\tR\x03key\x12$\n" +
+	"\vprivate_key\x18\x03 \x01(\tH\x00R\n" +
+	"privateKey\x88\x01\x01\x12\"\n" +
+	"\n" +
+	"public_key\x18\x04 \x01(\tH\x01R\tpublicKey\x88\x01\x01\x12P\n" +
+	"\x14access_token_expires\x18\x05 \x01(\v2\x19.google.protobuf.DurationH\x02R\x12accessTokenExpires\x88\x01\x01\x12R\n" +
+	"\x15refresh_token_expires\x18\x06 \x01(\v2\x19.google.protobuf.DurationH\x03R\x13refreshTokenExpires\x88\x01\x01B\x0e\n" +
+	"\f_private_keyB\r\n" +
+	"\v_public_keyB\x17\n" +
+	"\x15_access_token_expiresB\x18\n" +
+	"\x16_refresh_token_expires\x1aY\n" +
 	"\x04OIDC\x12\x1d\n" +
 	"\n" +
 	"issuer_url\x18\x01 \x01(\tR\tissuerUrl\x12\x1a\n" +
@@ -291,16 +337,19 @@ var file_conf_v1_kratos_conf_authn_proto_goTypes = []any{
 	(*Authentication_Jwt)(nil),          // 1: conf.Authentication.Jwt
 	(*Authentication_OIDC)(nil),         // 2: conf.Authentication.OIDC
 	(*Authentication_PresharedKey)(nil), // 3: conf.Authentication.PresharedKey
+	(*durationpb.Duration)(nil),         // 4: google.protobuf.Duration
 }
 var file_conf_v1_kratos_conf_authn_proto_depIdxs = []int32{
 	1, // 0: conf.Authentication.jwt:type_name -> conf.Authentication.Jwt
 	2, // 1: conf.Authentication.oidc:type_name -> conf.Authentication.OIDC
 	3, // 2: conf.Authentication.preshared_key:type_name -> conf.Authentication.PresharedKey
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	4, // 3: conf.Authentication.Jwt.access_token_expires:type_name -> google.protobuf.Duration
+	4, // 4: conf.Authentication.Jwt.refresh_token_expires:type_name -> google.protobuf.Duration
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_conf_v1_kratos_conf_authn_proto_init() }
@@ -309,6 +358,7 @@ func file_conf_v1_kratos_conf_authn_proto_init() {
 		return
 	}
 	file_conf_v1_kratos_conf_authn_proto_msgTypes[0].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_authn_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

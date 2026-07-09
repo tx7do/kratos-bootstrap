@@ -4,12 +4,23 @@ package conf;
 
 option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
 
+import "google/protobuf/duration.proto";
+
 // 认证
 message Authentication {
   // JWT
   message Jwt {
     string method = 1; // JWT签名的算法，支持算法：HS256
     string key = 2; // JWT 秘钥
+
+    // RS256 非对称签名密钥（PEM 格式）
+    // private_key 用于签发令牌，仅在 Authentication Service 配置
+    optional string private_key = 3; // RSA/ECDSA 私钥（PEM 编码），用于签发 JWT
+    // public_key 用于验证令牌，可在任何需要本地验证的服务中配置
+    optional string public_key = 4; // RSA/ECDSA 公钥（PEM 编码），用于验证 JWT
+
+    optional google.protobuf.Duration access_token_expires = 5; // access token expiration duration
+    optional google.protobuf.Duration refresh_token_expires = 6; // refresh token expiration duration
   }
 
   message OIDC {
