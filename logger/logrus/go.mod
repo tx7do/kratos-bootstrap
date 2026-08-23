@@ -8,16 +8,16 @@ replace (
 )
 
 require (
-	github.com/sirupsen/logrus v1.9.4
-	github.com/tx7do/kratos-bootstrap/api v0.0.33
+	github.com/sirupsen/logrus v1.10.1
+	github.com/tx7do/kratos-bootstrap/api v0.0.44
 	github.com/tx7do/kratos-bootstrap/logger v0.1.2
 )
 
 require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/go-kratos/kratos/v2 v2.9.2 // indirect
-	go.opentelemetry.io/otel v1.43.0 // indirect
-	go.opentelemetry.io/otel/trace v1.43.0 // indirect
-	golang.org/x/sys v0.43.0 // indirect
-	google.golang.org/protobuf v1.36.11 // indirect
+	go.opentelemetry.io/otel v1.45.0 // indirect
+	go.opentelemetry.io/otel/trace v1.45.0 // indirect
+	golang.org/x/sys v0.47.0 // indirect
+	google.golang.org/protobuf v1.36.12 // indirect
 )

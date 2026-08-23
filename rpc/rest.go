@@ -47,11 +47,17 @@ func initRestConfig(cfg *conf.Bootstrap, mds ...middleware.Middleware) ([]kratos
 	var options []kratosRest.ServerOption
 
 	if cfg.Server.Rest.Cors != nil {
-		options = append(options, kratosRest.Filter(handlers.CORS(
+		corsOptions := []handlers.CORSOption{
 			handlers.AllowedHeaders(cfg.Server.Rest.Cors.Headers),
 			handlers.AllowedMethods(cfg.Server.Rest.Cors.Methods),
 			handlers.AllowedOrigins(cfg.Server.Rest.Cors.Origins),
-		)))
+		}
+		// 前端以 HttpOnly Cookie 传 refresh token 时（withCredentials=true），
+		// 浏览器要求预检响应携带 Access-Control-Allow-Credentials: true
+		if cfg.Server.Rest.Cors.GetAllowCredentials() {
+			corsOptions = append(corsOptions, handlers.AllowCredentials())
+		}
+		options = append(options, kratosRest.Filter(handlers.CORS(corsOptions...)))
 	}
 
 	var ms []middleware.Middleware
