@@ -17,6 +17,9 @@ message Server {
       repeated string headers = 1;  //
       repeated string methods = 2;  //
       repeated string origins = 3;  //
+      // 跨域请求携带凭据（Cookie）：响应 Access-Control-Allow-Credentials: true，
+      // 前端 withCredentials=true 时必须开启，否则浏览器拒绝预检
+      bool allow_credentials = 4;  //
     }
 
     string network = 1; // 网络

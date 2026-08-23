@@ -2495,12 +2495,15 @@ func (x *Server_KeepAlive) GetTls() *TLS {
 }
 
 type Server_REST_CORS struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Headers       []string               `protobuf:"bytes,1,rep,name=headers,proto3" json:"headers,omitempty"` //
-	Methods       []string               `protobuf:"bytes,2,rep,name=methods,proto3" json:"methods,omitempty"` //
-	Origins       []string               `protobuf:"bytes,3,rep,name=origins,proto3" json:"origins,omitempty"` //
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state   protoimpl.MessageState `protogen:"open.v1"`
+	Headers []string               `protobuf:"bytes,1,rep,name=headers,proto3" json:"headers,omitempty"` //
+	Methods []string               `protobuf:"bytes,2,rep,name=methods,proto3" json:"methods,omitempty"` //
+	Origins []string               `protobuf:"bytes,3,rep,name=origins,proto3" json:"origins,omitempty"` //
+	// 跨域请求携带凭据（Cookie）：响应 Access-Control-Allow-Credentials: true，
+	// 前端 withCredentials=true 时必须开启，否则浏览器拒绝预检
+	AllowCredentials bool `protobuf:"varint,4,opt,name=allow_credentials,json=allowCredentials,proto3" json:"allow_credentials,omitempty"` //
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *Server_REST_CORS) Reset() {
@@ -2552,6 +2555,13 @@ func (x *Server_REST_CORS) GetOrigins() []string {
 		return x.Origins
 	}
 	return nil
+}
+
+func (x *Server_REST_CORS) GetAllowCredentials() bool {
+	if x != nil {
+		return x.AllowCredentials
+	}
+	return false
 }
 
 type Server_Kafka_PlainMechanism struct {
@@ -3330,7 +3340,7 @@ var File_conf_v1_kratos_conf_server_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_server_proto_rawDesc = "" +
 	"\n" +
-	" conf/v1/kratos_conf_server.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\x1a$conf/v1/kratos_conf_middleware.proto\x1a\x1dconf/v1/kratos_conf_tls.proto\"\x80V\n" +
+	" conf/v1/kratos_conf_server.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\x1a$conf/v1/kratos_conf_middleware.proto\x1a\x1dconf/v1/kratos_conf_tls.proto\"\xaeV\n" +
 	"\x06Server\x12*\n" +
 	"\x04rest\x18\x01 \x01(\v2\x11.conf.Server.RESTH\x00R\x04rest\x88\x01\x01\x12*\n" +
 	"\x04grpc\x18\x02 \x01(\v2\x11.conf.Server.GRPCH\x01R\x04grpc\x88\x01\x01\x123\n" +
@@ -3354,7 +3364,7 @@ const file_conf_v1_kratos_conf_server_proto_rawDesc = "" +
 	"\asignalr\x18\x17 \x01(\v2\x14.conf.Server.SignalRH\x11R\asignalr\x88\x01\x01\x12'\n" +
 	"\x03mcp\x18\x18 \x01(\v2\x10.conf.Server.MCPH\x12R\x03mcp\x88\x01\x01\x12-\n" +
 	"\x05asynq\x18\x1e \x01(\v2\x12.conf.Server.AsynqH\x13R\x05asynq\x88\x01\x01\x129\n" +
-	"\tmachinery\x18\x1f \x01(\v2\x16.conf.Server.MachineryH\x14R\tmachinery\x88\x01\x01\x1a\x84\x03\n" +
+	"\tmachinery\x18\x1f \x01(\v2\x16.conf.Server.MachineryH\x14R\tmachinery\x88\x01\x01\x1a\xb2\x03\n" +
 	"\x04REST\x12\x18\n" +
 	"\anetwork\x18\x01 \x01(\tR\anetwork\x12\x12\n" +
 	"\x04addr\x18\x02 \x01(\tR\x04addr\x123\n" +
@@ -3366,11 +3376,12 @@ const file_conf_v1_kratos_conf_server_proto_rawDesc = "" +
 	"middleware\x12\x1b\n" +
 	"\x03tls\x18\f \x01(\v2\t.conf.TLSR\x03tls\x12%\n" +
 	"\x0eenable_swagger\x18\x14 \x01(\bR\renableSwagger\x12!\n" +
-	"\fenable_pprof\x18\x15 \x01(\bR\venablePprof\x1aT\n" +
+	"\fenable_pprof\x18\x15 \x01(\bR\venablePprof\x1a\x81\x01\n" +
 	"\x04CORS\x12\x18\n" +
 	"\aheaders\x18\x01 \x03(\tR\aheaders\x12\x18\n" +
 	"\amethods\x18\x02 \x03(\tR\amethods\x12\x18\n" +
-	"\aorigins\x18\x03 \x03(\tR\aorigins\x1a\xb8\x01\n" +
+	"\aorigins\x18\x03 \x03(\tR\aorigins\x12+\n" +
+	"\x11allow_credentials\x18\x04 \x01(\bR\x10allowCredentials\x1a\xb8\x01\n" +
 	"\x04GRPC\x12\x18\n" +
 	"\anetwork\x18\x01 \x01(\tR\anetwork\x12\x12\n" +
 	"\x04addr\x18\x02 \x01(\tR\x04addr\x123\n" +
