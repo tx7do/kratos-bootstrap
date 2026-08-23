@@ -63,7 +63,7 @@ git tag script_engine/source/redis/v0.0.2 --force
 git tag script_engine/source/s3/v0.0.2 --force
 
 
-git tag bootstrap/v0.1.16 --force
+git tag bootstrap/v0.1.17 --force
 
 git tag v0.7.0
 
