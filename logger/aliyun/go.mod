@@ -10,7 +10,7 @@ replace (
 require (
 	github.com/aliyun/aliyun-log-go-sdk v0.1.127
 	github.com/tx7do/kratos-bootstrap/api v0.0.44
-	github.com/tx7do/kratos-bootstrap/logger v0.1.2
+	github.com/tx7do/kratos-bootstrap/logger v0.1.3
 	google.golang.org/protobuf v1.36.12
 )
 
@@ -27,8 +27,8 @@ require (
 	github.com/modern-go/reflect2 v1.0.3-0.20250322232337-35a7c28c31ee // indirect
 	github.com/pierrec/lz4/v4 v4.1.29 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	go.opentelemetry.io/otel v1.45.0 // indirect
-	go.opentelemetry.io/otel/trace v1.45.0 // indirect
+	go.opentelemetry.io/otel v1.46.0 // indirect
+	go.opentelemetry.io/otel/trace v1.46.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	golang.org/x/net v0.58.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect

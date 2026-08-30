@@ -8,9 +8,9 @@ replace (
 )
 
 require (
-	github.com/tencentcloud/tencentcloud-cls-sdk-go v1.0.14
+	github.com/tencentcloud/tencentcloud-cls-sdk-go v1.0.15
 	github.com/tx7do/kratos-bootstrap/api v0.0.44
-	github.com/tx7do/kratos-bootstrap/logger v0.1.2
+	github.com/tx7do/kratos-bootstrap/logger v0.1.3
 	google.golang.org/protobuf v1.36.12
 )
 
@@ -18,10 +18,13 @@ require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/go-kratos/kratos/v2 v2.9.2 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
+	github.com/golang/snappy v1.0.0 // indirect
 	github.com/klauspost/compress v1.19.2 // indirect
 	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
-	go.opentelemetry.io/otel v1.45.0 // indirect
-	go.opentelemetry.io/otel/trace v1.45.0 // indirect
+	go.opentelemetry.io/otel v1.46.0 // indirect
+	go.opentelemetry.io/otel/trace v1.46.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
+	go.uber.org/multierr v1.11.0 // indirect
+	go.uber.org/zap v1.28.0 // indirect
 )
