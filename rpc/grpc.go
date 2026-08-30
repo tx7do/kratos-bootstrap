@@ -45,7 +45,7 @@ func CreateGrpcClient(ctx context.Context, r registry.Discovery, serviceName str
 
 	cfgs, err := initGrpcClientConfig(cfg, mds...)
 	if err != nil {
-		log.Fatalf("init grpc client config failed: %s", err.Error())
+		log.Errorf("init grpc client config failed: %s", err.Error())
 		return nil, err
 	}
 
@@ -53,7 +53,7 @@ func CreateGrpcClient(ctx context.Context, r registry.Discovery, serviceName str
 
 	conn, err := kratosGrpc.DialInsecure(ctx, options...)
 	if err != nil {
-		log.Fatalf("dial grpc client [%s] failed: %s", serviceName, err.Error())
+		log.Errorf("dial grpc client [%s] failed: %s", serviceName, err.Error())
 	}
 
 	return conn, nil
@@ -113,7 +113,7 @@ func CreateGrpcServer(cfg *conf.Bootstrap, mds ...middleware.Middleware) (*krato
 
 	cfgs, err := initGrpcServerConfig(cfg, mds...)
 	if err != nil {
-		log.Fatalf("init grpc server config failed: %s", err.Error())
+		log.Errorf("init grpc server config failed: %s", err.Error())
 		return nil, err
 	}
 
