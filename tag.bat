@@ -1,7 +1,7 @@
 git tag api/v0.0.44 --force
 
 git tag cache/redis/v0.1.2 --force
-git tag rpc/v0.1.2 --force
+git tag rpc/v0.1.3 --force
 git tag tracer/v0.1.5 --force
 
 git tag oss/minio/v0.1.3 --force
@@ -27,7 +27,7 @@ git tag logger/zeolog/v0.1.3 --force
 
 git tag registry/v0.2.3 --force
 git tag registry/consul/v0.2.3 --force
-git tag registry/etcd/v0.2.3 --force
+git tag registry/etcd/v0.2.4 --force
 git tag registry/eureka/v0.2.3 --force
 git tag registry/kubernetes/v0.2.3 --force
 git tag registry/nacos/v0.2.3 --force

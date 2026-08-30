@@ -10,7 +10,7 @@ replace (
 require (
 	github.com/tx7do/go-scripts v0.0.8
 	github.com/tx7do/kratos-bootstrap/api v0.0.44
-	github.com/tx7do/kratos-bootstrap/script_engine v0.0.6
+	github.com/tx7do/kratos-bootstrap/script_engine v0.0.7
 )
 
 require (
