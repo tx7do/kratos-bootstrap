@@ -1,6 +1,8 @@
 package zookeeper
 
 import (
+	"time"
+
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/registry"
 
@@ -21,13 +23,28 @@ func NewRegistry(c *conf.Registry) (*Registry, error) {
 		return nil, nil
 	}
 
-	conn, _, err := zk.Connect(c.Zookeeper.Endpoints, c.Zookeeper.Timeout.AsDuration())
+	in := c.Zookeeper
+
+	timeout := in.GetTimeout().AsDuration()
+	if timeout <= 0 {
+		timeout = 5 * time.Second
+	}
+
+	conn, _, err := zk.Connect(in.Endpoints, timeout)
 	if err != nil {
 		log.Errorf("%v", err)
 		return nil, err
 	}
 
-	reg := New(conn)
+	var opts []Option
+	if in.GetNamespace() != "" {
+		opts = append(opts, WithRootPath(in.GetNamespace()))
+	}
+	if in.GetUsername() != "" && in.GetPassword() != "" {
+		opts = append(opts, WithDigestACL(in.GetUsername(), in.GetPassword()))
+	}
+
+	reg := New(conn, opts...)
 
 	return reg, nil
 }

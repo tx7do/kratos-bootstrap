@@ -21,6 +21,7 @@ type Registry struct {
 	heartbeatInterval time.Duration
 	refreshInterval   time.Duration
 	eurekaPath        string
+	maxRetry          int
 }
 
 func New(eurekaUrls []string, opts ...Option) (*Registry, error) {
@@ -29,13 +30,18 @@ func New(eurekaUrls []string, opts ...Option) (*Registry, error) {
 		heartbeatInterval: heartbeatTime,
 		refreshInterval:   refreshTime,
 		eurekaPath:        "eureka/v2",
+		maxRetry:          len(eurekaUrls),
 	}
 
 	for _, o := range opts {
 		o(r)
 	}
 
-	client := NewClient(eurekaUrls, WithHeartbeatInterval(r.heartbeatInterval), WithClientContext(r.ctx), WithNamespace(r.eurekaPath))
+	clientOpts := []ClientOption{WithHeartbeatInterval(r.heartbeatInterval), WithClientContext(r.ctx), WithNamespace(r.eurekaPath)}
+	if r.maxRetry > 0 {
+		clientOpts = append(clientOpts, WithMaxRetry(r.maxRetry))
+	}
+	client := NewClient(eurekaUrls, clientOpts...)
 	r.api = NewAPI(r.ctx, client, r.refreshInterval)
 	return r, nil
 }

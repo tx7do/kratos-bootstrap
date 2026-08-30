@@ -61,6 +61,11 @@ func WithWeight(weight int) Option {
 	return func(o *options) { o.Weight = weight }
 }
 
+// WithPriority with a Priority option.
+func WithPriority(priority int) Option {
+	return func(o *options) { o.Priority = priority }
+}
+
 // WithHealthy with a Healthy option.
 func WithHealthy(healthy bool) Option {
 	return func(o *options) { o.Healthy = healthy }

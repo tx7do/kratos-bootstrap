@@ -1,6 +1,6 @@
 module github.com/tx7do/kratos-bootstrap/registry/servicecomb
 
-go 1.24.6
+go 1.25.0
 
 replace (
 	github.com/armon/go-metrics => github.com/hashicorp/go-metrics v0.4.1
@@ -17,6 +17,7 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/tx7do/kratos-bootstrap/api v0.0.44
 	github.com/tx7do/kratos-bootstrap/registry v0.2.3
+	google.golang.org/protobuf v1.36.12
 )
 
 require (
@@ -32,7 +33,7 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
+	github.com/tx7do/go-utils v1.1.40 // indirect
 	golang.org/x/sync v0.14.0 // indirect
-	google.golang.org/protobuf v1.36.12 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

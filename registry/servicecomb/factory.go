@@ -1,9 +1,12 @@
 package servicecomb
 
 import (
+	"time"
+
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/registry"
 
+	servicecombRbac "github.com/go-chassis/cari/rbac"
 	servicecombClient "github.com/go-chassis/sc-client"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
@@ -21,8 +24,39 @@ func NewRegistry(c *conf.Registry) (*Registry, error) {
 		return nil, nil
 	}
 
+	in := c.Servicecomb
+
 	cfg := servicecombClient.Options{
-		Endpoints: c.Servicecomb.Endpoints,
+		Endpoints:  in.Endpoints,
+		EnableSSL:  in.GetEnableSsl(),
+		Timeout:    in.GetTimeout().AsDuration(),
+		Compressed: in.GetCompressed(),
+		Verbose:    in.GetVerbose(),
+	}
+
+	if in.GetTimeout().AsDuration() <= 0 {
+		cfg.Timeout = 10 * time.Second
+	}
+
+	if in.GetEnableAuth() {
+		cfg.EnableAuth = true
+		cfg.AuthUser = &servicecombRbac.AuthUser{
+			Username: in.GetUsername(),
+			Password: in.GetPassword(),
+		}
+		if in.GetTokenExpiration().AsDuration() > 0 {
+			cfg.TokenExpiration = in.GetTokenExpiration().AsDuration()
+		}
+	}
+
+	if tlsConf := in.GetTls(); tlsConf != nil {
+		tlsCfg, err := baseRegistry.LoadClientTlsConfig(tlsConf)
+		if err != nil {
+			log.Errorf("%v", err)
+			return nil, err
+		}
+		cfg.TLSConfig = tlsCfg
+		cfg.EnableSSL = true
 	}
 
 	var cli *servicecombClient.Client

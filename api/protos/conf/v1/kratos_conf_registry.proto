@@ -4,6 +4,7 @@ package conf;
 
 option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
 
+import "conf/v1/kratos_conf_tls.proto";
 import "google/protobuf/duration.proto";
 
 // 注册发现中心
@@ -24,20 +25,59 @@ message Registry {
 
   // Consul
   message Consul {
-    string scheme = 1;  // 网络样式
+    string scheme = 1; // 网络样式: http、https
     string address = 2; // 服务端地址
-    bool health_check = 3;  // 健康检查
+    bool health_check = 3; // 健康检查
+
+    string datacenter = 4; // 数据中心
+    string token = 5; // ACL Token
+    string token_file = 6; // ACL Token文件路径
+    string namespace = 7; // 命名空间(Consul企业版)
+    string partition = 8; // 管理分区(Consul企业版)
+    string path_prefix = 9; // API网关路径前缀
+
+    BasicAuth basic_auth = 10; // HTTP Basic认证
+    message BasicAuth {
+      string username = 1; // 用户名
+      string password = 2; // 密码
+    }
+
+    google.protobuf.Duration wait_time = 11; // Watch阻塞等待的最长时间
+    TLS tls = 12; // TLS配置
+
+    optional bool heartbeat = 13; // 心跳检查开关,默认开启
+    optional int32 health_check_interval = 14; // 健康检查间隔(秒),默认10
+    optional int32 deregister_critical_service_after = 15; // 不健康多久后注销服务(秒),默认600
+    google.protobuf.Duration timeout = 16; // 服务发现超时时间,默认10s
   }
 
   // Etcd
   message Etcd {
     repeated string endpoints = 1;
+
+    string username = 2; // 用户名
+    string password = 3; // 密码
+    TLS tls = 4; // TLS配置
+
+    google.protobuf.Duration dial_timeout = 5; // 连接超时时间
+    google.protobuf.Duration auto_sync_interval = 6; // 集群成员自动同步间隔,0: 禁用
+    google.protobuf.Duration dial_keep_alive_time = 7; // keepalive探测间隔
+    google.protobuf.Duration dial_keep_alive_timeout = 8; // keepalive探测等待响应的超时时间
+    bool reject_old_cluster = 9; // 拒绝连接过期集群
+    bool permit_without_stream = 10; // 没有活动流时也允许发送keepalive
+
+    string namespace = 20; // 键前缀,默认: /microservices
+    google.protobuf.Duration register_ttl = 21; // 注册租约TTL,默认: 15s
+    int32 max_retry = 22; // 心跳重试次数,默认: 5
   }
 
   // ZooKeeper
   message ZooKeeper {
     repeated string endpoints = 1;
-    google.protobuf.Duration timeout = 2;
+    google.protobuf.Duration timeout = 2; // 会话超时时间
+    string namespace = 3; // 根路径,默认: /microservices
+    string username = 4; // Digest ACL用户名
+    string password = 5; // Digest ACL密码
   }
 
   // Nacos
@@ -59,7 +99,7 @@ message Registry {
 
     google.protobuf.Duration timeout = 20; // http请求超时时间，单位: 毫秒
     google.protobuf.Duration beat_interval = 21; // 心跳间隔时间，单位: 毫秒
-    google.protobuf.Duration listen_interval = 22; // 心跳间隔时间，单位: 毫秒
+    google.protobuf.Duration listen_interval = 22; // 监听间隔时间，单位: 毫秒
 
     int32 update_thread_num = 30; // 更新服务的线程数
 
@@ -72,34 +112,69 @@ message Registry {
 
     string cache_dir = 52; // 缓存目录
     string context_path = 53; // 上下文路径
+
+    string scheme = 54; // 网络样式: http、https,默认: http
+    uint64 grpc_port = 55; // gRPC长连接端口,默认: port+1000
+    string endpoint = 56; // 地址服务器endpoint,用于获取服务端地址列表
+    bool disable_use_snap_shot = 57; // 请求服务端失败时禁用本地快照兜底
+    bool append_to_stdout = 58; // 日志是否追加输出到标准输出
+    bool async_update_service = 59; // 是否开启异步订阅更新服务列表
+
+    string group = 60; // 服务分组名,默认: DEFAULT_GROUP
+    string cluster = 61; // 集群名,默认: DEFAULT
+    double weight = 62; // 实例权重,默认: 100
+    string kind = 63; // 默认服务协议类型,默认: grpc
   }
 
   // Kubernetes
   message Kubernetes {
-
+    string namespace = 1; // 命名空间,默认: default
+    string kubeconfig = 2; // kubeconfig文件路径,默认: ~/.kube/config
+    optional bool in_cluster = 3; // 是否强制使用集群内(InCluster)配置
   }
 
   // Eureka
   message Eureka {
     repeated string endpoints = 1;
-    google.protobuf.Duration heartbeat_interval = 2;
-    google.protobuf.Duration refresh_interval = 3;
-    string path = 4;
+    google.protobuf.Duration heartbeat_interval = 2; // 心跳间隔时间
+    google.protobuf.Duration refresh_interval = 3; // 注册表刷新间隔
+    string path = 4; // Eureka路径,默认: eureka/v2
+    int32 max_retry = 5; // 请求失败重试次数,默认: endpoints数量
   }
 
   // Polaris
   message Polaris {
     string address = 1; // 服务端地址
-    int32 port = 2; // 服务端端口
-    int32 instance_count = 3;
-    string namespace = 4;
-    string service = 5;
-    string token = 6;
+    int32 port = 2; // 服务端端口,默认: 8091
+    int32 instance_count = 3; // 注册实例数量
+    string namespace = 4; // 命名空间
+    string service = 5; // 服务名
+    string token = 6; // 服务访问Token
+
+    string config_file = 7; // SDK配置文件路径,默认使用系统默认配置
+    int32 weight = 8; // 实例权重,0 <= weight <= 10000
+    int32 priority = 9; // 优先级,数值越小优先级越低
+    optional bool healthy = 10; // 健康状态,默认: true
+    optional bool isolate = 11; // 是否隔离,默认: false
+    optional bool heartbeat = 12; // 是否开启心跳上报,默认: true
+    int32 ttl = 13; // 心跳上报TTL(秒),开启心跳时必填,默认: 5
+    string protocol = 14; // 实例协议
+    google.protobuf.Duration timeout = 15; // 单次查询超时时间
+    int32 retry_count = 16; // 重试次数
   }
 
   // Servicecomb
   message Servicecomb {
     repeated string endpoints = 1;
+    bool enable_ssl = 2; // 启用SSL
+    google.protobuf.Duration timeout = 3; // 请求超时时间
+    bool enable_auth = 4; // 启用认证
+    string username = 5; // 用户名
+    string password = 6; // 密码
+    google.protobuf.Duration token_expiration = 7; // Token有效期
+    bool verbose = 8; // 输出详细日志
+    bool compressed = 9; // 压缩请求
+    TLS tls = 10; // TLS配置
   }
 
   string type = 1;

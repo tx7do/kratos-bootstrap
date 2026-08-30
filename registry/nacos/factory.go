@@ -23,35 +23,52 @@ func NewRegistry(c *conf.Registry) (*Registry, error) {
 		return nil, nil
 	}
 
-	srvConf := []nacosConstant.ServerConfig{
-		*nacosConstant.NewServerConfig(c.Nacos.Address, c.Nacos.Port),
+	in := c.Nacos
+
+	serverConf := *nacosConstant.NewServerConfig(in.GetAddress(), in.GetPort())
+	if in.GetScheme() != "" {
+		serverConf.Scheme = in.GetScheme()
 	}
+	if in.GetContextPath() != "" {
+		serverConf.ContextPath = in.GetContextPath()
+	}
+	if in.GetGrpcPort() > 0 {
+		serverConf.GrpcPort = in.GetGrpcPort()
+	}
+	srvConf := []nacosConstant.ServerConfig{serverConf}
 
 	cliConf := nacosConstant.ClientConfig{
-		NamespaceId: c.Nacos.NamespaceId,
-		RegionId:    c.Nacos.RegionId, // 地域ID
-		AppName:     c.Nacos.AppName,
-		AppKey:      c.Nacos.AppKey,
+		NamespaceId: in.GetNamespaceId(),
+		RegionId:    in.GetRegionId(), // 地域ID
+		AppName:     in.GetAppName(),
+		AppKey:      in.GetAppKey(),
 
-		TimeoutMs:    uint64(c.Nacos.Timeout.AsDuration().Milliseconds()), // http请求超时时间，单位毫秒
-		BeatInterval: c.Nacos.BeatInterval.AsDuration().Milliseconds(),    // 心跳间隔时间，单位毫秒
+		TimeoutMs:    uint64(in.GetTimeout().AsDuration().Milliseconds()), // http请求超时时间，单位毫秒
+		BeatInterval: in.GetBeatInterval().AsDuration().Milliseconds(),    // 心跳间隔时间，单位毫秒
 
-		UpdateThreadNum:      int(c.Nacos.UpdateThreadNum), // 更新服务的线程数
-		LogLevel:             c.Nacos.LogLevel,
-		CacheDir:             c.Nacos.CacheDir,             // 缓存目录
-		LogDir:               c.Nacos.LogDir,               // 日志目录
-		NotLoadCacheAtStart:  c.Nacos.NotLoadCacheAtStart,  // 在启动时不读取本地缓存数据，true--不读取，false--读取
-		UpdateCacheWhenEmpty: c.Nacos.UpdateCacheWhenEmpty, // 当服务列表为空时是否更新本地缓存，true--更新,false--不更新
+		ListenInterval: uint64(in.GetListenInterval().AsDuration().Milliseconds()), // 监听间隔时间（已废弃），单位毫秒
 
-		Username: c.Nacos.Username,
-		Password: c.Nacos.Password,
+		UpdateThreadNum:      int(in.GetUpdateThreadNum()), // 更新服务的线程数
+		LogLevel:             in.GetLogLevel(),
+		CacheDir:             in.GetCacheDir(),             // 缓存目录
+		LogDir:               in.GetLogDir(),               // 日志目录
+		NotLoadCacheAtStart:  in.GetNotLoadCacheAtStart(),  // 在启动时不读取本地缓存数据，true--不读取，false--读取
+		UpdateCacheWhenEmpty: in.GetUpdateCacheWhenEmpty(), // 当服务列表为空时是否更新本地缓存，true--更新,false--不更新
 
-		OpenKMS: c.Nacos.OpenKms, // 是否开启KMS加密
+		Username: in.GetUsername(),
+		Password: in.GetPassword(),
 
-		AccessKey: c.Nacos.AccessKey, // 阿里云AccessKey
-		SecretKey: c.Nacos.SecretKey, // 阿里云SecretKey
+		OpenKMS: in.GetOpenKms(), // 是否开启KMS加密
 
-		ContextPath: c.Nacos.ContextPath,
+		AccessKey: in.GetAccessKey(), // 阿里云AccessKey
+		SecretKey: in.GetSecretKey(), // 阿里云SecretKey
+
+		ContextPath: in.GetContextPath(),
+
+		Endpoint:           in.GetEndpoint(),           // 地址服务器endpoint
+		DisableUseSnapShot: in.GetDisableUseSnapShot(), // 请求服务端失败时禁用本地快照兜底
+		AppendToStdout:     in.GetAppendToStdout(),     // 日志追加输出到标准输出
+		AsyncUpdateService: in.GetAsyncUpdateService(), // 异步订阅更新服务列表
 	}
 
 	cli, err := nacosClients.NewNamingClient(
@@ -65,7 +82,21 @@ func NewRegistry(c *conf.Registry) (*Registry, error) {
 		return nil, err
 	}
 
-	reg := New(cli)
+	var opts []Option
+	if in.GetGroup() != "" {
+		opts = append(opts, WithGroup(in.GetGroup()))
+	}
+	if in.GetCluster() != "" {
+		opts = append(opts, WithCluster(in.GetCluster()))
+	}
+	if in.GetWeight() > 0 {
+		opts = append(opts, WithWeight(in.GetWeight()))
+	}
+	if in.GetKind() != "" {
+		opts = append(opts, WithDefaultKind(in.GetKind()))
+	}
+
+	reg := New(cli, opts...)
 
 	return reg, nil
 }

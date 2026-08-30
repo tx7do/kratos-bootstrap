@@ -29,6 +29,9 @@ func NewRegistry(c *conf.Registry) (*Registry, error) {
 	if c.Eureka.Path != "" {
 		opts = append(opts, WithEurekaPath(c.Eureka.Path))
 	}
+	if c.Eureka.MaxRetry > 0 {
+		opts = append(opts, WithMaxRetries(int(c.Eureka.MaxRetry)))
+	}
 
 	var err error
 	var reg *Registry

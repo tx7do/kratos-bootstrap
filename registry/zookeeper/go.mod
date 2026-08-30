@@ -16,6 +16,7 @@ require (
 	github.com/tx7do/kratos-bootstrap/api v0.0.44
 	github.com/tx7do/kratos-bootstrap/registry v0.2.3
 	golang.org/x/sync v0.22.0
+	google.golang.org/protobuf v1.36.12
 )
 
 require (
@@ -23,6 +24,6 @@ require (
 	github.com/kr/text v0.2.0 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
-	google.golang.org/protobuf v1.36.12 // indirect
+	github.com/tx7do/go-utils v1.1.40 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

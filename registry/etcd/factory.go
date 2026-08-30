@@ -21,8 +21,28 @@ func NewRegistry(c *conf.Registry) (*Registry, error) {
 		return nil, nil
 	}
 
+	in := c.Etcd
+
 	cfg := etcdClient.Config{
-		Endpoints: c.Etcd.Endpoints,
+		Endpoints: in.Endpoints,
+
+		Username:             in.GetUsername(),
+		Password:             in.GetPassword(),
+		AutoSyncInterval:     in.GetAutoSyncInterval().AsDuration(),
+		DialTimeout:          in.GetDialTimeout().AsDuration(),
+		DialKeepAliveTime:    in.GetDialKeepAliveTime().AsDuration(),
+		DialKeepAliveTimeout: in.GetDialKeepAliveTimeout().AsDuration(),
+		RejectOldCluster:     in.GetRejectOldCluster(),
+		PermitWithoutStream:  in.GetPermitWithoutStream(),
+	}
+
+	if tlsConf := in.GetTls(); tlsConf != nil {
+		tlsCfg, err := baseRegistry.LoadClientTlsConfig(tlsConf)
+		if err != nil {
+			log.Errorf("%v", err)
+			return nil, err
+		}
+		cfg.TLS = tlsCfg
 	}
 
 	var err error
@@ -32,7 +52,18 @@ func NewRegistry(c *conf.Registry) (*Registry, error) {
 		return nil, err
 	}
 
-	reg := New(cli)
+	var opts []Option
+	if in.GetNamespace() != "" {
+		opts = append(opts, Namespace(in.GetNamespace()))
+	}
+	if in.GetRegisterTtl().AsDuration() > 0 {
+		opts = append(opts, RegisterTTL(in.GetRegisterTtl().AsDuration()))
+	}
+	if in.GetMaxRetry() > 0 {
+		opts = append(opts, MaxRetry(int(in.GetMaxRetry())))
+	}
+
+	reg := New(cli, opts...)
 
 	return reg, nil
 }

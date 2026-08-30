@@ -23,3 +23,8 @@ func WithRefresh(interval time.Duration) Option {
 func WithEurekaPath(path string) Option {
 	return func(o *Registry) { o.eurekaPath = path }
 }
+
+// WithMaxRetries 请求失败重试次数.
+func WithMaxRetries(maxRetry int) Option {
+	return func(o *Registry) { o.maxRetry = maxRetry }
+}

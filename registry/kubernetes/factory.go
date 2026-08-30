@@ -1,6 +1,7 @@
 package kubernetes
 
 import (
+	"os"
 	"path/filepath"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -20,21 +21,36 @@ func init() {
 	_ = baseRegistry.RegisterRegistrarFactory(baseRegistry.Kubernetes, NewRegistrar)
 }
 
+const serviceAccountNamespaceFile = "/var/run/secrets/kubernetes.io/serviceaccount/namespace"
+
 // NewRegistry 创建一个注册发现客户端 - Kubernetes
 func NewRegistry(cfg *conf.Registry) (*Registry, error) {
 	if cfg == nil || cfg.Kubernetes == nil {
 		return nil, nil
 	}
 
-	restConfig, err := k8sRest.InClusterConfig()
-	if err != nil {
-		home := k8sUtil.HomeDir()
-		kubeConfig := filepath.Join(home, ".kube", "config")
-		restConfig, err = k8sTools.BuildConfigFromFlags("", kubeConfig)
-		if err != nil {
-			log.Errorf("%v", err)
-			return nil, err
+	in := cfg.Kubernetes
+
+	var restConfig *k8sRest.Config
+	var err error
+
+	forceInCluster := in.GetInCluster() && in.InCluster != nil
+
+	switch {
+	case forceInCluster:
+		restConfig, err = k8sRest.InClusterConfig()
+	case in.GetKubeconfig() != "":
+		restConfig, err = k8sTools.BuildConfigFromFlags("", in.GetKubeconfig())
+	default:
+		if restConfig, err = k8sRest.InClusterConfig(); err != nil {
+			home := k8sUtil.HomeDir()
+			kubeConfig := filepath.Join(home, ".kube", "config")
+			restConfig, err = k8sTools.BuildConfigFromFlags("", kubeConfig)
 		}
+	}
+	if err != nil {
+		log.Errorf("%v", err)
+		return nil, err
 	}
 
 	clientSet, err := k8s.NewForConfig(restConfig)
@@ -44,6 +60,12 @@ func NewRegistry(cfg *conf.Registry) (*Registry, error) {
 	}
 
 	var namespace string
+	if in.GetNamespace() != "" {
+		namespace = in.GetNamespace()
+	} else if data, rerr := os.ReadFile(serviceAccountNamespaceFile); rerr == nil && len(data) > 0 {
+		namespace = string(data)
+	}
+
 	reg := New(clientSet, namespace)
 
 	return reg, nil

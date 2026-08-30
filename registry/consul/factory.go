@@ -22,9 +22,45 @@ func NewRegistry(c *conf.Registry) (*Registry, error) {
 		return nil, nil
 	}
 
+	in := c.Consul
+
 	cfg := consulClient.DefaultConfig()
-	cfg.Address = c.Consul.GetAddress()
-	cfg.Scheme = c.Consul.GetScheme()
+	cfg.Address = in.GetAddress()
+	cfg.Scheme = in.GetScheme()
+	cfg.Datacenter = in.GetDatacenter()
+	cfg.Token = in.GetToken()
+	cfg.TokenFile = in.GetTokenFile()
+	cfg.Namespace = in.GetNamespace()
+	cfg.Partition = in.GetPartition()
+	cfg.PathPrefix = in.GetPathPrefix()
+	cfg.WaitTime = in.GetWaitTime().AsDuration()
+
+	if auth := in.GetBasicAuth(); auth != nil {
+		cfg.HttpAuth = &consulClient.HttpBasicAuth{
+			Username: auth.GetUsername(),
+			Password: auth.GetPassword(),
+		}
+	}
+
+	if tlsConf := in.GetTls(); tlsConf != nil {
+		if in.GetScheme() == "" {
+			cfg.Scheme = "https"
+		}
+		tlsCfg := &consulClient.TLSConfig{
+			InsecureSkipVerify: tlsConf.GetInsecureSkipVerify(),
+		}
+		if file := tlsConf.GetFile(); file != nil {
+			tlsCfg.CertFile = file.GetCertPath()
+			tlsCfg.KeyFile = file.GetKeyPath()
+			tlsCfg.CAFile = file.GetCaPath()
+		}
+		if pem := tlsConf.GetConfig(); pem != nil {
+			tlsCfg.CertPEM = pem.GetCertPem()
+			tlsCfg.KeyPEM = pem.GetKeyPem()
+			tlsCfg.CAPem = pem.GetCaPem()
+		}
+		cfg.TLSConfig = *tlsCfg
+	}
 
 	var cli *consulClient.Client
 	var err error
@@ -33,7 +69,23 @@ func NewRegistry(c *conf.Registry) (*Registry, error) {
 		return nil, err
 	}
 
-	reg := New(cli, WithHealthCheck(c.Consul.GetHealthCheck()))
+	var opts []Option
+	opts = append(opts, WithHealthCheck(in.GetHealthCheck()))
+
+	if in.Heartbeat != nil {
+		opts = append(opts, WithHeartbeat(in.GetHeartbeat()))
+	}
+	if in.HealthCheckInterval != nil {
+		opts = append(opts, WithHealthCheckInterval(int(in.GetHealthCheckInterval())))
+	}
+	if in.DeregisterCriticalServiceAfter != nil {
+		opts = append(opts, WithDeregisterCriticalServiceAfter(int(in.GetDeregisterCriticalServiceAfter())))
+	}
+	if in.Timeout != nil {
+		opts = append(opts, WithTimeout(in.GetTimeout().AsDuration()))
+	}
+
+	reg := New(cli, opts...)
 
 	return reg, nil
 }

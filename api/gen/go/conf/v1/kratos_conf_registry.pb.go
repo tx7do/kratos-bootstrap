@@ -201,12 +201,25 @@ func (x *Registry) GetServicecomb() *Registry_Servicecomb {
 
 // Consul
 type Registry_Consul struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Scheme        string                 `protobuf:"bytes,1,opt,name=scheme,proto3" json:"scheme,omitempty"`                               // 网络样式
-	Address       string                 `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`                             // 服务端地址
-	HealthCheck   bool                   `protobuf:"varint,3,opt,name=health_check,json=healthCheck,proto3" json:"health_check,omitempty"` // 健康检查
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                          protoimpl.MessageState     `protogen:"open.v1"`
+	Scheme                         string                     `protobuf:"bytes,1,opt,name=scheme,proto3" json:"scheme,omitempty"`                                                                                                   // 网络样式: http、https
+	Address                        string                     `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`                                                                                                 // 服务端地址
+	HealthCheck                    bool                       `protobuf:"varint,3,opt,name=health_check,json=healthCheck,proto3" json:"health_check,omitempty"`                                                                     // 健康检查
+	Datacenter                     string                     `protobuf:"bytes,4,opt,name=datacenter,proto3" json:"datacenter,omitempty"`                                                                                           // 数据中心
+	Token                          string                     `protobuf:"bytes,5,opt,name=token,proto3" json:"token,omitempty"`                                                                                                     // ACL Token
+	TokenFile                      string                     `protobuf:"bytes,6,opt,name=token_file,json=tokenFile,proto3" json:"token_file,omitempty"`                                                                            // ACL Token文件路径
+	Namespace                      string                     `protobuf:"bytes,7,opt,name=namespace,proto3" json:"namespace,omitempty"`                                                                                             // 命名空间(Consul企业版)
+	Partition                      string                     `protobuf:"bytes,8,opt,name=partition,proto3" json:"partition,omitempty"`                                                                                             // 管理分区(Consul企业版)
+	PathPrefix                     string                     `protobuf:"bytes,9,opt,name=path_prefix,json=pathPrefix,proto3" json:"path_prefix,omitempty"`                                                                         // API网关路径前缀
+	BasicAuth                      *Registry_Consul_BasicAuth `protobuf:"bytes,10,opt,name=basic_auth,json=basicAuth,proto3" json:"basic_auth,omitempty"`                                                                           // HTTP Basic认证
+	WaitTime                       *durationpb.Duration       `protobuf:"bytes,11,opt,name=wait_time,json=waitTime,proto3" json:"wait_time,omitempty"`                                                                              // Watch阻塞等待的最长时间
+	Tls                            *TLS                       `protobuf:"bytes,12,opt,name=tls,proto3" json:"tls,omitempty"`                                                                                                        // TLS配置
+	Heartbeat                      *bool                      `protobuf:"varint,13,opt,name=heartbeat,proto3,oneof" json:"heartbeat,omitempty"`                                                                                     // 心跳检查开关,默认开启
+	HealthCheckInterval            *int32                     `protobuf:"varint,14,opt,name=health_check_interval,json=healthCheckInterval,proto3,oneof" json:"health_check_interval,omitempty"`                                    // 健康检查间隔(秒),默认10
+	DeregisterCriticalServiceAfter *int32                     `protobuf:"varint,15,opt,name=deregister_critical_service_after,json=deregisterCriticalServiceAfter,proto3,oneof" json:"deregister_critical_service_after,omitempty"` // 不健康多久后注销服务(秒),默认600
+	Timeout                        *durationpb.Duration       `protobuf:"bytes,16,opt,name=timeout,proto3" json:"timeout,omitempty"`                                                                                                // 服务发现超时时间,默认10s
+	unknownFields                  protoimpl.UnknownFields
+	sizeCache                      protoimpl.SizeCache
 }
 
 func (x *Registry_Consul) Reset() {
@@ -260,12 +273,115 @@ func (x *Registry_Consul) GetHealthCheck() bool {
 	return false
 }
 
+func (x *Registry_Consul) GetDatacenter() string {
+	if x != nil {
+		return x.Datacenter
+	}
+	return ""
+}
+
+func (x *Registry_Consul) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+func (x *Registry_Consul) GetTokenFile() string {
+	if x != nil {
+		return x.TokenFile
+	}
+	return ""
+}
+
+func (x *Registry_Consul) GetNamespace() string {
+	if x != nil {
+		return x.Namespace
+	}
+	return ""
+}
+
+func (x *Registry_Consul) GetPartition() string {
+	if x != nil {
+		return x.Partition
+	}
+	return ""
+}
+
+func (x *Registry_Consul) GetPathPrefix() string {
+	if x != nil {
+		return x.PathPrefix
+	}
+	return ""
+}
+
+func (x *Registry_Consul) GetBasicAuth() *Registry_Consul_BasicAuth {
+	if x != nil {
+		return x.BasicAuth
+	}
+	return nil
+}
+
+func (x *Registry_Consul) GetWaitTime() *durationpb.Duration {
+	if x != nil {
+		return x.WaitTime
+	}
+	return nil
+}
+
+func (x *Registry_Consul) GetTls() *TLS {
+	if x != nil {
+		return x.Tls
+	}
+	return nil
+}
+
+func (x *Registry_Consul) GetHeartbeat() bool {
+	if x != nil && x.Heartbeat != nil {
+		return *x.Heartbeat
+	}
+	return false
+}
+
+func (x *Registry_Consul) GetHealthCheckInterval() int32 {
+	if x != nil && x.HealthCheckInterval != nil {
+		return *x.HealthCheckInterval
+	}
+	return 0
+}
+
+func (x *Registry_Consul) GetDeregisterCriticalServiceAfter() int32 {
+	if x != nil && x.DeregisterCriticalServiceAfter != nil {
+		return *x.DeregisterCriticalServiceAfter
+	}
+	return 0
+}
+
+func (x *Registry_Consul) GetTimeout() *durationpb.Duration {
+	if x != nil {
+		return x.Timeout
+	}
+	return nil
+}
+
 // Etcd
 type Registry_Etcd struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Endpoints     []string               `protobuf:"bytes,1,rep,name=endpoints,proto3" json:"endpoints,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	Endpoints            []string               `protobuf:"bytes,1,rep,name=endpoints,proto3" json:"endpoints,omitempty"`
+	Username             string                 `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`                                                         // 用户名
+	Password             string                 `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`                                                         // 密码
+	Tls                  *TLS                   `protobuf:"bytes,4,opt,name=tls,proto3" json:"tls,omitempty"`                                                                   // TLS配置
+	DialTimeout          *durationpb.Duration   `protobuf:"bytes,5,opt,name=dial_timeout,json=dialTimeout,proto3" json:"dial_timeout,omitempty"`                                // 连接超时时间
+	AutoSyncInterval     *durationpb.Duration   `protobuf:"bytes,6,opt,name=auto_sync_interval,json=autoSyncInterval,proto3" json:"auto_sync_interval,omitempty"`               // 集群成员自动同步间隔,0: 禁用
+	DialKeepAliveTime    *durationpb.Duration   `protobuf:"bytes,7,opt,name=dial_keep_alive_time,json=dialKeepAliveTime,proto3" json:"dial_keep_alive_time,omitempty"`          // keepalive探测间隔
+	DialKeepAliveTimeout *durationpb.Duration   `protobuf:"bytes,8,opt,name=dial_keep_alive_timeout,json=dialKeepAliveTimeout,proto3" json:"dial_keep_alive_timeout,omitempty"` // keepalive探测等待响应的超时时间
+	RejectOldCluster     bool                   `protobuf:"varint,9,opt,name=reject_old_cluster,json=rejectOldCluster,proto3" json:"reject_old_cluster,omitempty"`              // 拒绝连接过期集群
+	PermitWithoutStream  bool                   `protobuf:"varint,10,opt,name=permit_without_stream,json=permitWithoutStream,proto3" json:"permit_without_stream,omitempty"`    // 没有活动流时也允许发送keepalive
+	Namespace            string                 `protobuf:"bytes,20,opt,name=namespace,proto3" json:"namespace,omitempty"`                                                      // 键前缀,默认: /microservices
+	RegisterTtl          *durationpb.Duration   `protobuf:"bytes,21,opt,name=register_ttl,json=registerTtl,proto3" json:"register_ttl,omitempty"`                               // 注册租约TTL,默认: 15s
+	MaxRetry             int32                  `protobuf:"varint,22,opt,name=max_retry,json=maxRetry,proto3" json:"max_retry,omitempty"`                                       // 心跳重试次数,默认: 5
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *Registry_Etcd) Reset() {
@@ -305,11 +421,98 @@ func (x *Registry_Etcd) GetEndpoints() []string {
 	return nil
 }
 
+func (x *Registry_Etcd) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *Registry_Etcd) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
+func (x *Registry_Etcd) GetTls() *TLS {
+	if x != nil {
+		return x.Tls
+	}
+	return nil
+}
+
+func (x *Registry_Etcd) GetDialTimeout() *durationpb.Duration {
+	if x != nil {
+		return x.DialTimeout
+	}
+	return nil
+}
+
+func (x *Registry_Etcd) GetAutoSyncInterval() *durationpb.Duration {
+	if x != nil {
+		return x.AutoSyncInterval
+	}
+	return nil
+}
+
+func (x *Registry_Etcd) GetDialKeepAliveTime() *durationpb.Duration {
+	if x != nil {
+		return x.DialKeepAliveTime
+	}
+	return nil
+}
+
+func (x *Registry_Etcd) GetDialKeepAliveTimeout() *durationpb.Duration {
+	if x != nil {
+		return x.DialKeepAliveTimeout
+	}
+	return nil
+}
+
+func (x *Registry_Etcd) GetRejectOldCluster() bool {
+	if x != nil {
+		return x.RejectOldCluster
+	}
+	return false
+}
+
+func (x *Registry_Etcd) GetPermitWithoutStream() bool {
+	if x != nil {
+		return x.PermitWithoutStream
+	}
+	return false
+}
+
+func (x *Registry_Etcd) GetNamespace() string {
+	if x != nil {
+		return x.Namespace
+	}
+	return ""
+}
+
+func (x *Registry_Etcd) GetRegisterTtl() *durationpb.Duration {
+	if x != nil {
+		return x.RegisterTtl
+	}
+	return nil
+}
+
+func (x *Registry_Etcd) GetMaxRetry() int32 {
+	if x != nil {
+		return x.MaxRetry
+	}
+	return 0
+}
+
 // ZooKeeper
 type Registry_ZooKeeper struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Endpoints     []string               `protobuf:"bytes,1,rep,name=endpoints,proto3" json:"endpoints,omitempty"`
-	Timeout       *durationpb.Duration   `protobuf:"bytes,2,opt,name=timeout,proto3" json:"timeout,omitempty"`
+	Timeout       *durationpb.Duration   `protobuf:"bytes,2,opt,name=timeout,proto3" json:"timeout,omitempty"`     // 会话超时时间
+	Namespace     string                 `protobuf:"bytes,3,opt,name=namespace,proto3" json:"namespace,omitempty"` // 根路径,默认: /microservices
+	Username      string                 `protobuf:"bytes,4,opt,name=username,proto3" json:"username,omitempty"`   // Digest ACL用户名
+	Password      string                 `protobuf:"bytes,5,opt,name=password,proto3" json:"password,omitempty"`   // Digest ACL密码
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -358,6 +561,27 @@ func (x *Registry_ZooKeeper) GetTimeout() *durationpb.Duration {
 	return nil
 }
 
+func (x *Registry_ZooKeeper) GetNamespace() string {
+	if x != nil {
+		return x.Namespace
+	}
+	return ""
+}
+
+func (x *Registry_ZooKeeper) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *Registry_ZooKeeper) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
 // Nacos
 type Registry_Nacos struct {
 	state                protoimpl.MessageState `protogen:"open.v1"`
@@ -373,7 +597,7 @@ type Registry_Nacos struct {
 	Password             string                 `protobuf:"bytes,10,opt,name=password,proto3" json:"password,omitempty"`                                                          // 密码
 	Timeout              *durationpb.Duration   `protobuf:"bytes,20,opt,name=timeout,proto3" json:"timeout,omitempty"`                                                            // http请求超时时间，单位: 毫秒
 	BeatInterval         *durationpb.Duration   `protobuf:"bytes,21,opt,name=beat_interval,json=beatInterval,proto3" json:"beat_interval,omitempty"`                              // 心跳间隔时间，单位: 毫秒
-	ListenInterval       *durationpb.Duration   `protobuf:"bytes,22,opt,name=listen_interval,json=listenInterval,proto3" json:"listen_interval,omitempty"`                        // 心跳间隔时间，单位: 毫秒
+	ListenInterval       *durationpb.Duration   `protobuf:"bytes,22,opt,name=listen_interval,json=listenInterval,proto3" json:"listen_interval,omitempty"`                        // 监听间隔时间，单位: 毫秒
 	UpdateThreadNum      int32                  `protobuf:"varint,30,opt,name=update_thread_num,json=updateThreadNum,proto3" json:"update_thread_num,omitempty"`                  // 更新服务的线程数
 	NotLoadCacheAtStart  bool                   `protobuf:"varint,40,opt,name=not_load_cache_at_start,json=notLoadCacheAtStart,proto3" json:"not_load_cache_at_start,omitempty"`  // 在启动时不读取本地缓存数据，true: 不读取，false: 读取
 	UpdateCacheWhenEmpty bool                   `protobuf:"varint,41,opt,name=update_cache_when_empty,json=updateCacheWhenEmpty,proto3" json:"update_cache_when_empty,omitempty"` // 当服务列表为空时是否更新本地缓存，true: 更新,false: 不更新
@@ -382,6 +606,16 @@ type Registry_Nacos struct {
 	LogDir               string                 `protobuf:"bytes,51,opt,name=log_dir,json=logDir,proto3" json:"log_dir,omitempty"`                                                // 日志目录
 	CacheDir             string                 `protobuf:"bytes,52,opt,name=cache_dir,json=cacheDir,proto3" json:"cache_dir,omitempty"`                                          // 缓存目录
 	ContextPath          string                 `protobuf:"bytes,53,opt,name=context_path,json=contextPath,proto3" json:"context_path,omitempty"`                                 // 上下文路径
+	Scheme               string                 `protobuf:"bytes,54,opt,name=scheme,proto3" json:"scheme,omitempty"`                                                              // 网络样式: http、https,默认: http
+	GrpcPort             uint64                 `protobuf:"varint,55,opt,name=grpc_port,json=grpcPort,proto3" json:"grpc_port,omitempty"`                                         // gRPC长连接端口,默认: port+1000
+	Endpoint             string                 `protobuf:"bytes,56,opt,name=endpoint,proto3" json:"endpoint,omitempty"`                                                          // 地址服务器endpoint,用于获取服务端地址列表
+	DisableUseSnapShot   bool                   `protobuf:"varint,57,opt,name=disable_use_snap_shot,json=disableUseSnapShot,proto3" json:"disable_use_snap_shot,omitempty"`       // 请求服务端失败时禁用本地快照兜底
+	AppendToStdout       bool                   `protobuf:"varint,58,opt,name=append_to_stdout,json=appendToStdout,proto3" json:"append_to_stdout,omitempty"`                     // 日志是否追加输出到标准输出
+	AsyncUpdateService   bool                   `protobuf:"varint,59,opt,name=async_update_service,json=asyncUpdateService,proto3" json:"async_update_service,omitempty"`         // 是否开启异步订阅更新服务列表
+	Group                string                 `protobuf:"bytes,60,opt,name=group,proto3" json:"group,omitempty"`                                                                // 服务分组名,默认: DEFAULT_GROUP
+	Cluster              string                 `protobuf:"bytes,61,opt,name=cluster,proto3" json:"cluster,omitempty"`                                                            // 集群名,默认: DEFAULT
+	Weight               float64                `protobuf:"fixed64,62,opt,name=weight,proto3" json:"weight,omitempty"`                                                            // 实例权重,默认: 100
+	Kind                 string                 `protobuf:"bytes,63,opt,name=kind,proto3" json:"kind,omitempty"`                                                                  // 默认服务协议类型,默认: grpc
 	unknownFields        protoimpl.UnknownFields
 	sizeCache            protoimpl.SizeCache
 }
@@ -563,9 +797,82 @@ func (x *Registry_Nacos) GetContextPath() string {
 	return ""
 }
 
+func (x *Registry_Nacos) GetScheme() string {
+	if x != nil {
+		return x.Scheme
+	}
+	return ""
+}
+
+func (x *Registry_Nacos) GetGrpcPort() uint64 {
+	if x != nil {
+		return x.GrpcPort
+	}
+	return 0
+}
+
+func (x *Registry_Nacos) GetEndpoint() string {
+	if x != nil {
+		return x.Endpoint
+	}
+	return ""
+}
+
+func (x *Registry_Nacos) GetDisableUseSnapShot() bool {
+	if x != nil {
+		return x.DisableUseSnapShot
+	}
+	return false
+}
+
+func (x *Registry_Nacos) GetAppendToStdout() bool {
+	if x != nil {
+		return x.AppendToStdout
+	}
+	return false
+}
+
+func (x *Registry_Nacos) GetAsyncUpdateService() bool {
+	if x != nil {
+		return x.AsyncUpdateService
+	}
+	return false
+}
+
+func (x *Registry_Nacos) GetGroup() string {
+	if x != nil {
+		return x.Group
+	}
+	return ""
+}
+
+func (x *Registry_Nacos) GetCluster() string {
+	if x != nil {
+		return x.Cluster
+	}
+	return ""
+}
+
+func (x *Registry_Nacos) GetWeight() float64 {
+	if x != nil {
+		return x.Weight
+	}
+	return 0
+}
+
+func (x *Registry_Nacos) GetKind() string {
+	if x != nil {
+		return x.Kind
+	}
+	return ""
+}
+
 // Kubernetes
 type Registry_Kubernetes struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Namespace     string                 `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`                         // 命名空间,默认: default
+	Kubeconfig    string                 `protobuf:"bytes,2,opt,name=kubeconfig,proto3" json:"kubeconfig,omitempty"`                       // kubeconfig文件路径,默认: ~/.kube/config
+	InCluster     *bool                  `protobuf:"varint,3,opt,name=in_cluster,json=inCluster,proto3,oneof" json:"in_cluster,omitempty"` // 是否强制使用集群内(InCluster)配置
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -600,13 +907,35 @@ func (*Registry_Kubernetes) Descriptor() ([]byte, []int) {
 	return file_conf_v1_kratos_conf_registry_proto_rawDescGZIP(), []int{0, 4}
 }
 
+func (x *Registry_Kubernetes) GetNamespace() string {
+	if x != nil {
+		return x.Namespace
+	}
+	return ""
+}
+
+func (x *Registry_Kubernetes) GetKubeconfig() string {
+	if x != nil {
+		return x.Kubeconfig
+	}
+	return ""
+}
+
+func (x *Registry_Kubernetes) GetInCluster() bool {
+	if x != nil && x.InCluster != nil {
+		return *x.InCluster
+	}
+	return false
+}
+
 // Eureka
 type Registry_Eureka struct {
 	state             protoimpl.MessageState `protogen:"open.v1"`
 	Endpoints         []string               `protobuf:"bytes,1,rep,name=endpoints,proto3" json:"endpoints,omitempty"`
-	HeartbeatInterval *durationpb.Duration   `protobuf:"bytes,2,opt,name=heartbeat_interval,json=heartbeatInterval,proto3" json:"heartbeat_interval,omitempty"`
-	RefreshInterval   *durationpb.Duration   `protobuf:"bytes,3,opt,name=refresh_interval,json=refreshInterval,proto3" json:"refresh_interval,omitempty"`
-	Path              string                 `protobuf:"bytes,4,opt,name=path,proto3" json:"path,omitempty"`
+	HeartbeatInterval *durationpb.Duration   `protobuf:"bytes,2,opt,name=heartbeat_interval,json=heartbeatInterval,proto3" json:"heartbeat_interval,omitempty"` // 心跳间隔时间
+	RefreshInterval   *durationpb.Duration   `protobuf:"bytes,3,opt,name=refresh_interval,json=refreshInterval,proto3" json:"refresh_interval,omitempty"`       // 注册表刷新间隔
+	Path              string                 `protobuf:"bytes,4,opt,name=path,proto3" json:"path,omitempty"`                                                    // Eureka路径,默认: eureka/v2
+	MaxRetry          int32                  `protobuf:"varint,5,opt,name=max_retry,json=maxRetry,proto3" json:"max_retry,omitempty"`                           // 请求失败重试次数,默认: endpoints数量
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -669,15 +998,32 @@ func (x *Registry_Eureka) GetPath() string {
 	return ""
 }
 
+func (x *Registry_Eureka) GetMaxRetry() int32 {
+	if x != nil {
+		return x.MaxRetry
+	}
+	return 0
+}
+
 // Polaris
 type Registry_Polaris struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Address       string                 `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"` // 服务端地址
-	Port          int32                  `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`      // 服务端端口
-	InstanceCount int32                  `protobuf:"varint,3,opt,name=instance_count,json=instanceCount,proto3" json:"instance_count,omitempty"`
-	Namespace     string                 `protobuf:"bytes,4,opt,name=namespace,proto3" json:"namespace,omitempty"`
-	Service       string                 `protobuf:"bytes,5,opt,name=service,proto3" json:"service,omitempty"`
-	Token         string                 `protobuf:"bytes,6,opt,name=token,proto3" json:"token,omitempty"`
+	Address       string                 `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`                                   // 服务端地址
+	Port          int32                  `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`                                        // 服务端端口,默认: 8091
+	InstanceCount int32                  `protobuf:"varint,3,opt,name=instance_count,json=instanceCount,proto3" json:"instance_count,omitempty"` // 注册实例数量
+	Namespace     string                 `protobuf:"bytes,4,opt,name=namespace,proto3" json:"namespace,omitempty"`                               // 命名空间
+	Service       string                 `protobuf:"bytes,5,opt,name=service,proto3" json:"service,omitempty"`                                   // 服务名
+	Token         string                 `protobuf:"bytes,6,opt,name=token,proto3" json:"token,omitempty"`                                       // 服务访问Token
+	ConfigFile    string                 `protobuf:"bytes,7,opt,name=config_file,json=configFile,proto3" json:"config_file,omitempty"`           // SDK配置文件路径,默认使用系统默认配置
+	Weight        int32                  `protobuf:"varint,8,opt,name=weight,proto3" json:"weight,omitempty"`                                    // 实例权重,0 <= weight <= 10000
+	Priority      int32                  `protobuf:"varint,9,opt,name=priority,proto3" json:"priority,omitempty"`                                // 优先级,数值越小优先级越低
+	Healthy       *bool                  `protobuf:"varint,10,opt,name=healthy,proto3,oneof" json:"healthy,omitempty"`                           // 健康状态,默认: true
+	Isolate       *bool                  `protobuf:"varint,11,opt,name=isolate,proto3,oneof" json:"isolate,omitempty"`                           // 是否隔离,默认: false
+	Heartbeat     *bool                  `protobuf:"varint,12,opt,name=heartbeat,proto3,oneof" json:"heartbeat,omitempty"`                       // 是否开启心跳上报,默认: true
+	Ttl           int32                  `protobuf:"varint,13,opt,name=ttl,proto3" json:"ttl,omitempty"`                                         // 心跳上报TTL(秒),开启心跳时必填,默认: 5
+	Protocol      string                 `protobuf:"bytes,14,opt,name=protocol,proto3" json:"protocol,omitempty"`                                // 实例协议
+	Timeout       *durationpb.Duration   `protobuf:"bytes,15,opt,name=timeout,proto3" json:"timeout,omitempty"`                                  // 单次查询超时时间
+	RetryCount    int32                  `protobuf:"varint,16,opt,name=retry_count,json=retryCount,proto3" json:"retry_count,omitempty"`         // 重试次数
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -754,12 +1100,91 @@ func (x *Registry_Polaris) GetToken() string {
 	return ""
 }
 
+func (x *Registry_Polaris) GetConfigFile() string {
+	if x != nil {
+		return x.ConfigFile
+	}
+	return ""
+}
+
+func (x *Registry_Polaris) GetWeight() int32 {
+	if x != nil {
+		return x.Weight
+	}
+	return 0
+}
+
+func (x *Registry_Polaris) GetPriority() int32 {
+	if x != nil {
+		return x.Priority
+	}
+	return 0
+}
+
+func (x *Registry_Polaris) GetHealthy() bool {
+	if x != nil && x.Healthy != nil {
+		return *x.Healthy
+	}
+	return false
+}
+
+func (x *Registry_Polaris) GetIsolate() bool {
+	if x != nil && x.Isolate != nil {
+		return *x.Isolate
+	}
+	return false
+}
+
+func (x *Registry_Polaris) GetHeartbeat() bool {
+	if x != nil && x.Heartbeat != nil {
+		return *x.Heartbeat
+	}
+	return false
+}
+
+func (x *Registry_Polaris) GetTtl() int32 {
+	if x != nil {
+		return x.Ttl
+	}
+	return 0
+}
+
+func (x *Registry_Polaris) GetProtocol() string {
+	if x != nil {
+		return x.Protocol
+	}
+	return ""
+}
+
+func (x *Registry_Polaris) GetTimeout() *durationpb.Duration {
+	if x != nil {
+		return x.Timeout
+	}
+	return nil
+}
+
+func (x *Registry_Polaris) GetRetryCount() int32 {
+	if x != nil {
+		return x.RetryCount
+	}
+	return 0
+}
+
 // Servicecomb
 type Registry_Servicecomb struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Endpoints     []string               `protobuf:"bytes,1,rep,name=endpoints,proto3" json:"endpoints,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Endpoints       []string               `protobuf:"bytes,1,rep,name=endpoints,proto3" json:"endpoints,omitempty"`
+	EnableSsl       bool                   `protobuf:"varint,2,opt,name=enable_ssl,json=enableSsl,proto3" json:"enable_ssl,omitempty"`                  // 启用SSL
+	Timeout         *durationpb.Duration   `protobuf:"bytes,3,opt,name=timeout,proto3" json:"timeout,omitempty"`                                        // 请求超时时间
+	EnableAuth      bool                   `protobuf:"varint,4,opt,name=enable_auth,json=enableAuth,proto3" json:"enable_auth,omitempty"`               // 启用认证
+	Username        string                 `protobuf:"bytes,5,opt,name=username,proto3" json:"username,omitempty"`                                      // 用户名
+	Password        string                 `protobuf:"bytes,6,opt,name=password,proto3" json:"password,omitempty"`                                      // 密码
+	TokenExpiration *durationpb.Duration   `protobuf:"bytes,7,opt,name=token_expiration,json=tokenExpiration,proto3" json:"token_expiration,omitempty"` // Token有效期
+	Verbose         bool                   `protobuf:"varint,8,opt,name=verbose,proto3" json:"verbose,omitempty"`                                       // 输出详细日志
+	Compressed      bool                   `protobuf:"varint,9,opt,name=compressed,proto3" json:"compressed,omitempty"`                                 // 压缩请求
+	Tls             *TLS                   `protobuf:"bytes,10,opt,name=tls,proto3" json:"tls,omitempty"`                                               // TLS配置
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *Registry_Servicecomb) Reset() {
@@ -799,11 +1224,126 @@ func (x *Registry_Servicecomb) GetEndpoints() []string {
 	return nil
 }
 
+func (x *Registry_Servicecomb) GetEnableSsl() bool {
+	if x != nil {
+		return x.EnableSsl
+	}
+	return false
+}
+
+func (x *Registry_Servicecomb) GetTimeout() *durationpb.Duration {
+	if x != nil {
+		return x.Timeout
+	}
+	return nil
+}
+
+func (x *Registry_Servicecomb) GetEnableAuth() bool {
+	if x != nil {
+		return x.EnableAuth
+	}
+	return false
+}
+
+func (x *Registry_Servicecomb) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *Registry_Servicecomb) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
+func (x *Registry_Servicecomb) GetTokenExpiration() *durationpb.Duration {
+	if x != nil {
+		return x.TokenExpiration
+	}
+	return nil
+}
+
+func (x *Registry_Servicecomb) GetVerbose() bool {
+	if x != nil {
+		return x.Verbose
+	}
+	return false
+}
+
+func (x *Registry_Servicecomb) GetCompressed() bool {
+	if x != nil {
+		return x.Compressed
+	}
+	return false
+}
+
+func (x *Registry_Servicecomb) GetTls() *TLS {
+	if x != nil {
+		return x.Tls
+	}
+	return nil
+}
+
+type Registry_Consul_BasicAuth struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"` // 用户名
+	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"` // 密码
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Registry_Consul_BasicAuth) Reset() {
+	*x = Registry_Consul_BasicAuth{}
+	mi := &file_conf_v1_kratos_conf_registry_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Registry_Consul_BasicAuth) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Registry_Consul_BasicAuth) ProtoMessage() {}
+
+func (x *Registry_Consul_BasicAuth) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_v1_kratos_conf_registry_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Registry_Consul_BasicAuth.ProtoReflect.Descriptor instead.
+func (*Registry_Consul_BasicAuth) Descriptor() ([]byte, []int) {
+	return file_conf_v1_kratos_conf_registry_proto_rawDescGZIP(), []int{0, 0, 0}
+}
+
+func (x *Registry_Consul_BasicAuth) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *Registry_Consul_BasicAuth) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
 var File_conf_v1_kratos_conf_registry_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_registry_proto_rawDesc = "" +
 	"\n" +
-	"\"conf/v1/kratos_conf_registry.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\"\xde\x10\n" +
+	"\"conf/v1/kratos_conf_registry.proto\x12\x04conf\x1a\x1dconf/v1/kratos_conf_tls.proto\x1a\x1egoogle/protobuf/duration.proto\"\xbc$\n" +
 	"\bRegistry\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x122\n" +
 	"\x06consul\x18\x02 \x01(\v2\x15.conf.Registry.ConsulH\x00R\x06consul\x88\x01\x01\x12,\n" +
@@ -815,16 +1355,58 @@ const file_conf_v1_kratos_conf_registry_proto_rawDesc = "" +
 	"kubernetes\x88\x01\x01\x122\n" +
 	"\x06eureka\x18\a \x01(\v2\x15.conf.Registry.EurekaH\x05R\x06eureka\x88\x01\x01\x125\n" +
 	"\apolaris\x18\b \x01(\v2\x16.conf.Registry.PolarisH\x06R\apolaris\x88\x01\x01\x12A\n" +
-	"\vservicecomb\x18\t \x01(\v2\x1a.conf.Registry.ServicecombH\aR\vservicecomb\x88\x01\x01\x1a]\n" +
+	"\vservicecomb\x18\t \x01(\v2\x1a.conf.Registry.ServicecombH\aR\vservicecomb\x88\x01\x01\x1a\x98\x06\n" +
 	"\x06Consul\x12\x16\n" +
 	"\x06scheme\x18\x01 \x01(\tR\x06scheme\x12\x18\n" +
 	"\aaddress\x18\x02 \x01(\tR\aaddress\x12!\n" +
-	"\fhealth_check\x18\x03 \x01(\bR\vhealthCheck\x1a$\n" +
+	"\fhealth_check\x18\x03 \x01(\bR\vhealthCheck\x12\x1e\n" +
+	"\n" +
+	"datacenter\x18\x04 \x01(\tR\n" +
+	"datacenter\x12\x14\n" +
+	"\x05token\x18\x05 \x01(\tR\x05token\x12\x1d\n" +
+	"\n" +
+	"token_file\x18\x06 \x01(\tR\ttokenFile\x12\x1c\n" +
+	"\tnamespace\x18\a \x01(\tR\tnamespace\x12\x1c\n" +
+	"\tpartition\x18\b \x01(\tR\tpartition\x12\x1f\n" +
+	"\vpath_prefix\x18\t \x01(\tR\n" +
+	"pathPrefix\x12>\n" +
+	"\n" +
+	"basic_auth\x18\n" +
+	" \x01(\v2\x1f.conf.Registry.Consul.BasicAuthR\tbasicAuth\x126\n" +
+	"\twait_time\x18\v \x01(\v2\x19.google.protobuf.DurationR\bwaitTime\x12\x1b\n" +
+	"\x03tls\x18\f \x01(\v2\t.conf.TLSR\x03tls\x12!\n" +
+	"\theartbeat\x18\r \x01(\bH\x00R\theartbeat\x88\x01\x01\x127\n" +
+	"\x15health_check_interval\x18\x0e \x01(\x05H\x01R\x13healthCheckInterval\x88\x01\x01\x12N\n" +
+	"!deregister_critical_service_after\x18\x0f \x01(\x05H\x02R\x1ederegisterCriticalServiceAfter\x88\x01\x01\x123\n" +
+	"\atimeout\x18\x10 \x01(\v2\x19.google.protobuf.DurationR\atimeout\x1aC\n" +
+	"\tBasicAuth\x12\x1a\n" +
+	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpasswordB\f\n" +
+	"\n" +
+	"_heartbeatB\x18\n" +
+	"\x16_health_check_intervalB$\n" +
+	"\"_deregister_critical_service_after\x1a\xf9\x04\n" +
 	"\x04Etcd\x12\x1c\n" +
-	"\tendpoints\x18\x01 \x03(\tR\tendpoints\x1a^\n" +
+	"\tendpoints\x18\x01 \x03(\tR\tendpoints\x12\x1a\n" +
+	"\busername\x18\x02 \x01(\tR\busername\x12\x1a\n" +
+	"\bpassword\x18\x03 \x01(\tR\bpassword\x12\x1b\n" +
+	"\x03tls\x18\x04 \x01(\v2\t.conf.TLSR\x03tls\x12<\n" +
+	"\fdial_timeout\x18\x05 \x01(\v2\x19.google.protobuf.DurationR\vdialTimeout\x12G\n" +
+	"\x12auto_sync_interval\x18\x06 \x01(\v2\x19.google.protobuf.DurationR\x10autoSyncInterval\x12J\n" +
+	"\x14dial_keep_alive_time\x18\a \x01(\v2\x19.google.protobuf.DurationR\x11dialKeepAliveTime\x12P\n" +
+	"\x17dial_keep_alive_timeout\x18\b \x01(\v2\x19.google.protobuf.DurationR\x14dialKeepAliveTimeout\x12,\n" +
+	"\x12reject_old_cluster\x18\t \x01(\bR\x10rejectOldCluster\x122\n" +
+	"\x15permit_without_stream\x18\n" +
+	" \x01(\bR\x13permitWithoutStream\x12\x1c\n" +
+	"\tnamespace\x18\x14 \x01(\tR\tnamespace\x12<\n" +
+	"\fregister_ttl\x18\x15 \x01(\v2\x19.google.protobuf.DurationR\vregisterTtl\x12\x1b\n" +
+	"\tmax_retry\x18\x16 \x01(\x05R\bmaxRetry\x1a\xb4\x01\n" +
 	"\tZooKeeper\x12\x1c\n" +
 	"\tendpoints\x18\x01 \x03(\tR\tendpoints\x123\n" +
-	"\atimeout\x18\x02 \x01(\v2\x19.google.protobuf.DurationR\atimeout\x1a\x82\x06\n" +
+	"\atimeout\x18\x02 \x01(\v2\x19.google.protobuf.DurationR\atimeout\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x1a\n" +
+	"\busername\x18\x04 \x01(\tR\busername\x12\x1a\n" +
+	"\bpassword\x18\x05 \x01(\tR\bpassword\x1a\xbe\b\n" +
 	"\x05Nacos\x12\x18\n" +
 	"\aaddress\x18\x01 \x01(\tR\aaddress\x12\x12\n" +
 	"\x04port\x18\x02 \x01(\x04R\x04port\x12!\n" +
@@ -849,23 +1431,74 @@ const file_conf_v1_kratos_conf_registry_proto_rawDesc = "" +
 	"\tlog_level\x182 \x01(\tR\blogLevel\x12\x17\n" +
 	"\alog_dir\x183 \x01(\tR\x06logDir\x12\x1b\n" +
 	"\tcache_dir\x184 \x01(\tR\bcacheDir\x12!\n" +
-	"\fcontext_path\x185 \x01(\tR\vcontextPath\x1a\f\n" +
+	"\fcontext_path\x185 \x01(\tR\vcontextPath\x12\x16\n" +
+	"\x06scheme\x186 \x01(\tR\x06scheme\x12\x1b\n" +
+	"\tgrpc_port\x187 \x01(\x04R\bgrpcPort\x12\x1a\n" +
+	"\bendpoint\x188 \x01(\tR\bendpoint\x121\n" +
+	"\x15disable_use_snap_shot\x189 \x01(\bR\x12disableUseSnapShot\x12(\n" +
+	"\x10append_to_stdout\x18: \x01(\bR\x0eappendToStdout\x120\n" +
+	"\x14async_update_service\x18; \x01(\bR\x12asyncUpdateService\x12\x14\n" +
+	"\x05group\x18< \x01(\tR\x05group\x12\x18\n" +
+	"\acluster\x18= \x01(\tR\acluster\x12\x16\n" +
+	"\x06weight\x18> \x01(\x01R\x06weight\x12\x12\n" +
+	"\x04kind\x18? \x01(\tR\x04kind\x1a}\n" +
 	"\n" +
-	"Kubernetes\x1a\xca\x01\n" +
+	"Kubernetes\x12\x1c\n" +
+	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x1e\n" +
+	"\n" +
+	"kubeconfig\x18\x02 \x01(\tR\n" +
+	"kubeconfig\x12\"\n" +
+	"\n" +
+	"in_cluster\x18\x03 \x01(\bH\x00R\tinCluster\x88\x01\x01B\r\n" +
+	"\v_in_cluster\x1a\xe7\x01\n" +
 	"\x06Eureka\x12\x1c\n" +
 	"\tendpoints\x18\x01 \x03(\tR\tendpoints\x12H\n" +
 	"\x12heartbeat_interval\x18\x02 \x01(\v2\x19.google.protobuf.DurationR\x11heartbeatInterval\x12D\n" +
 	"\x10refresh_interval\x18\x03 \x01(\v2\x19.google.protobuf.DurationR\x0frefreshInterval\x12\x12\n" +
-	"\x04path\x18\x04 \x01(\tR\x04path\x1a\xac\x01\n" +
+	"\x04path\x18\x04 \x01(\tR\x04path\x12\x1b\n" +
+	"\tmax_retry\x18\x05 \x01(\x05R\bmaxRetry\x1a\x8c\x04\n" +
 	"\aPolaris\x12\x18\n" +
 	"\aaddress\x18\x01 \x01(\tR\aaddress\x12\x12\n" +
 	"\x04port\x18\x02 \x01(\x05R\x04port\x12%\n" +
 	"\x0einstance_count\x18\x03 \x01(\x05R\rinstanceCount\x12\x1c\n" +
 	"\tnamespace\x18\x04 \x01(\tR\tnamespace\x12\x18\n" +
 	"\aservice\x18\x05 \x01(\tR\aservice\x12\x14\n" +
-	"\x05token\x18\x06 \x01(\tR\x05token\x1a+\n" +
+	"\x05token\x18\x06 \x01(\tR\x05token\x12\x1f\n" +
+	"\vconfig_file\x18\a \x01(\tR\n" +
+	"configFile\x12\x16\n" +
+	"\x06weight\x18\b \x01(\x05R\x06weight\x12\x1a\n" +
+	"\bpriority\x18\t \x01(\x05R\bpriority\x12\x1d\n" +
+	"\ahealthy\x18\n" +
+	" \x01(\bH\x00R\ahealthy\x88\x01\x01\x12\x1d\n" +
+	"\aisolate\x18\v \x01(\bH\x01R\aisolate\x88\x01\x01\x12!\n" +
+	"\theartbeat\x18\f \x01(\bH\x02R\theartbeat\x88\x01\x01\x12\x10\n" +
+	"\x03ttl\x18\r \x01(\x05R\x03ttl\x12\x1a\n" +
+	"\bprotocol\x18\x0e \x01(\tR\bprotocol\x123\n" +
+	"\atimeout\x18\x0f \x01(\v2\x19.google.protobuf.DurationR\atimeout\x12\x1f\n" +
+	"\vretry_count\x18\x10 \x01(\x05R\n" +
+	"retryCountB\n" +
+	"\n" +
+	"\b_healthyB\n" +
+	"\n" +
+	"\b_isolateB\f\n" +
+	"\n" +
+	"_heartbeat\x1a\xf5\x02\n" +
 	"\vServicecomb\x12\x1c\n" +
-	"\tendpoints\x18\x01 \x03(\tR\tendpoints\"}\n" +
+	"\tendpoints\x18\x01 \x03(\tR\tendpoints\x12\x1d\n" +
+	"\n" +
+	"enable_ssl\x18\x02 \x01(\bR\tenableSsl\x123\n" +
+	"\atimeout\x18\x03 \x01(\v2\x19.google.protobuf.DurationR\atimeout\x12\x1f\n" +
+	"\venable_auth\x18\x04 \x01(\bR\n" +
+	"enableAuth\x12\x1a\n" +
+	"\busername\x18\x05 \x01(\tR\busername\x12\x1a\n" +
+	"\bpassword\x18\x06 \x01(\tR\bpassword\x12D\n" +
+	"\x10token_expiration\x18\a \x01(\v2\x19.google.protobuf.DurationR\x0ftokenExpiration\x12\x18\n" +
+	"\averbose\x18\b \x01(\bR\averbose\x12\x1e\n" +
+	"\n" +
+	"compressed\x18\t \x01(\bR\n" +
+	"compressed\x12\x1b\n" +
+	"\x03tls\x18\n" +
+	" \x01(\v2\t.conf.TLSR\x03tls\"}\n" +
 	"\x04Type\x12\v\n" +
 	"\aUNKNOWN\x10\x00\x12\n" +
 	"\n" +
@@ -904,19 +1537,21 @@ func file_conf_v1_kratos_conf_registry_proto_rawDescGZIP() []byte {
 }
 
 var file_conf_v1_kratos_conf_registry_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_conf_v1_kratos_conf_registry_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_conf_v1_kratos_conf_registry_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_conf_v1_kratos_conf_registry_proto_goTypes = []any{
-	(Registry_Type)(0),           // 0: conf.Registry.Type
-	(*Registry)(nil),             // 1: conf.Registry
-	(*Registry_Consul)(nil),      // 2: conf.Registry.Consul
-	(*Registry_Etcd)(nil),        // 3: conf.Registry.Etcd
-	(*Registry_ZooKeeper)(nil),   // 4: conf.Registry.ZooKeeper
-	(*Registry_Nacos)(nil),       // 5: conf.Registry.Nacos
-	(*Registry_Kubernetes)(nil),  // 6: conf.Registry.Kubernetes
-	(*Registry_Eureka)(nil),      // 7: conf.Registry.Eureka
-	(*Registry_Polaris)(nil),     // 8: conf.Registry.Polaris
-	(*Registry_Servicecomb)(nil), // 9: conf.Registry.Servicecomb
-	(*durationpb.Duration)(nil),  // 10: google.protobuf.Duration
+	(Registry_Type)(0),                // 0: conf.Registry.Type
+	(*Registry)(nil),                  // 1: conf.Registry
+	(*Registry_Consul)(nil),           // 2: conf.Registry.Consul
+	(*Registry_Etcd)(nil),             // 3: conf.Registry.Etcd
+	(*Registry_ZooKeeper)(nil),        // 4: conf.Registry.ZooKeeper
+	(*Registry_Nacos)(nil),            // 5: conf.Registry.Nacos
+	(*Registry_Kubernetes)(nil),       // 6: conf.Registry.Kubernetes
+	(*Registry_Eureka)(nil),           // 7: conf.Registry.Eureka
+	(*Registry_Polaris)(nil),          // 8: conf.Registry.Polaris
+	(*Registry_Servicecomb)(nil),      // 9: conf.Registry.Servicecomb
+	(*Registry_Consul_BasicAuth)(nil), // 10: conf.Registry.Consul.BasicAuth
+	(*durationpb.Duration)(nil),       // 11: google.protobuf.Duration
+	(*TLS)(nil),                       // 12: conf.TLS
 }
 var file_conf_v1_kratos_conf_registry_proto_depIdxs = []int32{
 	2,  // 0: conf.Registry.consul:type_name -> conf.Registry.Consul
@@ -927,17 +1562,31 @@ var file_conf_v1_kratos_conf_registry_proto_depIdxs = []int32{
 	7,  // 5: conf.Registry.eureka:type_name -> conf.Registry.Eureka
 	8,  // 6: conf.Registry.polaris:type_name -> conf.Registry.Polaris
 	9,  // 7: conf.Registry.servicecomb:type_name -> conf.Registry.Servicecomb
-	10, // 8: conf.Registry.ZooKeeper.timeout:type_name -> google.protobuf.Duration
-	10, // 9: conf.Registry.Nacos.timeout:type_name -> google.protobuf.Duration
-	10, // 10: conf.Registry.Nacos.beat_interval:type_name -> google.protobuf.Duration
-	10, // 11: conf.Registry.Nacos.listen_interval:type_name -> google.protobuf.Duration
-	10, // 12: conf.Registry.Eureka.heartbeat_interval:type_name -> google.protobuf.Duration
-	10, // 13: conf.Registry.Eureka.refresh_interval:type_name -> google.protobuf.Duration
-	14, // [14:14] is the sub-list for method output_type
-	14, // [14:14] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	10, // 8: conf.Registry.Consul.basic_auth:type_name -> conf.Registry.Consul.BasicAuth
+	11, // 9: conf.Registry.Consul.wait_time:type_name -> google.protobuf.Duration
+	12, // 10: conf.Registry.Consul.tls:type_name -> conf.TLS
+	11, // 11: conf.Registry.Consul.timeout:type_name -> google.protobuf.Duration
+	12, // 12: conf.Registry.Etcd.tls:type_name -> conf.TLS
+	11, // 13: conf.Registry.Etcd.dial_timeout:type_name -> google.protobuf.Duration
+	11, // 14: conf.Registry.Etcd.auto_sync_interval:type_name -> google.protobuf.Duration
+	11, // 15: conf.Registry.Etcd.dial_keep_alive_time:type_name -> google.protobuf.Duration
+	11, // 16: conf.Registry.Etcd.dial_keep_alive_timeout:type_name -> google.protobuf.Duration
+	11, // 17: conf.Registry.Etcd.register_ttl:type_name -> google.protobuf.Duration
+	11, // 18: conf.Registry.ZooKeeper.timeout:type_name -> google.protobuf.Duration
+	11, // 19: conf.Registry.Nacos.timeout:type_name -> google.protobuf.Duration
+	11, // 20: conf.Registry.Nacos.beat_interval:type_name -> google.protobuf.Duration
+	11, // 21: conf.Registry.Nacos.listen_interval:type_name -> google.protobuf.Duration
+	11, // 22: conf.Registry.Eureka.heartbeat_interval:type_name -> google.protobuf.Duration
+	11, // 23: conf.Registry.Eureka.refresh_interval:type_name -> google.protobuf.Duration
+	11, // 24: conf.Registry.Polaris.timeout:type_name -> google.protobuf.Duration
+	11, // 25: conf.Registry.Servicecomb.timeout:type_name -> google.protobuf.Duration
+	11, // 26: conf.Registry.Servicecomb.token_expiration:type_name -> google.protobuf.Duration
+	12, // 27: conf.Registry.Servicecomb.tls:type_name -> conf.TLS
+	28, // [28:28] is the sub-list for method output_type
+	28, // [28:28] is the sub-list for method input_type
+	28, // [28:28] is the sub-list for extension type_name
+	28, // [28:28] is the sub-list for extension extendee
+	0,  // [0:28] is the sub-list for field type_name
 }
 
 func init() { file_conf_v1_kratos_conf_registry_proto_init() }
@@ -945,14 +1594,18 @@ func file_conf_v1_kratos_conf_registry_proto_init() {
 	if File_conf_v1_kratos_conf_registry_proto != nil {
 		return
 	}
+	file_conf_v1_kratos_conf_tls_proto_init()
 	file_conf_v1_kratos_conf_registry_proto_msgTypes[0].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_registry_proto_msgTypes[1].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_registry_proto_msgTypes[5].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_registry_proto_msgTypes[7].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_v1_kratos_conf_registry_proto_rawDesc), len(file_conf_v1_kratos_conf_registry_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   9,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
