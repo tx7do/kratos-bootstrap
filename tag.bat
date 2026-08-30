@@ -1,4 +1,4 @@
-git tag api/v0.0.44 --force
+git tag api/v0.0.45 --force
 
 git tag cache/redis/v0.1.2 --force
 git tag rpc/v0.1.3 --force

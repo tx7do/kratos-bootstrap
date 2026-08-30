@@ -8,7 +8,7 @@ require (
 	entgo.io/ent v0.14.6
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/tx7do/go-crud/entgo v0.0.53
-	github.com/tx7do/kratos-bootstrap/api v0.0.44
+	github.com/tx7do/kratos-bootstrap/api v0.0.45
 )
 
 require (

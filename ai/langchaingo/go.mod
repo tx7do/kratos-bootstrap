@@ -9,7 +9,7 @@ replace (
 
 require (
 	github.com/tmc/langchaingo v0.1.14
-	github.com/tx7do/kratos-bootstrap/api v0.0.44
+	github.com/tx7do/kratos-bootstrap/api v0.0.45
 )
 
 require (

@@ -8,7 +8,7 @@ require (
 	github.com/cloudwego/eino v0.9.17
 	github.com/cloudwego/eino-ext/components/model/openai v0.1.13
 	github.com/eino-contrib/jsonschema v1.0.3
-	github.com/tx7do/kratos-bootstrap/api v0.0.44
+	github.com/tx7do/kratos-bootstrap/api v0.0.45
 )
 
 require (

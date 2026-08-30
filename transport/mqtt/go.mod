@@ -7,7 +7,7 @@ replace github.com/tx7do/kratos-bootstrap/api => ../../api
 require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/tx7do/go-utils v1.1.40
-	github.com/tx7do/kratos-bootstrap/api v0.0.44
+	github.com/tx7do/kratos-bootstrap/api v0.0.45
 	github.com/tx7do/kratos-transport/broker v1.3.3
 	github.com/tx7do/kratos-transport/broker/mqtt v1.3.6
 	github.com/tx7do/kratos-transport/transport/mqtt v1.3.6

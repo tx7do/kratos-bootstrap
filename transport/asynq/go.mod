@@ -7,7 +7,7 @@ replace github.com/tx7do/kratos-bootstrap/api => ../../api
 require (
 	github.com/hibiken/asynq v0.26.0
 	github.com/tx7do/go-utils v1.1.40
-	github.com/tx7do/kratos-bootstrap/api v0.0.44
+	github.com/tx7do/kratos-bootstrap/api v0.0.45
 	github.com/tx7do/kratos-transport/transport/asynq v1.3.14
 )
 

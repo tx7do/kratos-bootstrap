@@ -9,7 +9,7 @@ replace (
 
 require (
 	github.com/go-kratos/kratos/v2 v2.9.2
-	github.com/tx7do/kratos-bootstrap/api v0.0.44
+	github.com/tx7do/kratos-bootstrap/api v0.0.45
 	github.com/tx7do/kratos-bootstrap/config v0.2.3
 	k8s.io/api v0.37.0
 	k8s.io/apimachinery v0.37.0

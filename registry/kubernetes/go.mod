@@ -13,7 +13,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/json-iterator/go v1.1.12
 	github.com/stretchr/testify v1.11.1
-	github.com/tx7do/kratos-bootstrap/api v0.0.44
+	github.com/tx7do/kratos-bootstrap/api v0.0.45
 	github.com/tx7do/kratos-bootstrap/registry v0.2.3
 	k8s.io/api v0.37.0
 	k8s.io/apimachinery v0.37.0

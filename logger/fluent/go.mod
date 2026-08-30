@@ -9,7 +9,7 @@ replace (
 
 require (
 	github.com/fluent/fluent-logger-golang v1.10.1
-	github.com/tx7do/kratos-bootstrap/api v0.0.44
+	github.com/tx7do/kratos-bootstrap/api v0.0.45
 	github.com/tx7do/kratos-bootstrap/logger v0.1.3
 )
 

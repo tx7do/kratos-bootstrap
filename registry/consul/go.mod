@@ -13,7 +13,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/hashicorp/consul/api v1.34.4
 	github.com/stretchr/testify v1.11.1
-	github.com/tx7do/kratos-bootstrap/api v0.0.44
+	github.com/tx7do/kratos-bootstrap/api v0.0.45
 	github.com/tx7do/kratos-bootstrap/registry v0.2.3
 	google.golang.org/protobuf v1.36.12
 )

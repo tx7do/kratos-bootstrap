@@ -9,7 +9,7 @@ replace (
 
 require (
 	github.com/sirupsen/logrus v1.10.2
-	github.com/tx7do/kratos-bootstrap/api v0.0.44
+	github.com/tx7do/kratos-bootstrap/api v0.0.45
 	github.com/tx7do/kratos-bootstrap/logger v0.1.3
 )
 

@@ -18,7 +18,7 @@ require (
 	github.com/stretchr/testify v1.12.1
 	github.com/tx7do/go-utils v1.1.40
 	github.com/tx7do/go-utils/id v0.0.6
-	github.com/tx7do/kratos-bootstrap/api v0.0.44
+	github.com/tx7do/kratos-bootstrap/api v0.0.45
 	github.com/tx7do/kratos-bootstrap/config v0.2.3
 	github.com/tx7do/kratos-bootstrap/logger v0.1.3
 	github.com/tx7do/kratos-bootstrap/registry v0.2.3
