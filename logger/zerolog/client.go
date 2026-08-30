@@ -52,7 +52,29 @@ func NewLogger(cfg *conf.Logger) (bLogger.Logger, error) {
 		zerolog.MessageFieldName = cfg.Zerolog.MessageFieldName
 	}
 
-	w, err := NewWriter(strings.ToLower(cfg.Zerolog.GetWriter()), cfg.Zerolog.GetFilename(), nil)
+	kind := strings.ToLower(cfg.Zerolog.GetWriter())
+
+	var params map[string]any
+	if kind == "file" && (cfg.Zerolog.MaxSize != nil || cfg.Zerolog.MaxAge != nil ||
+		cfg.Zerolog.MaxBackups != nil || cfg.Zerolog.Compress != nil) {
+		// 配置了滚动参数时使用lumberjack滚动写入
+		kind = "lumberjack"
+		params = map[string]any{}
+		if cfg.Zerolog.MaxSize != nil {
+			params["maxSizeMB"] = int(cfg.Zerolog.GetMaxSize())
+		}
+		if cfg.Zerolog.MaxBackups != nil {
+			params["maxBackups"] = int(cfg.Zerolog.GetMaxBackups())
+		}
+		if cfg.Zerolog.MaxAge != nil {
+			params["maxAge"] = int(cfg.Zerolog.GetMaxAge())
+		}
+		if cfg.Zerolog.Compress != nil {
+			params["compress"] = cfg.Zerolog.GetCompress()
+		}
+	}
+
+	w, err := NewWriter(kind, cfg.Zerolog.GetFilename(), params)
 	if err != nil {
 		return nil, err
 	}

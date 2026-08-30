@@ -9,6 +9,7 @@ package v1
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -184,6 +185,9 @@ type Logger_Zap struct {
 	MaxSize       int32                  `protobuf:"varint,3,opt,name=max_size,json=maxSize,proto3" json:"max_size,omitempty"`          //
 	MaxAge        int32                  `protobuf:"varint,4,opt,name=max_age,json=maxAge,proto3" json:"max_age,omitempty"`             //
 	MaxBackups    int32                  `protobuf:"varint,5,opt,name=max_backups,json=maxBackups,proto3" json:"max_backups,omitempty"` //
+	Writer        string                 `protobuf:"bytes,6,opt,name=writer,proto3" json:"writer,omitempty"`                            // 输出目标: file、stdout,默认file
+	Encoder       string                 `protobuf:"bytes,7,opt,name=encoder,proto3" json:"encoder,omitempty"`                          // 编码器: json、console,默认json
+	Compress      *bool                  `protobuf:"varint,8,opt,name=compress,proto3,oneof" json:"compress,omitempty"`                 // 是否压缩滚动的历史日志
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -251,6 +255,27 @@ func (x *Logger_Zap) GetMaxBackups() int32 {
 		return x.MaxBackups
 	}
 	return 0
+}
+
+func (x *Logger_Zap) GetWriter() string {
+	if x != nil {
+		return x.Writer
+	}
+	return ""
+}
+
+func (x *Logger_Zap) GetEncoder() string {
+	if x != nil {
+		return x.Encoder
+	}
+	return ""
+}
+
+func (x *Logger_Zap) GetCompress() bool {
+	if x != nil && x.Compress != nil {
+		return *x.Compress
+	}
+	return false
 }
 
 // logrus
@@ -332,10 +357,18 @@ func (x *Logger_Logrus) GetDisableTimestamp() bool {
 
 // Fluent
 type Logger_Fluent struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Endpoint      string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"` // 公网接入地址
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	Endpoint           string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"`                                                           // 公网接入地址
+	WriteTimeout       *durationpb.Duration   `protobuf:"bytes,10,opt,name=write_timeout,json=writeTimeout,proto3,oneof" json:"write_timeout,omitempty"`                        // 写超时时间
+	BufferLimit        *int32                 `protobuf:"varint,11,opt,name=buffer_limit,json=bufferLimit,proto3,oneof" json:"buffer_limit,omitempty"`                          // 缓冲池大小
+	RetryWait          *durationpb.Duration   `protobuf:"bytes,12,opt,name=retry_wait,json=retryWait,proto3,oneof" json:"retry_wait,omitempty"`                                 // 重试基础等待时间
+	MaxRetry           *int32                 `protobuf:"varint,13,opt,name=max_retry,json=maxRetry,proto3,oneof" json:"max_retry,omitempty"`                                   // 最大重试次数
+	MaxRetryWait       *durationpb.Duration   `protobuf:"bytes,14,opt,name=max_retry_wait,json=maxRetryWait,proto3,oneof" json:"max_retry_wait,omitempty"`                      // 重试最大等待时间
+	TagPrefix          *string                `protobuf:"bytes,15,opt,name=tag_prefix,json=tagPrefix,proto3,oneof" json:"tag_prefix,omitempty"`                                 // Tag前缀
+	Async              *bool                  `protobuf:"varint,16,opt,name=async,proto3,oneof" json:"async,omitempty"`                                                         // 异步发送(日志洪峰时避免阻塞业务)
+	ForceStopAsyncSend *bool                  `protobuf:"varint,17,opt,name=force_stop_async_send,json=forceStopAsyncSend,proto3,oneof" json:"force_stop_async_send,omitempty"` // 退出时强制停止异步发送
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *Logger_Fluent) Reset() {
@@ -375,13 +408,71 @@ func (x *Logger_Fluent) GetEndpoint() string {
 	return ""
 }
 
+func (x *Logger_Fluent) GetWriteTimeout() *durationpb.Duration {
+	if x != nil {
+		return x.WriteTimeout
+	}
+	return nil
+}
+
+func (x *Logger_Fluent) GetBufferLimit() int32 {
+	if x != nil && x.BufferLimit != nil {
+		return *x.BufferLimit
+	}
+	return 0
+}
+
+func (x *Logger_Fluent) GetRetryWait() *durationpb.Duration {
+	if x != nil {
+		return x.RetryWait
+	}
+	return nil
+}
+
+func (x *Logger_Fluent) GetMaxRetry() int32 {
+	if x != nil && x.MaxRetry != nil {
+		return *x.MaxRetry
+	}
+	return 0
+}
+
+func (x *Logger_Fluent) GetMaxRetryWait() *durationpb.Duration {
+	if x != nil {
+		return x.MaxRetryWait
+	}
+	return nil
+}
+
+func (x *Logger_Fluent) GetTagPrefix() string {
+	if x != nil && x.TagPrefix != nil {
+		return *x.TagPrefix
+	}
+	return ""
+}
+
+func (x *Logger_Fluent) GetAsync() bool {
+	if x != nil && x.Async != nil {
+		return *x.Async
+	}
+	return false
+}
+
+func (x *Logger_Fluent) GetForceStopAsyncSend() bool {
+	if x != nil && x.ForceStopAsyncSend != nil {
+		return *x.ForceStopAsyncSend
+	}
+	return false
+}
+
 // 阿里云
 type Logger_Aliyun struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Endpoint      string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"`                             // 公网接入地址
-	Project       string                 `protobuf:"bytes,2,opt,name=project,proto3" json:"project,omitempty"`                               //
-	AccessKey     string                 `protobuf:"bytes,3,opt,name=access_key,json=accessKey,proto3" json:"access_key,omitempty"`          // 访问密钥ID
-	AccessSecret  string                 `protobuf:"bytes,4,opt,name=access_secret,json=accessSecret,proto3" json:"access_secret,omitempty"` // 访问密钥
+	Endpoint      string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"`                                 // 公网接入地址
+	Project       string                 `protobuf:"bytes,2,opt,name=project,proto3" json:"project,omitempty"`                                   //
+	AccessKey     string                 `protobuf:"bytes,3,opt,name=access_key,json=accessKey,proto3" json:"access_key,omitempty"`              // 访问密钥ID
+	AccessSecret  string                 `protobuf:"bytes,4,opt,name=access_secret,json=accessSecret,proto3" json:"access_secret,omitempty"`     // 访问密钥
+	Logstore      string                 `protobuf:"bytes,10,opt,name=logstore,proto3" json:"logstore,omitempty"`                                // 日志库Logstore名称,默认: app
+	SecurityToken string                 `protobuf:"bytes,11,opt,name=security_token,json=securityToken,proto3" json:"security_token,omitempty"` // STS安全令牌
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -440,6 +531,20 @@ func (x *Logger_Aliyun) GetAccessKey() string {
 func (x *Logger_Aliyun) GetAccessSecret() string {
 	if x != nil {
 		return x.AccessSecret
+	}
+	return ""
+}
+
+func (x *Logger_Aliyun) GetLogstore() string {
+	if x != nil {
+		return x.Logstore
+	}
+	return ""
+}
+
+func (x *Logger_Aliyun) GetSecurityToken() string {
+	if x != nil {
+		return x.SecurityToken
 	}
 	return ""
 }
@@ -523,6 +628,10 @@ type Logger_Zerolog struct {
 	MessageFieldName   string                 `protobuf:"bytes,5,opt,name=message_field_name,json=messageFieldName,proto3" json:"message_field_name,omitempty"`       // 日志消息字段名称
 	Writer             string                 `protobuf:"bytes,6,opt,name=writer,proto3" json:"writer,omitempty"`                                                     // 输出目标，默认stdout，可选：stdout, stderr, file
 	Filename           string                 `protobuf:"bytes,7,opt,name=filename,proto3" json:"filename,omitempty"`                                                 // 当writer为file时，指定日志文件名
+	MaxSize            *int32                 `protobuf:"varint,10,opt,name=max_size,json=maxSize,proto3,oneof" json:"max_size,omitempty"`                            // 滚动日志单文件最大体积(MB)
+	MaxAge             *int32                 `protobuf:"varint,11,opt,name=max_age,json=maxAge,proto3,oneof" json:"max_age,omitempty"`                               // 滚动日志最大保留天数
+	MaxBackups         *int32                 `protobuf:"varint,12,opt,name=max_backups,json=maxBackups,proto3,oneof" json:"max_backups,omitempty"`                   // 滚动日志最大备份数
+	Compress           *bool                  `protobuf:"varint,13,opt,name=compress,proto3,oneof" json:"compress,omitempty"`                                         // 是否压缩滚动的历史日志
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -606,12 +715,39 @@ func (x *Logger_Zerolog) GetFilename() string {
 	return ""
 }
 
+func (x *Logger_Zerolog) GetMaxSize() int32 {
+	if x != nil && x.MaxSize != nil {
+		return *x.MaxSize
+	}
+	return 0
+}
+
+func (x *Logger_Zerolog) GetMaxAge() int32 {
+	if x != nil && x.MaxAge != nil {
+		return *x.MaxAge
+	}
+	return 0
+}
+
+func (x *Logger_Zerolog) GetMaxBackups() int32 {
+	if x != nil && x.MaxBackups != nil {
+		return *x.MaxBackups
+	}
+	return 0
+}
+
+func (x *Logger_Zerolog) GetCompress() bool {
+	if x != nil && x.Compress != nil {
+		return *x.Compress
+	}
+	return false
+}
+
 var File_conf_v1_kratos_conf_logger_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_logger_proto_rawDesc = "" +
 	"\n" +
-	" conf/v1/kratos_conf_logger.proto\x12\x04conf\"\xed\n" +
-	"\n" +
+	" conf/v1/kratos_conf_logger.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\"\xdd\x11\n" +
 	"\x06Logger\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12'\n" +
 	"\x03zap\x18\x02 \x01(\v2\x10.conf.Logger.ZapH\x00R\x03zap\x88\x01\x01\x120\n" +
@@ -619,34 +755,61 @@ const file_conf_v1_kratos_conf_logger_proto_rawDesc = "" +
 	"\x06fluent\x18\x04 \x01(\v2\x13.conf.Logger.FluentH\x02R\x06fluent\x88\x01\x01\x120\n" +
 	"\x06aliyun\x18\x05 \x01(\v2\x13.conf.Logger.AliyunH\x03R\x06aliyun\x88\x01\x01\x123\n" +
 	"\atencent\x18\x06 \x01(\v2\x14.conf.Logger.TencentH\x04R\atencent\x88\x01\x01\x123\n" +
-	"\azerolog\x18\a \x01(\v2\x14.conf.Logger.ZerologH\x05R\azerolog\x88\x01\x01\x1a\x8c\x01\n" +
+	"\azerolog\x18\a \x01(\v2\x14.conf.Logger.ZerologH\x05R\azerolog\x88\x01\x01\x1a\xec\x01\n" +
 	"\x03Zap\x12\x1a\n" +
 	"\bfilename\x18\x01 \x01(\tR\bfilename\x12\x14\n" +
 	"\x05level\x18\x02 \x01(\tR\x05level\x12\x19\n" +
 	"\bmax_size\x18\x03 \x01(\x05R\amaxSize\x12\x17\n" +
 	"\amax_age\x18\x04 \x01(\x05R\x06maxAge\x12\x1f\n" +
 	"\vmax_backups\x18\x05 \x01(\x05R\n" +
-	"maxBackups\x1a\xbb\x01\n" +
+	"maxBackups\x12\x16\n" +
+	"\x06writer\x18\x06 \x01(\tR\x06writer\x12\x18\n" +
+	"\aencoder\x18\a \x01(\tR\aencoder\x12\x1f\n" +
+	"\bcompress\x18\b \x01(\bH\x00R\bcompress\x88\x01\x01B\v\n" +
+	"\t_compress\x1a\xbb\x01\n" +
 	"\x06Logrus\x12\x14\n" +
 	"\x05level\x18\x01 \x01(\tR\x05level\x12\x1c\n" +
 	"\tformatter\x18\x02 \x01(\tR\tformatter\x12)\n" +
 	"\x10timestamp_format\x18\x03 \x01(\tR\x0ftimestampFormat\x12%\n" +
 	"\x0edisable_colors\x18\x04 \x01(\bR\rdisableColors\x12+\n" +
-	"\x11disable_timestamp\x18\x05 \x01(\bR\x10disableTimestamp\x1a$\n" +
+	"\x11disable_timestamp\x18\x05 \x01(\bR\x10disableTimestamp\x1a\xb5\x04\n" +
 	"\x06Fluent\x12\x1a\n" +
-	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x1a\x82\x01\n" +
+	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12C\n" +
+	"\rwrite_timeout\x18\n" +
+	" \x01(\v2\x19.google.protobuf.DurationH\x00R\fwriteTimeout\x88\x01\x01\x12&\n" +
+	"\fbuffer_limit\x18\v \x01(\x05H\x01R\vbufferLimit\x88\x01\x01\x12=\n" +
+	"\n" +
+	"retry_wait\x18\f \x01(\v2\x19.google.protobuf.DurationH\x02R\tretryWait\x88\x01\x01\x12 \n" +
+	"\tmax_retry\x18\r \x01(\x05H\x03R\bmaxRetry\x88\x01\x01\x12D\n" +
+	"\x0emax_retry_wait\x18\x0e \x01(\v2\x19.google.protobuf.DurationH\x04R\fmaxRetryWait\x88\x01\x01\x12\"\n" +
+	"\n" +
+	"tag_prefix\x18\x0f \x01(\tH\x05R\ttagPrefix\x88\x01\x01\x12\x19\n" +
+	"\x05async\x18\x10 \x01(\bH\x06R\x05async\x88\x01\x01\x126\n" +
+	"\x15force_stop_async_send\x18\x11 \x01(\bH\aR\x12forceStopAsyncSend\x88\x01\x01B\x10\n" +
+	"\x0e_write_timeoutB\x0f\n" +
+	"\r_buffer_limitB\r\n" +
+	"\v_retry_waitB\f\n" +
+	"\n" +
+	"_max_retryB\x11\n" +
+	"\x0f_max_retry_waitB\r\n" +
+	"\v_tag_prefixB\b\n" +
+	"\x06_asyncB\x18\n" +
+	"\x16_force_stop_async_send\x1a\xc5\x01\n" +
 	"\x06Aliyun\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x18\n" +
 	"\aproject\x18\x02 \x01(\tR\aproject\x12\x1d\n" +
 	"\n" +
 	"access_key\x18\x03 \x01(\tR\taccessKey\x12#\n" +
-	"\raccess_secret\x18\x04 \x01(\tR\faccessSecret\x1a\x84\x01\n" +
+	"\raccess_secret\x18\x04 \x01(\tR\faccessSecret\x12\x1a\n" +
+	"\blogstore\x18\n" +
+	" \x01(\tR\blogstore\x12%\n" +
+	"\x0esecurity_token\x18\v \x01(\tR\rsecurityToken\x1a\x84\x01\n" +
 	"\aTencent\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x19\n" +
 	"\btopic_id\x18\x02 \x01(\tR\atopicId\x12\x1d\n" +
 	"\n" +
 	"access_key\x18\x03 \x01(\tR\taccessKey\x12#\n" +
-	"\raccess_secret\x18\x04 \x01(\tR\faccessSecret\x1a\x89\x02\n" +
+	"\raccess_secret\x18\x04 \x01(\tR\faccessSecret\x1a\xc4\x03\n" +
 	"\aZerolog\x12\x14\n" +
 	"\x05level\x18\x01 \x01(\tR\x05level\x12*\n" +
 	"\x11time_field_format\x18\x02 \x01(\tR\x0ftimeFieldFormat\x120\n" +
@@ -654,7 +817,18 @@ const file_conf_v1_kratos_conf_logger_proto_rawDesc = "" +
 	"\x10level_field_name\x18\x04 \x01(\tR\x0elevelFieldName\x12,\n" +
 	"\x12message_field_name\x18\x05 \x01(\tR\x10messageFieldName\x12\x16\n" +
 	"\x06writer\x18\x06 \x01(\tR\x06writer\x12\x1a\n" +
-	"\bfilename\x18\a \x01(\tR\bfilename\"Z\n" +
+	"\bfilename\x18\a \x01(\tR\bfilename\x12\x1e\n" +
+	"\bmax_size\x18\n" +
+	" \x01(\x05H\x00R\amaxSize\x88\x01\x01\x12\x1c\n" +
+	"\amax_age\x18\v \x01(\x05H\x01R\x06maxAge\x88\x01\x01\x12$\n" +
+	"\vmax_backups\x18\f \x01(\x05H\x02R\n" +
+	"maxBackups\x88\x01\x01\x12\x1f\n" +
+	"\bcompress\x18\r \x01(\bH\x03R\bcompress\x88\x01\x01B\v\n" +
+	"\t_max_sizeB\n" +
+	"\n" +
+	"\b_max_ageB\x0e\n" +
+	"\f_max_backupsB\v\n" +
+	"\t_compress\"Z\n" +
 	"\x04Type\x12\v\n" +
 	"\aUNKNOWN\x10\x00\x12\a\n" +
 	"\x03ZAP\x10\x01\x12\n" +
@@ -691,14 +865,15 @@ func file_conf_v1_kratos_conf_logger_proto_rawDescGZIP() []byte {
 var file_conf_v1_kratos_conf_logger_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_conf_v1_kratos_conf_logger_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_conf_v1_kratos_conf_logger_proto_goTypes = []any{
-	(Logger_Type)(0),       // 0: conf.Logger.Type
-	(*Logger)(nil),         // 1: conf.Logger
-	(*Logger_Zap)(nil),     // 2: conf.Logger.Zap
-	(*Logger_Logrus)(nil),  // 3: conf.Logger.Logrus
-	(*Logger_Fluent)(nil),  // 4: conf.Logger.Fluent
-	(*Logger_Aliyun)(nil),  // 5: conf.Logger.Aliyun
-	(*Logger_Tencent)(nil), // 6: conf.Logger.Tencent
-	(*Logger_Zerolog)(nil), // 7: conf.Logger.Zerolog
+	(Logger_Type)(0),            // 0: conf.Logger.Type
+	(*Logger)(nil),              // 1: conf.Logger
+	(*Logger_Zap)(nil),          // 2: conf.Logger.Zap
+	(*Logger_Logrus)(nil),       // 3: conf.Logger.Logrus
+	(*Logger_Fluent)(nil),       // 4: conf.Logger.Fluent
+	(*Logger_Aliyun)(nil),       // 5: conf.Logger.Aliyun
+	(*Logger_Tencent)(nil),      // 6: conf.Logger.Tencent
+	(*Logger_Zerolog)(nil),      // 7: conf.Logger.Zerolog
+	(*durationpb.Duration)(nil), // 8: google.protobuf.Duration
 }
 var file_conf_v1_kratos_conf_logger_proto_depIdxs = []int32{
 	2, // 0: conf.Logger.zap:type_name -> conf.Logger.Zap
@@ -707,11 +882,14 @@ var file_conf_v1_kratos_conf_logger_proto_depIdxs = []int32{
 	5, // 3: conf.Logger.aliyun:type_name -> conf.Logger.Aliyun
 	6, // 4: conf.Logger.tencent:type_name -> conf.Logger.Tencent
 	7, // 5: conf.Logger.zerolog:type_name -> conf.Logger.Zerolog
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	8, // 6: conf.Logger.Fluent.write_timeout:type_name -> google.protobuf.Duration
+	8, // 7: conf.Logger.Fluent.retry_wait:type_name -> google.protobuf.Duration
+	8, // 8: conf.Logger.Fluent.max_retry_wait:type_name -> google.protobuf.Duration
+	9, // [9:9] is the sub-list for method output_type
+	9, // [9:9] is the sub-list for method input_type
+	9, // [9:9] is the sub-list for extension type_name
+	9, // [9:9] is the sub-list for extension extendee
+	0, // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_conf_v1_kratos_conf_logger_proto_init() }
@@ -720,6 +898,9 @@ func file_conf_v1_kratos_conf_logger_proto_init() {
 		return
 	}
 	file_conf_v1_kratos_conf_logger_proto_msgTypes[0].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_logger_proto_msgTypes[1].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_logger_proto_msgTypes[3].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_logger_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

@@ -17,6 +17,9 @@ type options struct {
 	isBackupConfig bool
 	backupPath     string
 	originConfig   bool
+	label          string
+	syncTimeout    int
+	mustStart      bool
 }
 
 // WithAppID with apollo config app id
@@ -76,6 +79,27 @@ func WithBackupPath(backupPath string) Option {
 }
 
 // WithOriginalConfig use the original configuration file without parse processing
+// WithLabel with apollo config gray label
+func WithLabel(label string) Option {
+	return func(o *options) {
+		o.label = label
+	}
+}
+
+// WithSyncServerTimeout with apollo config sync server timeout (seconds)
+func WithSyncServerTimeout(seconds int) Option {
+	return func(o *options) {
+		o.syncTimeout = seconds
+	}
+}
+
+// WithMustStart with apollo config must start (first sync must succeed)
+func WithMustStart(enable bool) Option {
+	return func(o *options) {
+		o.mustStart = enable
+	}
+}
+
 func WithOriginalConfig() Option {
 	return func(o *options) {
 		extension.AddFormatParser(constant.JSON, &jsonExtParser{})

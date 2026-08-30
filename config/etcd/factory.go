@@ -1,6 +1,8 @@
 package etcd
 
 import (
+	"crypto/tls"
+
 	"time"
 
 	"github.com/go-kratos/kratos/v2/config"
@@ -12,6 +14,8 @@ import (
 	"google.golang.org/grpc"
 
 	etcdClient "go.etcd.io/etcd/client/v3"
+
+	tlsUtils "github.com/tx7do/go-utils/tls"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 	bConfig "github.com/tx7do/kratos-bootstrap/config"
@@ -27,6 +31,17 @@ func NewConfigSource(c *conf.RemoteConfig) (config.Source, error) {
 		return nil, nil
 	}
 
+	in := c.Etcd
+
+	keepAliveTime := 30 * time.Second
+	if in.GetDialKeepAliveTime().AsDuration() > 0 {
+		keepAliveTime = in.GetDialKeepAliveTime().AsDuration()
+	}
+	keepAliveTimeout := 10 * time.Second
+	if in.GetDialKeepAliveTimeout().AsDuration() > 0 {
+		keepAliveTimeout = in.GetDialKeepAliveTimeout().AsDuration()
+	}
+
 	dialOpts := []grpc.DialOption{
 		grpc.WithConnectParams(grpc.ConnectParams{
 			Backoff: backoff.Config{
@@ -38,18 +53,32 @@ func NewConfigSource(c *conf.RemoteConfig) (config.Source, error) {
 			MinConnectTimeout: 5 * time.Second,
 		}),
 		grpc.WithKeepaliveParams(keepalive.ClientParameters{
-			Time:                30 * time.Second,
-			Timeout:             10 * time.Second,
+			Time:                keepAliveTime,
+			Timeout:             keepAliveTimeout,
 			PermitWithoutStream: true,
 		}),
-		// 若使用 TLS，请替换为相应的 credentials.NewClientTLSFromCert(...)
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	}
 
 	cfg := etcdClient.Config{
-		Endpoints:   c.Etcd.Endpoints,
-		DialTimeout: c.Etcd.Timeout.AsDuration(),
+		Endpoints:   in.Endpoints,
+		DialTimeout: in.GetTimeout().AsDuration(),
+		Username:    in.GetUsername(),
+		Password:    in.GetPassword(),
 		DialOptions: dialOpts,
+	}
+
+	if tlsConf := in.GetTls(); tlsConf != nil {
+		tlsClientCfg, err := loadClientTlsConfig(tlsConf)
+		if err != nil {
+			log.Errorf("%v", err)
+			return nil, err
+		}
+		cfg.TLS = tlsClientCfg
+		if tlsClientCfg != nil {
+			// TLS模式下替换掉默认的insecure凭证
+			cfg.DialOptions = dialOpts[:len(dialOpts)-1]
+		}
 	}
 
 	cli, err := etcdClient.New(cfg)
@@ -64,4 +93,37 @@ func NewConfigSource(c *conf.RemoteConfig) (config.Source, error) {
 	}
 
 	return src, nil
+}
+
+func loadClientTlsConfig(cfg *conf.TLS) (*tls.Config, error) {
+	if cfg == nil {
+		return nil, nil
+	}
+
+	var tlsCfg *tls.Config
+	var err error
+
+	if cfg.File != nil {
+		if tlsCfg, err = tlsUtils.LoadClientTlsConfigFile(
+			cfg.File.GetKeyPath(),
+			cfg.File.GetCertPath(),
+			cfg.File.GetCaPath(),
+		); err != nil {
+			return nil, err
+		}
+	} else if cfg.Config != nil {
+		if tlsCfg, err = tlsUtils.LoadClientTlsConfigString(
+			cfg.Config.GetKeyPem(),
+			cfg.Config.GetCertPem(),
+			cfg.Config.GetCaPem(),
+		); err != nil {
+			return nil, err
+		}
+	}
+
+	if tlsCfg != nil && cfg.GetInsecureSkipVerify() {
+		tlsCfg.InsecureSkipVerify = true
+	}
+
+	return tlsCfg, nil
 }

@@ -1,6 +1,6 @@
 module github.com/tx7do/kratos-bootstrap/oss/s3
 
-go 1.24.6
+go 1.25.0
 
 replace github.com/tx7do/kratos-bootstrap/api => ../../api
 
@@ -10,6 +10,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/credentials v1.20.1
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.109.1
 	github.com/go-kratos/kratos/v2 v2.9.2
+	github.com/tx7do/go-utils v1.1.40
 	github.com/tx7do/kratos-bootstrap/api v0.0.44
 )
 

@@ -22,26 +22,54 @@ func NewConfigSource(c *conf.RemoteConfig) (config.Source, error) {
 		return nil, nil
 	}
 
-	srvConf := []nacosConstant.ServerConfig{
-		*nacosConstant.NewServerConfig(c.Nacos.Address, c.Nacos.Port),
+	in := c.Nacos
+
+	serverConf := *nacosConstant.NewServerConfig(in.GetAddress(), in.GetPort())
+	if in.GetScheme() != "" {
+		serverConf.Scheme = in.GetScheme()
 	}
+	if in.GetContextPath() != "" {
+		serverConf.ContextPath = in.GetContextPath()
+	}
+	if in.GetGrpcPort() > 0 {
+		serverConf.GrpcPort = in.GetGrpcPort()
+	}
+	srvConf := []nacosConstant.ServerConfig{serverConf}
 
 	cliConf := nacosConstant.ClientConfig{
-		TimeoutMs:       c.Nacos.TimeoutMs,            // http请求超时时间，单位毫秒
-		BeatInterval:    c.Nacos.BeatInterval,         // 心跳间隔时间，单位毫秒
-		UpdateThreadNum: int(c.Nacos.UpdateThreadNum), // 更新服务的线程数
+		TimeoutMs:       in.GetTimeoutMs(),            // http请求超时时间，单位毫秒
+		BeatInterval:    in.GetBeatInterval(),         // 心跳间隔时间，单位毫秒
+		UpdateThreadNum: int(in.GetUpdateThreadNum()), // 更新服务的线程数
 
-		NotLoadCacheAtStart:  c.Nacos.NotLoadCacheAtStart,  // 在启动时不读取本地缓存数据，true--不读取，false--读取
-		UpdateCacheWhenEmpty: c.Nacos.UpdateCacheWhenEmpty, // 当服务列表为空时是否更新本地缓存，true--更新,false--不更新
+		NotLoadCacheAtStart:  in.GetNotLoadCacheAtStart(),  // 在启动时不读取本地缓存数据，true--不读取，false--读取
+		UpdateCacheWhenEmpty: in.GetUpdateCacheWhenEmpty(), // 当配置为空时更新缓存
 
-		LogLevel: c.Nacos.LogLevel, // 日志级别
-		CacheDir: c.Nacos.CacheDir, // 缓存目录
-		LogDir:   c.Nacos.LogDir,   // 日志目录
+		LogLevel: in.GetLogLevel(), // 日志级别
+		CacheDir: in.GetCacheDir(), // 缓存目录
+		LogDir:   in.GetLogDir(),   // 日志目录
 
-		Username: c.Nacos.Username, // 用户名
-		Password: c.Nacos.Password, // 密码
+		Username: in.GetUsername(), // 用户名
+		Password: in.GetPassword(), // 密码
 
-		NamespaceId: c.Nacos.NamespaceId, // 命名空间ID
+		NamespaceId: in.GetNamespaceId(), // 命名空间ID
+
+		Endpoint:           in.GetEndpoint(),           // 地址服务器endpoint
+		ContextPath:        in.GetContextPath(),        // 上下文路径
+		AppendToStdout:     in.GetAppendToStdout(),     // 日志追加输出到标准输出
+		DisableUseSnapShot: in.GetDisableUseSnapShot(), // 请求服务端失败时禁用本地快照兜底
+	}
+
+	if tlsConf := in.GetTls(); tlsConf != nil {
+		cliConf.TLSCfg = nacosConstant.TLSConfig{
+			Appointed: true,
+			Enable:    true,
+			TrustAll:  tlsConf.GetInsecureSkipVerify(),
+		}
+		if file := tlsConf.GetFile(); file != nil {
+			cliConf.TLSCfg.CaFile = file.GetCaPath()
+			cliConf.TLSCfg.CertFile = file.GetCertPath()
+			cliConf.TLSCfg.KeyFile = file.GetKeyPath()
+		}
 	}
 
 	nacosClient, err := nacosClients.NewConfigClient(

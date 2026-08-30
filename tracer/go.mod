@@ -5,6 +5,7 @@ go 1.25.0
 replace github.com/tx7do/kratos-bootstrap/api => ../api
 
 require (
+	github.com/tx7do/go-utils v1.1.40
 	github.com/tx7do/kratos-bootstrap/api v0.0.44
 	go.opentelemetry.io/otel v1.46.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.46.0
@@ -13,6 +14,7 @@ require (
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.46.0
 	go.opentelemetry.io/otel/exporters/zipkin v1.46.0
 	go.opentelemetry.io/otel/sdk v1.46.0
+	google.golang.org/grpc v1.83.2
 )
 
 require (
@@ -32,6 +34,5 @@ require (
 	golang.org/x/text v0.41.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20260825221802-da73d73af1c5 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260825221802-da73d73af1c5 // indirect
-	google.golang.org/grpc v1.83.2 // indirect
 	google.golang.org/protobuf v1.36.12 // indirect
 )

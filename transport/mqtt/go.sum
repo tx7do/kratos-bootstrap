@@ -34,6 +34,8 @@ github.com/rogpeppe/go-internal v1.14.1 h1:UQB4HGPB6osV0SQTLymcB4TgvyWu6ZyliaW0t
 github.com/rogpeppe/go-internal v1.14.1/go.mod h1:MaRKkUm5W0goXpeCfT7UZI6fk/L7L7so1lCWt35ZSgc=
 github.com/stretchr/testify v1.12.1 h1:EuwCh5fleGS7H32xRwO3wRGT7DxrDhLAT6FF8MpWDWE=
 github.com/stretchr/testify v1.12.1/go.mod h1:MDEgiDPPsNp5cuIrHPPCyornHKgEVbtFUmoNlxoYthg=
+github.com/tx7do/go-utils v1.1.40 h1:PA6ZpBRbYZNUc3xiSP6oRhMGa9iCXLzF5pwvZHJmpZQ=
+github.com/tx7do/go-utils v1.1.40/go.mod h1:A5zjhW0UTM6veYuCbq7/mcwDXaBw8UhBnvaLSwURBRg=
 github.com/tx7do/kratos-transport/broker v1.3.3 h1:5DodrQf8JW0jHOdnObHLgE1d9wLziv5qKUtsD4cTzXU=
 github.com/tx7do/kratos-transport/broker v1.3.3/go.mod h1:fAV13/x6/LJltwwg9Ht0gtxeNZ6MfJlMVmyidAHszMI=
 github.com/tx7do/kratos-transport/broker/mqtt v1.3.6 h1:B4KWhE4YfQG+hAsRnsDWadPNvIZ8kT4Sb4fNqt8wXyI=

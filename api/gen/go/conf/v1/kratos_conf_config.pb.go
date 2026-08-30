@@ -195,6 +195,13 @@ type RemoteConfig_Nacos struct {
 	UpdateThreadNum      int32                  `protobuf:"varint,40,opt,name=update_thread_num,json=updateThreadNum,proto3" json:"update_thread_num,omitempty"`                  // 更新服务的线程数
 	TimeoutMs            uint64                 `protobuf:"varint,41,opt,name=timeout_ms,json=timeoutMs,proto3" json:"timeout_ms,omitempty"`                                      // http请求超时时间，单位毫秒
 	BeatInterval         int64                  `protobuf:"varint,42,opt,name=beat_interval,json=beatInterval,proto3" json:"beat_interval,omitempty"`                             // 心跳间隔时间，单位毫秒
+	Scheme               string                 `protobuf:"bytes,50,opt,name=scheme,proto3" json:"scheme,omitempty"`                                                              // 网络样式: http、https,默认: http
+	GrpcPort             uint64                 `protobuf:"varint,51,opt,name=grpc_port,json=grpcPort,proto3" json:"grpc_port,omitempty"`                                         // gRPC长连接端口,默认: port+1000
+	ContextPath          string                 `protobuf:"bytes,52,opt,name=context_path,json=contextPath,proto3" json:"context_path,omitempty"`                                 // 上下文路径
+	Endpoint             string                 `protobuf:"bytes,53,opt,name=endpoint,proto3" json:"endpoint,omitempty"`                                                          // 地址服务器endpoint,用于获取服务端地址列表
+	AppendToStdout       bool                   `protobuf:"varint,54,opt,name=append_to_stdout,json=appendToStdout,proto3" json:"append_to_stdout,omitempty"`                     // 日志是否追加输出到标准输出
+	DisableUseSnapShot   bool                   `protobuf:"varint,55,opt,name=disable_use_snap_shot,json=disableUseSnapShot,proto3" json:"disable_use_snap_shot,omitempty"`       // 请求服务端失败时禁用本地快照兜底
+	Tls                  *TLS                   `protobuf:"bytes,56,opt,name=tls,proto3" json:"tls,omitempty"`                                                                    // TLS配置(文件方式)
 	unknownFields        protoimpl.UnknownFields
 	sizeCache            protoimpl.SizeCache
 }
@@ -334,14 +341,68 @@ func (x *RemoteConfig_Nacos) GetBeatInterval() int64 {
 	return 0
 }
 
+func (x *RemoteConfig_Nacos) GetScheme() string {
+	if x != nil {
+		return x.Scheme
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Nacos) GetGrpcPort() uint64 {
+	if x != nil {
+		return x.GrpcPort
+	}
+	return 0
+}
+
+func (x *RemoteConfig_Nacos) GetContextPath() string {
+	if x != nil {
+		return x.ContextPath
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Nacos) GetEndpoint() string {
+	if x != nil {
+		return x.Endpoint
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Nacos) GetAppendToStdout() bool {
+	if x != nil {
+		return x.AppendToStdout
+	}
+	return false
+}
+
+func (x *RemoteConfig_Nacos) GetDisableUseSnapShot() bool {
+	if x != nil {
+		return x.DisableUseSnapShot
+	}
+	return false
+}
+
+func (x *RemoteConfig_Nacos) GetTls() *TLS {
+	if x != nil {
+		return x.Tls
+	}
+	return nil
+}
+
 // Etcd 配置
 type RemoteConfig_Etcd struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Endpoints     []string               `protobuf:"bytes,1,rep,name=endpoints,proto3" json:"endpoints,omitempty"` // 服务端地址
-	Timeout       *durationpb.Duration   `protobuf:"bytes,2,opt,name=timeout,proto3" json:"timeout,omitempty"`     // 超时时间
-	Key           string                 `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty"`             // 配置键
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	Endpoints            []string               `protobuf:"bytes,1,rep,name=endpoints,proto3" json:"endpoints,omitempty"`                                                       // 服务端地址
+	Timeout              *durationpb.Duration   `protobuf:"bytes,2,opt,name=timeout,proto3" json:"timeout,omitempty"`                                                           // 拨号超时时间
+	Key                  string                 `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty"`                                                                   // 配置键
+	Username             string                 `protobuf:"bytes,4,opt,name=username,proto3" json:"username,omitempty"`                                                         // 用户名
+	Password             string                 `protobuf:"bytes,5,opt,name=password,proto3" json:"password,omitempty"`                                                         // 密码
+	Tls                  *TLS                   `protobuf:"bytes,6,opt,name=tls,proto3" json:"tls,omitempty"`                                                                   // TLS配置
+	DialKeepAliveTime    *durationpb.Duration   `protobuf:"bytes,7,opt,name=dial_keep_alive_time,json=dialKeepAliveTime,proto3" json:"dial_keep_alive_time,omitempty"`          // keepalive探测间隔
+	DialKeepAliveTimeout *durationpb.Duration   `protobuf:"bytes,8,opt,name=dial_keep_alive_timeout,json=dialKeepAliveTimeout,proto3" json:"dial_keep_alive_timeout,omitempty"` // keepalive探测等待响应的超时时间
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *RemoteConfig_Etcd) Reset() {
@@ -395,12 +456,54 @@ func (x *RemoteConfig_Etcd) GetKey() string {
 	return ""
 }
 
+func (x *RemoteConfig_Etcd) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Etcd) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Etcd) GetTls() *TLS {
+	if x != nil {
+		return x.Tls
+	}
+	return nil
+}
+
+func (x *RemoteConfig_Etcd) GetDialKeepAliveTime() *durationpb.Duration {
+	if x != nil {
+		return x.DialKeepAliveTime
+	}
+	return nil
+}
+
+func (x *RemoteConfig_Etcd) GetDialKeepAliveTimeout() *durationpb.Duration {
+	if x != nil {
+		return x.DialKeepAliveTimeout
+	}
+	return nil
+}
+
 // Consul 配置
 type RemoteConfig_Consul struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Scheme        string                 `protobuf:"bytes,1,opt,name=scheme,proto3" json:"scheme,omitempty"`   // 网络样式
-	Address       string                 `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"` // 服务端地址
-	Key           string                 `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty"`         // 配置键
+	Scheme        string                 `protobuf:"bytes,1,opt,name=scheme,proto3" json:"scheme,omitempty"`                        // 网络样式
+	Address       string                 `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`                      // 服务端地址
+	Key           string                 `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty"`                              // 配置键
+	Datacenter    string                 `protobuf:"bytes,4,opt,name=datacenter,proto3" json:"datacenter,omitempty"`                // 数据中心
+	Token         string                 `protobuf:"bytes,5,opt,name=token,proto3" json:"token,omitempty"`                          // ACL Token
+	TokenFile     string                 `protobuf:"bytes,6,opt,name=token_file,json=tokenFile,proto3" json:"token_file,omitempty"` // ACL Token文件路径
+	Namespace     string                 `protobuf:"bytes,7,opt,name=namespace,proto3" json:"namespace,omitempty"`                  // 命名空间(Consul企业版)
+	Partition     string                 `protobuf:"bytes,8,opt,name=partition,proto3" json:"partition,omitempty"`                  // 管理分区(Consul企业版)
+	WaitTime      *durationpb.Duration   `protobuf:"bytes,9,opt,name=wait_time,json=waitTime,proto3" json:"wait_time,omitempty"`    // Watch阻塞等待的最长时间
+	Tls           *TLS                   `protobuf:"bytes,10,opt,name=tls,proto3" json:"tls,omitempty"`                             // TLS配置
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -456,16 +559,69 @@ func (x *RemoteConfig_Consul) GetKey() string {
 	return ""
 }
 
+func (x *RemoteConfig_Consul) GetDatacenter() string {
+	if x != nil {
+		return x.Datacenter
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Consul) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Consul) GetTokenFile() string {
+	if x != nil {
+		return x.TokenFile
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Consul) GetNamespace() string {
+	if x != nil {
+		return x.Namespace
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Consul) GetPartition() string {
+	if x != nil {
+		return x.Partition
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Consul) GetWaitTime() *durationpb.Duration {
+	if x != nil {
+		return x.WaitTime
+	}
+	return nil
+}
+
+func (x *RemoteConfig_Consul) GetTls() *TLS {
+	if x != nil {
+		return x.Tls
+	}
+	return nil
+}
+
 // Apollo 配置
 type RemoteConfig_Apollo struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Endpoint      string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"`        // 服务端地址
-	AppId         string                 `protobuf:"bytes,2,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"` // 应用ID
-	Cluster       string                 `protobuf:"bytes,3,opt,name=cluster,proto3" json:"cluster,omitempty"`          // 集群
-	Namespace     string                 `protobuf:"bytes,4,opt,name=namespace,proto3" json:"namespace,omitempty"`      // 命名空间
-	Secret        string                 `protobuf:"bytes,5,opt,name=secret,proto3" json:"secret,omitempty"`            // 密钥
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	Endpoint          string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"`                                               // 服务端地址
+	AppId             string                 `protobuf:"bytes,2,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`                                        // 应用ID
+	Cluster           string                 `protobuf:"bytes,3,opt,name=cluster,proto3" json:"cluster,omitempty"`                                                 // 集群
+	Namespace         string                 `protobuf:"bytes,4,opt,name=namespace,proto3" json:"namespace,omitempty"`                                             // 命名空间
+	Secret            string                 `protobuf:"bytes,5,opt,name=secret,proto3" json:"secret,omitempty"`                                                   // 密钥
+	BackupConfigPath  string                 `protobuf:"bytes,10,opt,name=backup_config_path,json=backupConfigPath,proto3" json:"backup_config_path,omitempty"`    // 配置备份文件目录
+	Label             string                 `protobuf:"bytes,11,opt,name=label,proto3" json:"label,omitempty"`                                                    // 灰度发布标签
+	SyncServerTimeout *durationpb.Duration   `protobuf:"bytes,12,opt,name=sync_server_timeout,json=syncServerTimeout,proto3" json:"sync_server_timeout,omitempty"` // 与服务端同步的超时时间
+	MustStart         bool                   `protobuf:"varint,13,opt,name=must_start,json=mustStart,proto3" json:"must_start,omitempty"`                          // 首次启动拉取配置失败时是否阻断启动
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *RemoteConfig_Apollo) Reset() {
@@ -533,6 +689,34 @@ func (x *RemoteConfig_Apollo) GetSecret() string {
 	return ""
 }
 
+func (x *RemoteConfig_Apollo) GetBackupConfigPath() string {
+	if x != nil {
+		return x.BackupConfigPath
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Apollo) GetLabel() string {
+	if x != nil {
+		return x.Label
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Apollo) GetSyncServerTimeout() *durationpb.Duration {
+	if x != nil {
+		return x.SyncServerTimeout
+	}
+	return nil
+}
+
+func (x *RemoteConfig_Apollo) GetMustStart() bool {
+	if x != nil {
+		return x.MustStart
+	}
+	return false
+}
+
 // Kubernetes 配置
 type RemoteConfig_Kubernetes struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -541,6 +725,9 @@ type RemoteConfig_Kubernetes struct {
 	FieldSelector string                 `protobuf:"bytes,3,opt,name=field_selector,json=fieldSelector,proto3" json:"field_selector,omitempty"` // 字段选择器
 	KubeConfig    string                 `protobuf:"bytes,4,opt,name=kube_config,json=kubeConfig,proto3" json:"kube_config,omitempty"`          // kube配置文件路径
 	Master        string                 `protobuf:"bytes,5,opt,name=master,proto3" json:"master,omitempty"`                                    // master地址
+	Qps           *int32                 `protobuf:"varint,10,opt,name=qps,proto3,oneof" json:"qps,omitempty"`                                  // 客户端QPS限流,默认5
+	Burst         *int32                 `protobuf:"varint,11,opt,name=burst,proto3,oneof" json:"burst,omitempty"`                              // 令牌桶突发容量,默认10
+	Timeout       *durationpb.Duration   `protobuf:"bytes,12,opt,name=timeout,proto3" json:"timeout,omitempty"`                                 // 单次请求超时时间
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -610,12 +797,36 @@ func (x *RemoteConfig_Kubernetes) GetMaster() string {
 	return ""
 }
 
+func (x *RemoteConfig_Kubernetes) GetQps() int32 {
+	if x != nil && x.Qps != nil {
+		return *x.Qps
+	}
+	return 0
+}
+
+func (x *RemoteConfig_Kubernetes) GetBurst() int32 {
+	if x != nil && x.Burst != nil {
+		return *x.Burst
+	}
+	return 0
+}
+
+func (x *RemoteConfig_Kubernetes) GetTimeout() *durationpb.Duration {
+	if x != nil {
+		return x.Timeout
+	}
+	return nil
+}
+
 // Polaris 配置
 type RemoteConfig_Polaris struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Namespace     string                 `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
 	FileGroup     string                 `protobuf:"bytes,2,opt,name=file_group,json=fileGroup,proto3" json:"file_group,omitempty"`
 	FileName      string                 `protobuf:"bytes,3,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`
+	Address       string                 `protobuf:"bytes,10,opt,name=address,proto3" json:"address,omitempty"`                         // 服务端地址(设置后SDK直连该地址)
+	Port          int32                  `protobuf:"varint,11,opt,name=port,proto3" json:"port,omitempty"`                              // 服务端端口,默认: 8091
+	ConfigFile    string                 `protobuf:"bytes,12,opt,name=config_file,json=configFile,proto3" json:"config_file,omitempty"` // SDK配置文件路径(优先级最高)
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -671,11 +882,32 @@ func (x *RemoteConfig_Polaris) GetFileName() string {
 	return ""
 }
 
+func (x *RemoteConfig_Polaris) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
+func (x *RemoteConfig_Polaris) GetPort() int32 {
+	if x != nil {
+		return x.Port
+	}
+	return 0
+}
+
+func (x *RemoteConfig_Polaris) GetConfigFile() string {
+	if x != nil {
+		return x.ConfigFile
+	}
+	return ""
+}
+
 var File_conf_v1_kratos_conf_config_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_config_proto_rawDesc = "" +
 	"\n" +
-	" conf/v1/kratos_conf_config.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\"\xef\f\n" +
+	" conf/v1/kratos_conf_config.proto\x12\x04conf\x1a\x1dconf/v1/kratos_conf_tls.proto\x1a\x1egoogle/protobuf/duration.proto\"\xaf\x15\n" +
 	"\fRemoteConfig\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x120\n" +
 	"\x04etcd\x18\x02 \x01(\v2\x17.conf.RemoteConfig.EtcdH\x00R\x04etcd\x88\x01\x01\x126\n" +
@@ -685,7 +917,7 @@ const file_conf_v1_kratos_conf_config_proto_rawDesc = "" +
 	"\n" +
 	"kubernetes\x18\a \x01(\v2\x1d.conf.RemoteConfig.KubernetesH\x04R\n" +
 	"kubernetes\x88\x01\x01\x129\n" +
-	"\apolaris\x18\b \x01(\v2\x1a.conf.RemoteConfig.PolarisH\x05R\apolaris\x88\x01\x01\x1a\xef\x03\n" +
+	"\apolaris\x18\b \x01(\v2\x1a.conf.RemoteConfig.PolarisH\x05R\apolaris\x88\x01\x01\x1a\xdd\x05\n" +
 	"\x05Nacos\x12\x18\n" +
 	"\aaddress\x18\x01 \x01(\tR\aaddress\x12\x12\n" +
 	"\x04port\x18\x02 \x01(\x04R\x04port\x12\x1a\n" +
@@ -703,21 +935,50 @@ const file_conf_v1_kratos_conf_config_proto_rawDesc = "" +
 	"\x11update_thread_num\x18( \x01(\x05R\x0fupdateThreadNum\x12\x1d\n" +
 	"\n" +
 	"timeout_ms\x18) \x01(\x04R\ttimeoutMs\x12#\n" +
-	"\rbeat_interval\x18* \x01(\x03R\fbeatInterval\x1ak\n" +
+	"\rbeat_interval\x18* \x01(\x03R\fbeatInterval\x12\x16\n" +
+	"\x06scheme\x182 \x01(\tR\x06scheme\x12\x1b\n" +
+	"\tgrpc_port\x183 \x01(\x04R\bgrpcPort\x12!\n" +
+	"\fcontext_path\x184 \x01(\tR\vcontextPath\x12\x1a\n" +
+	"\bendpoint\x185 \x01(\tR\bendpoint\x12(\n" +
+	"\x10append_to_stdout\x186 \x01(\bR\x0eappendToStdout\x121\n" +
+	"\x15disable_use_snap_shot\x187 \x01(\bR\x12disableUseSnapShot\x12\x1b\n" +
+	"\x03tls\x188 \x01(\v2\t.conf.TLSR\x03tls\x1a\xde\x02\n" +
 	"\x04Etcd\x12\x1c\n" +
 	"\tendpoints\x18\x01 \x03(\tR\tendpoints\x123\n" +
 	"\atimeout\x18\x02 \x01(\v2\x19.google.protobuf.DurationR\atimeout\x12\x10\n" +
-	"\x03key\x18\x03 \x01(\tR\x03key\x1aL\n" +
+	"\x03key\x18\x03 \x01(\tR\x03key\x12\x1a\n" +
+	"\busername\x18\x04 \x01(\tR\busername\x12\x1a\n" +
+	"\bpassword\x18\x05 \x01(\tR\bpassword\x12\x1b\n" +
+	"\x03tls\x18\x06 \x01(\v2\t.conf.TLSR\x03tls\x12J\n" +
+	"\x14dial_keep_alive_time\x18\a \x01(\v2\x19.google.protobuf.DurationR\x11dialKeepAliveTime\x12P\n" +
+	"\x17dial_keep_alive_timeout\x18\b \x01(\v2\x19.google.protobuf.DurationR\x14dialKeepAliveTimeout\x1a\xb2\x02\n" +
 	"\x06Consul\x12\x16\n" +
 	"\x06scheme\x18\x01 \x01(\tR\x06scheme\x12\x18\n" +
 	"\aaddress\x18\x02 \x01(\tR\aaddress\x12\x10\n" +
-	"\x03key\x18\x03 \x01(\tR\x03key\x1a\x8b\x01\n" +
+	"\x03key\x18\x03 \x01(\tR\x03key\x12\x1e\n" +
+	"\n" +
+	"datacenter\x18\x04 \x01(\tR\n" +
+	"datacenter\x12\x14\n" +
+	"\x05token\x18\x05 \x01(\tR\x05token\x12\x1d\n" +
+	"\n" +
+	"token_file\x18\x06 \x01(\tR\ttokenFile\x12\x1c\n" +
+	"\tnamespace\x18\a \x01(\tR\tnamespace\x12\x1c\n" +
+	"\tpartition\x18\b \x01(\tR\tpartition\x126\n" +
+	"\twait_time\x18\t \x01(\v2\x19.google.protobuf.DurationR\bwaitTime\x12\x1b\n" +
+	"\x03tls\x18\n" +
+	" \x01(\v2\t.conf.TLSR\x03tls\x1a\xb9\x02\n" +
 	"\x06Apollo\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x15\n" +
 	"\x06app_id\x18\x02 \x01(\tR\x05appId\x12\x18\n" +
 	"\acluster\x18\x03 \x01(\tR\acluster\x12\x1c\n" +
 	"\tnamespace\x18\x04 \x01(\tR\tnamespace\x12\x16\n" +
-	"\x06secret\x18\x05 \x01(\tR\x06secret\x1a\xb1\x01\n" +
+	"\x06secret\x18\x05 \x01(\tR\x06secret\x12,\n" +
+	"\x12backup_config_path\x18\n" +
+	" \x01(\tR\x10backupConfigPath\x12\x14\n" +
+	"\x05label\x18\v \x01(\tR\x05label\x12I\n" +
+	"\x13sync_server_timeout\x18\f \x01(\v2\x19.google.protobuf.DurationR\x11syncServerTimeout\x12\x1d\n" +
+	"\n" +
+	"must_start\x18\r \x01(\bR\tmustStart\x1a\xaa\x02\n" +
 	"\n" +
 	"Kubernetes\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12%\n" +
@@ -725,12 +986,23 @@ const file_conf_v1_kratos_conf_config_proto_rawDesc = "" +
 	"\x0efield_selector\x18\x03 \x01(\tR\rfieldSelector\x12\x1f\n" +
 	"\vkube_config\x18\x04 \x01(\tR\n" +
 	"kubeConfig\x12\x16\n" +
-	"\x06master\x18\x05 \x01(\tR\x06master\x1ac\n" +
+	"\x06master\x18\x05 \x01(\tR\x06master\x12\x15\n" +
+	"\x03qps\x18\n" +
+	" \x01(\x05H\x00R\x03qps\x88\x01\x01\x12\x19\n" +
+	"\x05burst\x18\v \x01(\x05H\x01R\x05burst\x88\x01\x01\x123\n" +
+	"\atimeout\x18\f \x01(\v2\x19.google.protobuf.DurationR\atimeoutB\x06\n" +
+	"\x04_qpsB\b\n" +
+	"\x06_burst\x1a\xb2\x01\n" +
 	"\aPolaris\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x1d\n" +
 	"\n" +
 	"file_group\x18\x02 \x01(\tR\tfileGroup\x12\x1b\n" +
-	"\tfile_name\x18\x03 \x01(\tR\bfileName\"]\n" +
+	"\tfile_name\x18\x03 \x01(\tR\bfileName\x12\x18\n" +
+	"\aaddress\x18\n" +
+	" \x01(\tR\aaddress\x12\x12\n" +
+	"\x04port\x18\v \x01(\x05R\x04port\x12\x1f\n" +
+	"\vconfig_file\x18\f \x01(\tR\n" +
+	"configFile\"]\n" +
 	"\x04Type\x12\v\n" +
 	"\aUNKNOWN\x10\x00\x12\b\n" +
 	"\x04ETCD\x10\x01\x12\n" +
@@ -774,21 +1046,30 @@ var file_conf_v1_kratos_conf_config_proto_goTypes = []any{
 	(*RemoteConfig_Apollo)(nil),     // 5: conf.RemoteConfig.Apollo
 	(*RemoteConfig_Kubernetes)(nil), // 6: conf.RemoteConfig.Kubernetes
 	(*RemoteConfig_Polaris)(nil),    // 7: conf.RemoteConfig.Polaris
-	(*durationpb.Duration)(nil),     // 8: google.protobuf.Duration
+	(*TLS)(nil),                     // 8: conf.TLS
+	(*durationpb.Duration)(nil),     // 9: google.protobuf.Duration
 }
 var file_conf_v1_kratos_conf_config_proto_depIdxs = []int32{
-	3, // 0: conf.RemoteConfig.etcd:type_name -> conf.RemoteConfig.Etcd
-	4, // 1: conf.RemoteConfig.consul:type_name -> conf.RemoteConfig.Consul
-	2, // 2: conf.RemoteConfig.nacos:type_name -> conf.RemoteConfig.Nacos
-	5, // 3: conf.RemoteConfig.apollo:type_name -> conf.RemoteConfig.Apollo
-	6, // 4: conf.RemoteConfig.kubernetes:type_name -> conf.RemoteConfig.Kubernetes
-	7, // 5: conf.RemoteConfig.polaris:type_name -> conf.RemoteConfig.Polaris
-	8, // 6: conf.RemoteConfig.Etcd.timeout:type_name -> google.protobuf.Duration
-	7, // [7:7] is the sub-list for method output_type
-	7, // [7:7] is the sub-list for method input_type
-	7, // [7:7] is the sub-list for extension type_name
-	7, // [7:7] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	3,  // 0: conf.RemoteConfig.etcd:type_name -> conf.RemoteConfig.Etcd
+	4,  // 1: conf.RemoteConfig.consul:type_name -> conf.RemoteConfig.Consul
+	2,  // 2: conf.RemoteConfig.nacos:type_name -> conf.RemoteConfig.Nacos
+	5,  // 3: conf.RemoteConfig.apollo:type_name -> conf.RemoteConfig.Apollo
+	6,  // 4: conf.RemoteConfig.kubernetes:type_name -> conf.RemoteConfig.Kubernetes
+	7,  // 5: conf.RemoteConfig.polaris:type_name -> conf.RemoteConfig.Polaris
+	8,  // 6: conf.RemoteConfig.Nacos.tls:type_name -> conf.TLS
+	9,  // 7: conf.RemoteConfig.Etcd.timeout:type_name -> google.protobuf.Duration
+	8,  // 8: conf.RemoteConfig.Etcd.tls:type_name -> conf.TLS
+	9,  // 9: conf.RemoteConfig.Etcd.dial_keep_alive_time:type_name -> google.protobuf.Duration
+	9,  // 10: conf.RemoteConfig.Etcd.dial_keep_alive_timeout:type_name -> google.protobuf.Duration
+	9,  // 11: conf.RemoteConfig.Consul.wait_time:type_name -> google.protobuf.Duration
+	8,  // 12: conf.RemoteConfig.Consul.tls:type_name -> conf.TLS
+	9,  // 13: conf.RemoteConfig.Apollo.sync_server_timeout:type_name -> google.protobuf.Duration
+	9,  // 14: conf.RemoteConfig.Kubernetes.timeout:type_name -> google.protobuf.Duration
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_conf_v1_kratos_conf_config_proto_init() }
@@ -796,7 +1077,9 @@ func file_conf_v1_kratos_conf_config_proto_init() {
 	if File_conf_v1_kratos_conf_config_proto != nil {
 		return
 	}
+	file_conf_v1_kratos_conf_tls_proto_init()
 	file_conf_v1_kratos_conf_config_proto_msgTypes[0].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_config_proto_msgTypes[5].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

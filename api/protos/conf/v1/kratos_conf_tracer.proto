@@ -4,6 +4,9 @@ package conf;
 
 option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
 
+import "conf/v1/kratos_conf_tls.proto";
+import "google/protobuf/duration.proto";
+
 // 链路追踪
 message Tracer {
   // exporter 名称，例如: "otlp-grpc", "otlp-http", "zipkin", "stdout"
@@ -24,6 +27,10 @@ message Tracer {
 
   // 是否包含 Baggage 传播（nil 表示未配置）
   optional bool enable_baggage = 8;
+
+  map<string, string> headers = 9; // 上报请求头(如鉴权Token),仅OTLP导出器支持
+  TLS tls = 10; // TLS配置(自定义CA等),仅OTLP导出器支持
+  google.protobuf.Duration timeout = 11; // 导出超时时间,仅OTLP导出器支持
 }
 
 message BatcherOptions {

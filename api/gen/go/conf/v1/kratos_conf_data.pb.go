@@ -346,18 +346,36 @@ func (x *Data_Database) GetPrometheusHttpPort() uint32 {
 
 // redis
 type Data_Redis struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Network       string                 `protobuf:"bytes,1,opt,name=network,proto3" json:"network,omitempty"`                                      // 网络
-	Addr          string                 `protobuf:"bytes,2,opt,name=addr,proto3" json:"addr,omitempty"`                                            // 服务端地址
-	Password      string                 `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`                                    // 密码
-	Db            int32                  `protobuf:"varint,4,opt,name=db,proto3" json:"db,omitempty"`                                               // 数据库索引
-	DialTimeout   *durationpb.Duration   `protobuf:"bytes,50,opt,name=dial_timeout,json=dialTimeout,proto3" json:"dial_timeout,omitempty"`          // 连接超时时间
-	ReadTimeout   *durationpb.Duration   `protobuf:"bytes,51,opt,name=read_timeout,json=readTimeout,proto3" json:"read_timeout,omitempty"`          // 读取超时时间
-	WriteTimeout  *durationpb.Duration   `protobuf:"bytes,52,opt,name=write_timeout,json=writeTimeout,proto3" json:"write_timeout,omitempty"`       // 写入超时时间
-	EnableTracing bool                   `protobuf:"varint,100,opt,name=enable_tracing,json=enableTracing,proto3" json:"enable_tracing,omitempty"`  // 打开链路追踪
-	EnableMetrics bool                   `protobuf:"varint,1001,opt,name=enable_metrics,json=enableMetrics,proto3" json:"enable_metrics,omitempty"` // 打开性能度量
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	Network          string                 `protobuf:"bytes,1,opt,name=network,proto3" json:"network,omitempty"`                                             // 网络
+	Addr             string                 `protobuf:"bytes,2,opt,name=addr,proto3" json:"addr,omitempty"`                                                   // 服务端地址
+	Password         string                 `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`                                           // 密码
+	Db               int32                  `protobuf:"varint,4,opt,name=db,proto3" json:"db,omitempty"`                                                      // 数据库索引
+	Username         string                 `protobuf:"bytes,5,opt,name=username,proto3" json:"username,omitempty"`                                           // 用户名(Redis 6 ACL)
+	Tls              *TLS                   `protobuf:"bytes,6,opt,name=tls,proto3" json:"tls,omitempty"`                                                     // TLS配置
+	Mode             string                 `protobuf:"bytes,7,opt,name=mode,proto3" json:"mode,omitempty"`                                                   // 客户端模式: standalone、cluster、sentinel,默认standalone
+	MasterName       string                 `protobuf:"bytes,8,opt,name=master_name,json=masterName,proto3" json:"master_name,omitempty"`                     // Sentinel主节点名称(mode=sentinel时必填)
+	Addrs            []string               `protobuf:"bytes,9,rep,name=addrs,proto3" json:"addrs,omitempty"`                                                 // 服务端地址列表(mode=cluster/sentinel时使用)
+	SentinelUsername string                 `protobuf:"bytes,10,opt,name=sentinel_username,json=sentinelUsername,proto3" json:"sentinel_username,omitempty"`  // Sentinel登录用户名
+	SentinelPassword string                 `protobuf:"bytes,11,opt,name=sentinel_password,json=sentinelPassword,proto3" json:"sentinel_password,omitempty"`  // Sentinel登录密码
+	RouteByLatency   bool                   `protobuf:"varint,12,opt,name=route_by_latency,json=routeByLatency,proto3" json:"route_by_latency,omitempty"`     // 按延迟选择低延迟节点(cluster/sentinel)
+	RouteRandomly    bool                   `protobuf:"varint,13,opt,name=route_randomly,json=routeRandomly,proto3" json:"route_randomly,omitempty"`          // 随机路由到节点(cluster/sentinel)
+	ReplicaOnly      bool                   `protobuf:"varint,14,opt,name=replica_only,json=replicaOnly,proto3" json:"replica_only,omitempty"`                // 仅读副本节点(sentinel)
+	DialTimeout      *durationpb.Duration   `protobuf:"bytes,50,opt,name=dial_timeout,json=dialTimeout,proto3" json:"dial_timeout,omitempty"`                 // 连接超时时间
+	ReadTimeout      *durationpb.Duration   `protobuf:"bytes,51,opt,name=read_timeout,json=readTimeout,proto3" json:"read_timeout,omitempty"`                 // 读取超时时间
+	WriteTimeout     *durationpb.Duration   `protobuf:"bytes,52,opt,name=write_timeout,json=writeTimeout,proto3" json:"write_timeout,omitempty"`              // 写入超时时间
+	PoolTimeout      *durationpb.Duration   `protobuf:"bytes,53,opt,name=pool_timeout,json=poolTimeout,proto3" json:"pool_timeout,omitempty"`                 // 连接池获取连接超时时间
+	ConnMaxIdleTime  *durationpb.Duration   `protobuf:"bytes,54,opt,name=conn_max_idle_time,json=connMaxIdleTime,proto3" json:"conn_max_idle_time,omitempty"` // 连接最大空闲时间
+	ConnMaxLifetime  *durationpb.Duration   `protobuf:"bytes,55,opt,name=conn_max_lifetime,json=connMaxLifetime,proto3" json:"conn_max_lifetime,omitempty"`   // 连接最大存活时间
+	MinRetryBackoff  *durationpb.Duration   `protobuf:"bytes,56,opt,name=min_retry_backoff,json=minRetryBackoff,proto3" json:"min_retry_backoff,omitempty"`   // 重试最小退避时间
+	MaxRetryBackoff  *durationpb.Duration   `protobuf:"bytes,57,opt,name=max_retry_backoff,json=maxRetryBackoff,proto3" json:"max_retry_backoff,omitempty"`   // 重试最大退避时间
+	PoolSize         *int32                 `protobuf:"varint,60,opt,name=pool_size,json=poolSize,proto3,oneof" json:"pool_size,omitempty"`                   // 连接池大小
+	MinIdleConns     *int32                 `protobuf:"varint,61,opt,name=min_idle_conns,json=minIdleConns,proto3,oneof" json:"min_idle_conns,omitempty"`     // 连接池最小空闲连接数
+	MaxRetries       *int32                 `protobuf:"varint,62,opt,name=max_retries,json=maxRetries,proto3,oneof" json:"max_retries,omitempty"`             // 命令失败最大重试次数
+	EnableTracing    bool                   `protobuf:"varint,100,opt,name=enable_tracing,json=enableTracing,proto3" json:"enable_tracing,omitempty"`         // 打开链路追踪
+	EnableMetrics    bool                   `protobuf:"varint,1001,opt,name=enable_metrics,json=enableMetrics,proto3" json:"enable_metrics,omitempty"`        // 打开性能度量
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *Data_Redis) Reset() {
@@ -418,6 +436,76 @@ func (x *Data_Redis) GetDb() int32 {
 	return 0
 }
 
+func (x *Data_Redis) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *Data_Redis) GetTls() *TLS {
+	if x != nil {
+		return x.Tls
+	}
+	return nil
+}
+
+func (x *Data_Redis) GetMode() string {
+	if x != nil {
+		return x.Mode
+	}
+	return ""
+}
+
+func (x *Data_Redis) GetMasterName() string {
+	if x != nil {
+		return x.MasterName
+	}
+	return ""
+}
+
+func (x *Data_Redis) GetAddrs() []string {
+	if x != nil {
+		return x.Addrs
+	}
+	return nil
+}
+
+func (x *Data_Redis) GetSentinelUsername() string {
+	if x != nil {
+		return x.SentinelUsername
+	}
+	return ""
+}
+
+func (x *Data_Redis) GetSentinelPassword() string {
+	if x != nil {
+		return x.SentinelPassword
+	}
+	return ""
+}
+
+func (x *Data_Redis) GetRouteByLatency() bool {
+	if x != nil {
+		return x.RouteByLatency
+	}
+	return false
+}
+
+func (x *Data_Redis) GetRouteRandomly() bool {
+	if x != nil {
+		return x.RouteRandomly
+	}
+	return false
+}
+
+func (x *Data_Redis) GetReplicaOnly() bool {
+	if x != nil {
+		return x.ReplicaOnly
+	}
+	return false
+}
+
 func (x *Data_Redis) GetDialTimeout() *durationpb.Duration {
 	if x != nil {
 		return x.DialTimeout
@@ -437,6 +525,62 @@ func (x *Data_Redis) GetWriteTimeout() *durationpb.Duration {
 		return x.WriteTimeout
 	}
 	return nil
+}
+
+func (x *Data_Redis) GetPoolTimeout() *durationpb.Duration {
+	if x != nil {
+		return x.PoolTimeout
+	}
+	return nil
+}
+
+func (x *Data_Redis) GetConnMaxIdleTime() *durationpb.Duration {
+	if x != nil {
+		return x.ConnMaxIdleTime
+	}
+	return nil
+}
+
+func (x *Data_Redis) GetConnMaxLifetime() *durationpb.Duration {
+	if x != nil {
+		return x.ConnMaxLifetime
+	}
+	return nil
+}
+
+func (x *Data_Redis) GetMinRetryBackoff() *durationpb.Duration {
+	if x != nil {
+		return x.MinRetryBackoff
+	}
+	return nil
+}
+
+func (x *Data_Redis) GetMaxRetryBackoff() *durationpb.Duration {
+	if x != nil {
+		return x.MaxRetryBackoff
+	}
+	return nil
+}
+
+func (x *Data_Redis) GetPoolSize() int32 {
+	if x != nil && x.PoolSize != nil {
+		return *x.PoolSize
+	}
+	return 0
+}
+
+func (x *Data_Redis) GetMinIdleConns() int32 {
+	if x != nil && x.MinIdleConns != nil {
+		return *x.MinIdleConns
+	}
+	return 0
+}
+
+func (x *Data_Redis) GetMaxRetries() int32 {
+	if x != nil && x.MaxRetries != nil {
+		return *x.MaxRetries
+	}
+	return 0
 }
 
 func (x *Data_Redis) GetEnableTracing() bool {
@@ -2266,7 +2410,7 @@ var File_conf_v1_kratos_conf_data_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_data_proto_rawDesc = "" +
 	"\n" +
-	"\x1econf/v1/kratos_conf_data.proto\x12\x04conf\x1a\x1dconf/v1/kratos_conf_tls.proto\x1a\x1egoogle/protobuf/duration.proto\"\xa2T\n" +
+	"\x1econf/v1/kratos_conf_data.proto\x12\x04conf\x1a\x1dconf/v1/kratos_conf_tls.proto\x1a\x1egoogle/protobuf/duration.proto\"\xf3Z\n" +
 	"\x04Data\x124\n" +
 	"\bdatabase\x18\x01 \x01(\v2\x13.conf.Data.DatabaseH\x00R\bdatabase\x88\x01\x01\x12+\n" +
 	"\x05redis\x18\n" +
@@ -2312,17 +2456,42 @@ const file_conf_v1_kratos_conf_data_proto_rawDesc = "" +
 	"\x18_connection_max_lifetimeB\x17\n" +
 	"\x15_prometheus_push_addrB\x15\n" +
 	"\x13_prometheus_db_nameB\x17\n" +
-	"\x15_prometheus_http_port\x1a\xec\x02\n" +
+	"\x15_prometheus_http_port\x1a\xbd\t\n" +
 	"\x05Redis\x12\x18\n" +
 	"\anetwork\x18\x01 \x01(\tR\anetwork\x12\x12\n" +
 	"\x04addr\x18\x02 \x01(\tR\x04addr\x12\x1a\n" +
 	"\bpassword\x18\x03 \x01(\tR\bpassword\x12\x0e\n" +
-	"\x02db\x18\x04 \x01(\x05R\x02db\x12<\n" +
+	"\x02db\x18\x04 \x01(\x05R\x02db\x12\x1a\n" +
+	"\busername\x18\x05 \x01(\tR\busername\x12\x1b\n" +
+	"\x03tls\x18\x06 \x01(\v2\t.conf.TLSR\x03tls\x12\x12\n" +
+	"\x04mode\x18\a \x01(\tR\x04mode\x12\x1f\n" +
+	"\vmaster_name\x18\b \x01(\tR\n" +
+	"masterName\x12\x14\n" +
+	"\x05addrs\x18\t \x03(\tR\x05addrs\x12+\n" +
+	"\x11sentinel_username\x18\n" +
+	" \x01(\tR\x10sentinelUsername\x12+\n" +
+	"\x11sentinel_password\x18\v \x01(\tR\x10sentinelPassword\x12(\n" +
+	"\x10route_by_latency\x18\f \x01(\bR\x0erouteByLatency\x12%\n" +
+	"\x0eroute_randomly\x18\r \x01(\bR\rrouteRandomly\x12!\n" +
+	"\freplica_only\x18\x0e \x01(\bR\vreplicaOnly\x12<\n" +
 	"\fdial_timeout\x182 \x01(\v2\x19.google.protobuf.DurationR\vdialTimeout\x12<\n" +
 	"\fread_timeout\x183 \x01(\v2\x19.google.protobuf.DurationR\vreadTimeout\x12>\n" +
-	"\rwrite_timeout\x184 \x01(\v2\x19.google.protobuf.DurationR\fwriteTimeout\x12%\n" +
+	"\rwrite_timeout\x184 \x01(\v2\x19.google.protobuf.DurationR\fwriteTimeout\x12<\n" +
+	"\fpool_timeout\x185 \x01(\v2\x19.google.protobuf.DurationR\vpoolTimeout\x12F\n" +
+	"\x12conn_max_idle_time\x186 \x01(\v2\x19.google.protobuf.DurationR\x0fconnMaxIdleTime\x12E\n" +
+	"\x11conn_max_lifetime\x187 \x01(\v2\x19.google.protobuf.DurationR\x0fconnMaxLifetime\x12E\n" +
+	"\x11min_retry_backoff\x188 \x01(\v2\x19.google.protobuf.DurationR\x0fminRetryBackoff\x12E\n" +
+	"\x11max_retry_backoff\x189 \x01(\v2\x19.google.protobuf.DurationR\x0fmaxRetryBackoff\x12 \n" +
+	"\tpool_size\x18< \x01(\x05H\x00R\bpoolSize\x88\x01\x01\x12)\n" +
+	"\x0emin_idle_conns\x18= \x01(\x05H\x01R\fminIdleConns\x88\x01\x01\x12$\n" +
+	"\vmax_retries\x18> \x01(\x05H\x02R\n" +
+	"maxRetries\x88\x01\x01\x12%\n" +
 	"\x0eenable_tracing\x18d \x01(\bR\renableTracing\x12&\n" +
-	"\x0eenable_metrics\x18\xe9\a \x01(\bR\renableMetrics\x1a\xfa\n" +
+	"\x0eenable_metrics\x18\xe9\a \x01(\bR\renableMetricsB\f\n" +
+	"\n" +
+	"_pool_sizeB\x11\n" +
+	"\x0f_min_idle_connsB\x0e\n" +
+	"\f_max_retries\x1a\xfa\n" +
 	"\n" +
 	"\aMongoDB\x12\x15\n" +
 	"\x03uri\x18\x01 \x01(\tH\x00R\x03uri\x88\x01\x01\x12\x1f\n" +
@@ -2714,49 +2883,55 @@ var file_conf_v1_kratos_conf_data_proto_depIdxs = []int32{
 	18, // 17: conf.Data.pulsar:type_name -> conf.Data.Pulsar
 	19, // 18: conf.Data.rocketmq:type_name -> conf.Data.RocketMQ
 	22, // 19: conf.Data.Database.connection_max_lifetime:type_name -> google.protobuf.Duration
-	22, // 20: conf.Data.Redis.dial_timeout:type_name -> google.protobuf.Duration
-	22, // 21: conf.Data.Redis.read_timeout:type_name -> google.protobuf.Duration
-	22, // 22: conf.Data.Redis.write_timeout:type_name -> google.protobuf.Duration
-	20, // 23: conf.Data.MongoDB.auth_mechanism_properties:type_name -> conf.Data.MongoDB.AuthMechanismPropertiesEntry
-	22, // 24: conf.Data.MongoDB.connect_timeout:type_name -> google.protobuf.Duration
-	22, // 25: conf.Data.MongoDB.heartbeat_interval:type_name -> google.protobuf.Duration
-	22, // 26: conf.Data.MongoDB.local_threshold:type_name -> google.protobuf.Duration
-	22, // 27: conf.Data.MongoDB.max_conn_idle_time:type_name -> google.protobuf.Duration
-	22, // 28: conf.Data.MongoDB.max_staleness:type_name -> google.protobuf.Duration
-	22, // 29: conf.Data.MongoDB.server_selection_timeout:type_name -> google.protobuf.Duration
-	22, // 30: conf.Data.MongoDB.socket_timeout:type_name -> google.protobuf.Duration
-	22, // 31: conf.Data.MongoDB.timeout:type_name -> google.protobuf.Duration
-	23, // 32: conf.Data.MongoDB.tls:type_name -> conf.TLS
-	23, // 33: conf.Data.ClickHouse.tls:type_name -> conf.TLS
-	22, // 34: conf.Data.ClickHouse.dial_timeout:type_name -> google.protobuf.Duration
-	22, // 35: conf.Data.ClickHouse.read_timeout:type_name -> google.protobuf.Duration
-	22, // 36: conf.Data.ClickHouse.conn_max_lifetime:type_name -> google.protobuf.Duration
-	22, // 37: conf.Data.InfluxDB.write_timeout:type_name -> google.protobuf.Duration
-	22, // 38: conf.Data.InfluxDB.query_timeout:type_name -> google.protobuf.Duration
-	22, // 39: conf.Data.InfluxDB.idle_connection_timeout:type_name -> google.protobuf.Duration
-	23, // 40: conf.Data.InfluxDB.tls:type_name -> conf.TLS
-	22, // 41: conf.Data.Doris.connection_max_lifetime:type_name -> google.protobuf.Duration
-	21, // 42: conf.Data.Doris.stream_load:type_name -> conf.Data.Doris.StreamLoad
-	23, // 43: conf.Data.Doris.tls:type_name -> conf.TLS
-	22, // 44: conf.Data.ElasticSearch.discover_nodes_interval:type_name -> google.protobuf.Duration
-	23, // 45: conf.Data.ElasticSearch.tls:type_name -> conf.TLS
-	22, // 46: conf.Data.OpenSearch.discover_nodes_interval:type_name -> google.protobuf.Duration
-	23, // 47: conf.Data.OpenSearch.tls:type_name -> conf.TLS
-	22, // 48: conf.Data.Cassandra.connect_timeout:type_name -> google.protobuf.Duration
-	22, // 49: conf.Data.Cassandra.timeout:type_name -> google.protobuf.Duration
-	23, // 50: conf.Data.Cassandra.tls:type_name -> conf.TLS
-	23, // 51: conf.Data.Snowflake.tls:type_name -> conf.TLS
-	22, // 52: conf.Data.DuckDB.connection_max_lifetime:type_name -> google.protobuf.Duration
-	23, // 53: conf.Data.DuckDB.tls:type_name -> conf.TLS
-	22, // 54: conf.Data.Kafka.batch_timeout:type_name -> google.protobuf.Duration
-	22, // 55: conf.Data.Kafka.read_timeout:type_name -> google.protobuf.Duration
-	22, // 56: conf.Data.Kafka.write_timeout:type_name -> google.protobuf.Duration
-	22, // 57: conf.Data.Doris.StreamLoad.timeout:type_name -> google.protobuf.Duration
-	58, // [58:58] is the sub-list for method output_type
-	58, // [58:58] is the sub-list for method input_type
-	58, // [58:58] is the sub-list for extension type_name
-	58, // [58:58] is the sub-list for extension extendee
-	0,  // [0:58] is the sub-list for field type_name
+	23, // 20: conf.Data.Redis.tls:type_name -> conf.TLS
+	22, // 21: conf.Data.Redis.dial_timeout:type_name -> google.protobuf.Duration
+	22, // 22: conf.Data.Redis.read_timeout:type_name -> google.protobuf.Duration
+	22, // 23: conf.Data.Redis.write_timeout:type_name -> google.protobuf.Duration
+	22, // 24: conf.Data.Redis.pool_timeout:type_name -> google.protobuf.Duration
+	22, // 25: conf.Data.Redis.conn_max_idle_time:type_name -> google.protobuf.Duration
+	22, // 26: conf.Data.Redis.conn_max_lifetime:type_name -> google.protobuf.Duration
+	22, // 27: conf.Data.Redis.min_retry_backoff:type_name -> google.protobuf.Duration
+	22, // 28: conf.Data.Redis.max_retry_backoff:type_name -> google.protobuf.Duration
+	20, // 29: conf.Data.MongoDB.auth_mechanism_properties:type_name -> conf.Data.MongoDB.AuthMechanismPropertiesEntry
+	22, // 30: conf.Data.MongoDB.connect_timeout:type_name -> google.protobuf.Duration
+	22, // 31: conf.Data.MongoDB.heartbeat_interval:type_name -> google.protobuf.Duration
+	22, // 32: conf.Data.MongoDB.local_threshold:type_name -> google.protobuf.Duration
+	22, // 33: conf.Data.MongoDB.max_conn_idle_time:type_name -> google.protobuf.Duration
+	22, // 34: conf.Data.MongoDB.max_staleness:type_name -> google.protobuf.Duration
+	22, // 35: conf.Data.MongoDB.server_selection_timeout:type_name -> google.protobuf.Duration
+	22, // 36: conf.Data.MongoDB.socket_timeout:type_name -> google.protobuf.Duration
+	22, // 37: conf.Data.MongoDB.timeout:type_name -> google.protobuf.Duration
+	23, // 38: conf.Data.MongoDB.tls:type_name -> conf.TLS
+	23, // 39: conf.Data.ClickHouse.tls:type_name -> conf.TLS
+	22, // 40: conf.Data.ClickHouse.dial_timeout:type_name -> google.protobuf.Duration
+	22, // 41: conf.Data.ClickHouse.read_timeout:type_name -> google.protobuf.Duration
+	22, // 42: conf.Data.ClickHouse.conn_max_lifetime:type_name -> google.protobuf.Duration
+	22, // 43: conf.Data.InfluxDB.write_timeout:type_name -> google.protobuf.Duration
+	22, // 44: conf.Data.InfluxDB.query_timeout:type_name -> google.protobuf.Duration
+	22, // 45: conf.Data.InfluxDB.idle_connection_timeout:type_name -> google.protobuf.Duration
+	23, // 46: conf.Data.InfluxDB.tls:type_name -> conf.TLS
+	22, // 47: conf.Data.Doris.connection_max_lifetime:type_name -> google.protobuf.Duration
+	21, // 48: conf.Data.Doris.stream_load:type_name -> conf.Data.Doris.StreamLoad
+	23, // 49: conf.Data.Doris.tls:type_name -> conf.TLS
+	22, // 50: conf.Data.ElasticSearch.discover_nodes_interval:type_name -> google.protobuf.Duration
+	23, // 51: conf.Data.ElasticSearch.tls:type_name -> conf.TLS
+	22, // 52: conf.Data.OpenSearch.discover_nodes_interval:type_name -> google.protobuf.Duration
+	23, // 53: conf.Data.OpenSearch.tls:type_name -> conf.TLS
+	22, // 54: conf.Data.Cassandra.connect_timeout:type_name -> google.protobuf.Duration
+	22, // 55: conf.Data.Cassandra.timeout:type_name -> google.protobuf.Duration
+	23, // 56: conf.Data.Cassandra.tls:type_name -> conf.TLS
+	23, // 57: conf.Data.Snowflake.tls:type_name -> conf.TLS
+	22, // 58: conf.Data.DuckDB.connection_max_lifetime:type_name -> google.protobuf.Duration
+	23, // 59: conf.Data.DuckDB.tls:type_name -> conf.TLS
+	22, // 60: conf.Data.Kafka.batch_timeout:type_name -> google.protobuf.Duration
+	22, // 61: conf.Data.Kafka.read_timeout:type_name -> google.protobuf.Duration
+	22, // 62: conf.Data.Kafka.write_timeout:type_name -> google.protobuf.Duration
+	22, // 63: conf.Data.Doris.StreamLoad.timeout:type_name -> google.protobuf.Duration
+	64, // [64:64] is the sub-list for method output_type
+	64, // [64:64] is the sub-list for method input_type
+	64, // [64:64] is the sub-list for extension type_name
+	64, // [64:64] is the sub-list for extension extendee
+	0,  // [0:64] is the sub-list for field type_name
 }
 
 func init() { file_conf_v1_kratos_conf_data_proto_init() }
@@ -2767,6 +2942,7 @@ func file_conf_v1_kratos_conf_data_proto_init() {
 	file_conf_v1_kratos_conf_tls_proto_init()
 	file_conf_v1_kratos_conf_data_proto_msgTypes[0].OneofWrappers = []any{}
 	file_conf_v1_kratos_conf_data_proto_msgTypes[1].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_data_proto_msgTypes[2].OneofWrappers = []any{}
 	file_conf_v1_kratos_conf_data_proto_msgTypes[3].OneofWrappers = []any{}
 	file_conf_v1_kratos_conf_data_proto_msgTypes[4].OneofWrappers = []any{}
 	file_conf_v1_kratos_conf_data_proto_msgTypes[5].OneofWrappers = []any{}

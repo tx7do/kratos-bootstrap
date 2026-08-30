@@ -34,10 +34,29 @@ message Data {
     string addr = 2; // 服务端地址
     string password = 3; // 密码
     int32 db = 4; // 数据库索引
+    string username = 5; // 用户名(Redis 6 ACL)
+    TLS tls = 6; // TLS配置
+    string mode = 7; // 客户端模式: standalone、cluster、sentinel,默认standalone
+    string master_name = 8; // Sentinel主节点名称(mode=sentinel时必填)
+    repeated string addrs = 9; // 服务端地址列表(mode=cluster/sentinel时使用)
+    string sentinel_username = 10; // Sentinel登录用户名
+    string sentinel_password = 11; // Sentinel登录密码
+    bool route_by_latency = 12; // 按延迟选择低延迟节点(cluster/sentinel)
+    bool route_randomly = 13; // 随机路由到节点(cluster/sentinel)
+    bool replica_only = 14; // 仅读副本节点(sentinel)
 
     google.protobuf.Duration dial_timeout = 50; // 连接超时时间
     google.protobuf.Duration read_timeout = 51; // 读取超时时间
     google.protobuf.Duration write_timeout = 52; // 写入超时时间
+    google.protobuf.Duration pool_timeout = 53; // 连接池获取连接超时时间
+    google.protobuf.Duration conn_max_idle_time = 54; // 连接最大空闲时间
+    google.protobuf.Duration conn_max_lifetime = 55; // 连接最大存活时间
+    google.protobuf.Duration min_retry_backoff = 56; // 重试最小退避时间
+    google.protobuf.Duration max_retry_backoff = 57; // 重试最大退避时间
+
+    optional int32 pool_size = 60; // 连接池大小
+    optional int32 min_idle_conns = 61; // 连接池最小空闲连接数
+    optional int32 max_retries = 62; // 命令失败最大重试次数
 
     bool enable_tracing = 100; // 打开链路追踪
     bool enable_metrics = 1001; // 打开性能度量

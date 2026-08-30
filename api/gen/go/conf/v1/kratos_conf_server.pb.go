@@ -376,14 +376,24 @@ func (x *Server_REST) GetEnablePprof() bool {
 
 // gPRC
 type Server_GRPC struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Network       string                 `protobuf:"bytes,1,opt,name=network,proto3" json:"network,omitempty"` // 网络
-	Addr          string                 `protobuf:"bytes,2,opt,name=addr,proto3" json:"addr,omitempty"`       // 服务监听地址
-	Timeout       *durationpb.Duration   `protobuf:"bytes,3,opt,name=timeout,proto3" json:"timeout,omitempty"` // 超时时间
-	Middleware    *Middleware            `protobuf:"bytes,4,opt,name=middleware,proto3" json:"middleware,omitempty"`
-	Tls           *TLS                   `protobuf:"bytes,5,opt,name=tls,proto3" json:"tls,omitempty"` // TLS配置
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                 protoimpl.MessageState `protogen:"open.v1"`
+	Network               string                 `protobuf:"bytes,1,opt,name=network,proto3" json:"network,omitempty"` // 网络
+	Addr                  string                 `protobuf:"bytes,2,opt,name=addr,proto3" json:"addr,omitempty"`       // 服务监听地址
+	Timeout               *durationpb.Duration   `protobuf:"bytes,3,opt,name=timeout,proto3" json:"timeout,omitempty"` // 超时时间
+	Middleware            *Middleware            `protobuf:"bytes,4,opt,name=middleware,proto3" json:"middleware,omitempty"`
+	Tls                   *TLS                   `protobuf:"bytes,5,opt,name=tls,proto3" json:"tls,omitempty"`                                                                         // TLS配置
+	ConnectionTimeout     *durationpb.Duration   `protobuf:"bytes,10,opt,name=connection_timeout,json=connectionTimeout,proto3" json:"connection_timeout,omitempty"`                   // 连接建立超时时间
+	MaxConnectionIdle     *durationpb.Duration   `protobuf:"bytes,11,opt,name=max_connection_idle,json=maxConnectionIdle,proto3" json:"max_connection_idle,omitempty"`                 // 空闲连接保活的最长时间(keepalive)
+	MaxConnectionAge      *durationpb.Duration   `protobuf:"bytes,12,opt,name=max_connection_age,json=maxConnectionAge,proto3" json:"max_connection_age,omitempty"`                    // 连接最大存活时间(keepalive)
+	MaxConnectionAgeGrace *durationpb.Duration   `protobuf:"bytes,13,opt,name=max_connection_age_grace,json=maxConnectionAgeGrace,proto3" json:"max_connection_age_grace,omitempty"`   // 超龄连接强制关闭前的宽限期
+	KeepaliveTime         *durationpb.Duration   `protobuf:"bytes,14,opt,name=keepalive_time,json=keepaliveTime,proto3" json:"keepalive_time,omitempty"`                               // keepalive探测间隔
+	KeepaliveTimeout      *durationpb.Duration   `protobuf:"bytes,15,opt,name=keepalive_timeout,json=keepaliveTimeout,proto3" json:"keepalive_timeout,omitempty"`                      // keepalive探测等待响应的超时时间
+	MaxRecvMsgSize        *int32                 `protobuf:"varint,16,opt,name=max_recv_msg_size,json=maxRecvMsgSize,proto3,oneof" json:"max_recv_msg_size,omitempty"`                 // 最大接收消息大小(字节),默认4MB
+	MaxSendMsgSize        *int32                 `protobuf:"varint,17,opt,name=max_send_msg_size,json=maxSendMsgSize,proto3,oneof" json:"max_send_msg_size,omitempty"`                 // 最大发送消息大小(字节),默认math.MaxInt32
+	MaxConcurrentStreams  *int32                 `protobuf:"varint,18,opt,name=max_concurrent_streams,json=maxConcurrentStreams,proto3,oneof" json:"max_concurrent_streams,omitempty"` // 单连接最大并发流数
+	DisableReflection     *bool                  `protobuf:"varint,19,opt,name=disable_reflection,json=disableReflection,proto3,oneof" json:"disable_reflection,omitempty"`            // 禁用gRPC reflection服务(kratos默认开启)
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
 }
 
 func (x *Server_GRPC) Reset() {
@@ -449,6 +459,76 @@ func (x *Server_GRPC) GetTls() *TLS {
 		return x.Tls
 	}
 	return nil
+}
+
+func (x *Server_GRPC) GetConnectionTimeout() *durationpb.Duration {
+	if x != nil {
+		return x.ConnectionTimeout
+	}
+	return nil
+}
+
+func (x *Server_GRPC) GetMaxConnectionIdle() *durationpb.Duration {
+	if x != nil {
+		return x.MaxConnectionIdle
+	}
+	return nil
+}
+
+func (x *Server_GRPC) GetMaxConnectionAge() *durationpb.Duration {
+	if x != nil {
+		return x.MaxConnectionAge
+	}
+	return nil
+}
+
+func (x *Server_GRPC) GetMaxConnectionAgeGrace() *durationpb.Duration {
+	if x != nil {
+		return x.MaxConnectionAgeGrace
+	}
+	return nil
+}
+
+func (x *Server_GRPC) GetKeepaliveTime() *durationpb.Duration {
+	if x != nil {
+		return x.KeepaliveTime
+	}
+	return nil
+}
+
+func (x *Server_GRPC) GetKeepaliveTimeout() *durationpb.Duration {
+	if x != nil {
+		return x.KeepaliveTimeout
+	}
+	return nil
+}
+
+func (x *Server_GRPC) GetMaxRecvMsgSize() int32 {
+	if x != nil && x.MaxRecvMsgSize != nil {
+		return *x.MaxRecvMsgSize
+	}
+	return 0
+}
+
+func (x *Server_GRPC) GetMaxSendMsgSize() int32 {
+	if x != nil && x.MaxSendMsgSize != nil {
+		return *x.MaxSendMsgSize
+	}
+	return 0
+}
+
+func (x *Server_GRPC) GetMaxConcurrentStreams() int32 {
+	if x != nil && x.MaxConcurrentStreams != nil {
+		return *x.MaxConcurrentStreams
+	}
+	return 0
+}
+
+func (x *Server_GRPC) GetDisableReflection() bool {
+	if x != nil && x.DisableReflection != nil {
+		return *x.DisableReflection
+	}
+	return false
 }
 
 // Websocket
@@ -538,16 +618,23 @@ func (x *Server_Websocket) GetTls() *TLS {
 
 // MQTT
 type Server_Mqtt struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Endpoint      string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"`                              // 对端网络地址
-	Codec         string                 `protobuf:"bytes,2,opt,name=codec,proto3" json:"codec,omitempty"`                                    // 编解码器: json,xml,yaml...
-	Tls           *TLS                   `protobuf:"bytes,3,opt,name=tls,proto3" json:"tls,omitempty"`                                        // TLS配置
-	Username      string                 `protobuf:"bytes,4,opt,name=username,proto3" json:"username,omitempty"`                              // 用户名
-	Password      string                 `protobuf:"bytes,5,opt,name=password,proto3" json:"password,omitempty"`                              // 密码
-	ClientId      string                 `protobuf:"bytes,6,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`              // 客户端ID
-	CleanSession  bool                   `protobuf:"varint,7,opt,name=clean_session,json=cleanSession,proto3" json:"clean_session,omitempty"` // 清除会话
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	Endpoint             string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"`                                                        // 对端网络地址
+	Codec                string                 `protobuf:"bytes,2,opt,name=codec,proto3" json:"codec,omitempty"`                                                              // 编解码器: json,xml,yaml...
+	Tls                  *TLS                   `protobuf:"bytes,3,opt,name=tls,proto3" json:"tls,omitempty"`                                                                  // TLS配置
+	Username             string                 `protobuf:"bytes,4,opt,name=username,proto3" json:"username,omitempty"`                                                        // 用户名
+	Password             string                 `protobuf:"bytes,5,opt,name=password,proto3" json:"password,omitempty"`                                                        // 密码
+	ClientId             string                 `protobuf:"bytes,6,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`                                        // 客户端ID
+	CleanSession         bool                   `protobuf:"varint,7,opt,name=clean_session,json=cleanSession,proto3" json:"clean_session,omitempty"`                           // 清除会话
+	KeepAlive            *durationpb.Duration   `protobuf:"bytes,10,opt,name=keep_alive,json=keepAlive,proto3" json:"keep_alive,omitempty"`                                    // 心跳间隔,默认30s
+	AutoReconnect        bool                   `protobuf:"varint,11,opt,name=auto_reconnect,json=autoReconnect,proto3" json:"auto_reconnect,omitempty"`                       // 断线自动重连
+	ResumeSubs           bool                   `protobuf:"varint,12,opt,name=resume_subs,json=resumeSubs,proto3" json:"resume_subs,omitempty"`                                // 重连后恢复订阅
+	OrderMatters         bool                   `protobuf:"varint,13,opt,name=order_matters,json=orderMatters,proto3" json:"order_matters,omitempty"`                          // 保证消息顺序处理
+	MaxReconnectInterval *durationpb.Duration   `protobuf:"bytes,14,opt,name=max_reconnect_interval,json=maxReconnectInterval,proto3" json:"max_reconnect_interval,omitempty"` // 重连最大间隔
+	ConnectRetryInterval *durationpb.Duration   `protobuf:"bytes,15,opt,name=connect_retry_interval,json=connectRetryInterval,proto3" json:"connect_retry_interval,omitempty"` // 连接重试间隔
+	WriteTimeout         *durationpb.Duration   `protobuf:"bytes,16,opt,name=write_timeout,json=writeTimeout,proto3" json:"write_timeout,omitempty"`                           // 写超时时间
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *Server_Mqtt) Reset() {
@@ -629,6 +716,55 @@ func (x *Server_Mqtt) GetCleanSession() bool {
 	return false
 }
 
+func (x *Server_Mqtt) GetKeepAlive() *durationpb.Duration {
+	if x != nil {
+		return x.KeepAlive
+	}
+	return nil
+}
+
+func (x *Server_Mqtt) GetAutoReconnect() bool {
+	if x != nil {
+		return x.AutoReconnect
+	}
+	return false
+}
+
+func (x *Server_Mqtt) GetResumeSubs() bool {
+	if x != nil {
+		return x.ResumeSubs
+	}
+	return false
+}
+
+func (x *Server_Mqtt) GetOrderMatters() bool {
+	if x != nil {
+		return x.OrderMatters
+	}
+	return false
+}
+
+func (x *Server_Mqtt) GetMaxReconnectInterval() *durationpb.Duration {
+	if x != nil {
+		return x.MaxReconnectInterval
+	}
+	return nil
+}
+
+func (x *Server_Mqtt) GetConnectRetryInterval() *durationpb.Duration {
+	if x != nil {
+		return x.ConnectRetryInterval
+	}
+	return nil
+}
+
+func (x *Server_Mqtt) GetWriteTimeout() *durationpb.Duration {
+	if x != nil {
+		return x.WriteTimeout
+	}
+	return nil
+}
+
 // Kafka
 type Server_Kafka struct {
 	state                         protoimpl.MessageState `protogen:"open.v1"`
@@ -652,6 +788,9 @@ type Server_Kafka struct {
 	//	*Server_Kafka_Plain
 	//	*Server_Kafka_Scram
 	AuthMechanism isServer_Kafka_AuthMechanism `protobuf_oneof:"auth_mechanism"`
+	StartOffset   *string                      `protobuf:"bytes,32,opt,name=start_offset,json=startOffset,proto3,oneof" json:"start_offset,omitempty"`    // 消费起始位置: first、last
+	RequiredAcks  *string                      `protobuf:"bytes,33,opt,name=required_acks,json=requiredAcks,proto3,oneof" json:"required_acks,omitempty"` // 生产确认级别: one、all(默认all)
+	Balancer      *string                      `protobuf:"bytes,34,opt,name=balancer,proto3,oneof" json:"balancer,omitempty"`                             // 分区均衡策略: round_robin、least_bytes、hash、crc32、murmur2、reference_hash
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -814,6 +953,27 @@ func (x *Server_Kafka) GetScram() *Server_Kafka_ScramMechanism {
 		}
 	}
 	return nil
+}
+
+func (x *Server_Kafka) GetStartOffset() string {
+	if x != nil && x.StartOffset != nil {
+		return *x.StartOffset
+	}
+	return ""
+}
+
+func (x *Server_Kafka) GetRequiredAcks() string {
+	if x != nil && x.RequiredAcks != nil {
+		return *x.RequiredAcks
+	}
+	return ""
+}
+
+func (x *Server_Kafka) GetBalancer() string {
+	if x != nil && x.Balancer != nil {
+		return *x.Balancer
+	}
+	return ""
 }
 
 type isServer_Kafka_AuthMechanism interface {
@@ -1814,17 +1974,19 @@ func (x *Server_Machinery) GetDynamodb() *Server_Machinery_DynamoDB {
 // SSE
 type Server_SSE struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Network       string                 `protobuf:"bytes,1,opt,name=network,proto3" json:"network,omitempty"`                                 // 网络
-	Addr          string                 `protobuf:"bytes,2,opt,name=addr,proto3" json:"addr,omitempty"`                                       // 服务监听地址
-	Path          string                 `protobuf:"bytes,3,opt,name=path,proto3" json:"path,omitempty"`                                       // 路径
-	Codec         string                 `protobuf:"bytes,4,opt,name=codec,proto3" json:"codec,omitempty"`                                     // 编解码器
-	Tls           *TLS                   `protobuf:"bytes,5,opt,name=tls,proto3" json:"tls,omitempty"`                                         // TLS配置
-	Timeout       *durationpb.Duration   `protobuf:"bytes,10,opt,name=timeout,proto3" json:"timeout,omitempty"`                                // 超时时间
-	EventTtl      *durationpb.Duration   `protobuf:"bytes,11,opt,name=event_ttl,json=eventTtl,proto3" json:"event_ttl,omitempty"`              // 事件存活时间
-	AutoStream    bool                   `protobuf:"varint,20,opt,name=auto_stream,json=autoStream,proto3" json:"auto_stream,omitempty"`       // 自动管理流
-	AutoReply     bool                   `protobuf:"varint,21,opt,name=auto_reply,json=autoReply,proto3" json:"auto_reply,omitempty"`          // 自动回复事件
-	SplitData     bool                   `protobuf:"varint,22,opt,name=split_data,json=splitData,proto3" json:"split_data,omitempty"`          // 分割数据
-	EncodeBase64  bool                   `protobuf:"varint,23,opt,name=encode_base64,json=encodeBase64,proto3" json:"encode_base64,omitempty"` // 进行BASE64编码
+	Network       string                 `protobuf:"bytes,1,opt,name=network,proto3" json:"network,omitempty"`                                                                            // 网络
+	Addr          string                 `protobuf:"bytes,2,opt,name=addr,proto3" json:"addr,omitempty"`                                                                                  // 服务监听地址
+	Path          string                 `protobuf:"bytes,3,opt,name=path,proto3" json:"path,omitempty"`                                                                                  // 路径
+	Codec         string                 `protobuf:"bytes,4,opt,name=codec,proto3" json:"codec,omitempty"`                                                                                // 编解码器
+	Tls           *TLS                   `protobuf:"bytes,5,opt,name=tls,proto3" json:"tls,omitempty"`                                                                                    // TLS配置
+	Timeout       *durationpb.Duration   `protobuf:"bytes,10,opt,name=timeout,proto3" json:"timeout,omitempty"`                                                                           // 超时时间
+	EventTtl      *durationpb.Duration   `protobuf:"bytes,11,opt,name=event_ttl,json=eventTtl,proto3" json:"event_ttl,omitempty"`                                                         // 事件存活时间
+	AutoStream    bool                   `protobuf:"varint,20,opt,name=auto_stream,json=autoStream,proto3" json:"auto_stream,omitempty"`                                                  // 自动管理流
+	AutoReply     bool                   `protobuf:"varint,21,opt,name=auto_reply,json=autoReply,proto3" json:"auto_reply,omitempty"`                                                     // 自动回复事件
+	SplitData     bool                   `protobuf:"varint,22,opt,name=split_data,json=splitData,proto3" json:"split_data,omitempty"`                                                     // 分割数据
+	EncodeBase64  bool                   `protobuf:"varint,23,opt,name=encode_base64,json=encodeBase64,proto3" json:"encode_base64,omitempty"`                                            // 进行BASE64编码
+	BufferSize    *int32                 `protobuf:"varint,24,opt,name=buffer_size,json=bufferSize,proto3,oneof" json:"buffer_size,omitempty"`                                            // 每流事件通道缓冲大小,默认1024
+	Headers       map[string]string      `protobuf:"bytes,25,rep,name=headers,proto3" json:"headers,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` // 自定义响应头(如禁缓存、代理透传)
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1934,6 +2096,20 @@ func (x *Server_SSE) GetEncodeBase64() bool {
 		return x.EncodeBase64
 	}
 	return false
+}
+
+func (x *Server_SSE) GetBufferSize() int32 {
+	if x != nil && x.BufferSize != nil {
+		return *x.BufferSize
+	}
+	return 0
+}
+
+func (x *Server_SSE) GetHeaders() map[string]string {
+	if x != nil {
+		return x.Headers
+	}
+	return nil
 }
 
 // SocketIO
@@ -2116,21 +2292,25 @@ func (x *Server_SignalR) GetStreamBufferCapacity() uint32 {
 
 // MCP
 type Server_MCP struct {
-	state              protoimpl.MessageState `protogen:"open.v1"`
-	ServerName         string                 `protobuf:"bytes,1,opt,name=server_name,json=serverName,proto3" json:"server_name,omitempty"`                           // 服务器名称
-	ServerVersion      string                 `protobuf:"bytes,2,opt,name=server_version,json=serverVersion,proto3" json:"server_version,omitempty"`                  // 服务器版本
-	ServerType         string                 `protobuf:"bytes,3,opt,name=server_type,json=serverType,proto3" json:"server_type,omitempty"`                           // 服务器类型，SSE、HTTP、STDIO、IN_PROCESS。
-	Address            string                 `protobuf:"bytes,4,opt,name=address,proto3" json:"address,omitempty"`                                                   // 服务器地址
-	Tls                *TLS                   `protobuf:"bytes,5,opt,name=tls,proto3" json:"tls,omitempty"`                                                           // TLS配置
-	Instructions       string                 `protobuf:"bytes,6,opt,name=instructions,proto3" json:"instructions,omitempty"`                                         // 指令集
-	Recovery           bool                   `protobuf:"varint,10,opt,name=recovery,proto3" json:"recovery,omitempty"`                                               // 恢复模式
-	Logging            bool                   `protobuf:"varint,11,opt,name=logging,proto3" json:"logging,omitempty"`                                                 // 日志记录
-	ToolCapabilities   bool                   `protobuf:"varint,12,opt,name=tool_capabilities,json=toolCapabilities,proto3" json:"tool_capabilities,omitempty"`       // 工具能力集
-	PromptCapabilities bool                   `protobuf:"varint,13,opt,name=prompt_capabilities,json=promptCapabilities,proto3" json:"prompt_capabilities,omitempty"` // 提示词能力集
-	Elicitation        bool                   `protobuf:"varint,14,opt,name=elicitation,proto3" json:"elicitation,omitempty"`                                         // 需求挖掘
-	Roots              bool                   `protobuf:"varint,15,opt,name=roots,proto3" json:"roots,omitempty"`                                                     // 根源
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	state                        protoimpl.MessageState `protogen:"open.v1"`
+	ServerName                   string                 `protobuf:"bytes,1,opt,name=server_name,json=serverName,proto3" json:"server_name,omitempty"`                                                             // 服务器名称
+	ServerVersion                string                 `protobuf:"bytes,2,opt,name=server_version,json=serverVersion,proto3" json:"server_version,omitempty"`                                                    // 服务器版本
+	ServerType                   string                 `protobuf:"bytes,3,opt,name=server_type,json=serverType,proto3" json:"server_type,omitempty"`                                                             // 服务器类型，SSE、HTTP、STDIO、IN_PROCESS。
+	Address                      string                 `protobuf:"bytes,4,opt,name=address,proto3" json:"address,omitempty"`                                                                                     // 服务器地址
+	Tls                          *TLS                   `protobuf:"bytes,5,opt,name=tls,proto3" json:"tls,omitempty"`                                                                                             // TLS配置
+	Instructions                 string                 `protobuf:"bytes,6,opt,name=instructions,proto3" json:"instructions,omitempty"`                                                                           // 指令集
+	Recovery                     bool                   `protobuf:"varint,10,opt,name=recovery,proto3" json:"recovery,omitempty"`                                                                                 // 恢复模式
+	Logging                      bool                   `protobuf:"varint,11,opt,name=logging,proto3" json:"logging,omitempty"`                                                                                   // 日志记录
+	ToolCapabilities             bool                   `protobuf:"varint,12,opt,name=tool_capabilities,json=toolCapabilities,proto3" json:"tool_capabilities,omitempty"`                                         // 工具能力集
+	PromptCapabilities           bool                   `protobuf:"varint,13,opt,name=prompt_capabilities,json=promptCapabilities,proto3" json:"prompt_capabilities,omitempty"`                                   // 提示词能力集
+	Elicitation                  bool                   `protobuf:"varint,14,opt,name=elicitation,proto3" json:"elicitation,omitempty"`                                                                           // 需求挖掘
+	Roots                        bool                   `protobuf:"varint,15,opt,name=roots,proto3" json:"roots,omitempty"`                                                                                       // 根源
+	ResourceCapabilities         bool                   `protobuf:"varint,16,opt,name=resource_capabilities,json=resourceCapabilities,proto3" json:"resource_capabilities,omitempty"`                             // 资源能力集(订阅/列表变更)
+	EnableCompletions            bool                   `protobuf:"varint,17,opt,name=enable_completions,json=enableCompletions,proto3" json:"enable_completions,omitempty"`                                      // 补全能力
+	EnableInputSchemaValidation  bool                   `protobuf:"varint,18,opt,name=enable_input_schema_validation,json=enableInputSchemaValidation,proto3" json:"enable_input_schema_validation,omitempty"`    // 入参Schema校验
+	EnableOutputSchemaValidation bool                   `protobuf:"varint,19,opt,name=enable_output_schema_validation,json=enableOutputSchemaValidation,proto3" json:"enable_output_schema_validation,omitempty"` // 出参Schema校验
+	unknownFields                protoimpl.UnknownFields
+	sizeCache                    protoimpl.SizeCache
 }
 
 func (x *Server_MCP) Reset() {
@@ -2243,6 +2423,34 @@ func (x *Server_MCP) GetElicitation() bool {
 func (x *Server_MCP) GetRoots() bool {
 	if x != nil {
 		return x.Roots
+	}
+	return false
+}
+
+func (x *Server_MCP) GetResourceCapabilities() bool {
+	if x != nil {
+		return x.ResourceCapabilities
+	}
+	return false
+}
+
+func (x *Server_MCP) GetEnableCompletions() bool {
+	if x != nil {
+		return x.EnableCompletions
+	}
+	return false
+}
+
+func (x *Server_MCP) GetEnableInputSchemaValidation() bool {
+	if x != nil {
+		return x.EnableInputSchemaValidation
+	}
+	return false
+}
+
+func (x *Server_MCP) GetEnableOutputSchemaValidation() bool {
+	if x != nil {
+		return x.EnableOutputSchemaValidation
 	}
 	return false
 }
@@ -3340,7 +3548,7 @@ var File_conf_v1_kratos_conf_server_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_server_proto_rawDesc = "" +
 	"\n" +
-	" conf/v1/kratos_conf_server.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\x1a$conf/v1/kratos_conf_middleware.proto\x1a\x1dconf/v1/kratos_conf_tls.proto\"\xaeV\n" +
+	" conf/v1/kratos_conf_server.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\x1a$conf/v1/kratos_conf_middleware.proto\x1a\x1dconf/v1/kratos_conf_tls.proto\"\xdec\n" +
 	"\x06Server\x12*\n" +
 	"\x04rest\x18\x01 \x01(\v2\x11.conf.Server.RESTH\x00R\x04rest\x88\x01\x01\x12*\n" +
 	"\x04grpc\x18\x02 \x01(\v2\x11.conf.Server.GRPCH\x01R\x04grpc\x88\x01\x01\x123\n" +
@@ -3381,7 +3589,7 @@ const file_conf_v1_kratos_conf_server_proto_rawDesc = "" +
 	"\aheaders\x18\x01 \x03(\tR\aheaders\x12\x18\n" +
 	"\amethods\x18\x02 \x03(\tR\amethods\x12\x18\n" +
 	"\aorigins\x18\x03 \x03(\tR\aorigins\x12+\n" +
-	"\x11allow_credentials\x18\x04 \x01(\bR\x10allowCredentials\x1a\xb8\x01\n" +
+	"\x11allow_credentials\x18\x04 \x01(\bR\x10allowCredentials\x1a\xa1\a\n" +
 	"\x04GRPC\x12\x18\n" +
 	"\anetwork\x18\x01 \x01(\tR\anetwork\x12\x12\n" +
 	"\x04addr\x18\x02 \x01(\tR\x04addr\x123\n" +
@@ -3389,14 +3597,29 @@ const file_conf_v1_kratos_conf_server_proto_rawDesc = "" +
 	"\n" +
 	"middleware\x18\x04 \x01(\v2\x10.conf.MiddlewareR\n" +
 	"middleware\x12\x1b\n" +
-	"\x03tls\x18\x05 \x01(\v2\t.conf.TLSR\x03tls\x1a\xb5\x01\n" +
+	"\x03tls\x18\x05 \x01(\v2\t.conf.TLSR\x03tls\x12H\n" +
+	"\x12connection_timeout\x18\n" +
+	" \x01(\v2\x19.google.protobuf.DurationR\x11connectionTimeout\x12I\n" +
+	"\x13max_connection_idle\x18\v \x01(\v2\x19.google.protobuf.DurationR\x11maxConnectionIdle\x12G\n" +
+	"\x12max_connection_age\x18\f \x01(\v2\x19.google.protobuf.DurationR\x10maxConnectionAge\x12R\n" +
+	"\x18max_connection_age_grace\x18\r \x01(\v2\x19.google.protobuf.DurationR\x15maxConnectionAgeGrace\x12@\n" +
+	"\x0ekeepalive_time\x18\x0e \x01(\v2\x19.google.protobuf.DurationR\rkeepaliveTime\x12F\n" +
+	"\x11keepalive_timeout\x18\x0f \x01(\v2\x19.google.protobuf.DurationR\x10keepaliveTimeout\x12.\n" +
+	"\x11max_recv_msg_size\x18\x10 \x01(\x05H\x00R\x0emaxRecvMsgSize\x88\x01\x01\x12.\n" +
+	"\x11max_send_msg_size\x18\x11 \x01(\x05H\x01R\x0emaxSendMsgSize\x88\x01\x01\x129\n" +
+	"\x16max_concurrent_streams\x18\x12 \x01(\x05H\x02R\x14maxConcurrentStreams\x88\x01\x01\x122\n" +
+	"\x12disable_reflection\x18\x13 \x01(\bH\x03R\x11disableReflection\x88\x01\x01B\x14\n" +
+	"\x12_max_recv_msg_sizeB\x14\n" +
+	"\x12_max_send_msg_sizeB\x19\n" +
+	"\x17_max_concurrent_streamsB\x15\n" +
+	"\x13_disable_reflection\x1a\xb5\x01\n" +
 	"\tWebsocket\x12\x18\n" +
 	"\anetwork\x18\x01 \x01(\tR\anetwork\x12\x12\n" +
 	"\x04addr\x18\x02 \x01(\tR\x04addr\x12\x12\n" +
 	"\x04path\x18\x03 \x01(\tR\x04path\x12\x14\n" +
 	"\x05codec\x18\x04 \x01(\tR\x05codec\x123\n" +
 	"\atimeout\x18\x05 \x01(\v2\x19.google.protobuf.DurationR\atimeout\x12\x1b\n" +
-	"\x03tls\x18\x06 \x01(\v2\t.conf.TLSR\x03tls\x1a\xcf\x01\n" +
+	"\x03tls\x18\x06 \x01(\v2\t.conf.TLSR\x03tls\x1a\xd8\x04\n" +
 	"\x04Mqtt\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x14\n" +
 	"\x05codec\x18\x02 \x01(\tR\x05codec\x12\x1b\n" +
@@ -3404,8 +3627,17 @@ const file_conf_v1_kratos_conf_server_proto_rawDesc = "" +
 	"\busername\x18\x04 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x05 \x01(\tR\bpassword\x12\x1b\n" +
 	"\tclient_id\x18\x06 \x01(\tR\bclientId\x12#\n" +
-	"\rclean_session\x18\a \x01(\bR\fcleanSession\x1a\xb2\n" +
+	"\rclean_session\x18\a \x01(\bR\fcleanSession\x128\n" +
 	"\n" +
+	"keep_alive\x18\n" +
+	" \x01(\v2\x19.google.protobuf.DurationR\tkeepAlive\x12%\n" +
+	"\x0eauto_reconnect\x18\v \x01(\bR\rautoReconnect\x12\x1f\n" +
+	"\vresume_subs\x18\f \x01(\bR\n" +
+	"resumeSubs\x12#\n" +
+	"\rorder_matters\x18\r \x01(\bR\forderMatters\x12O\n" +
+	"\x16max_reconnect_interval\x18\x0e \x01(\v2\x19.google.protobuf.DurationR\x14maxReconnectInterval\x12O\n" +
+	"\x16connect_retry_interval\x18\x0f \x01(\v2\x19.google.protobuf.DurationR\x14connectRetryInterval\x12>\n" +
+	"\rwrite_timeout\x18\x10 \x01(\v2\x19.google.protobuf.DurationR\fwriteTimeout\x1a\xd5\v\n" +
 	"\x05Kafka\x12\x1c\n" +
 	"\tendpoints\x18\x01 \x03(\tR\tendpoints\x12\x14\n" +
 	"\x05codec\x18\x02 \x01(\tR\x05codec\x12\x1b\n" +
@@ -3427,7 +3659,10 @@ const file_conf_v1_kratos_conf_server_proto_rawDesc = "" +
 	"\renable_logger\x18\x17 \x01(\bH\vR\fenableLogger\x88\x01\x01\x123\n" +
 	"\x13enable_error_logger\x18\x18 \x01(\bH\fR\x11enableErrorLogger\x88\x01\x01\x129\n" +
 	"\x05plain\x18\x1e \x01(\v2!.conf.Server.Kafka.PlainMechanismH\x00R\x05plain\x129\n" +
-	"\x05scram\x18\x1f \x01(\v2!.conf.Server.Kafka.ScramMechanismH\x00R\x05scram\x1aH\n" +
+	"\x05scram\x18\x1f \x01(\v2!.conf.Server.Kafka.ScramMechanismH\x00R\x05scram\x12&\n" +
+	"\fstart_offset\x18  \x01(\tH\rR\vstartOffset\x88\x01\x01\x12(\n" +
+	"\rrequired_acks\x18! \x01(\tH\x0eR\frequiredAcks\x88\x01\x01\x12\x1f\n" +
+	"\bbalancer\x18\" \x01(\tH\x0fR\bbalancer\x88\x01\x01\x1aH\n" +
 	"\x0ePlainMechanism\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\x1a\x8b\x01\n" +
@@ -3452,7 +3687,10 @@ const file_conf_v1_kratos_conf_server_proto_rawDesc = "" +
 	"\"_allow_publish_auto_topic_creationB\b\n" +
 	"\x06_asyncB\x10\n" +
 	"\x0e_enable_loggerB\x16\n" +
-	"\x14_enable_error_logger\x1a[\n" +
+	"\x14_enable_error_loggerB\x0f\n" +
+	"\r_start_offsetB\x10\n" +
+	"\x0e_required_acksB\v\n" +
+	"\t_balancer\x1a[\n" +
 	"\bRabbitMQ\x12\x1c\n" +
 	"\tendpoints\x18\x01 \x03(\tR\tendpoints\x12\x14\n" +
 	"\x05codec\x18\x02 \x01(\tR\x05codec\x12\x1b\n" +
@@ -3634,7 +3872,7 @@ const file_conf_v1_kratos_conf_server_proto_rawDesc = "" +
 	"\bdatabase\x18\x01 \x01(\tR\bdatabase\x1ab\n" +
 	"\bDynamoDB\x12*\n" +
 	"\x11task_states_table\x18\x01 \x01(\tR\x0ftaskStatesTable\x12*\n" +
-	"\x11group_metas_table\x18\x02 \x01(\tR\x0fgroupMetasTable\x1a\xeb\x02\n" +
+	"\x11group_metas_table\x18\x02 \x01(\tR\x0fgroupMetasTable\x1a\x96\x04\n" +
 	"\x03SSE\x12\x18\n" +
 	"\anetwork\x18\x01 \x01(\tR\anetwork\x12\x12\n" +
 	"\x04addr\x18\x02 \x01(\tR\x04addr\x12\x12\n" +
@@ -3650,7 +3888,14 @@ const file_conf_v1_kratos_conf_server_proto_rawDesc = "" +
 	"auto_reply\x18\x15 \x01(\bR\tautoReply\x12\x1d\n" +
 	"\n" +
 	"split_data\x18\x16 \x01(\bR\tsplitData\x12#\n" +
-	"\rencode_base64\x18\x17 \x01(\bR\fencodeBase64\x1a\x7f\n" +
+	"\rencode_base64\x18\x17 \x01(\bR\fencodeBase64\x12$\n" +
+	"\vbuffer_size\x18\x18 \x01(\x05H\x00R\n" +
+	"bufferSize\x88\x01\x01\x127\n" +
+	"\aheaders\x18\x19 \x03(\v2\x1d.conf.Server.SSE.HeadersEntryR\aheaders\x1a:\n" +
+	"\fHeadersEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x0e\n" +
+	"\f_buffer_size\x1a\x7f\n" +
 	"\bSocketIO\x12\x18\n" +
 	"\anetwork\x18\x01 \x01(\tR\anetwork\x12\x12\n" +
 	"\x04addr\x18\x02 \x01(\tR\x04addr\x12\x12\n" +
@@ -3666,7 +3911,7 @@ const file_conf_v1_kratos_conf_server_proto_rawDesc = "" +
 	" \x01(\v2\x19.google.protobuf.DurationR\x11keepAliveInterval\x12K\n" +
 	"\x14chan_receive_timeout\x18\v \x01(\v2\x19.google.protobuf.DurationR\x12chanReceiveTimeout\x12\x14\n" +
 	"\x05debug\x18\x06 \x01(\bR\x05debug\x124\n" +
-	"\x16stream_buffer_capacity\x18\a \x01(\rR\x14streamBufferCapacity\x1a\x95\x03\n" +
+	"\x16stream_buffer_capacity\x18\a \x01(\rR\x14streamBufferCapacity\x1a\x85\x05\n" +
 	"\x03MCP\x12\x1f\n" +
 	"\vserver_name\x18\x01 \x01(\tR\n" +
 	"serverName\x12%\n" +
@@ -3682,7 +3927,11 @@ const file_conf_v1_kratos_conf_server_proto_rawDesc = "" +
 	"\x11tool_capabilities\x18\f \x01(\bR\x10toolCapabilities\x12/\n" +
 	"\x13prompt_capabilities\x18\r \x01(\bR\x12promptCapabilities\x12 \n" +
 	"\velicitation\x18\x0e \x01(\bR\velicitation\x12\x14\n" +
-	"\x05roots\x18\x0f \x01(\bR\x05roots\x1a\xd6\x01\n" +
+	"\x05roots\x18\x0f \x01(\bR\x05roots\x123\n" +
+	"\x15resource_capabilities\x18\x10 \x01(\bR\x14resourceCapabilities\x12-\n" +
+	"\x12enable_completions\x18\x11 \x01(\bR\x11enableCompletions\x12C\n" +
+	"\x1eenable_input_schema_validation\x18\x12 \x01(\bR\x1benableInputSchemaValidation\x12E\n" +
+	"\x1fenable_output_schema_validation\x18\x13 \x01(\bR\x1cenableOutputSchemaValidation\x1a\xd6\x01\n" +
 	"\aGraphQL\x12\x18\n" +
 	"\anetwork\x18\x01 \x01(\tR\anetwork\x12\x12\n" +
 	"\x04addr\x18\x02 \x01(\tR\x04addr\x12\x12\n" +
@@ -3745,7 +3994,7 @@ func file_conf_v1_kratos_conf_server_proto_rawDescGZIP() []byte {
 }
 
 var file_conf_v1_kratos_conf_server_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_conf_v1_kratos_conf_server_proto_msgTypes = make([]protoimpl.MessageInfo, 37)
+var file_conf_v1_kratos_conf_server_proto_msgTypes = make([]protoimpl.MessageInfo, 38)
 var file_conf_v1_kratos_conf_server_proto_goTypes = []any{
 	(Server_Kafka_ScramMechanism_Algorithm)(0), // 0: conf.Server.Kafka.ScramMechanism.Algorithm
 	(*Server)(nil),                              // 1: conf.Server
@@ -3785,9 +4034,10 @@ var file_conf_v1_kratos_conf_server_proto_goTypes = []any{
 	(*Server_Machinery_DynamoDB)(nil), // 35: conf.Server.Machinery.DynamoDB
 	nil,                               // 36: conf.Server.Machinery.AMQP.QueueDeclareArgsEntry
 	nil,                               // 37: conf.Server.Machinery.AMQP.QueueBindingArgsEntry
-	(*durationpb.Duration)(nil),       // 38: google.protobuf.Duration
-	(*Middleware)(nil),                // 39: conf.Middleware
-	(*TLS)(nil),                       // 40: conf.TLS
+	nil,                               // 38: conf.Server.SSE.HeadersEntry
+	(*durationpb.Duration)(nil),       // 39: google.protobuf.Duration
+	(*Middleware)(nil),                // 40: conf.Middleware
+	(*TLS)(nil),                       // 41: conf.TLS
 }
 var file_conf_v1_kratos_conf_server_proto_depIdxs = []int32{
 	2,  // 0: conf.Server.rest:type_name -> conf.Server.REST
@@ -3811,71 +4061,82 @@ var file_conf_v1_kratos_conf_server_proto_depIdxs = []int32{
 	19, // 18: conf.Server.mcp:type_name -> conf.Server.MCP
 	14, // 19: conf.Server.asynq:type_name -> conf.Server.Asynq
 	15, // 20: conf.Server.machinery:type_name -> conf.Server.Machinery
-	38, // 21: conf.Server.REST.timeout:type_name -> google.protobuf.Duration
+	39, // 21: conf.Server.REST.timeout:type_name -> google.protobuf.Duration
 	23, // 22: conf.Server.REST.cors:type_name -> conf.Server.REST.CORS
-	39, // 23: conf.Server.REST.middleware:type_name -> conf.Middleware
-	40, // 24: conf.Server.REST.tls:type_name -> conf.TLS
-	38, // 25: conf.Server.GRPC.timeout:type_name -> google.protobuf.Duration
-	39, // 26: conf.Server.GRPC.middleware:type_name -> conf.Middleware
-	40, // 27: conf.Server.GRPC.tls:type_name -> conf.TLS
-	38, // 28: conf.Server.Websocket.timeout:type_name -> google.protobuf.Duration
-	40, // 29: conf.Server.Websocket.tls:type_name -> conf.TLS
-	40, // 30: conf.Server.Mqtt.tls:type_name -> conf.TLS
-	40, // 31: conf.Server.Kafka.tls:type_name -> conf.TLS
-	38, // 32: conf.Server.Kafka.batch_timeout:type_name -> google.protobuf.Duration
-	38, // 33: conf.Server.Kafka.read_timeout:type_name -> google.protobuf.Duration
-	38, // 34: conf.Server.Kafka.write_timeout:type_name -> google.protobuf.Duration
-	24, // 35: conf.Server.Kafka.plain:type_name -> conf.Server.Kafka.PlainMechanism
-	25, // 36: conf.Server.Kafka.scram:type_name -> conf.Server.Kafka.ScramMechanism
-	40, // 37: conf.Server.RabbitMQ.tls:type_name -> conf.TLS
-	40, // 38: conf.Server.ActiveMQ.tls:type_name -> conf.TLS
-	40, // 39: conf.Server.NATS.tls:type_name -> conf.TLS
-	40, // 40: conf.Server.NSQ.tls:type_name -> conf.TLS
-	40, // 41: conf.Server.Pulsar.tls:type_name -> conf.TLS
-	40, // 42: conf.Server.Redis.tls:type_name -> conf.TLS
-	40, // 43: conf.Server.RocketMQ.tls:type_name -> conf.TLS
-	26, // 44: conf.Server.Asynq.redis_opt:type_name -> conf.Server.Asynq.RedisClientOpt
-	27, // 45: conf.Server.Asynq.redis_cluster_opt:type_name -> conf.Server.Asynq.RedisClusterClientOpt
-	28, // 46: conf.Server.Asynq.redis_failover_opt:type_name -> conf.Server.Asynq.RedisFailoverClientOpt
-	40, // 47: conf.Server.Asynq.tls:type_name -> conf.TLS
-	38, // 48: conf.Server.Asynq.dial_timeout:type_name -> google.protobuf.Duration
-	38, // 49: conf.Server.Asynq.read_timeout:type_name -> google.protobuf.Duration
-	38, // 50: conf.Server.Asynq.write_timeout:type_name -> google.protobuf.Duration
-	29, // 51: conf.Server.Asynq.queues:type_name -> conf.Server.Asynq.QueuesEntry
-	38, // 52: conf.Server.Asynq.shutdown_timeout:type_name -> google.protobuf.Duration
-	38, // 53: conf.Server.Asynq.task_check_interval:type_name -> google.protobuf.Duration
-	38, // 54: conf.Server.Asynq.health_check_interval:type_name -> google.protobuf.Duration
-	38, // 55: conf.Server.Asynq.delayed_task_check_interval:type_name -> google.protobuf.Duration
-	38, // 56: conf.Server.Asynq.group_grace_period:type_name -> google.protobuf.Duration
-	38, // 57: conf.Server.Asynq.group_max_delay:type_name -> google.protobuf.Duration
-	38, // 58: conf.Server.Asynq.janitor_interval:type_name -> google.protobuf.Duration
-	40, // 59: conf.Server.Machinery.tls:type_name -> conf.TLS
-	30, // 60: conf.Server.Machinery.redis:type_name -> conf.Server.Machinery.Redis
-	31, // 61: conf.Server.Machinery.amqp:type_name -> conf.Server.Machinery.AMQP
-	32, // 62: conf.Server.Machinery.sqs:type_name -> conf.Server.Machinery.SQS
-	33, // 63: conf.Server.Machinery.gcp:type_name -> conf.Server.Machinery.GCP
-	34, // 64: conf.Server.Machinery.mongodb:type_name -> conf.Server.Machinery.MongoDB
-	35, // 65: conf.Server.Machinery.dynamodb:type_name -> conf.Server.Machinery.DynamoDB
-	40, // 66: conf.Server.SSE.tls:type_name -> conf.TLS
-	38, // 67: conf.Server.SSE.timeout:type_name -> google.protobuf.Duration
-	38, // 68: conf.Server.SSE.event_ttl:type_name -> google.protobuf.Duration
-	40, // 69: conf.Server.SocketIO.tls:type_name -> conf.TLS
-	40, // 70: conf.Server.SignalR.tls:type_name -> conf.TLS
-	38, // 71: conf.Server.SignalR.keep_alive_interval:type_name -> google.protobuf.Duration
-	38, // 72: conf.Server.SignalR.chan_receive_timeout:type_name -> google.protobuf.Duration
-	40, // 73: conf.Server.MCP.tls:type_name -> conf.TLS
-	38, // 74: conf.Server.GraphQL.timeout:type_name -> google.protobuf.Duration
-	40, // 75: conf.Server.GraphQL.tls:type_name -> conf.TLS
-	40, // 76: conf.Server.Thrift.tls:type_name -> conf.TLS
-	40, // 77: conf.Server.KeepAlive.tls:type_name -> conf.TLS
-	36, // 78: conf.Server.Machinery.AMQP.queue_declare_args:type_name -> conf.Server.Machinery.AMQP.QueueDeclareArgsEntry
-	37, // 79: conf.Server.Machinery.AMQP.queue_binding_args:type_name -> conf.Server.Machinery.AMQP.QueueBindingArgsEntry
-	38, // 80: conf.Server.Machinery.GCP.max_extension:type_name -> google.protobuf.Duration
-	81, // [81:81] is the sub-list for method output_type
-	81, // [81:81] is the sub-list for method input_type
-	81, // [81:81] is the sub-list for extension type_name
-	81, // [81:81] is the sub-list for extension extendee
-	0,  // [0:81] is the sub-list for field type_name
+	40, // 23: conf.Server.REST.middleware:type_name -> conf.Middleware
+	41, // 24: conf.Server.REST.tls:type_name -> conf.TLS
+	39, // 25: conf.Server.GRPC.timeout:type_name -> google.protobuf.Duration
+	40, // 26: conf.Server.GRPC.middleware:type_name -> conf.Middleware
+	41, // 27: conf.Server.GRPC.tls:type_name -> conf.TLS
+	39, // 28: conf.Server.GRPC.connection_timeout:type_name -> google.protobuf.Duration
+	39, // 29: conf.Server.GRPC.max_connection_idle:type_name -> google.protobuf.Duration
+	39, // 30: conf.Server.GRPC.max_connection_age:type_name -> google.protobuf.Duration
+	39, // 31: conf.Server.GRPC.max_connection_age_grace:type_name -> google.protobuf.Duration
+	39, // 32: conf.Server.GRPC.keepalive_time:type_name -> google.protobuf.Duration
+	39, // 33: conf.Server.GRPC.keepalive_timeout:type_name -> google.protobuf.Duration
+	39, // 34: conf.Server.Websocket.timeout:type_name -> google.protobuf.Duration
+	41, // 35: conf.Server.Websocket.tls:type_name -> conf.TLS
+	41, // 36: conf.Server.Mqtt.tls:type_name -> conf.TLS
+	39, // 37: conf.Server.Mqtt.keep_alive:type_name -> google.protobuf.Duration
+	39, // 38: conf.Server.Mqtt.max_reconnect_interval:type_name -> google.protobuf.Duration
+	39, // 39: conf.Server.Mqtt.connect_retry_interval:type_name -> google.protobuf.Duration
+	39, // 40: conf.Server.Mqtt.write_timeout:type_name -> google.protobuf.Duration
+	41, // 41: conf.Server.Kafka.tls:type_name -> conf.TLS
+	39, // 42: conf.Server.Kafka.batch_timeout:type_name -> google.protobuf.Duration
+	39, // 43: conf.Server.Kafka.read_timeout:type_name -> google.protobuf.Duration
+	39, // 44: conf.Server.Kafka.write_timeout:type_name -> google.protobuf.Duration
+	24, // 45: conf.Server.Kafka.plain:type_name -> conf.Server.Kafka.PlainMechanism
+	25, // 46: conf.Server.Kafka.scram:type_name -> conf.Server.Kafka.ScramMechanism
+	41, // 47: conf.Server.RabbitMQ.tls:type_name -> conf.TLS
+	41, // 48: conf.Server.ActiveMQ.tls:type_name -> conf.TLS
+	41, // 49: conf.Server.NATS.tls:type_name -> conf.TLS
+	41, // 50: conf.Server.NSQ.tls:type_name -> conf.TLS
+	41, // 51: conf.Server.Pulsar.tls:type_name -> conf.TLS
+	41, // 52: conf.Server.Redis.tls:type_name -> conf.TLS
+	41, // 53: conf.Server.RocketMQ.tls:type_name -> conf.TLS
+	26, // 54: conf.Server.Asynq.redis_opt:type_name -> conf.Server.Asynq.RedisClientOpt
+	27, // 55: conf.Server.Asynq.redis_cluster_opt:type_name -> conf.Server.Asynq.RedisClusterClientOpt
+	28, // 56: conf.Server.Asynq.redis_failover_opt:type_name -> conf.Server.Asynq.RedisFailoverClientOpt
+	41, // 57: conf.Server.Asynq.tls:type_name -> conf.TLS
+	39, // 58: conf.Server.Asynq.dial_timeout:type_name -> google.protobuf.Duration
+	39, // 59: conf.Server.Asynq.read_timeout:type_name -> google.protobuf.Duration
+	39, // 60: conf.Server.Asynq.write_timeout:type_name -> google.protobuf.Duration
+	29, // 61: conf.Server.Asynq.queues:type_name -> conf.Server.Asynq.QueuesEntry
+	39, // 62: conf.Server.Asynq.shutdown_timeout:type_name -> google.protobuf.Duration
+	39, // 63: conf.Server.Asynq.task_check_interval:type_name -> google.protobuf.Duration
+	39, // 64: conf.Server.Asynq.health_check_interval:type_name -> google.protobuf.Duration
+	39, // 65: conf.Server.Asynq.delayed_task_check_interval:type_name -> google.protobuf.Duration
+	39, // 66: conf.Server.Asynq.group_grace_period:type_name -> google.protobuf.Duration
+	39, // 67: conf.Server.Asynq.group_max_delay:type_name -> google.protobuf.Duration
+	39, // 68: conf.Server.Asynq.janitor_interval:type_name -> google.protobuf.Duration
+	41, // 69: conf.Server.Machinery.tls:type_name -> conf.TLS
+	30, // 70: conf.Server.Machinery.redis:type_name -> conf.Server.Machinery.Redis
+	31, // 71: conf.Server.Machinery.amqp:type_name -> conf.Server.Machinery.AMQP
+	32, // 72: conf.Server.Machinery.sqs:type_name -> conf.Server.Machinery.SQS
+	33, // 73: conf.Server.Machinery.gcp:type_name -> conf.Server.Machinery.GCP
+	34, // 74: conf.Server.Machinery.mongodb:type_name -> conf.Server.Machinery.MongoDB
+	35, // 75: conf.Server.Machinery.dynamodb:type_name -> conf.Server.Machinery.DynamoDB
+	41, // 76: conf.Server.SSE.tls:type_name -> conf.TLS
+	39, // 77: conf.Server.SSE.timeout:type_name -> google.protobuf.Duration
+	39, // 78: conf.Server.SSE.event_ttl:type_name -> google.protobuf.Duration
+	38, // 79: conf.Server.SSE.headers:type_name -> conf.Server.SSE.HeadersEntry
+	41, // 80: conf.Server.SocketIO.tls:type_name -> conf.TLS
+	41, // 81: conf.Server.SignalR.tls:type_name -> conf.TLS
+	39, // 82: conf.Server.SignalR.keep_alive_interval:type_name -> google.protobuf.Duration
+	39, // 83: conf.Server.SignalR.chan_receive_timeout:type_name -> google.protobuf.Duration
+	41, // 84: conf.Server.MCP.tls:type_name -> conf.TLS
+	39, // 85: conf.Server.GraphQL.timeout:type_name -> google.protobuf.Duration
+	41, // 86: conf.Server.GraphQL.tls:type_name -> conf.TLS
+	41, // 87: conf.Server.Thrift.tls:type_name -> conf.TLS
+	41, // 88: conf.Server.KeepAlive.tls:type_name -> conf.TLS
+	36, // 89: conf.Server.Machinery.AMQP.queue_declare_args:type_name -> conf.Server.Machinery.AMQP.QueueDeclareArgsEntry
+	37, // 90: conf.Server.Machinery.AMQP.queue_binding_args:type_name -> conf.Server.Machinery.AMQP.QueueBindingArgsEntry
+	39, // 91: conf.Server.Machinery.GCP.max_extension:type_name -> google.protobuf.Duration
+	92, // [92:92] is the sub-list for method output_type
+	92, // [92:92] is the sub-list for method input_type
+	92, // [92:92] is the sub-list for extension type_name
+	92, // [92:92] is the sub-list for extension extendee
+	0,  // [0:92] is the sub-list for field type_name
 }
 
 func init() { file_conf_v1_kratos_conf_server_proto_init() }
@@ -3886,6 +4147,7 @@ func file_conf_v1_kratos_conf_server_proto_init() {
 	file_conf_v1_kratos_conf_middleware_proto_init()
 	file_conf_v1_kratos_conf_tls_proto_init()
 	file_conf_v1_kratos_conf_server_proto_msgTypes[0].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_server_proto_msgTypes[2].OneofWrappers = []any{}
 	file_conf_v1_kratos_conf_server_proto_msgTypes[5].OneofWrappers = []any{
 		(*Server_Kafka_Plain)(nil),
 		(*Server_Kafka_Scram)(nil),
@@ -3896,6 +4158,7 @@ func file_conf_v1_kratos_conf_server_proto_init() {
 		(*Server_Asynq_RedisFailoverOpt)(nil),
 		(*Server_Asynq_Uri)(nil),
 	}
+	file_conf_v1_kratos_conf_server_proto_msgTypes[15].OneofWrappers = []any{}
 	file_conf_v1_kratos_conf_server_proto_msgTypes[26].OneofWrappers = []any{}
 	file_conf_v1_kratos_conf_server_proto_msgTypes[31].OneofWrappers = []any{}
 	type x struct{}
@@ -3904,7 +4167,7 @@ func file_conf_v1_kratos_conf_server_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_v1_kratos_conf_server_proto_rawDesc), len(file_conf_v1_kratos_conf_server_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   37,
+			NumMessages:   38,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

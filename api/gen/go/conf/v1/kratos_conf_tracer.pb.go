@@ -9,6 +9,7 @@ package v1
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -36,7 +37,10 @@ type Tracer struct {
 	// 是否包含 W3C TraceContext 传播（nil 表示未配置）
 	EnableTraceContext *bool `protobuf:"varint,7,opt,name=enable_trace_context,json=enableTraceContext,proto3,oneof" json:"enable_trace_context,omitempty"`
 	// 是否包含 Baggage 传播（nil 表示未配置）
-	EnableBaggage *bool `protobuf:"varint,8,opt,name=enable_baggage,json=enableBaggage,proto3,oneof" json:"enable_baggage,omitempty"`
+	EnableBaggage *bool                `protobuf:"varint,8,opt,name=enable_baggage,json=enableBaggage,proto3,oneof" json:"enable_baggage,omitempty"`
+	Headers       map[string]string    `protobuf:"bytes,9,rep,name=headers,proto3" json:"headers,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` // 上报请求头(如鉴权Token),仅OTLP导出器支持
+	Tls           *TLS                 `protobuf:"bytes,10,opt,name=tls,proto3" json:"tls,omitempty"`                                                                                  // TLS配置(自定义CA等),仅OTLP导出器支持
+	Timeout       *durationpb.Duration `protobuf:"bytes,11,opt,name=timeout,proto3" json:"timeout,omitempty"`                                                                          // 导出超时时间,仅OTLP导出器支持
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -127,6 +131,27 @@ func (x *Tracer) GetEnableBaggage() bool {
 	return false
 }
 
+func (x *Tracer) GetHeaders() map[string]string {
+	if x != nil {
+		return x.Headers
+	}
+	return nil
+}
+
+func (x *Tracer) GetTls() *TLS {
+	if x != nil {
+		return x.Tls
+	}
+	return nil
+}
+
+func (x *Tracer) GetTimeout() *durationpb.Duration {
+	if x != nil {
+		return x.Timeout
+	}
+	return nil
+}
+
 type BatcherOptions struct {
 	state               protoimpl.MessageState `protogen:"open.v1"`
 	Enabled             bool                   `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"` // 是否启用 BatchSpanProcessor（默认 true）
@@ -207,7 +232,7 @@ var File_conf_v1_kratos_conf_tracer_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_tracer_proto_rawDesc = "" +
 	"\n" +
-	" conf/v1/kratos_conf_tracer.proto\x12\x04conf\"\xef\x02\n" +
+	" conf/v1/kratos_conf_tracer.proto\x12\x04conf\x1a\x1dconf/v1/kratos_conf_tls.proto\x1a\x1egoogle/protobuf/duration.proto\"\xb2\x04\n" +
 	"\x06Tracer\x12\x1a\n" +
 	"\bexporter\x18\x01 \x01(\tR\bexporter\x12\x1a\n" +
 	"\bendpoint\x18\x02 \x01(\tR\bendpoint\x12\x18\n" +
@@ -216,7 +241,14 @@ const file_conf_v1_kratos_conf_tracer_proto_rawDesc = "" +
 	"\binsecure\x18\x05 \x01(\bR\binsecure\x12B\n" +
 	"\x0fbatcher_options\x18\x06 \x01(\v2\x14.conf.BatcherOptionsH\x00R\x0ebatcherOptions\x88\x01\x01\x125\n" +
 	"\x14enable_trace_context\x18\a \x01(\bH\x01R\x12enableTraceContext\x88\x01\x01\x12*\n" +
-	"\x0eenable_baggage\x18\b \x01(\bH\x02R\renableBaggage\x88\x01\x01B\x12\n" +
+	"\x0eenable_baggage\x18\b \x01(\bH\x02R\renableBaggage\x88\x01\x01\x123\n" +
+	"\aheaders\x18\t \x03(\v2\x19.conf.Tracer.HeadersEntryR\aheaders\x12\x1b\n" +
+	"\x03tls\x18\n" +
+	" \x01(\v2\t.conf.TLSR\x03tls\x123\n" +
+	"\atimeout\x18\v \x01(\v2\x19.google.protobuf.DurationR\atimeout\x1a:\n" +
+	"\fHeadersEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x12\n" +
 	"\x10_batcher_optionsB\x17\n" +
 	"\x15_enable_trace_contextB\x11\n" +
 	"\x0f_enable_baggage\"\xeb\x01\n" +
@@ -240,18 +272,24 @@ func file_conf_v1_kratos_conf_tracer_proto_rawDescGZIP() []byte {
 	return file_conf_v1_kratos_conf_tracer_proto_rawDescData
 }
 
-var file_conf_v1_kratos_conf_tracer_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_conf_v1_kratos_conf_tracer_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_conf_v1_kratos_conf_tracer_proto_goTypes = []any{
-	(*Tracer)(nil),         // 0: conf.Tracer
-	(*BatcherOptions)(nil), // 1: conf.BatcherOptions
+	(*Tracer)(nil),              // 0: conf.Tracer
+	(*BatcherOptions)(nil),      // 1: conf.BatcherOptions
+	nil,                         // 2: conf.Tracer.HeadersEntry
+	(*TLS)(nil),                 // 3: conf.TLS
+	(*durationpb.Duration)(nil), // 4: google.protobuf.Duration
 }
 var file_conf_v1_kratos_conf_tracer_proto_depIdxs = []int32{
 	1, // 0: conf.Tracer.batcher_options:type_name -> conf.BatcherOptions
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 1: conf.Tracer.headers:type_name -> conf.Tracer.HeadersEntry
+	3, // 2: conf.Tracer.tls:type_name -> conf.TLS
+	4, // 3: conf.Tracer.timeout:type_name -> google.protobuf.Duration
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_conf_v1_kratos_conf_tracer_proto_init() }
@@ -259,6 +297,7 @@ func file_conf_v1_kratos_conf_tracer_proto_init() {
 	if File_conf_v1_kratos_conf_tracer_proto != nil {
 		return
 	}
+	file_conf_v1_kratos_conf_tls_proto_init()
 	file_conf_v1_kratos_conf_tracer_proto_msgTypes[0].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -266,7 +305,7 @@ func file_conf_v1_kratos_conf_tracer_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_v1_kratos_conf_tracer_proto_rawDesc), len(file_conf_v1_kratos_conf_tracer_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

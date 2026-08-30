@@ -17,12 +17,24 @@ func NewConfigSource(c *conf.RemoteConfig) (config.Source, error) {
 		return nil, nil
 	}
 
-	source := NewSource(
-		WithNamespace(c.Kubernetes.Namespace),
-		WithLabelSelector(c.Kubernetes.LabelSelector),
-		WithFieldSelector(c.Kubernetes.FieldSelector),
-		WithMaster(c.Kubernetes.Master),
-		WithKubeConfig(c.Kubernetes.KubeConfig),
-	)
-	return source, nil
+	in := c.Kubernetes
+
+	opts := []Option{
+		WithNamespace(in.GetNamespace()),
+		WithLabelSelector(in.GetLabelSelector()),
+		WithFieldSelector(in.GetFieldSelector()),
+		WithMaster(in.GetMaster()),
+		WithKubeConfig(in.GetKubeConfig()),
+	}
+	if in.Qps != nil && in.GetQps() > 0 {
+		opts = append(opts, WithQPS(int(in.GetQps())))
+	}
+	if in.Burst != nil && in.GetBurst() > 0 {
+		opts = append(opts, WithBurst(int(in.GetBurst())))
+	}
+	if in.GetTimeout().AsDuration() > 0 {
+		opts = append(opts, WithRequestTimeout(in.GetTimeout().AsDuration()))
+	}
+
+	return NewSource(opts...), nil
 }

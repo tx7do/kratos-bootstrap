@@ -24,12 +24,20 @@ func NewLogger(cfg *conf.Logger) (bLogger.Logger, error) {
 		return nil, errors.New("aliyun config invalid")
 	}
 
-	wrapped, err := NewAliyunLogger(
+	aliyunOpts := []Option{
 		WithProject(cfg.Aliyun.Project),
 		WithEndpoint(cfg.Aliyun.Endpoint),
 		WithAccessKey(cfg.Aliyun.AccessKey),
 		WithAccessSecret(cfg.Aliyun.AccessSecret),
-	)
+	}
+	if cfg.Aliyun.Logstore != "" {
+		aliyunOpts = append(aliyunOpts, WithLogstore(cfg.Aliyun.Logstore))
+	}
+	if cfg.Aliyun.SecurityToken != "" {
+		aliyunOpts = append(aliyunOpts, WithSecurityToken(cfg.Aliyun.SecurityToken))
+	}
+
+	wrapped, err := NewAliyunLogger(aliyunOpts...)
 	if err != nil {
 		// creation failed, return nil so caller can fallback
 		return nil, err

@@ -4,6 +4,8 @@ package conf;
 
 option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
 
+import "google/protobuf/duration.proto";
+
 // 日志
 message Logger {
   // 日志类型
@@ -25,6 +27,10 @@ message Logger {
     int32 max_size = 3; //
     int32 max_age = 4; //
     int32 max_backups = 5; //
+
+    string writer = 6; // 输出目标: file、stdout,默认file
+    string encoder = 7; // 编码器: json、console,默认json
+    optional bool compress = 8; // 是否压缩滚动的历史日志
   }
 
   // logrus
@@ -39,6 +45,15 @@ message Logger {
   // Fluent
   message Fluent {
     string endpoint = 1; // 公网接入地址
+
+    optional google.protobuf.Duration write_timeout = 10; // 写超时时间
+    optional int32 buffer_limit = 11; // 缓冲池大小
+    optional google.protobuf.Duration retry_wait = 12; // 重试基础等待时间
+    optional int32 max_retry = 13; // 最大重试次数
+    optional google.protobuf.Duration max_retry_wait = 14; // 重试最大等待时间
+    optional string tag_prefix = 15; // Tag前缀
+    optional bool async = 16; // 异步发送(日志洪峰时避免阻塞业务)
+    optional bool force_stop_async_send = 17; // 退出时强制停止异步发送
   }
 
   // 阿里云
@@ -47,6 +62,9 @@ message Logger {
     string project = 2; //
     string access_key = 3; // 访问密钥ID
     string access_secret = 4; // 访问密钥
+
+    string logstore = 10; // 日志库Logstore名称,默认: app
+    string security_token = 11; // STS安全令牌
   }
 
   // 腾讯
@@ -68,6 +86,11 @@ message Logger {
 
     string writer = 6; // 输出目标，默认stdout，可选：stdout, stderr, file
     string filename = 7; // 当writer为file时，指定日志文件名
+
+    optional int32 max_size = 10; // 滚动日志单文件最大体积(MB)
+    optional int32 max_age = 11; // 滚动日志最大保留天数
+    optional int32 max_backups = 12; // 滚动日志最大备份数
+    optional bool compress = 13; // 是否压缩滚动的历史日志
   }
 
   string type = 1;

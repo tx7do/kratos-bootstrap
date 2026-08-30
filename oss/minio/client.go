@@ -3,14 +3,18 @@ package minio
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
 	"errors"
 	"io"
+	"net/http"
 	"reflect"
 
 	"github.com/go-kratos/kratos/v2/log"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
+
+	tlsUtils "github.com/tx7do/go-utils/tls"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
 )
@@ -34,12 +38,28 @@ func NewClient(cfg *conf.OSS) *minio.Client {
 
 	minioCfg := cfg.GetMinio()
 
-	impl, err := minio.New(minioCfg.GetEndpoint(),
-		&minio.Options{
-			Creds:  credentials.NewStaticV4(minioCfg.GetAccessKey(), minioCfg.GetSecretKey(), minioCfg.GetToken()),
-			Secure: minioCfg.GetUseSsl(),
-		},
-	)
+	opts := &minio.Options{
+		Creds:  credentials.NewStaticV4(minioCfg.GetAccessKey(), minioCfg.GetSecretKey(), minioCfg.GetToken()),
+		Secure: minioCfg.GetUseSsl(),
+		Region: minioCfg.GetRegion(),
+	}
+	if minioCfg.GetForcePathStyle() {
+		opts.BucketLookup = minio.BucketLookupPath
+	}
+	if tlsConf := minioCfg.GetTls(); tlsConf != nil {
+		tlsCfg, err := loadClientTlsConfig(tlsConf)
+		if err != nil {
+			log.Errorf("failed load minio tls config: %v", err)
+			return nil
+		}
+		if tlsCfg != nil {
+			opts.Transport = &http.Transport{
+				TLSClientConfig: tlsCfg,
+			}
+		}
+	}
+
+	impl, err := minio.New(minioCfg.GetEndpoint(), opts)
 	if err != nil {
 		log.Errorf("failed opening connection to minio: %v", err)
 		return nil
@@ -146,4 +166,37 @@ func readerSize(rs io.ReadSeeker) (int64, error) {
 	}
 
 	return end - current, nil
+}
+
+func loadClientTlsConfig(cfg *conf.TLS) (*tls.Config, error) {
+	if cfg == nil {
+		return nil, nil
+	}
+
+	var tlsCfg *tls.Config
+	var err error
+
+	if cfg.File != nil {
+		if tlsCfg, err = tlsUtils.LoadClientTlsConfigFile(
+			cfg.File.GetKeyPath(),
+			cfg.File.GetCertPath(),
+			cfg.File.GetCaPath(),
+		); err != nil {
+			return nil, err
+		}
+	} else if cfg.Config != nil {
+		if tlsCfg, err = tlsUtils.LoadClientTlsConfigString(
+			cfg.Config.GetKeyPem(),
+			cfg.Config.GetCertPem(),
+			cfg.Config.GetCaPem(),
+		); err != nil {
+			return nil, err
+		}
+	}
+
+	if tlsCfg != nil && cfg.GetInsecureSkipVerify() {
+		tlsCfg.InsecureSkipVerify = true
+	}
+
+	return tlsCfg, nil
 }

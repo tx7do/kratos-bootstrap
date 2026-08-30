@@ -35,6 +35,9 @@ func NewAsynqServer(cfg *conf.Server_Asynq, opts ...asynqTransport.ServerOption)
 		if redisOpt.GetAddr() != "" {
 			opt.Addr = redisOpt.GetAddr()
 		}
+		if redisOpt.GetUsername() != "" {
+			opt.Username = redisOpt.GetUsername()
+		}
 		if redisOpt.GetPassword() != "" {
 			opt.Password = redisOpt.GetPassword()
 		}

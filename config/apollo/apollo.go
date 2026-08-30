@@ -23,13 +23,16 @@ func NewSource(opts ...Option) config.Source {
 	}
 	client, err := agollo.StartWithConfig(func() (*apolloconfig.AppConfig, error) {
 		return &apolloconfig.AppConfig{
-			AppID:            op.appid,
-			Cluster:          op.cluster,
-			NamespaceName:    op.namespace,
-			IP:               op.endpoint,
-			IsBackupConfig:   op.isBackupConfig,
-			Secret:           op.secret,
-			BackupConfigPath: op.backupPath,
+			AppID:             op.appid,
+			Cluster:           op.cluster,
+			NamespaceName:     op.namespace,
+			IP:                op.endpoint,
+			IsBackupConfig:    op.isBackupConfig,
+			Secret:            op.secret,
+			BackupConfigPath:  op.backupPath,
+			Label:             op.label,
+			SyncServerTimeout: op.syncTimeout,
+			MustStart:         op.mustStart,
 		}, nil
 	})
 	if err != nil {

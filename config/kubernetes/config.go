@@ -43,6 +43,16 @@ func (k *kube) init() (err error) {
 			return err
 		}
 	}
+	if k.opts.QPS > 0 {
+		c.QPS = float32(k.opts.QPS)
+	}
+	if k.opts.Burst > 0 {
+		c.Burst = k.opts.Burst
+	}
+	if k.opts.Timeout > 0 {
+		c.Timeout = k.opts.Timeout
+	}
+
 	if k.client, err = kubernetes.NewForConfig(c); err != nil {
 		return err
 	}

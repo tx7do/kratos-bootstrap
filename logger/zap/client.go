@@ -1,6 +1,9 @@
 package zap
 
 import (
+	"os"
+	"strings"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
@@ -28,22 +31,36 @@ func NewLogger(cfg *conf.Logger) (bLogger.Logger, error) {
 	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
 	encoderConfig.EncodeDuration = zapcore.SecondsDurationEncoder
 	encoderConfig.EncodeCaller = zapcore.ShortCallerEncoder
-	jsonEncoder := zapcore.NewJSONEncoder(encoderConfig)
 
-	lumberJackLogger := &lumberjack.Logger{
-		Filename:   cfg.Zap.Filename,
-		MaxSize:    int(cfg.Zap.MaxSize),
-		MaxBackups: int(cfg.Zap.MaxBackups),
-		MaxAge:     int(cfg.Zap.MaxAge),
+	var encoder zapcore.Encoder
+	switch strings.ToLower(cfg.Zap.GetEncoder()) {
+	case "console":
+		encoder = zapcore.NewConsoleEncoder(encoderConfig)
+	default:
+		encoder = zapcore.NewJSONEncoder(encoderConfig)
 	}
-	writeSyncer := zapcore.AddSync(lumberJackLogger)
+
+	var writeSyncer zapcore.WriteSyncer
+	switch strings.ToLower(cfg.Zap.GetWriter()) {
+	case "stdout":
+		writeSyncer = zapcore.AddSync(os.Stdout)
+	default:
+		lumberJackLogger := &lumberjack.Logger{
+			Filename:   cfg.Zap.Filename,
+			MaxSize:    int(cfg.Zap.MaxSize),
+			MaxBackups: int(cfg.Zap.MaxBackups),
+			MaxAge:     int(cfg.Zap.MaxAge),
+			Compress:   cfg.Zap.GetCompress(),
+		}
+		writeSyncer = zapcore.AddSync(lumberJackLogger)
+	}
 
 	var lvl = new(zapcore.Level)
 	if err := lvl.UnmarshalText([]byte(cfg.Zap.Level)); err != nil {
 		return nil, err
 	}
 
-	core := zapcore.NewCore(jsonEncoder, writeSyncer, lvl)
+	core := zapcore.NewCore(encoder, writeSyncer, lvl)
 	l := zap.New(core).WithOptions()
 
 	wrapped := NewZapLogger(l)

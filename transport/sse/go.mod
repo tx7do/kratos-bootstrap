@@ -5,6 +5,8 @@ go 1.25.3
 replace github.com/tx7do/kratos-bootstrap/api => ../../api
 
 require (
+	github.com/go-kratos/kratos/v2 v2.9.2
+	github.com/tx7do/go-utils v1.1.40
 	github.com/tx7do/kratos-bootstrap/api v0.0.44
 	github.com/tx7do/kratos-transport/transport/sse v1.3.8
 )
@@ -12,7 +14,6 @@ require (
 require (
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/go-kratos/kratos/v2 v2.9.2 // indirect
 	github.com/go-logr/logr v1.4.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/form/v4 v4.3.0 // indirect

@@ -5,8 +5,11 @@ go 1.25.3
 replace github.com/tx7do/kratos-bootstrap/api => ../../api
 
 require (
+	github.com/go-kratos/kratos/v2 v2.9.2
+	github.com/segmentio/kafka-go v0.4.51
 	github.com/tx7do/go-utils v1.1.40
 	github.com/tx7do/kratos-bootstrap/api v0.0.44
+	github.com/tx7do/kratos-transport/broker v1.3.3
 	github.com/tx7do/kratos-transport/broker/kafka v1.3.9
 	github.com/tx7do/kratos-transport/transport/kafka v1.3.8
 )
@@ -14,7 +17,6 @@ require (
 require (
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/go-kratos/kratos/v2 v2.9.2 // indirect
 	github.com/go-logr/logr v1.4.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/form/v4 v4.3.0 // indirect
@@ -23,8 +25,6 @@ require (
 	github.com/klauspost/compress v1.19.2 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/pierrec/lz4/v4 v4.1.29 // indirect
-	github.com/segmentio/kafka-go v0.4.51 // indirect
-	github.com/tx7do/kratos-transport/broker v1.3.3 // indirect
 	github.com/tx7do/kratos-transport/tracing v1.1.2 // indirect
 	github.com/tx7do/kratos-transport/transport v1.3.4 // indirect
 	github.com/tx7do/kratos-transport/transport/keepalive v1.3.5 // indirect

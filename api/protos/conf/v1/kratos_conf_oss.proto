@@ -18,6 +18,9 @@ message OSS {
     bool use_ssl = 10; // 使用SSL
     TLS tls = 11;  // TLS配置
 
+    string region = 12; // 区域(部分S3兼容存储签名v4必需)
+    bool force_path_style = 13; // 强制path-style寻址(兼容部分S3实现)
+
     string upload_host = 20;  // 上传链接的主机名
     string download_host = 21;  // 下载链接的主机名
   }
@@ -36,6 +39,8 @@ message OSS {
     TLS tls = 11;             // TLS配置
 
     bool force_path_style = 12; // 强制 path-style（兼容部分 S3 实现）
+
+    optional int32 retry_max_attempts = 13; // 请求最大重试次数,默认3
 
     string upload_host = 20;   // 上传链接主机名（可选）
     string download_host = 21; // 下载链接主机名（可选）

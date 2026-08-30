@@ -20,9 +20,37 @@ func NewConfigSource(c *conf.RemoteConfig) (config.Source, error) {
 		return nil, nil
 	}
 
+	in := c.Consul
+
 	cfg := consulApi.DefaultConfig()
-	cfg.Address = c.Consul.Address
-	cfg.Scheme = c.Consul.Scheme
+	cfg.Address = in.GetAddress()
+	cfg.Scheme = in.GetScheme()
+	cfg.Datacenter = in.GetDatacenter()
+	cfg.Token = in.GetToken()
+	cfg.TokenFile = in.GetTokenFile()
+	cfg.Namespace = in.GetNamespace()
+	cfg.Partition = in.GetPartition()
+	cfg.WaitTime = in.GetWaitTime().AsDuration()
+
+	if tlsConf := in.GetTls(); tlsConf != nil {
+		if in.GetScheme() == "" {
+			cfg.Scheme = "https"
+		}
+		tlsCfg := &consulApi.TLSConfig{
+			InsecureSkipVerify: tlsConf.GetInsecureSkipVerify(),
+		}
+		if file := tlsConf.GetFile(); file != nil {
+			tlsCfg.CertFile = file.GetCertPath()
+			tlsCfg.KeyFile = file.GetKeyPath()
+			tlsCfg.CAFile = file.GetCaPath()
+		}
+		if pem := tlsConf.GetConfig(); pem != nil {
+			tlsCfg.CertPEM = pem.GetCertPem()
+			tlsCfg.KeyPEM = pem.GetKeyPem()
+			tlsCfg.CAPem = pem.GetCaPem()
+		}
+		cfg.TLSConfig = *tlsCfg
+	}
 
 	cli, err := consulApi.NewClient(cfg)
 	if err != nil {

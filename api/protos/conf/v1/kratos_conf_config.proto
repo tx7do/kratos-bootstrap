@@ -4,6 +4,7 @@ package conf;
 
 option go_package = "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1;conf";
 
+import "conf/v1/kratos_conf_tls.proto";
 import "google/protobuf/duration.proto";
 
 // 配置服务
@@ -42,13 +43,28 @@ message RemoteConfig {
     int32 update_thread_num = 40; // 更新服务的线程数
     uint64 timeout_ms = 41; // http请求超时时间，单位毫秒
     int64 beat_interval = 42; // 心跳间隔时间，单位毫秒
+
+    string scheme = 50; // 网络样式: http、https,默认: http
+    uint64 grpc_port = 51; // gRPC长连接端口,默认: port+1000
+    string context_path = 52; // 上下文路径
+    string endpoint = 53; // 地址服务器endpoint,用于获取服务端地址列表
+    bool append_to_stdout = 54; // 日志是否追加输出到标准输出
+    bool disable_use_snap_shot = 55; // 请求服务端失败时禁用本地快照兜底
+    TLS tls = 56; // TLS配置(文件方式)
   }
 
   // Etcd 配置
   message Etcd {
     repeated string endpoints = 1; // 服务端地址
-    google.protobuf.Duration timeout = 2; // 超时时间
+    google.protobuf.Duration timeout = 2; // 拨号超时时间
     string key = 3; // 配置键
+
+    string username = 4; // 用户名
+    string password = 5; // 密码
+    TLS tls = 6; // TLS配置
+
+    google.protobuf.Duration dial_keep_alive_time = 7; // keepalive探测间隔
+    google.protobuf.Duration dial_keep_alive_timeout = 8; // keepalive探测等待响应的超时时间
   }
 
   // Consul 配置
@@ -56,6 +72,14 @@ message RemoteConfig {
     string scheme = 1;  // 网络样式
     string address = 2; // 服务端地址
     string key = 3; // 配置键
+
+    string datacenter = 4; // 数据中心
+    string token = 5; // ACL Token
+    string token_file = 6; // ACL Token文件路径
+    string namespace = 7; // 命名空间(Consul企业版)
+    string partition = 8; // 管理分区(Consul企业版)
+    google.protobuf.Duration wait_time = 9; // Watch阻塞等待的最长时间
+    TLS tls = 10; // TLS配置
   }
 
   // Apollo 配置
@@ -65,6 +89,11 @@ message RemoteConfig {
     string cluster = 3; // 集群
     string namespace = 4; // 命名空间
     string secret = 5; // 密钥
+
+    string backup_config_path = 10; // 配置备份文件目录
+    string label = 11; // 灰度发布标签
+    google.protobuf.Duration sync_server_timeout = 12; // 与服务端同步的超时时间
+    bool must_start = 13; // 首次启动拉取配置失败时是否阻断启动
   }
 
   // Kubernetes 配置
@@ -74,6 +103,10 @@ message RemoteConfig {
     string field_selector = 3; // 字段选择器
     string kube_config = 4; // kube配置文件路径
     string master = 5; // master地址
+
+    optional int32 qps = 10; // 客户端QPS限流,默认5
+    optional int32 burst = 11; // 令牌桶突发容量,默认10
+    google.protobuf.Duration timeout = 12; // 单次请求超时时间
   }
 
   // Polaris 配置
@@ -81,6 +114,10 @@ message RemoteConfig {
     string namespace = 1;
     string file_group = 2;
     string file_name = 3;
+
+    string address = 10; // 服务端地址(设置后SDK直连该地址)
+    int32 port = 11; // 服务端端口,默认: 8091
+    string config_file = 12; // SDK配置文件路径(优先级最高)
   }
 
   string type = 1; // 配置类型

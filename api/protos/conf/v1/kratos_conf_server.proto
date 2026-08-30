@@ -44,6 +44,18 @@ message Server {
     Middleware middleware = 4;
 
     TLS tls = 5;  // TLS配置
+
+    google.protobuf.Duration connection_timeout = 10; // 连接建立超时时间
+    google.protobuf.Duration max_connection_idle = 11; // 空闲连接保活的最长时间(keepalive)
+    google.protobuf.Duration max_connection_age = 12; // 连接最大存活时间(keepalive)
+    google.protobuf.Duration max_connection_age_grace = 13; // 超龄连接强制关闭前的宽限期
+    google.protobuf.Duration keepalive_time = 14; // keepalive探测间隔
+    google.protobuf.Duration keepalive_timeout = 15; // keepalive探测等待响应的超时时间
+
+    optional int32 max_recv_msg_size = 16; // 最大接收消息大小(字节),默认4MB
+    optional int32 max_send_msg_size = 17; // 最大发送消息大小(字节),默认math.MaxInt32
+    optional int32 max_concurrent_streams = 18; // 单连接最大并发流数
+    optional bool disable_reflection = 19; // 禁用gRPC reflection服务(kratos默认开启)
   }
 
   // Websocket
@@ -65,6 +77,14 @@ message Server {
     string password = 5;  // 密码
     string client_id = 6;  // 客户端ID
     bool clean_session = 7;  // 清除会话
+
+    google.protobuf.Duration keep_alive = 10; // 心跳间隔,默认30s
+    bool auto_reconnect = 11; // 断线自动重连
+    bool resume_subs = 12; // 重连后恢复订阅
+    bool order_matters = 13; // 保证消息顺序处理
+    google.protobuf.Duration max_reconnect_interval = 14; // 重连最大间隔
+    google.protobuf.Duration connect_retry_interval = 15; // 连接重试间隔
+    google.protobuf.Duration write_timeout = 16; // 写超时时间
   }
 
   // Kafka
@@ -105,6 +125,10 @@ message Server {
       PlainMechanism plain = 30; // PLAIN认证机制
       ScramMechanism scram = 31; // SCRAM认证机制
     }
+
+    optional string start_offset = 32; // 消费起始位置: first、last
+    optional string required_acks = 33; // 生产确认级别: one、all(默认all)
+    optional string balancer = 34; // 分区均衡策略: round_robin、least_bytes、hash、crc32、murmur2、reference_hash
   }
 
   // RabbitMQ
@@ -316,6 +340,9 @@ message Server {
     bool auto_reply = 21; // 自动回复事件
     bool split_data = 22; // 分割数据
     bool encode_base64 = 23; // 进行BASE64编码
+
+    optional int32 buffer_size = 24; // 每流事件通道缓冲大小,默认1024
+    map<string, string> headers = 25; // 自定义响应头(如禁缓存、代理透传)
   }
 
   // SocketIO
@@ -356,6 +383,11 @@ message Server {
     bool prompt_capabilities = 13; // 提示词能力集
     bool elicitation = 14; // 需求挖掘
     bool roots = 15; // 根源
+
+    bool resource_capabilities = 16; // 资源能力集(订阅/列表变更)
+    bool enable_completions = 17; // 补全能力
+    bool enable_input_schema_validation = 18; // 入参Schema校验
+    bool enable_output_schema_validation = 19; // 出参Schema校验
   }
 
   // GraphQL

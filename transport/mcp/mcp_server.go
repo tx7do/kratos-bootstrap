@@ -50,6 +50,21 @@ func NewMcpServer(cfg *conf.Server_MCP, opts ...mcpServer.ServerOption) *mcpServ
 	if cfg.GetRoots() {
 		mcpOpts = append(mcpOpts, server.WithRoots())
 	}
+	if cfg.GetResourceCapabilities() {
+		mcpOpts = append(mcpOpts, server.WithResourceCapabilities(true, true))
+	}
+	if cfg.GetEnableCompletions() {
+		mcpOpts = append(mcpOpts, server.WithCompletions())
+	}
+	if cfg.GetEnableInputSchemaValidation() {
+		mcpOpts = append(mcpOpts, server.WithInputSchemaValidation())
+	}
+	if cfg.GetEnableOutputSchemaValidation() {
+		mcpOpts = append(mcpOpts, server.WithOutputSchemaValidation())
+	}
+	if cfg.GetInstructions() != "" {
+		mcpOpts = append(mcpOpts, server.WithInstructions(cfg.GetInstructions()))
+	}
 
 	if len(mcpOpts) > 0 {
 		o = append(o, mcpServer.WithMCPServerOptions(mcpOpts...))

@@ -76,17 +76,19 @@ func (x *OSS) GetS3() *OSS_S3 {
 
 // MinIO
 type OSS_MinIO struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Endpoint      string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"`                              // 对端端口
-	AccessKey     string                 `protobuf:"bytes,2,opt,name=access_key,json=accessKey,proto3" json:"access_key,omitempty"`           // 访问密钥
-	SecretKey     string                 `protobuf:"bytes,3,opt,name=secret_key,json=secretKey,proto3" json:"secret_key,omitempty"`           // 密钥
-	Token         string                 `protobuf:"bytes,4,opt,name=token,proto3" json:"token,omitempty"`                                    // 令牌
-	UseSsl        bool                   `protobuf:"varint,10,opt,name=use_ssl,json=useSsl,proto3" json:"use_ssl,omitempty"`                  // 使用SSL
-	Tls           *TLS                   `protobuf:"bytes,11,opt,name=tls,proto3" json:"tls,omitempty"`                                       // TLS配置
-	UploadHost    string                 `protobuf:"bytes,20,opt,name=upload_host,json=uploadHost,proto3" json:"upload_host,omitempty"`       // 上传链接的主机名
-	DownloadHost  string                 `protobuf:"bytes,21,opt,name=download_host,json=downloadHost,proto3" json:"download_host,omitempty"` // 下载链接的主机名
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Endpoint       string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"`                                       // 对端端口
+	AccessKey      string                 `protobuf:"bytes,2,opt,name=access_key,json=accessKey,proto3" json:"access_key,omitempty"`                    // 访问密钥
+	SecretKey      string                 `protobuf:"bytes,3,opt,name=secret_key,json=secretKey,proto3" json:"secret_key,omitempty"`                    // 密钥
+	Token          string                 `protobuf:"bytes,4,opt,name=token,proto3" json:"token,omitempty"`                                             // 令牌
+	UseSsl         bool                   `protobuf:"varint,10,opt,name=use_ssl,json=useSsl,proto3" json:"use_ssl,omitempty"`                           // 使用SSL
+	Tls            *TLS                   `protobuf:"bytes,11,opt,name=tls,proto3" json:"tls,omitempty"`                                                // TLS配置
+	Region         string                 `protobuf:"bytes,12,opt,name=region,proto3" json:"region,omitempty"`                                          // 区域(部分S3兼容存储签名v4必需)
+	ForcePathStyle bool                   `protobuf:"varint,13,opt,name=force_path_style,json=forcePathStyle,proto3" json:"force_path_style,omitempty"` // 强制path-style寻址(兼容部分S3实现)
+	UploadHost     string                 `protobuf:"bytes,20,opt,name=upload_host,json=uploadHost,proto3" json:"upload_host,omitempty"`                // 上传链接的主机名
+	DownloadHost   string                 `protobuf:"bytes,21,opt,name=download_host,json=downloadHost,proto3" json:"download_host,omitempty"`          // 下载链接的主机名
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *OSS_MinIO) Reset() {
@@ -161,6 +163,20 @@ func (x *OSS_MinIO) GetTls() *TLS {
 	return nil
 }
 
+func (x *OSS_MinIO) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
+func (x *OSS_MinIO) GetForcePathStyle() bool {
+	if x != nil {
+		return x.ForcePathStyle
+	}
+	return false
+}
+
 func (x *OSS_MinIO) GetUploadHost() string {
 	if x != nil {
 		return x.UploadHost
@@ -177,20 +193,21 @@ func (x *OSS_MinIO) GetDownloadHost() string {
 
 // AWS S3 / S3 Compatible
 type OSS_S3 struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	Endpoint       string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"`                                       // S3 endpoint, 例如 s3.amazonaws.com
-	Region         string                 `protobuf:"bytes,2,opt,name=region,proto3" json:"region,omitempty"`                                           // 区域，如 ap-southeast-1
-	Bucket         string                 `protobuf:"bytes,3,opt,name=bucket,proto3" json:"bucket,omitempty"`                                           // 默认 bucket
-	AccessKey      string                 `protobuf:"bytes,4,opt,name=access_key,json=accessKey,proto3" json:"access_key,omitempty"`                    // 访问密钥
-	SecretKey      string                 `protobuf:"bytes,5,opt,name=secret_key,json=secretKey,proto3" json:"secret_key,omitempty"`                    // 密钥
-	Token          string                 `protobuf:"bytes,6,opt,name=token,proto3" json:"token,omitempty"`                                             // STS 临时令牌
-	UseSsl         bool                   `protobuf:"varint,10,opt,name=use_ssl,json=useSsl,proto3" json:"use_ssl,omitempty"`                           // 使用SSL
-	Tls            *TLS                   `protobuf:"bytes,11,opt,name=tls,proto3" json:"tls,omitempty"`                                                // TLS配置
-	ForcePathStyle bool                   `protobuf:"varint,12,opt,name=force_path_style,json=forcePathStyle,proto3" json:"force_path_style,omitempty"` // 强制 path-style（兼容部分 S3 实现）
-	UploadHost     string                 `protobuf:"bytes,20,opt,name=upload_host,json=uploadHost,proto3" json:"upload_host,omitempty"`                // 上传链接主机名（可选）
-	DownloadHost   string                 `protobuf:"bytes,21,opt,name=download_host,json=downloadHost,proto3" json:"download_host,omitempty"`          // 下载链接主机名（可选）
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	Endpoint         string                 `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"`                                                   // S3 endpoint, 例如 s3.amazonaws.com
+	Region           string                 `protobuf:"bytes,2,opt,name=region,proto3" json:"region,omitempty"`                                                       // 区域，如 ap-southeast-1
+	Bucket           string                 `protobuf:"bytes,3,opt,name=bucket,proto3" json:"bucket,omitempty"`                                                       // 默认 bucket
+	AccessKey        string                 `protobuf:"bytes,4,opt,name=access_key,json=accessKey,proto3" json:"access_key,omitempty"`                                // 访问密钥
+	SecretKey        string                 `protobuf:"bytes,5,opt,name=secret_key,json=secretKey,proto3" json:"secret_key,omitempty"`                                // 密钥
+	Token            string                 `protobuf:"bytes,6,opt,name=token,proto3" json:"token,omitempty"`                                                         // STS 临时令牌
+	UseSsl           bool                   `protobuf:"varint,10,opt,name=use_ssl,json=useSsl,proto3" json:"use_ssl,omitempty"`                                       // 使用SSL
+	Tls              *TLS                   `protobuf:"bytes,11,opt,name=tls,proto3" json:"tls,omitempty"`                                                            // TLS配置
+	ForcePathStyle   bool                   `protobuf:"varint,12,opt,name=force_path_style,json=forcePathStyle,proto3" json:"force_path_style,omitempty"`             // 强制 path-style（兼容部分 S3 实现）
+	RetryMaxAttempts *int32                 `protobuf:"varint,13,opt,name=retry_max_attempts,json=retryMaxAttempts,proto3,oneof" json:"retry_max_attempts,omitempty"` // 请求最大重试次数,默认3
+	UploadHost       string                 `protobuf:"bytes,20,opt,name=upload_host,json=uploadHost,proto3" json:"upload_host,omitempty"`                            // 上传链接主机名（可选）
+	DownloadHost     string                 `protobuf:"bytes,21,opt,name=download_host,json=downloadHost,proto3" json:"download_host,omitempty"`                      // 下载链接主机名（可选）
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *OSS_S3) Reset() {
@@ -286,6 +303,13 @@ func (x *OSS_S3) GetForcePathStyle() bool {
 	return false
 }
 
+func (x *OSS_S3) GetRetryMaxAttempts() int32 {
+	if x != nil && x.RetryMaxAttempts != nil {
+		return *x.RetryMaxAttempts
+	}
+	return 0
+}
+
 func (x *OSS_S3) GetUploadHost() string {
 	if x != nil {
 		return x.UploadHost
@@ -304,10 +328,10 @@ var File_conf_v1_kratos_conf_oss_proto protoreflect.FileDescriptor
 
 const file_conf_v1_kratos_conf_oss_proto_rawDesc = "" +
 	"\n" +
-	"\x1dconf/v1/kratos_conf_oss.proto\x12\x04conf\x1a\x1dconf/v1/kratos_conf_tls.proto\"\xa8\x05\n" +
+	"\x1dconf/v1/kratos_conf_oss.proto\x12\x04conf\x1a\x1dconf/v1/kratos_conf_tls.proto\"\xb4\x06\n" +
 	"\x03OSS\x12*\n" +
 	"\x05minio\x18\x01 \x01(\v2\x0f.conf.OSS.MinIOH\x00R\x05minio\x88\x01\x01\x12!\n" +
-	"\x02s3\x18\x02 \x01(\v2\f.conf.OSS.S3H\x01R\x02s3\x88\x01\x01\x1a\xf3\x01\n" +
+	"\x02s3\x18\x02 \x01(\v2\f.conf.OSS.S3H\x01R\x02s3\x88\x01\x01\x1a\xb5\x02\n" +
 	"\x05MinIO\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x1d\n" +
 	"\n" +
@@ -317,10 +341,12 @@ const file_conf_v1_kratos_conf_oss_proto_rawDesc = "" +
 	"\x05token\x18\x04 \x01(\tR\x05token\x12\x17\n" +
 	"\ause_ssl\x18\n" +
 	" \x01(\bR\x06useSsl\x12\x1b\n" +
-	"\x03tls\x18\v \x01(\v2\t.conf.TLSR\x03tls\x12\x1f\n" +
+	"\x03tls\x18\v \x01(\v2\t.conf.TLSR\x03tls\x12\x16\n" +
+	"\x06region\x18\f \x01(\tR\x06region\x12(\n" +
+	"\x10force_path_style\x18\r \x01(\bR\x0eforcePathStyle\x12\x1f\n" +
 	"\vupload_host\x18\x14 \x01(\tR\n" +
 	"uploadHost\x12#\n" +
-	"\rdownload_host\x18\x15 \x01(\tR\fdownloadHost\x1a\xca\x02\n" +
+	"\rdownload_host\x18\x15 \x01(\tR\fdownloadHost\x1a\x94\x03\n" +
 	"\x02S3\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x16\n" +
 	"\x06region\x18\x02 \x01(\tR\x06region\x12\x16\n" +
@@ -333,10 +359,12 @@ const file_conf_v1_kratos_conf_oss_proto_rawDesc = "" +
 	"\ause_ssl\x18\n" +
 	" \x01(\bR\x06useSsl\x12\x1b\n" +
 	"\x03tls\x18\v \x01(\v2\t.conf.TLSR\x03tls\x12(\n" +
-	"\x10force_path_style\x18\f \x01(\bR\x0eforcePathStyle\x12\x1f\n" +
+	"\x10force_path_style\x18\f \x01(\bR\x0eforcePathStyle\x121\n" +
+	"\x12retry_max_attempts\x18\r \x01(\x05H\x00R\x10retryMaxAttempts\x88\x01\x01\x12\x1f\n" +
 	"\vupload_host\x18\x14 \x01(\tR\n" +
 	"uploadHost\x12#\n" +
-	"\rdownload_host\x18\x15 \x01(\tR\fdownloadHostB\b\n" +
+	"\rdownload_host\x18\x15 \x01(\tR\fdownloadHostB\x15\n" +
+	"\x13_retry_max_attemptsB\b\n" +
 	"\x06_minioB\x05\n" +
 	"\x03_s3B\x84\x01\n" +
 	"\bcom.confB\x12KratosConfOssProtoP\x01Z4github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1\xa2\x02\x03CXX\xaa\x02\x04Conf\xca\x02\x04Conf\xe2\x02\x10Conf\\GPBMetadata\xea\x02\x04Confb\x06proto3"
@@ -379,6 +407,7 @@ func file_conf_v1_kratos_conf_oss_proto_init() {
 	}
 	file_conf_v1_kratos_conf_tls_proto_init()
 	file_conf_v1_kratos_conf_oss_proto_msgTypes[0].OneofWrappers = []any{}
+	file_conf_v1_kratos_conf_oss_proto_msgTypes[2].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
