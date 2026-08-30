@@ -28,7 +28,7 @@ func NewRegistry(c *conf.Registry) (*Registry, error) {
 	var cli *servicecombClient.Client
 	var err error
 	if cli, err = servicecombClient.NewClient(cfg); err != nil {
-		log.Fatal(err)
+		log.Errorf("%v", err)
 		return nil, err
 	}
 

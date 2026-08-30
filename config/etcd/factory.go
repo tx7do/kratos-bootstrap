@@ -59,7 +59,7 @@ func NewConfigSource(c *conf.RemoteConfig) (config.Source, error) {
 
 	src, err := New(cli, WithPath(getConfigKey(c.Etcd.Key, true)))
 	if err != nil {
-		log.Fatal(err)
+		log.Errorf("%v", err)
 		return nil, err
 	}
 

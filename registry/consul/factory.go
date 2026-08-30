@@ -29,7 +29,8 @@ func NewRegistry(c *conf.Registry) (*Registry, error) {
 	var cli *consulClient.Client
 	var err error
 	if cli, err = consulClient.NewClient(cfg); err != nil {
-		log.Fatal(err)
+		log.Errorf("%v", err)
+		return nil, err
 	}
 
 	reg := New(cli, WithHealthCheck(c.Consul.GetHealthCheck()))

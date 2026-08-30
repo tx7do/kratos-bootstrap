@@ -33,7 +33,7 @@ func NewRegistry(c *conf.Registry) (*Registry, error) {
 	var err error
 	var reg *Registry
 	if reg, err = New(c.Eureka.Endpoints, opts...); err != nil {
-		log.Fatal(err)
+		log.Errorf("%v", err)
 		return nil, err
 	}
 

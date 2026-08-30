@@ -49,7 +49,7 @@ func NewGormClient(cfg *conf.Bootstrap, l *log.Helper, migrates []any) (*gormCru
 
 	db, err := gormCrud.NewClient(options...)
 	if err != nil {
-		log.Fatalf("[GORM] failed opening connection to db: %v", err)
+		log.Errorf("[GORM] failed opening connection to db: %v", err)
 		return nil, err
 	}
 

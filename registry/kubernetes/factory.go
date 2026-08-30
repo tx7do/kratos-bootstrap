@@ -32,14 +32,14 @@ func NewRegistry(cfg *conf.Registry) (*Registry, error) {
 		kubeConfig := filepath.Join(home, ".kube", "config")
 		restConfig, err = k8sTools.BuildConfigFromFlags("", kubeConfig)
 		if err != nil {
-			log.Fatal(err)
+			log.Errorf("%v", err)
 			return nil, err
 		}
 	}
 
 	clientSet, err := k8s.NewForConfig(restConfig)
 	if err != nil {
-		log.Fatal(err)
+		log.Errorf("%v", err)
 		return nil, err
 	}
 

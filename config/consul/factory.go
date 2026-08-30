@@ -26,7 +26,7 @@ func NewConfigSource(c *conf.RemoteConfig) (config.Source, error) {
 
 	cli, err := consulApi.NewClient(cfg)
 	if err != nil {
-		log.Fatal(err)
+		log.Errorf("%v", err)
 		return nil, err
 	}
 
@@ -34,7 +34,7 @@ func NewConfigSource(c *conf.RemoteConfig) (config.Source, error) {
 		WithPath(getConfigKey(c.Consul.Key, true)),
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Errorf("%v", err)
 		return nil, err
 	}
 

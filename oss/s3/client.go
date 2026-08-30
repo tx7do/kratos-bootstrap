@@ -19,7 +19,7 @@ import (
 
 func NewClient(cfg *conf.OSS) *awss3.Client {
 	if cfg == nil || cfg.GetS3() == nil {
-		log.Fatal("missing s3 configuration")
+		log.Errorf("missing s3 configuration")
 		return nil
 	}
 
@@ -44,7 +44,7 @@ func NewClient(cfg *conf.OSS) *awss3.Client {
 
 	awsCfg, err := awsconfig.LoadDefaultConfig(context.Background(), loadOpts...)
 	if err != nil {
-		log.Fatal("failed loading aws s3 config", err)
+		log.Errorf("failed loading aws s3 config: %v", err)
 		return nil
 	}
 

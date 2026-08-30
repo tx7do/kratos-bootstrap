@@ -28,7 +28,8 @@ func NewRegistry(c *conf.Registry) (*Registry, error) {
 	var err error
 	var cli *etcdClient.Client
 	if cli, err = etcdClient.New(cfg); err != nil {
-		log.Fatal(err)
+		log.Errorf("%v", err)
+		return nil, err
 	}
 
 	reg := New(cli)

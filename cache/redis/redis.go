@@ -19,14 +19,14 @@ func NewClient(conf *conf.Data, logger *log.Helper) (rdb *redis.Client) {
 		WriteTimeout: conf.GetRedis().GetWriteTimeout().AsDuration(),
 		ReadTimeout:  conf.GetRedis().GetReadTimeout().AsDuration(),
 	}); rdb == nil {
-		logger.Fatalf("failed opening connection to redis")
+		logger.Errorf("failed opening connection to redis")
 		return nil
 	}
 
 	// open tracing instrumentation.
 	if conf.GetRedis().GetEnableTracing() {
 		if err := redisotel.InstrumentTracing(rdb); err != nil {
-			logger.Fatalf("failed open tracing: %s", err.Error())
+			logger.Errorf("failed open tracing: %s", err.Error())
 			return nil
 		}
 	}
@@ -34,7 +34,7 @@ func NewClient(conf *conf.Data, logger *log.Helper) (rdb *redis.Client) {
 	// open metrics instrumentation.
 	if conf.GetRedis().GetEnableMetrics() {
 		if err := redisotel.InstrumentMetrics(rdb); err != nil {
-			logger.Fatalf("failed open metrics: %s", err.Error())
+			logger.Errorf("failed open metrics: %s", err.Error())
 			return nil
 		}
 	}

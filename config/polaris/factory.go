@@ -22,7 +22,8 @@ func NewConfigSource(cfg *conf.RemoteConfig) (config.Source, error) {
 
 	configApi, err := polarisApi.NewConfigAPI()
 	if err != nil {
-		log.Fatal(err)
+		log.Errorf("%v", err)
+		return nil, err
 	}
 
 	var opts []Option
@@ -32,7 +33,7 @@ func NewConfigSource(cfg *conf.RemoteConfig) (config.Source, error) {
 
 	src, err := New(configApi, opts...)
 	if err != nil {
-		log.Fatal(err)
+		log.Errorf("%v", err)
 		return nil, err
 	}
 

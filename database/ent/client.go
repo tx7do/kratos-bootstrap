@@ -35,7 +35,7 @@ func NewEntClient[T entCrud.EntClientInterface](cfg *conf.Bootstrap, dbCreator D
 		cfg.Data.Database.GetEnableMetrics(),
 	)
 	if err != nil {
-		log.Fatalf("[ENT] failed opening connection to db: %v", err)
+		log.Errorf("[ENT] failed opening connection to db: %v", err)
 		return nil, fmt.Errorf("failed opening connection to db: %w", err)
 	}
 
@@ -43,7 +43,7 @@ func NewEntClient[T entCrud.EntClientInterface](cfg *conf.Bootstrap, dbCreator D
 
 	wrapperClient := entCrud.NewEntClient(db, drv)
 	if wrapperClient == nil {
-		log.Fatalf("[ENT] failed creating ent client")
+		log.Errorf("[ENT] failed creating ent client")
 		return nil, fmt.Errorf("failed creating ent client")
 	}
 

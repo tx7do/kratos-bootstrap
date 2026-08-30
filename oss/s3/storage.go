@@ -19,7 +19,7 @@ type Storage struct {
 
 func NewStorage(cfg *conf.OSS) *Storage {
 	if cfg == nil || cfg.GetS3() == nil {
-		log.Fatal("missing s3 configuration")
+		log.Errorf("missing s3 configuration")
 		return nil
 	}
 

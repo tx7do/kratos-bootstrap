@@ -51,7 +51,7 @@ func NewConfigSource(c *conf.RemoteConfig) (config.Source, error) {
 		},
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Errorf("%v", err)
 		return nil, err
 	}
 

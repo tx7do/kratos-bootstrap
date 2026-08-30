@@ -23,7 +23,7 @@ func NewRegistry(c *conf.Registry) (*Registry, error) {
 
 	conn, _, err := zk.Connect(c.Zookeeper.Endpoints, c.Zookeeper.Timeout.AsDuration())
 	if err != nil {
-		log.Fatal(err)
+		log.Errorf("%v", err)
 		return nil, err
 	}
 

@@ -53,7 +53,7 @@ func NewCassandraClient(cfg *conf.Bootstrap, l *log.Helper) (*gocql.Session, err
 
 	session, err := clusterConfig.CreateSession()
 	if err != nil {
-		l.Fatalf("failed opening connection to cassandra: %v", err)
+		l.Errorf("failed opening connection to cassandra: %v", err)
 		return nil, err
 	}
 

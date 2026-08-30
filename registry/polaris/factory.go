@@ -26,7 +26,7 @@ func NewRegistry(c *conf.Registry) (*Registry, error) {
 
 	var consumer polarisApi.ConsumerAPI
 	if consumer, err = polarisApi.NewConsumerAPI(); err != nil {
-		log.Fatalf("fail to create consumerAPI, err is %v", err)
+		log.Errorf("fail to create consumerAPI, err is %v", err)
 		return nil, err
 	}
 
@@ -45,7 +45,7 @@ func NewRegistry(c *conf.Registry) (*Registry, error) {
 		registerRequest.ServiceToken = c.Polaris.Token
 		registerRequest.SetHealthy(true)
 		if resp, err = provider.RegisterInstance(registerRequest); err != nil {
-			log.Fatalf("fail to register instance %d, err is %v", i, err)
+			log.Errorf("fail to register instance %d, err is %v", i, err)
 			return nil, err
 		}
 

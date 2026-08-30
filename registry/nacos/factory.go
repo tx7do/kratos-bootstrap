@@ -61,7 +61,7 @@ func NewRegistry(c *conf.Registry) (*Registry, error) {
 		},
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Errorf("%v", err)
 		return nil, err
 	}
 
