@@ -25,27 +25,27 @@ git tag logger/tencent/v0.1.3 --force
 git tag logger/zap/v0.1.3 --force
 git tag logger/zeolog/v0.1.3 --force
 
-git tag registry/v0.2.3 --force
-git tag registry/consul/v0.2.3 --force
-git tag registry/etcd/v0.2.4 --force
-git tag registry/eureka/v0.2.3 --force
-git tag registry/kubernetes/v0.2.3 --force
-git tag registry/nacos/v0.2.3 --force
-git tag registry/polaris/v0.2.3 --force
-git tag registry/servicecomb/v0.2.3 --force
-git tag registry/zookeeper/v0.2.3 --force
+git tag registry/v0.2.4 --force
+git tag registry/consul/v0.2.4 --force
+git tag registry/etcd/v0.2.5 --force
+git tag registry/eureka/v0.2.4 --force
+git tag registry/kubernetes/v0.2.4 --force
+git tag registry/nacos/v0.2.4 --force
+git tag registry/polaris/v0.2.4 --force
+git tag registry/servicecomb/v0.2.4 --force
+git tag registry/zookeeper/v0.2.4 --force
 
-git tag config/v0.2.3 --force
-git tag config/apollo/v0.2.3 --force
-git tag config/consul/v0.2.3 --force
-git tag config/etcd/v0.2.4 --force
-git tag config/kubernetes/v0.2.3 --force
-git tag config/nacos/v0.2.4 --force
-git tag config/polaris/v0.2.3 --force
+git tag config/v0.2.4 --force
+git tag config/apollo/v0.2.4 --force
+git tag config/consul/v0.2.4 --force
+git tag config/etcd/v0.2.5 --force
+git tag config/kubernetes/v0.2.4 --force
+git tag config/nacos/v0.2.5 --force
+git tag config/polaris/v0.2.4 --force
 
 git tag transport/asynq/v0.0.7 --force
 git tag transport/kafka/v0.0.5 --force
-git tag transport/mcp/v0.0.4 --force
+git tag transport/mcp/v0.0.5 --force
 git tag transport/mqtt/v0.0.5 --force
 git tag transport/sse/v0.0.5 --force
 
