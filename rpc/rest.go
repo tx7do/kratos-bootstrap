@@ -2,7 +2,9 @@ package rpc
 
 import (
 	"crypto/tls"
+	"net/http"
 	"net/http/pprof"
+	"strings"
 
 	"github.com/gorilla/handlers"
 
@@ -29,9 +31,21 @@ func CreateRestServer(cfg *conf.Bootstrap, mds ...middleware.Middleware) (*krato
 		return nil, err
 	}
 
+	ppf := cfg != nil && cfg.Server != nil && cfg.Server.Rest != nil && cfg.Server.Rest.GetEnablePprof()
+	if !ppf {
+		// pprof 开关关闭时必须前置拦截整个 /debug/ 面：
+		// 本包 import 了 net/http/pprof，其 init() 无条件向 http.DefaultServeMux
+		// 注册全部 pprof handler；而 kratos mux 未命中业务路由时把请求交给
+		// DefaultServeMux（kratos transport/http server.go 的 NotFoundHandler），
+		// 若不拦截，无论开关真假 pprof 端点恒可访问。
+		// 用 Filter（mux 匹配外层）而非注册 deny 路由，结构上保证不可绕过；
+		// 业务 API 无 /debug/ 前缀，整段封禁不影响业务。
+		options = append(options, kratosRest.Filter(blockDebugPprof()))
+	}
+
 	srv := kratosRest.NewServer(options...)
 
-	if cfg != nil && cfg.Server != nil && cfg.Server.Rest != nil && cfg.Server.Rest.GetEnablePprof() {
+	if ppf {
 		registerHttpPprof(srv)
 	}
 
@@ -130,6 +144,21 @@ func registerHttpPprof(s *kratosRest.Server) {
 	s.HandleFunc("/debug/heap", pprof.Handler("heap").ServeHTTP)
 	s.HandleFunc("/debug/mutex", pprof.Handler("mutex").ServeHTTP)
 	s.HandleFunc("/debug/threadcreate", pprof.Handler("threadcreate").ServeHTTP)
+}
+
+// blockDebugPprof 前置拦截整个 /debug/ 面（pprof 关闭态）。
+// kratos Filter 位于 mux 匹配外层，优先于 NotFoundHandler 的 DefaultServeMux
+// fallback；net/http/pprof init() 挂在 DefaultServeMux 上的 handler 因此不可达。
+func blockDebugPprof() kratosRest.FilterFunc {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path == "/debug" || strings.HasPrefix(r.URL.Path, "/debug/") {
+				http.Error(w, "debug endpoints are disabled", http.StatusForbidden)
+				return
+			}
+			next.ServeHTTP(w, r)
+		})
+	}
 }
 
 // NewRestWhiteListMatcher 创建REST白名单匹配器
