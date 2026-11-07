@@ -8,7 +8,7 @@ git tag oss/minio/v0.1.3 --force
 git tag oss/s3/v0.1.3 --force
 
 git tag database/ent/v0.1.6 --force
-git tag database/gorm/v0.1.6 --force
+git tag database/gorm/v0.1.7 --force
 git tag database/mongodb/v0.1.6 --force
 git tag database/influxdb/v0.1.6 --force
 git tag database/clickhouse/v0.1.6 --force
