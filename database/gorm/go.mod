@@ -4,10 +4,17 @@ go 1.26.3
 
 replace github.com/tx7do/kratos-bootstrap/api => ../../api
 
+replace github.com/tx7do/kratos-bootstrap/logger => ../../logger
+
 require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/tx7do/go-crud/gorm v0.0.22
 	github.com/tx7do/kratos-bootstrap/api v0.0.45
+)
+
+require (
+	github.com/tx7do/go-wind v0.0.3
+	github.com/tx7do/kratos-bootstrap/logger v0.1.3
 )
 
 require (
@@ -77,7 +84,6 @@ require (
 	github.com/tx7do/go-crud/viewer v0.0.6 // indirect
 	github.com/tx7do/go-utils v1.1.40 // indirect
 	github.com/tx7do/go-utils/mapper v0.0.3 // indirect
-	github.com/tx7do/go-wind v0.0.2 // indirect
 	github.com/tx7do/go-wind-plugins/encoding v0.0.1 // indirect
 	github.com/tx7do/go-wind-plugins/encoding/json v0.0.1 // indirect
 	github.com/zeebo/xxh3 v1.1.0 // indirect

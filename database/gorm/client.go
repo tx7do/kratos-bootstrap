@@ -1,15 +1,21 @@
 package gorm
 
 import (
+	"context"
+
 	"github.com/go-kratos/kratos/v2/log"
 
 	conf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
+	bLogger "github.com/tx7do/kratos-bootstrap/logger"
+	gwLog "github.com/tx7do/go-wind/log"
 
 	gormCrud "github.com/tx7do/go-crud/gorm"
 )
 
 // NewGormClient 创建GORM数据库客户端
-func NewGormClient(cfg *conf.Bootstrap, l *log.Helper, migrates []any) (*gormCrud.Client, error) {
+// l 为 bootstrap.Context.NewLoggerHelper 产出的 *logger.Helper
+// (bootstrap v0.1.17 起为 tx7do logger.Helper,不再是 kratos log.Helper)。
+func NewGormClient(cfg *conf.Bootstrap, l *bLogger.Helper, migrates []any) (*gormCrud.Client, error) {
 	if cfg == nil || cfg.Data == nil || cfg.Data.Database == nil {
 		log.Warn("[GORM] database config is nil")
 		return nil, nil
@@ -18,7 +24,7 @@ func NewGormClient(cfg *conf.Bootstrap, l *log.Helper, migrates []any) (*gormCru
 	var options []gormCrud.Option
 
 	if l != nil {
-		options = append(options, gormCrud.WithLogger(l))
+		options = append(options, gormCrud.WithLogger(loggerBridge{h: l}))
 	}
 
 	if len(migrates) > 0 {
@@ -54,4 +60,36 @@ func NewGormClient(cfg *conf.Bootstrap, l *log.Helper, migrates []any) (*gormCru
 	}
 
 	return db, nil
+}
+
+// loggerBridge 把 bootstrap logger.Helper 适配为 go-wind/log.Logger——
+// 方法签名 1:1 转发(bLogger 四方法即 ctx 首参格式化);With 在两侧
+// 均无 Helper 语义,返回自身。
+type loggerBridge struct {
+	h *bLogger.Helper
+}
+
+func (b loggerBridge) Debug(ctx context.Context, msg string, args ...any) {
+	b.h.Debugf(ctx, msg, args...)
+}
+
+func (b loggerBridge) Info(ctx context.Context, msg string, args ...any) {
+	b.h.Infof(ctx, msg, args...)
+}
+
+func (b loggerBridge) Warn(ctx context.Context, msg string, args ...any) {
+	b.h.Warnf(ctx, msg, args...)
+}
+
+func (b loggerBridge) Error(ctx context.Context, msg string, args ...any) {
+	b.h.Errorf(ctx, msg, args...)
+}
+
+// Enabled 恒真:级别过滤交给底层 logger,这里不做二次门控。
+func (b loggerBridge) Enabled(_ gwLog.Level) bool {
+	return true
+}
+
+func (b loggerBridge) With(args ...any) gwLog.Logger {
+	return b
 }
