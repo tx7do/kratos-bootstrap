@@ -330,6 +330,10 @@ message Data {
   optional ClickHouse clickhouse = 14; // ClickHouse数据库
   optional InfluxDB influxdb = 15; // InfluxDB数据库
   optional Doris doris = 16; // Doris数据库
+
+  // OLAP 引擎选择：doris（默认）/ clickhouse —— 决定应用侧数据链路使用哪个引擎，
+  // 由应用在装配期消费（kratos-bootstrap 本身不消费此字段）
+  optional string olap_engine = 200;
   optional Snowflake snowflake = 17; // Snowflake数据库
   optional DuckDB duckdb = 18; // DuckDB数据库
   optional OpenSearch opensearch = 19; // OpenSearch数据库
